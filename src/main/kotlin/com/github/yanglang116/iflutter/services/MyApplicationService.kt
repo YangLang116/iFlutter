@@ -1,6 +1,6 @@
-package org.jetbrains.plugins.template.services
+package com.github.yanglang116.iflutter.services
 
-import org.jetbrains.plugins.template.MyBundle
+import com.github.yanglang116.iflutter.MyBundle
 
 class MyApplicationService {
 

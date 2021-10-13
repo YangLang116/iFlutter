@@ -1,0 +1,50 @@
+<templateSet group="iFlutter">
+    <template name="importM" value="import 'package:flutter/material.dart';" description="引入Material" toReformat="true" toShortenFQNames="true">
+        <context>
+            <option name="DART_TOPLEVEL" value="true" />
+        </context>
+    </template>
+    <template name="importC" value="import 'package:flutter/cupertino.dart';" description="引入cupertino" toReformat="true" toShortenFQNames="true">
+        <context>
+            <option name="DART_TOPLEVEL" value="true" />
+        </context>
+    </template>
+    <template name="f_Text" value="Text(&#10;    '$text$',&#10;    style: TextStyle(&#10;      color: Colors.black,&#10;      fontSize: 14,&#10;      fontWeight: FontWeight.bold,&#10;    ),&#10;)" description="Text组件" toReformat="true" toShortenFQNames="true">
+        <variable name="text" expression="" defaultValue="" alwaysStopAt="true" />
+        <context>
+            <option name="DART_STATEMENT" value="true" />
+        </context>
+    </template>
+    <template name="f_Container" value="Container(&#10;    padding: EdgeInsets.zero,&#10;    margin: EdgeInsets.zero,&#10;    decoration: BoxDecoration(&#10;      color: Colors.black,&#10;      borderRadius: BorderRadius.circular($radius$),&#10;    ),&#10;    child: $child$,&#10;)" description="Container组件" toReformat="true" toShortenFQNames="true">
+        <variable name="radius" expression="" defaultValue="10" alwaysStopAt="true" />
+        <variable name="child" expression="" defaultValue="" alwaysStopAt="true" />
+        <context>
+            <option name="DART_STATEMENT" value="true" />
+        </context>
+    </template>
+    <template name="f_GestureDetector" value="GestureDetector(&#10;    behavior: HitTestBehavior.opaque,&#10;    onTap: () {&#10;      $onTap$&#10;    },&#10;    child: $child$,&#10;)" description="GestureDetector组件" toReformat="true" toShortenFQNames="true">
+        <variable name="onTap" expression="" defaultValue="" alwaysStopAt="true" />
+        <variable name="child" expression="" defaultValue="" alwaysStopAt="true" />
+        <context>
+            <option name="DART_STATEMENT" value="true" />
+        </context>
+    </template>
+    <template name="f_Row" value="Row(&#10;      mainAxisAlignment: MainAxisAlignment.start,&#10;      crossAxisAlignment: CrossAxisAlignment.center,&#10;      children: [&#10;        $child$,&#10;      ],&#10;    )" description="Row组件" toReformat="true" toShortenFQNames="true">
+        <variable name="child" expression="" defaultValue="" alwaysStopAt="true" />
+        <context>
+            <option name="DART_STATEMENT" value="true" />
+        </context>
+    </template>
+    <template name="f_Column" value="Column(&#10;   mainAxisAlignment: MainAxisAlignment.start,&#10;   crossAxisAlignment: CrossAxisAlignment.center,&#10;   children: &lt;Widget&gt;[&#10;     $child$,&#10;   ],&#10;)" description="Column组件" toReformat="true" toShortenFQNames="true">
+        <variable name="child" expression="" defaultValue="" alwaysStopAt="true" />
+        <context>
+            <option name="DART_STATEMENT" value="true" />
+        </context>
+    </template>
+    <template name="f_Stack" value="Stack(&#10;     alignment: Alignment.topCenter,&#10;     children: [&#10;      $child$,&#10;     ],&#10;)" description="Stack组件" toReformat="true" toShortenFQNames="true">
+        <variable name="child" expression="" defaultValue="" alwaysStopAt="true" />
+        <context>
+            <option name="DART_STATEMENT" value="true" />
+        </context>
+    </template>
+</templateSet>

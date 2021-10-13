@@ -1,7 +1,12 @@
-<!-- Keep a Changelog guide -> https://keepachangelog.com -->
+# Changelog
 
-# iFlutter Changelog
+## [Coming]
+### Changed
 
-## [Unreleased]
-### Added
-- Initial scaffold created from [IntelliJ Platform Plugin Template](https://github.com/JetBrains/intellij-platform-plugin-template)
+## [1.0.4] - 2021-10-13
+### Changed
+- 添加LiveTemplate
+- 支持资源R文件的生成
+- 支持对images目录进行整理
+- 支持json转Dart
+

@@ -7,8 +7,11 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.xtu.plugin.flutter.action.imagefolding.task.OptimizeImageFoldTask;
+import com.xtu.plugin.flutter.utils.FileUtils;
 import com.xtu.plugin.flutter.utils.PluginUtils;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 //整理images目录下的图片
 public class ImageFoldingAction extends AnAction {
@@ -21,7 +24,17 @@ public class ImageFoldingAction extends AnAction {
             return;
         }
         VirtualFile virtualFile = e.getData(PlatformDataKeys.VIRTUAL_FILE);
-        if (virtualFile == null || !"images".equals(virtualFile.getName())) {
+        if (virtualFile == null) {
+            e.getPresentation().setEnabled(false);
+            return;
+        }
+        if (FileUtils.isChildFile(virtualFile.getPath(), "lib")) {
+            e.getPresentation().setEnabled(false);
+            return;
+        }
+        assert project != null;
+        List<String> supportOptimizeFoldName = PluginUtils.supportImageOptimizeFoldName(project);
+        if (!supportOptimizeFoldName.contains(virtualFile.getName())) {
             e.getPresentation().setEnabled(false);
             return;
         }

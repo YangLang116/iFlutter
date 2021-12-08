@@ -1,9 +1,50 @@
-<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>com.github.yanglang116.iflutter</id>
+    <id>com.xtu.plugins.flutter</id>
     <name>iFlutter</name>
-    <vendor>yanglang116</vendor>
+    <vendor email="yanglang116@gmail.com">yanglang116@gmail.com</vendor>
 
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+    <idea-version since-build="203"/>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    <depends>com.intellij.modules.lang</depends>
+    -->
     <depends>com.intellij.modules.platform</depends>
+    <depends>Dart</depends>
 
+    <extensions defaultExtensionNs="com.intellij">
+        <defaultLiveTemplates file="/template/Flutter.xml"/>
+        <liveTemplateContext implementation="com.xtu.plugin.flutter.template.FlutterContext"/>
+        <projectService serviceImplementation="com.xtu.plugin.flutter.service.StorageService"/>
+        <projectConfigurable parentId="tools" instance="com.xtu.plugin.flutter.configuration.SettingsConfiguration"/>
+    </extensions>
+    <project-components>
+        <component>
+            <interface-class>com.xtu.plugin.flutter.component.FProjectComponent</interface-class>
+            <implementation-class>com.xtu.plugin.flutter.component.FProjectComponentImpl</implementation-class>
+        </component>
+    </project-components>
+    <actions>
+        <group id="com.xtu.plugin.flutter.group"
+               icon="PluginIcons.LOGO"
+               text="iFlutter"
+               description="iFlutter开发套件"
+               popup="true">
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="after"
+                          relative-to-action="ProjectViewPopupMenuRefactoringGroup"/>
+            <action id="com.xtu.plugin.flutter.ImageFoldingAction"
+                    text="asset category"
+                    description="按照文件名，将Flutter资源进行归类"
+                    class="com.xtu.plugin.flutter.action.imagefolding.ImageFoldingAction">
+
+            </action>
+            <action id="com.xtu.plugin.flutter.J2DAction"
+                    text="j2d"
+                    description="json转Dart Bean"
+                    class="com.xtu.plugin.flutter.action.j2d.J2DAction">
+            </action>
+        </group>
+    </actions>
 </idea-plugin>

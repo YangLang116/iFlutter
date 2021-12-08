@@ -1,20 +1,38 @@
 package com.xtu.plugin.flutter.utils;
 
 import com.intellij.openapi.project.Project;
+import com.xtu.plugin.flutter.service.StorageService;
+import org.apache.commons.lang.StringUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.List;
 
 public class PluginUtils {
 
-    public static List<String> getSupportAssetFoldName() {
-        return Arrays.asList("assets", "images");
+    public static @Nullable String getProjectPath(Project project) {
+        if (project == null) return null;
+        String projectPath = project.getBasePath();
+        if (StringUtils.isEmpty(projectPath)) return null;
+        if (projectPath.endsWith(File.separator)) {
+            projectPath = projectPath.substring(0, projectPath.length() - 1);
+        }
+        return projectPath;
     }
 
     public static boolean isFlutterProject(Project project) {
-        if (project == null) return false;
-        File file = new File(project.getBasePath(), "pubspec.yaml");
+        String projectPath = getProjectPath(project);
+        if (StringUtils.isEmpty(projectPath)) return false;
+        File file = new File(projectPath, YamlUtils.getFileName());
         return file.exists();
+    }
+
+    public static List<String> supportAssetFoldName(@NotNull Project project) {
+        return StorageService.getInstance(project).getState().resDir;
+    }
+
+    public static List<String> supportImageOptimizeFoldName(@NotNull Project project) {
+        return StorageService.getInstance(project).getState().imageDir;
     }
 }

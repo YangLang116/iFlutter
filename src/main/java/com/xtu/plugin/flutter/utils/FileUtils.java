@@ -7,6 +7,10 @@ import java.io.*;
 
 public class FileUtils {
 
+    public static boolean isChildFile(String childFilePath, String parentDirName) {
+        return childFilePath.contains(File.separator + parentDirName + File.separator);
+    }
+
     public static String getRelativePath(String parentPath, String childFilePath) {
         if (StringUtils.isEmpty(parentPath)) return childFilePath;
         if (!parentPath.endsWith(File.separator)) {

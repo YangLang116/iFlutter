@@ -7,7 +7,10 @@ import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.StatusBar;
 import com.intellij.openapi.wm.WindowManager;
+import com.xtu.plugin.flutter.service.StorageEntity;
+import com.xtu.plugin.flutter.service.StorageService;
 import com.xtu.plugin.flutter.utils.*;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,7 +49,7 @@ public class DartRFileGenerator {
                     }
                 }
                 //刷新lib目录
-                VirtualFile virtualFile = LocalFileSystem.getInstance().findFileByIoFile(libDirectory);
+                VirtualFile virtualFile = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(libDirectory);
                 if (virtualFile != null) {
                     virtualFile.refresh(false, true, () -> {
                         StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);
@@ -72,7 +75,7 @@ public class DartRFileGenerator {
                 .append("class ").append(className).append(" {\n");
         if (!CollectionUtils.isEmpty(assetFileNames)) {
             for (String assetFileName : assetFileNames) {
-                if (assetFileName.endsWith("/")) continue;
+                if (needIgnoreAsset(project, assetFileName)) continue;
                 int startIndex = assetFileName.lastIndexOf("/") + 1;
                 int endIndex = assetFileName.lastIndexOf(".");
                 if (endIndex < 0) {
@@ -85,5 +88,20 @@ public class DartRFileGenerator {
         fileStringBuilder.append("}\n");
         FileUtils.write2File(resFile, fileStringBuilder.toString());
         DartUtils.format(project, resFile.getAbsolutePath());
+    }
+
+    private boolean needIgnoreAsset(Project project, String assetFileName) {
+        if (assetFileName.endsWith("/")) return true;
+        String extension = getAssetExtension(assetFileName);
+        if (StringUtils.isEmpty(extension)) return false;
+        StorageService storageService = StorageService.getInstance(project);
+        List<String> ignoreResExtension = storageService.getState().ignoreResExtension;
+        return ignoreResExtension.contains(extension);
+    }
+
+    private String getAssetExtension(String assetFileName) {
+        int lastDotIndex = assetFileName.lastIndexOf(".");
+        if (lastDotIndex < 0) return null;
+        return assetFileName.substring(lastDotIndex);
     }
 }

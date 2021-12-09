@@ -1,8 +1,11 @@
 package com.xtu.plugin.flutter.action.j2d.generate;
 
+import com.xtu.plugin.flutter.utils.StringUtil;
+
 public class TypeEntity {
 
-    public String name;
+    public String key;
+    public String displayName;
     public String type;
     public TypeEntity subType;
 
@@ -10,9 +13,10 @@ public class TypeEntity {
     public boolean isObject;
     public boolean isList;
 
-    public static TypeEntity prime(String name, String type) {
+    public static TypeEntity prime(String key, String type) {
         TypeEntity typeEntity = new TypeEntity();
-        typeEntity.name = name;
+        typeEntity.key = key;
+        typeEntity.displayName = StringUtil.toCamelCase(key);
         typeEntity.type = type;
         typeEntity.isPrime = true;
         typeEntity.isObject = false;
@@ -20,10 +24,11 @@ public class TypeEntity {
         return typeEntity;
     }
 
-    public static TypeEntity list(String name, String type, TypeEntity subType) {
+    public static TypeEntity list(String key, TypeEntity subType) {
         TypeEntity typeEntity = new TypeEntity();
-        typeEntity.name = name;
-        typeEntity.type = type;
+        typeEntity.key = key;
+        typeEntity.displayName = StringUtil.toCamelCase(key);
+        typeEntity.type = "List";
         typeEntity.subType = subType;
         typeEntity.isPrime = false;
         typeEntity.isObject = false;
@@ -31,9 +36,10 @@ public class TypeEntity {
         return typeEntity;
     }
 
-    public static TypeEntity object(String name, String type) {
+    public static TypeEntity object(String key, String type) {
         TypeEntity typeEntity = new TypeEntity();
-        typeEntity.name = name;
+        typeEntity.key = key;
+        typeEntity.displayName = StringUtil.toCamelCase(key);
         typeEntity.type = type;
         typeEntity.isPrime = false;
         typeEntity.isObject = true;

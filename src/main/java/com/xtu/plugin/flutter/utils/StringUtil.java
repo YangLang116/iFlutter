@@ -7,17 +7,38 @@ public class StringUtil {
         return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
     }
 
-    public static String splashClassName(String className) {
-        if (className == null) return null;
+    public static String splashName(String name) {
+        if (name == null) return null;
         StringBuilder resultSb = new StringBuilder();
-        for (int i = 0, j = className.length(); i < j; i++) {
-            char c = className.charAt(i);
+        for (int i = 0, j = name.length(); i < j; i++) {
+            char c = name.charAt(i);
             if (Character.isUpperCase(c) && i != 0) {
                 resultSb.append("_");
             }
             resultSb.append(Character.toLowerCase(c));
         }
         return resultSb.toString();
+    }
+
+    public static String toCamelCase(String name) {
+        if (name == null) return null;
+        int len = name.length();
+        StringBuilder sb = new StringBuilder();
+        boolean needUpCase = false;
+        for (int i = 0; i < len; i++) {
+            char c = name.charAt(i);
+            if (c == '_') {
+                needUpCase = true;
+                continue;
+            }
+            if (needUpCase) {
+                sb.append(Character.toUpperCase(c));
+                needUpCase = false;
+            } else {
+                sb.append(Character.toLowerCase(c));
+            }
+        }
+        return sb.toString();
     }
 }
 

@@ -42,7 +42,7 @@ public class AssetFileHandler {
         String projectPath = PluginUtils.getProjectPath(project);
         if (StringUtils.isEmpty(projectPath)) return null;
         VirtualFile virtualFile = psiFile.getVirtualFile();
-        if (virtualFile == null) return null;
+        if (virtualFile == null || virtualFile.isDirectory()) return null;
         String filePath = virtualFile.getPath();
         List<String> supportAssetFoldName = PluginUtils.supportAssetFoldName(project);
         for (String directoryName : supportAssetFoldName) {

@@ -13,6 +13,7 @@ import com.intellij.openapi.wm.WindowManager;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.util.ui.JBUI;
 import com.xtu.plugin.flutter.action.j2d.generate.J2DGenerator;
+import com.xtu.plugin.flutter.service.StorageService;
 import com.xtu.plugin.flutter.utils.*;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Nullable;
@@ -40,7 +41,8 @@ public class J2DDialog extends DialogWrapper {
     }
 
     @Override
-    protected @Nullable String getDimensionServiceKey() {
+    protected @Nullable
+    String getDimensionServiceKey() {
         return getClass().getSimpleName();
     }
 
@@ -51,7 +53,8 @@ public class J2DDialog extends DialogWrapper {
     }
 
     @Override
-    protected @Nullable JComponent createCenterPanel() {
+    protected @Nullable
+    JComponent createCenterPanel() {
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBorder(JBUI.Borders.empty(5));
         //编辑类名
@@ -101,7 +104,10 @@ public class J2DDialog extends DialogWrapper {
         okButton.addActionListener(e -> {
             String className = classNameFiled.getText();
             String jsonData = jsonArea.getText();
-            generateDart(className, jsonData);
+            boolean enableFlutter2 = StorageService.getInstance(project)
+                    .getState()
+                    .flutter2Enable;
+            generateDart(enableFlutter2, className, jsonData);
             close(OK_EXIT_CODE);
         });
         bottomContainer.add(okButton);
@@ -109,7 +115,7 @@ public class J2DDialog extends DialogWrapper {
         return mainPanel;
     }
 
-    private void generateDart(String className, String jsonData) {
+    private void generateDart(boolean enableFlutter2, String className, String jsonData) {
         if (StringUtils.isEmpty(className) || StringUtils.isEmpty(jsonData)) {
             ToastUtil.make(project, MessageType.WARNING, "ClassName or Json Data is Empty");
             return;
@@ -118,7 +124,7 @@ public class J2DDialog extends DialogWrapper {
             ToastUtil.make(project, MessageType.ERROR, "Can not Support jsonArray to Dart");
             return;
         }
-        String fileName = StringUtil.splashClassName(className) + ".dart";
+        String fileName = StringUtil.splashName(className) + ".dart";
         VirtualFile childFile = selectDirectory.findChild(fileName);
         if (childFile != null) {
             ToastUtil.make(project, MessageType.ERROR, "Dart Bean is Exist");
@@ -126,7 +132,7 @@ public class J2DDialog extends DialogWrapper {
         }
         try {
             JSONObject jsonObject = new JSONObject(jsonData);
-            J2DGenerator generator = new J2DGenerator();
+            J2DGenerator generator = new J2DGenerator(enableFlutter2);
             final String result = generator.generate(className, jsonObject);
             ApplicationManager.getApplication().runWriteAction(getWriteTask(project, selectDirectory, fileName, result));
         } catch (Exception e) {

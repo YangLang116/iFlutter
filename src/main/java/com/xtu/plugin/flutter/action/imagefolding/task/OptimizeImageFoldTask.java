@@ -92,6 +92,7 @@ public class OptimizeImageFoldTask implements Runnable {
             }
             assetList.clear();
             assetList.addAll(newAssetList);
+            Collections.sort(assetList);
             YamlUtils.writeToYaml(project, yaml, data, assetList);
         });
     }

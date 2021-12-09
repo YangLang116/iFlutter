@@ -3,6 +3,7 @@ package com.xtu.plugin.flutter.service;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class StorageEntity {
 
@@ -10,6 +11,10 @@ public class StorageEntity {
     public List<String> resDir = Arrays.asList("assets", "images");
     //图片优化检测目录，用于根据图片名进行目录分类
     public List<String> imageDir = Collections.singletonList("images");
+    //根据资源文件后缀，屏蔽R中某些字段的生成
+    public List<String> ignoreResExtension = Collections.emptyList();
+    //是否打开flutter2.0
+    public boolean flutter2Enable = true;
 
     public StorageEntity() {
     }
@@ -19,7 +24,10 @@ public class StorageEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         StorageEntity that = (StorageEntity) o;
-        return resDir.equals(that.resDir) && imageDir.equals(that.imageDir);
+        return flutter2Enable == that.flutter2Enable
+                && Objects.equals(resDir, that.resDir)
+                && Objects.equals(imageDir, that.imageDir)
+                && Objects.equals(ignoreResExtension, that.ignoreResExtension);
     }
 
     @Override
@@ -27,6 +35,8 @@ public class StorageEntity {
         return "StorageEntity{" +
                 "resDir=" + resDir +
                 ", imageDir=" + imageDir +
+                ", ignoreResExtension=" + ignoreResExtension +
+                ", flutter2Enable=" + flutter2Enable +
                 '}';
     }
 }

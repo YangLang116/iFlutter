@@ -34,17 +34,18 @@
                popup="true">
             <add-to-group group-id="ProjectViewPopupMenu" anchor="after"
                           relative-to-action="ProjectViewPopupMenuRefactoringGroup"/>
+            <action id="com.xtu.plugin.flutter.GenerateResAction"
+                    text="generateR"
+                    description="更新Res资源文件"
+                    class="com.xtu.plugin.flutter.action.generate.res.GenerateResAction"/>
             <action id="com.xtu.plugin.flutter.ImageFoldingAction"
                     text="asset category"
                     description="按照文件名，将Flutter资源进行归类"
-                    class="com.xtu.plugin.flutter.action.imagefolding.ImageFoldingAction">
-
-            </action>
+                    class="com.xtu.plugin.flutter.action.imagefolding.ImageFoldingAction"/>
             <action id="com.xtu.plugin.flutter.J2DAction"
                     text="j2d"
                     description="json转Dart Bean"
-                    class="com.xtu.plugin.flutter.action.j2d.J2DAction">
-            </action>
+                    class="com.xtu.plugin.flutter.action.j2d.J2DAction"/>
         </group>
     </actions>
 </idea-plugin>

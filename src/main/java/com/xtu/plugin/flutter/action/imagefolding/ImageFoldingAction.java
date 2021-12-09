@@ -7,8 +7,8 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.xtu.plugin.flutter.action.imagefolding.task.OptimizeImageFoldTask;
-import com.xtu.plugin.flutter.utils.FileUtils;
 import com.xtu.plugin.flutter.utils.PluginUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -24,11 +24,12 @@ public class ImageFoldingAction extends AnAction {
             return;
         }
         VirtualFile virtualFile = e.getData(PlatformDataKeys.VIRTUAL_FILE);
-        if (virtualFile == null) {
+        if (virtualFile == null || !virtualFile.isDirectory()) {
             e.getPresentation().setEnabled(false);
             return;
         }
-        if (FileUtils.isChildFile(virtualFile.getPath(), "lib")) {
+        //不是一级目录
+        if (!StringUtils.equals(virtualFile.getParent().getPath(), PluginUtils.getProjectPath(project))) {
             e.getPresentation().setEnabled(false);
             return;
         }

@@ -1,9 +1,6 @@
 package com.xtu.plugin.flutter.service;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class StorageEntity {
 
@@ -15,6 +12,8 @@ public class StorageEntity {
     public List<String> ignoreResExtension = Collections.emptyList();
     //是否打开flutter2.0
     public boolean flutter2Enable = true;
+    //HTTP Mock 配置
+    public List<HttpEntity> httpEntityList = Collections.emptyList();
 
     public StorageEntity() {
     }
@@ -27,7 +26,8 @@ public class StorageEntity {
         return flutter2Enable == that.flutter2Enable
                 && Objects.equals(resDir, that.resDir)
                 && Objects.equals(imageDir, that.imageDir)
-                && Objects.equals(ignoreResExtension, that.ignoreResExtension);
+                && Objects.equals(ignoreResExtension, that.ignoreResExtension)
+                && Objects.equals(httpEntityList, that.httpEntityList);
     }
 
     @Override
@@ -37,6 +37,7 @@ public class StorageEntity {
                 ", imageDir=" + imageDir +
                 ", ignoreResExtension=" + ignoreResExtension +
                 ", flutter2Enable=" + flutter2Enable +
+                ", httpEntityList=" + httpEntityList +
                 '}';
     }
 }

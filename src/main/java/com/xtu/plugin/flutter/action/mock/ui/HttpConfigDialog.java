@@ -68,7 +68,7 @@ public class HttpConfigDialog extends DialogWrapper {
                 || StringUtils.isEmpty(responseValue)) {
             return;
         }
-        outOutEntity = new HttpEntity(pathValue, methodValue, responseValue,descriptionValue);
+        outOutEntity = new HttpEntity(pathValue, methodValue, descriptionValue, responseValue);
         close(DialogWrapper.OK_EXIT_CODE);
     }
 

@@ -3,6 +3,10 @@
 ## [Coming]
 ### Changed
 
+## [1.0.6] - 2021-12-11
+### Changed
+- 支持Http本地Mock
+
 ## [1.0.5] - 2021-12-09
 ### Changed
 - 支持Flutter2.0

@@ -1,11 +1,15 @@
 package com.xtu.plugin.flutter.action.mock.ui;
 
+import com.intellij.openapi.ide.CopyPasteManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.openapi.ui.MessageType;
 import com.intellij.ui.components.JBList;
 import com.intellij.util.ui.JBUI;
+import com.xtu.plugin.flutter.action.mock.manager.HttpMockManager;
 import com.xtu.plugin.flutter.service.HttpEntity;
 import com.xtu.plugin.flutter.service.StorageService;
+import com.xtu.plugin.flutter.utils.ToastUtil;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
@@ -15,6 +19,7 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -48,6 +53,8 @@ public class HttpListDialog extends DialogWrapper implements ListSelectionListen
 
     @Override
     protected @Nullable JComponent createCenterPanel() {
+        String baseUrl = HttpMockManager.getInstance(project).getBaseUrl();
+        hostView.setText(StringUtils.isEmpty(baseUrl) ? "Http Mock fail" : baseUrl);
         listView = new JBList<>();
         listModel = new DefaultListModel<>();
         listModel.addAll(getHttpConfigList());
@@ -92,20 +99,44 @@ public class HttpListDialog extends DialogWrapper implements ListSelectionListen
         ignoreDataChanged = false;
     }
 
+    private HttpEntity getHttpEntityByPoint(Point point) {
+        int index = listView.locationToIndex(point);
+        List<HttpEntity> httpConfigList = getHttpConfigList();
+        if (index < 0 || index >= httpConfigList.size()) return null;
+        return httpConfigList.get(index);
+    }
+
     private void showContextMenu(Component component, Point point) {
         JPopupMenu popupMenu = new JPopupMenu();
-        JMenuItem menuItem = new JMenuItem("删除");
-        menuItem.addActionListener(e -> {
+        //添加Path复制按钮
+        JMenuItem copyPathMenu = new JMenuItem("复制Path");
+        copyPathMenu.addActionListener(e -> {
+            HttpEntity httpEntity = getHttpEntityByPoint(point);
+            if (httpEntity == null) return;
+            HttpMockManager mockManager = HttpMockManager.getInstance(project);
+            String url = mockManager.getUrl(httpEntity.path);
+            if (StringUtils.isEmpty(url)) {
+                ToastUtil.make(project, MessageType.ERROR, "Mock Server Fail");
+            } else {
+                ToastUtil.make(project, MessageType.INFO, "Path Copy Success");
+                CopyPasteManager.getInstance().setContents(new StringSelection(url));
+                close(DialogWrapper.OK_EXIT_CODE);
+            }
+        });
+        popupMenu.add(copyPathMenu);
+        //添加删除按钮
+        JMenuItem deleteItem = new JMenuItem("删除");
+        deleteItem.addActionListener(e -> {
             ignoreDataChanged = true;
-            int index = listView.locationToIndex(point);
             List<HttpEntity> httpConfigList = getHttpConfigList();
-            if (index < 0 || index >= httpConfigList.size()) return;
-            HttpEntity httpEntity = httpConfigList.get(index);
-            httpConfigList.remove(httpEntity);
-            listModel.removeElement(httpEntity);
+            HttpEntity httpEntity = getHttpEntityByPoint(point);
+            if (httpEntity != null) {
+                httpConfigList.remove(httpEntity);
+                listModel.removeElement(httpEntity);
+            }
             ignoreDataChanged = false;
         });
-        popupMenu.add(menuItem);
+        popupMenu.add(deleteItem);
         popupMenu.show(component, (int) point.getX(), (int) point.getY());
     }
 

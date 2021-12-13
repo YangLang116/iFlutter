@@ -13,7 +13,7 @@ public class StorageEntity {
     //是否打开flutter2.0
     public boolean flutter2Enable = true;
     //HTTP Mock 配置
-    public List<HttpEntity> httpEntityList = Collections.emptyList();
+    public List<HttpEntity> httpEntityList = new ArrayList<>();
 
     public StorageEntity() {
     }

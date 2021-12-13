@@ -12,7 +12,7 @@
     <depends>com.intellij.modules.lang</depends>
     -->
     <depends>com.intellij.modules.platform</depends>
-    <!--    <depends>Dart</depends>-->
+    <depends>Dart</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <defaultLiveTemplates file="/template/Flutter.xml"/>

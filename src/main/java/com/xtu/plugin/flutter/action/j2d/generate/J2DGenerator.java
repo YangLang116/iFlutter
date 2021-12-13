@@ -1,6 +1,7 @@
 package com.xtu.plugin.flutter.action.j2d.generate;
 
 import com.xtu.plugin.flutter.utils.StringUtil;
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -12,18 +13,19 @@ import java.util.Set;
 public class J2DGenerator {
 
     private final boolean enableFlutter2;
-    private final List<String> classList = new ArrayList<>();
+    private final List<ClassEntity> classList = new ArrayList<>();
 
     public J2DGenerator(boolean enableFlutter2) {
         this.enableFlutter2 = enableFlutter2;
     }
 
     public String generate(String className, JSONObject json) {
-        classList.add(buildClass(className, json));
+        String classContent = buildClass(className, json);
+        classList.add(new ClassEntity(className, classContent));
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < classList.size(); i++) {
             if (i != 0) result.append("\n\n");
-            result.append(classList.get(i));
+            result.append(classList.get(i).content);
         }
         return result.toString();
     }
@@ -105,8 +107,9 @@ public class J2DGenerator {
         } else if (value instanceof Integer || value instanceof Double || value instanceof Float) {
             return TypeEntity.prime(key, "num");
         } else if (value instanceof JSONObject) {
-            String className = classNameFactory.create(key);
-            classList.add(buildClass(className, (JSONObject) value));
+            String className = getClassName(classNameFactory, key);
+            String classContent = buildClass(className, (JSONObject) value);
+            classList.add(new ClassEntity(className, classContent));
             return TypeEntity.object(key, className);
         } else if (value instanceof JSONArray) {
             TypeEntity argumentTypeEntity = null;
@@ -119,10 +122,22 @@ public class J2DGenerator {
         return null;
     }
 
-    interface ClassNameFactory {
-        String create(String key);
+    private String getClassName(ClassNameFactory factory, String name) {
+        int index = 1;
+        String candidate = factory.create(name);
+        while (true) {
+            boolean hasSameName = false;
+            for (ClassEntity classEntity : classList) {
+                if (StringUtils.equals(classEntity.name, candidate)) {
+                    hasSameName = true;
+                    break;
+                }
+            }
+            if (!hasSameName) break;
+            candidate = factory.create(name + (index++));
+        }
+        return candidate;
     }
-
 
     public static void main(String[] args) {
         J2DGenerator generator = new J2DGenerator(true);

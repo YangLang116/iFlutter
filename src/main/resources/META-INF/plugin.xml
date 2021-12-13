@@ -42,15 +42,23 @@
                     text="Asset Category"
                     description="按照文件名，将Flutter资源进行归类"
                     class="com.xtu.plugin.flutter.action.imagefolding.ImageFoldingAction"/>
+            <separator/>
             <action id="com.xtu.plugin.flutter.J2DAction"
                     text="Java to Dart"
                     description="json转Dart Bean"
                     class="com.xtu.plugin.flutter.action.j2d.J2DAction"/>
+            <separator/>
             <action
                     id="com.xtu.plugin.flutter.HttpMockAction"
                     text="Http Mock"
                     description="HTTP Mock工具"
                     class="com.xtu.plugin.flutter.action.mock.HttpMockAction"/>
         </group>
+        <action id="com.xtu.plugin.flutter.DartGenerateFromJsonAndToJsonAction"
+                text="fromJson And toJson"
+                description="生成fromJson、toJson[iFlutter]"
+                class="com.xtu.plugin.flutter.action.generate.json.DartGenerateFromJsonAndToJsonAction">
+            <add-to-group anchor="after" relative-to-action="Generate.EqualsAndHashcode.Dart" group-id="GenerateGroup"/>
+        </action>
     </actions>
 </idea-plugin>

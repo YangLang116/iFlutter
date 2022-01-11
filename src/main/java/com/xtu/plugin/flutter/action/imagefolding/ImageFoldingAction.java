@@ -19,7 +19,7 @@ public class ImageFoldingAction extends AnAction {
     @Override
     public void update(@NotNull AnActionEvent e) {
         Project project = e.getProject();
-        if (!PluginUtils.isFlutterProject(project)) {
+        if (PluginUtils.isNotFlutterProject(project)) {
             e.getPresentation().setEnabled(false);
             return;
         }

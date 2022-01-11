@@ -6,8 +6,8 @@ import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.xtu.plugin.flutter.utils.FileUtils;
 import com.xtu.plugin.flutter.utils.LogUtils;
+import com.xtu.plugin.flutter.utils.PubspecUtils;
 import com.xtu.plugin.flutter.utils.ToastUtil;
-import com.xtu.plugin.flutter.utils.YamlUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -85,15 +85,12 @@ public class OptimizeImageFoldTask implements Runnable {
             }
         }
         //更新pubspec.yaml中资源引用
-        YamlUtils.loadFromYaml(project, (yaml, data, assetList) -> {
+        PubspecUtils.readAssetAtReadAction(project, assetList -> {
             List<String> newAssetList = new ArrayList<>();
             for (String asset : assetList) {
                 newAssetList.add(pathMap.getOrDefault(asset, asset));
             }
-            assetList.clear();
-            assetList.addAll(newAssetList);
-            Collections.sort(assetList);
-            YamlUtils.writeToYaml(project, yaml, data, assetList);
+            PubspecUtils.writeAssetAtWriteAction(project, newAssetList);
         });
     }
 

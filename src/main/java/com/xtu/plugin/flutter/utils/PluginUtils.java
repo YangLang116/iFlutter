@@ -11,7 +11,8 @@ import java.util.List;
 
 public class PluginUtils {
 
-    public static @Nullable String getProjectPath(Project project) {
+    @Nullable
+    public static String getProjectPath(Project project) {
         if (project == null) return null;
         String projectPath = project.getBasePath();
         if (StringUtils.isEmpty(projectPath)) return null;
@@ -21,11 +22,11 @@ public class PluginUtils {
         return projectPath;
     }
 
-    public static boolean isFlutterProject(Project project) {
+    public static boolean isNotFlutterProject(Project project) {
         String projectPath = getProjectPath(project);
-        if (StringUtils.isEmpty(projectPath)) return false;
-        File file = new File(projectPath, YamlUtils.getFileName());
-        return file.exists();
+        if (StringUtils.isEmpty(projectPath)) return true;
+        File file = new File(projectPath, PubspecUtils.getFileName());
+        return !file.exists();
     }
 
     public static List<String> supportAssetFoldName(@NotNull Project project) {

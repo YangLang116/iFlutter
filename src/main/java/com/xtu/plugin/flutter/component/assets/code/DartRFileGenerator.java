@@ -78,7 +78,7 @@ public class DartRFileGenerator {
                 if (needIgnoreAsset(project, assetFileName)) continue;
                 int startIndex = assetFileName.lastIndexOf("/") + 1;
                 int endIndex = assetFileName.lastIndexOf(".");
-                if (endIndex < 0) {
+                if (endIndex < startIndex) {
                     endIndex = assetFileName.length();
                 }
                 String variantName = assetFileName.substring(startIndex, endIndex).toUpperCase();

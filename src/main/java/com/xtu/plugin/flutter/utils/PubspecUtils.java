@@ -1,13 +1,14 @@
 package com.xtu.plugin.flutter.utils;
 
 import com.amihaiemil.eoyaml.*;
-import com.amihaiemil.eoyaml.extensions.MergedYamlMapping;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
+import com.intellij.openapi.vfs.LocalFileSystem;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.StatusBar;
 import com.intellij.openapi.wm.WindowManager;
 import org.apache.commons.lang.StringUtils;
@@ -125,11 +126,16 @@ public class PubspecUtils {
         WriteAction.run(() -> {
             try {
                 updateAssetList(project, assetList);
-                //update status bar text tip
-                StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);
-                if (statusBar != null) {
-                    statusBar.setInfo(String.format(Locale.ROOT, "update %s success", getFileName()));
-                }
+                File pubSpecFile = getPubspecFile(project);
+                assert pubSpecFile != null;
+                VirtualFile virtualFile = LocalFileSystem.getInstance().findFileByIoFile(pubSpecFile);
+                virtualFile.refresh(false, false, () -> {
+                    //update status bar text tip
+                    StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);
+                    if (statusBar != null) {
+                        statusBar.setInfo(String.format(Locale.ROOT, "update %s success", getFileName()));
+                    }
+                });
             } catch (Exception e) {
                 LogUtils.error("PubspecUtils writeAssetAtDispatchThreadInWriteAction -> " + e.getMessage());
                 ToastUtil.make(project, MessageType.ERROR, e.getMessage());

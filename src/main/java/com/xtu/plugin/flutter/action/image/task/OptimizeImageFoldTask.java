@@ -1,25 +1,25 @@
-package com.xtu.plugin.flutter.action.imagefolding.task;
+package com.xtu.plugin.flutter.action.image.task;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.xtu.plugin.flutter.utils.FileUtils;
-import com.xtu.plugin.flutter.utils.LogUtils;
-import com.xtu.plugin.flutter.utils.PubspecUtils;
-import com.xtu.plugin.flutter.utils.ToastUtil;
+import com.xtu.plugin.flutter.utils.*;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class OptimizeImageFoldTask implements Runnable {
 
     private final Project project;
     private final VirtualFile virtualFile;
 
-    public OptimizeImageFoldTask(@NotNull Project project, VirtualFile virtualFile) {
+    public OptimizeImageFoldTask(@NotNull Project project, @NotNull VirtualFile virtualFile) {
         this.project = project;
         this.virtualFile = virtualFile;
     }
@@ -35,12 +35,13 @@ public class OptimizeImageFoldTask implements Runnable {
         }
     }
 
-    private void optimizeImage(@NotNull Project project, File imageDirectory) throws Exception {
+    private void optimizeImage(@NotNull Project project, @NotNull File imageDirectory) throws Exception {
         String imageDirectoryName = imageDirectory.getName();
         List<File> imageFileList = new ArrayList<>();
         FileUtils.scanDirectory(imageDirectory, imageFileList::add);
         if (imageFileList.size() <= 0) return;
         //整理图片位置
+        String projectPath = PluginUtils.getProjectPath(project);
         Map<String, String> pathMap = new HashMap<>();
         for (File imageFile : imageFileList) {
             String fileName = imageFile.getName();
@@ -48,7 +49,7 @@ public class OptimizeImageFoldTask implements Runnable {
             String destFoldName = fileName.split("_")[0];
             String parentFoldName = imageFile.getParentFile().getName();
             if (parentFoldName.equals(destFoldName)) continue;
-            String relativePath = FileUtils.getRelativePath(project.getBasePath(), imageFile.getAbsolutePath());
+            String relativePath = FileUtils.getRelativePath(projectPath, imageFile.getAbsolutePath());
             File newImageDirectory = new File(imageDirectory, destFoldName);
             org.apache.commons.io.FileUtils.moveFileToDirectory(imageFile, newImageDirectory, true);
             pathMap.put(relativePath, imageDirectoryName + "/" + destFoldName + "/" + imageFile.getName());
@@ -58,7 +59,7 @@ public class OptimizeImageFoldTask implements Runnable {
         refreshDirectory(imageDirectory);
         //更新dart文件中所有资源引用
         List<File> dartFileList = new ArrayList<>();
-        File libDirectory = new File(project.getBasePath(), "lib");
+        File libDirectory = new File(projectPath, "lib");
         FileUtils.scanDirectory(libDirectory, dartFileList::add);
         if (dartFileList.size() > 0) {
             boolean hasDartFileModify = false;

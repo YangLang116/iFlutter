@@ -42,7 +42,7 @@
             <action id="com.xtu.plugin.flutter.ImageFoldingAction"
                     text="Asset Category"
                     description="按照文件名，将Flutter资源进行归类"
-                    class="com.xtu.plugin.flutter.action.imagefolding.ImageFoldingAction"/>
+                    class="com.xtu.plugin.flutter.action.image.ImageFoldingAction"/>
             <action id="com.xtu.plugin.flutter.J2DAction"
                     text="Json to Dart"
                     description="json转Dart Bean"

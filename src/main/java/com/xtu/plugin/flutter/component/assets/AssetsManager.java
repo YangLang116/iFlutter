@@ -15,30 +15,25 @@ import org.jetbrains.annotations.NotNull;
  */
 public class AssetsManager {
 
-    private static final AssetsManager sINSTANCE = new AssetsManager();
-
+    private final Project project;
     private final AssetFileHandler assetFileHandler;
     private final PubSpecFileHandler specFileHandler;
 
-    private AssetsManager() {
+    public AssetsManager(@NotNull Project project) {
+        this.project = project;
         specFileHandler = new PubSpecFileHandler();
         assetFileHandler = new AssetFileHandler(specFileHandler);
     }
 
-    public static AssetsManager getInstance() {
-        return sINSTANCE;
-    }
-
-    public void attach(Project project) {
+    public void attach() {
         LogUtils.info("AssetsManager attach");
         PsiManager.getInstance(project).addPsiTreeChangeListener(psiTreeChangeListener);
     }
 
-    public void detach(Project project) {
+    public void detach() {
         LogUtils.info("AssetsManager detach");
         PsiManager.getInstance(project).removePsiTreeChangeListener(psiTreeChangeListener);
     }
-
 
     private final PsiTreeChangeListener psiTreeChangeListener = new PsiTreeChangeListener() {
         @Override

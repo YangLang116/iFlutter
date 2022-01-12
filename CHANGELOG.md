@@ -3,6 +3,12 @@
 ## [Coming]
 ### Changed
 
+## [1.0.7] - 2022-01-12
+### Changed
+- Http Mock 项目隔离
+- GenerateR 优化
+- yaml文件支持注释
+
 ## [1.0.6] - 2021-12-11
 ### Changed
 - 支持Http本地Mock

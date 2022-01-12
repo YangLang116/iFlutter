@@ -146,11 +146,6 @@ public class HttpListDialog extends DialogWrapper implements ListSelectionListen
     }
 
     @Override
-    public @Nullable JComponent getPreferredFocusedComponent() {
-        return listView;
-    }
-
-    @Override
     protected Action @NotNull [] createActions() {
         return new Action[]{createConfigAction, confirmAction};
     }

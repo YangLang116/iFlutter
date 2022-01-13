@@ -1,6 +1,8 @@
 package com.xtu.plugin.flutter.utils;
 
 import com.amihaiemil.eoyaml.*;
+import com.intellij.codeInsight.actions.AbstractLayoutCodeProcessor;
+import com.intellij.codeInsight.actions.ReformatCodeProcessor;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ReadAction;
@@ -11,6 +13,9 @@ import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.StatusBar;
 import com.intellij.openapi.wm.WindowManager;
+import com.intellij.psi.PsiDocumentManager;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiManager;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -128,13 +133,24 @@ public class PubspecUtils {
                 updateAssetList(project, assetList);
                 File pubSpecFile = getPubspecFile(project);
                 assert pubSpecFile != null;
+                //local file -> vfs
                 VirtualFile virtualFile = LocalFileSystem.getInstance().findFileByIoFile(pubSpecFile);
+                if (virtualFile == null) return;
                 virtualFile.refresh(false, false, () -> {
-                    //update status bar text tip
-                    StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);
-                    if (statusBar != null) {
-                        statusBar.setInfo(String.format(Locale.ROOT, "update %s success", getFileName()));
-                    }
+                    //vfs -> psi
+                    PsiDocumentManager.getInstance(project).commitAllDocuments();
+                    PsiFile psiFile = PsiManager.getInstance(project).findFile(virtualFile);
+                    if (psiFile == null) return;
+                    PsiFile[] psiFiles = new PsiFile[]{psiFile};
+                    //format pubspec.yaml file
+                    AbstractLayoutCodeProcessor formatProcessor = new ReformatCodeProcessor(project, psiFiles, () -> {
+                        //update status bar text tip
+                        StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);
+                        if (statusBar != null) {
+                            statusBar.setInfo(String.format(Locale.ROOT, "update %s success", getFileName()));
+                        }
+                    }, false);
+                    formatProcessor.run();
                 });
             } catch (Exception e) {
                 LogUtils.error("PubspecUtils writeAssetAtDispatchThreadInWriteAction -> " + e.getMessage());

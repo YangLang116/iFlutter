@@ -249,14 +249,8 @@ public final class ExtensionYamlPrinter implements YamlPrinter {
         } else {
             final Comment comment = scalar.comment();
             if (comment instanceof ScalarComment) {
-                this.writer.append(
-                        this.indent(
-                                new RtYamlPrinter.Escaped(scalar).value(),
-                                0
-                        )
-                );
+                this.writer.append(this.indent(scalar.value(), 0));
                 final ScalarComment scalarComment = (ScalarComment) comment;
-
                 if (!scalarComment.inline().value().isEmpty()) {
                     this.writer.append(" # ").append(
                             scalarComment.inline().value()

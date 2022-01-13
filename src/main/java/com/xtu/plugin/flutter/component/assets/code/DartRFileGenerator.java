@@ -76,18 +76,25 @@ public class DartRFileGenerator {
         if (!CollectionUtils.isEmpty(assetFileNames)) {
             for (String assetFileName : assetFileNames) {
                 if (needIgnoreAsset(project, assetFileName)) continue;
-                int startIndex = assetFileName.lastIndexOf("/") + 1;
-                int endIndex = assetFileName.lastIndexOf(".");
-                if (endIndex < startIndex) {
-                    endIndex = assetFileName.length();
-                }
-                String variantName = assetFileName.substring(startIndex, endIndex).toUpperCase();
+                String variantName = getResName(assetFileName);
                 fileStringBuilder.append("  static const String ").append(variantName).append(" = '").append(assetFileName).append("';\n");
             }
         }
         fileStringBuilder.append("}\n");
         FileUtils.write2File(resFile, fileStringBuilder.toString());
         DartUtils.format(project, resFile.getAbsolutePath());
+    }
+
+    private String getResName(String assetFileName) {
+        int startIndex = assetFileName.lastIndexOf("/") + 1;
+        int endIndex = assetFileName.lastIndexOf(".");
+        if (endIndex < startIndex) {
+            endIndex = assetFileName.length();
+        }
+        String variantName = assetFileName.substring(startIndex, endIndex).toUpperCase();
+        //replace specific char
+        variantName = variantName.replace("-", "_");
+        return variantName;
     }
 
     private boolean needIgnoreAsset(Project project, String assetFileName) {

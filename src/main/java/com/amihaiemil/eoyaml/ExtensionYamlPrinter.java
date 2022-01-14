@@ -29,6 +29,7 @@ package com.amihaiemil.eoyaml;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -196,7 +197,30 @@ public final class ExtensionYamlPrinter implements YamlPrinter {
             if (node instanceof Scalar) {
                 this.printNode(node, false, 0);
             } else {
-                this.printNode(node, true, indentation + 2);
+                //修复输出格式不正确问题
+                if (node instanceof YamlMapping && !node.isEmpty()) {
+                    YamlMapping originMapping = (YamlMapping) node;
+                    List<YamlNode> originKeyList = new ArrayList<>(originMapping.keys());
+                    int keyLength = originKeyList.size();
+                    //first key-value
+                    YamlNode firstKeyNode = originKeyList.get(0);
+                    YamlMapping firstYamlMapping = Yaml.createYamlMappingBuilder()
+                            .add(firstKeyNode, originMapping.value(firstKeyNode))
+                            .build();
+                    this.printNode(firstYamlMapping, false, 0);
+                    //more key-value
+                    if (keyLength > 1) {
+                        YamlMappingBuilder subYamlMappingBuilder = Yaml.createYamlMappingBuilder();
+                        for (int i = 1; i < keyLength; i++) {
+                            YamlNode keyNode = originKeyList.get(i);
+                            YamlNode valueNode = originMapping.value(keyNode);
+                            subYamlMappingBuilder = subYamlMappingBuilder.add(keyNode, valueNode);
+                        }
+                        this.printNode(subYamlMappingBuilder.build(), true, indentation + 2);
+                    }
+                } else {
+                    this.printNode(node, true, indentation + 2);
+                }
             }
             if (valuesIt.hasNext()) {
                 this.writer.append(newLine);

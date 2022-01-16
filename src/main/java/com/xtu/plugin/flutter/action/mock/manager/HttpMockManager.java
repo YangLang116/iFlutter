@@ -36,7 +36,7 @@ public final class HttpMockManager {
 
     public void activeServer() {
         try {
-            String localIp = HttpUtils.getHostIp();
+            String localIp = HttpUtils.getLocalIP();
             this.webServer.start(InetAddress.getByName(localIp), 0);
         } catch (Exception e) {
             LogUtils.error("HttpMockManager activeServerIfNeed: " + e.getMessage());

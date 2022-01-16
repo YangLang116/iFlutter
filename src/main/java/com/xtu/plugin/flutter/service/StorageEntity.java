@@ -12,6 +12,8 @@ public class StorageEntity {
     public List<String> ignoreResExtension = Collections.emptyList();
     //是否打开flutter2.0
     public boolean flutter2Enable = true;
+    //是否打开资源变更检查
+    public boolean resCheckEnable = true;
     //HTTP Mock 配置
     public List<HttpEntity> httpEntityList = new ArrayList<>();
 
@@ -24,6 +26,7 @@ public class StorageEntity {
         if (o == null || getClass() != o.getClass()) return false;
         StorageEntity that = (StorageEntity) o;
         return flutter2Enable == that.flutter2Enable
+                && resCheckEnable == that.resCheckEnable
                 && Objects.equals(resDir, that.resDir)
                 && Objects.equals(imageDir, that.imageDir)
                 && Objects.equals(ignoreResExtension, that.ignoreResExtension)
@@ -37,6 +40,7 @@ public class StorageEntity {
                 ", imageDir=" + imageDir +
                 ", ignoreResExtension=" + ignoreResExtension +
                 ", flutter2Enable=" + flutter2Enable +
+                ", resCheckEnable=" + resCheckEnable +
                 ", httpEntityList=" + httpEntityList +
                 '}';
     }

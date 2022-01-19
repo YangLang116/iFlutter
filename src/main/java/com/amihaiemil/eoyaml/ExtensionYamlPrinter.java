@@ -273,7 +273,11 @@ public final class ExtensionYamlPrinter implements YamlPrinter {
         } else {
             final Comment comment = scalar.comment();
             if (comment instanceof ScalarComment) {
-                this.writer.append(this.indent(scalar.value(), 0));
+                String value = scalar.value();
+                if (value.contains(">") || value.contains("<")) {
+                    value = "\"" + value + "\""; // 解决Flutter SDK 节点解析问题
+                }
+                this.writer.append(this.indent(value, 0));
                 final ScalarComment scalarComment = (ScalarComment) comment;
                 if (!scalarComment.inline().value().isEmpty()) {
                     this.writer.append(" # ").append(

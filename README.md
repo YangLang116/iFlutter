@@ -2,7 +2,7 @@
 iFlutter是一款辅助Flutter开发的 IDEA 插件
 <!-- Plugin description end -->
 
-## IDEA插件下载地址
+## [IDEA插件下载地址](https://github.com/YangLang116/iFlutter/tree/main/plugin-version)
 > 下载最新版本的zip文件，千万不要解压，直接拖拽到 AndroidStudio 中即可安装。
 
 
@@ -44,10 +44,14 @@ Image.asset('images/bg_login');
 - **整个工作流成本高** : 资源的配置和使用都是以字符串的形式存在，任何一个环节配置错误，功能都无法正常使用
 
 ### iFlutter解决方案:
-当在 `指定的目录` 中添加、删除、重命名文件时，`iFlutter` 插件都会感知，并自动修改 `pubspec.yaml` 文件，同时生成配套的 `_res.dart文件(类似Android中的R文件)`，通过 `R.xx` 的方式就能使用资源，效果如下:
+当在 `指定的目录` 中添加、删除、重命名文件时，`iFlutter` 插件都会感知，并自动修改 `pubspec.yaml` 文件，同时生成配套的 `_res.dart文件(类似Android中的R文件)`，通过 `R.xx` 的方式就能使用资源，效果如下:  
+
+![资源联动动效](https://raw.githubusercontent.com/YangLang116/iFlutter/main/configs/dynamic_res.gif)
 
 ### 补充说明
-- 上一节说的 `指定的目录`，并不是 `iFlutter` 所固定要求的，开发者可自行配置，默认 `images`、 `assets`，如下图：
+- 上一节说的 `指定的目录`，并不是 `iFlutter` 所固定要求的，开发者可自行配置，默认 `images`、 `assets`，如下图：  
+
+![资源联动配置](https://raw.githubusercontent.com/YangLang116/iFlutter/main/configs/config_gen_r.png)
 
 
 - 生成的 `_res.dart` 文件的规则又是什么呢？ 如果 `指定的目录` 是 `images`，那么就会生成 `lib/res/images_res.dart` 文件，对应的类名 `ImagesRes`，按此类推，如果目录名是 `Assets`，生成的文件和类名分别是 `lib/res/assets_res.dart` 和 `AssetsRes`。
@@ -56,11 +60,13 @@ Image.asset('images/bg_login');
 
 - 从 `节省包体积`、`照顾强迫症研发` 出发，可配置某些资源不会在 `_res.dart` 文件中生成字段，比如 `.ttf`、`.json` 文件，默认都生成，开发者可自行配置：
 
+![资源联动配置](https://raw.githubusercontent.com/YangLang116/iFlutter/main/configs/config_ignore_field.png)
 
 - **需要注意**，项目中添加资源时，文件名中不要存在 `-`，比如 `bg-login.png`，否则 `pubsepec.yaml` 文件生成会受到影响，可使用 `bg_login.png` 代替。
 
 - **重点！！！**，如果AndroidStudio安装了 `iFlutter` 插件，此功能默认打开，如果想禁用此功能，可配置关闭，配置如下:
 
+![资源联动配置](https://raw.githubusercontent.com/YangLang116/iFlutter/main/configs/config_enable_psi.png)
 ---
 
 ## `Json` 转 `Dart Entity`
@@ -71,8 +77,12 @@ Image.asset('images/bg_login');
 ### 说明
 在项目的 `lib` 目录及其 `子目录` 下，`iFlutter` 支持 `Json` 转 `Dart Entity` 功能，在其他目录下该功能不可用，使用效果如下：
 
+![J2D动效](https://raw.githubusercontent.com/YangLang116/iFlutter/main/configs/gen_entity.gif)
+
 ### 补充说明
 - 默认生成的 `Dart Entity` 是支持 `空安全` 的，如果项目还没适配到 `Flutter2.x` 版本，通过修改 `iFlutter` 配置即可，配置如下：
+
+![J2D配置](https://raw.githubusercontent.com/YangLang116/iFlutter/main/configs/config_flutter_2.png)
 
 - **着重说明**：填写类名时，采用驼峰命名法。
 
@@ -82,10 +92,10 @@ Image.asset('images/bg_login');
 ### 背景
 对于新的实体类，可以通过上一节 `Json 转 Dart Entity` 工具自动生成。针对项目中已有的类，那我们又该什么生成 `toJson` 和 `fromJson` 方法呢？先看使用效果：
 
+![Gen动效](https://raw.githubusercontent.com/YangLang116/iFlutter/main/configs/generate_to_from_json.gif)
 
 ### 补充说明
 - 官方插件 `Dart` 已经提供了生成 `Constructor`、`Named Constructor` 和 `toString`方法，而 `iFlutter` 的 `fromJson` 和 `toJson` 正好加强了官方对类的 `fix(补全)` 吧。
-
 
 ---
 
@@ -95,6 +105,7 @@ Image.asset('images/bg_login');
 在开发新的需求时，如果功能设计到网络请求时，我们都会事先跟服务端小伙伴约定好HTTP协议，然后再分头开发。如果 `客户端` 开发完功能后，服务端小伙伴还没时间联调，那么`客户端`的小伙伴，就需要自己考虑接口Mock了，而 `iFlutter` 的 `HTTP MOCK` 也由此而生。
 
 ### 功能使用
+![HTTP MOCK 动效](https://raw.githubusercontent.com/YangLang116/iFlutter/main/configs/http-mock.gif)
 
 ### 说明
 - `iFlutter` 开启的 `HTTP Mock`与项目绑定，换一句话说，对于同一个HTTP URL PATH `/v1/test` 请求响应数据可以不同，MOCK 数据以项目为维度进行隔离。
@@ -136,12 +147,16 @@ images
 
 **重点说明**: 并非所有目录都支持资源归类，默认 `images` 目录，开发者可自行调整，具体如下:
 
+![Res Category 配置](https://raw.githubusercontent.com/YangLang116/iFlutter/main/configs/config_opt_category.png)
 
 ## 使用效果
-
+![Res Category 动效](https://raw.githubusercontent.com/YangLang116/iFlutter/main/configs/cate_res.gif)
 
 ---
 ## 内置常用的 `Live Template`
+
+## 使用效果
+![Live Template 动效](https://raw.githubusercontent.com/YangLang116/iFlutter/main/configs/live_code.gif)
 
 ## 使用说明
 快捷键 | 代码片段
@@ -156,3 +171,4 @@ f_Stack |  `Stack(...)`
 f_Text | `Text(...)`
 
 ## 具体代码细节
+![Live Template 配置](https://raw.githubusercontent.com/YangLang116/iFlutter/main/configs/config_live_template.png)

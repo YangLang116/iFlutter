@@ -22,6 +22,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
     private JTextField imgDetectField;
     private JTextField ignoreResField;
     private JCheckBox flutter2EnableBox;
+    private JCheckBox resCheckEnableBox;
 
     public SettingsConfiguration(Project project) {
         this.project = project;
@@ -53,7 +54,8 @@ public final class SettingsConfiguration implements SearchableConfigurable {
         return !CollectionUtils.join(storageEntity.resDir, LIST_SPLIT_CHAR).equals(resDetectField.getText().trim())
                 || !CollectionUtils.join(storageEntity.imageDir, LIST_SPLIT_CHAR).equals(imgDetectField.getText().trim())
                 || !CollectionUtils.join(storageEntity.ignoreResExtension, LIST_SPLIT_CHAR).equals(ignoreResField.getText().trim())
-                || storageEntity.flutter2Enable != flutter2EnableBox.isSelected();
+                || storageEntity.flutter2Enable != flutter2EnableBox.isSelected()
+                || storageEntity.resCheckEnable != resCheckEnableBox.isSelected();
     }
 
     @Override
@@ -66,6 +68,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
         String ignoreResExtensionStr = CollectionUtils.join(storageEntity.ignoreResExtension, LIST_SPLIT_CHAR);
         ignoreResField.setText(ignoreResExtensionStr);
         flutter2EnableBox.setSelected(storageEntity.flutter2Enable);
+        resCheckEnableBox.setSelected(storageEntity.resCheckEnable);
     }
 
     @Override
@@ -81,5 +84,6 @@ public final class SettingsConfiguration implements SearchableConfigurable {
         storageEntity.ignoreResExtension = StringUtils.isEmpty(ignoreResExtensionStr) ?
                 Collections.emptyList() : CollectionUtils.split(ignoreResExtensionStr, LIST_SPLIT_CHAR);
         storageEntity.flutter2Enable = flutter2EnableBox.isSelected();
+        storageEntity.resCheckEnable = resCheckEnableBox.isSelected();
     }
 }

@@ -6,6 +6,8 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.xtu.plugin.flutter.action.j2d.ui.J2DDialog;
+import com.xtu.plugin.flutter.utils.PluginUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -15,22 +17,23 @@ public class J2DAction extends AnAction {
     @Override
     public void update(@NotNull AnActionEvent e) {
         Project project = e.getProject();
-        if (project == null) {
-            e.getPresentation().setEnabled(false);
+        String projectPath = PluginUtils.getProjectPath(project);
+        if (StringUtils.isEmpty(projectPath)) {
+            e.getPresentation().setVisible(false);
             return;
         }
         VirtualFile virtualFile = e.getData(PlatformDataKeys.VIRTUAL_FILE);
         if (virtualFile == null) {
-            e.getPresentation().setEnabled(false);
+            e.getPresentation().setVisible(false);
             return;
         }
         String path = virtualFile.getPath();
-        boolean isLibChildPath = path.startsWith(project.getBasePath() + File.separator + "lib");
+        boolean isLibChildPath = path.startsWith(projectPath + File.separator + "lib");
         if (!isLibChildPath) {
-            e.getPresentation().setEnabled(false);
+            e.getPresentation().setVisible(false);
             return;
         }
-        e.getPresentation().setEnabled(virtualFile.isDirectory());
+        e.getPresentation().setVisible(virtualFile.isDirectory());
     }
 
     @Override

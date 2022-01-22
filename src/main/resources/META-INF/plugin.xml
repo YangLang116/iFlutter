@@ -17,6 +17,7 @@
     <extensions defaultExtensionNs="com.intellij">
         <defaultLiveTemplates file="/template/Flutter.xml"/>
         <liveTemplateContext implementation="com.xtu.plugin.flutter.template.FlutterContext"/>
+        <projectService serviceImplementation="com.xtu.plugin.flutter.action.mock.manager.HttpMockManager"/>
         <projectService serviceImplementation="com.xtu.plugin.flutter.service.StorageService"/>
         <projectConfigurable parentId="tools" instance="com.xtu.plugin.flutter.configuration.SettingsConfiguration"/>
     </extensions>
@@ -35,19 +36,17 @@
             <add-to-group group-id="ProjectViewPopupMenu" anchor="after"
                           relative-to-action="ProjectViewPopupMenuRefactoringGroup"/>
             <action id="com.xtu.plugin.flutter.GenerateResAction"
-                    text="GenerateR"
+                    text="Generate Res"
                     description="更新Res资源文件"
                     class="com.xtu.plugin.flutter.action.generate.res.GenerateResAction"/>
             <action id="com.xtu.plugin.flutter.ImageFoldingAction"
                     text="Asset Category"
                     description="按照文件名，将Flutter资源进行归类"
-                    class="com.xtu.plugin.flutter.action.imagefolding.ImageFoldingAction"/>
-            <separator/>
+                    class="com.xtu.plugin.flutter.action.image.ImageFoldingAction"/>
             <action id="com.xtu.plugin.flutter.J2DAction"
-                    text="Java to Dart"
+                    text="Json to Dart"
                     description="json转Dart Bean"
                     class="com.xtu.plugin.flutter.action.j2d.J2DAction"/>
-            <separator/>
             <action
                     id="com.xtu.plugin.flutter.HttpMockAction"
                     text="Http Mock"
@@ -55,7 +54,7 @@
                     class="com.xtu.plugin.flutter.action.mock.HttpMockAction"/>
         </group>
         <action id="com.xtu.plugin.flutter.DartGenerateFromJsonAndToJsonAction"
-                text="fromJson And toJson"
+                text="FromJson and ToJson"
                 description="生成fromJson、toJson[iFlutter]"
                 class="com.xtu.plugin.flutter.action.generate.json.DartGenerateFromJsonAndToJsonAction">
             <add-to-group anchor="after" relative-to-action="Generate.EqualsAndHashcode.Dart" group-id="GenerateGroup"/>

@@ -9,6 +9,13 @@ import org.jetbrains.annotations.NotNull;
 public class HttpMockAction extends AnAction {
 
     @Override
+    public void update(@NotNull AnActionEvent e) {
+        super.update(e);
+        Project project = e.getProject();
+        e.getPresentation().setVisible(project != null);
+    }
+
+    @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
         Project project = e.getProject();
         if (project == null) return;

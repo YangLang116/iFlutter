@@ -1,6 +1,6 @@
 package com.xtu.plugin.flutter.action.j2d.ui;
 
-import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.Project;
@@ -62,6 +62,7 @@ public class J2DDialog extends DialogWrapper {
         classNameContainer.add(new JLabel("ClassName:"));
         classNameContainer.add(Box.createHorizontalStrut(10));
         classNameFiled = new JTextField();
+        classNameFiled.setToolTipText("采用驼峰命名");
         classNameContainer.add(classNameFiled);
         mainPanel.add(classNameContainer, BorderLayout.NORTH);
         //添加json数据
@@ -134,31 +135,27 @@ public class J2DDialog extends DialogWrapper {
             JSONObject jsonObject = new JSONObject(jsonData);
             J2DGenerator generator = new J2DGenerator(enableFlutter2);
             final String result = generator.generate(className, jsonObject);
-            ApplicationManager.getApplication().runWriteAction(getWriteTask(project, selectDirectory, fileName, result));
+            WriteAction.run(() -> writeTask(project, selectDirectory, fileName, result));
         } catch (Exception e) {
             ToastUtil.make(project, MessageType.ERROR, e.getMessage());
         }
     }
 
-    private Runnable getWriteTask(Project project, VirtualFile selectDirectory, String childFileName, String content) {
-        return () -> {
-            //采用IO的方式写文件，而不是VFS，防止VFS没有同步文件内容到本地，导致Dart Format失败
-            File resultFile = new File(selectDirectory.getPath(), childFileName);
-            FileUtils.write2File(resultFile, content);
-            DartUtils.format(project, resultFile.getAbsolutePath());
-            //不能使用findFileByIoFile，因为刚创建的文件需要先刷新，然后在查找
-            final VirtualFile virtualFile = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(resultFile);
-            //更新交互UI
-            SwingUtilities.invokeLater(() -> {
-                StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);
-                if (statusBar != null) {
-                    statusBar.setInfo("Dart Entity Create Completed");
-                }
-                if (virtualFile != null) {
-                    OpenFileDescriptor descriptor = new OpenFileDescriptor(project, virtualFile);
-                    FileEditorManager.getInstance(project).openTextEditor(descriptor, true);
-                }
-            });
-        };
+    private void writeTask(Project project, VirtualFile selectDirectory, String childFileName, String content) {
+        //采用IO的方式写文件，而不是VFS，防止VFS没有同步文件内容到本地，导致Dart Format失败
+        File resultFile = new File(selectDirectory.getPath(), childFileName);
+        FileUtils.write2File(resultFile, content);
+        DartUtils.format(project, resultFile.getAbsolutePath());
+        //不能使用findFileByIoFile，因为刚创建的文件需要先刷新，然后在查找
+        final VirtualFile virtualFile = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(resultFile);
+        //更新交互UI
+        if (virtualFile != null) {
+            StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);
+            if (statusBar != null) {
+                statusBar.setInfo("Dart Entity Create Completed");
+            }
+            OpenFileDescriptor descriptor = new OpenFileDescriptor(project, virtualFile);
+            FileEditorManager.getInstance(project).openTextEditor(descriptor, true);
+        }
     }
 }

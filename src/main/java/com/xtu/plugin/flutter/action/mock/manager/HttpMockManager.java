@@ -1,10 +1,12 @@
 package com.xtu.plugin.flutter.action.mock.manager;
 
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.MessageType;
 import com.xtu.plugin.flutter.service.HttpEntity;
 import com.xtu.plugin.flutter.service.StorageService;
 import com.xtu.plugin.flutter.utils.HttpUtils;
 import com.xtu.plugin.flutter.utils.LogUtils;
+import com.xtu.plugin.flutter.utils.ToastUtil;
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -17,62 +19,45 @@ import java.net.InetAddress;
 import java.util.List;
 import java.util.Locale;
 
-public class HttpMockManager {
+public final class HttpMockManager {
 
-    private static volatile HttpMockManager sInstance;
+    private final Project project;
+    private final MockWebServer webServer;
 
-    private Project project;
-    private MockWebServer webServer;
-
-    private HttpMockManager(Project project) {
+    public HttpMockManager(@NotNull Project project) {
         this.project = project;
+        this.webServer = new MockWebServer();
+        this.webServer.setDispatcher(new HttpDispatcher(project));
     }
 
-    public static HttpMockManager getInstance(Project project) {
-        if (sInstance == null) {
-            synchronized (HttpMockManager.class) {
-                if (sInstance == null) {
-                    sInstance = new HttpMockManager(project);
-                }
-            }
-        }
-        return sInstance;
+    public static HttpMockManager getService(@NotNull Project project) {
+        return project.getService(HttpMockManager.class);
     }
 
-    public void activeServerIfNeed() {
-        if (webServer != null) return;
+    public void activeServer() {
         try {
-            MockWebServer server = new MockWebServer();
-            server.setDispatcher(new HttpDispatcher(project));
-            String localIp = HttpUtils.getHostIp();
-            server.start(InetAddress.getByName(localIp), 0);
-            webServer = server;
+            String localIp = HttpUtils.getLocalIP();
+            this.webServer.start(InetAddress.getByName(localIp), 0);
         } catch (Exception e) {
             LogUtils.error("HttpMockManager activeServerIfNeed: " + e.getMessage());
+            ToastUtil.make(project, MessageType.ERROR, e.getMessage());
+        }
+    }
+
+    public void releaseServer() {
+        try {
+            webServer.shutdown();
+        } catch (IOException e) {
+            LogUtils.error("HttpMockManager releaseServer: " + e.getMessage());
         }
     }
 
     public String getBaseUrl() {
-        activeServerIfNeed();
-        if (webServer == null) return null;
         return String.format(Locale.US, "http://%s:%d", webServer.getHostName(), webServer.getPort());
     }
 
     public String getUrl(String path) {
-        activeServerIfNeed();
-        if (webServer == null) return null;
         return webServer.url(path).toString();
-    }
-
-    public void release() {
-        if (webServer != null) {
-            try {
-                webServer.shutdown();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        this.project = null;
     }
 
     private static class HttpDispatcher extends Dispatcher {

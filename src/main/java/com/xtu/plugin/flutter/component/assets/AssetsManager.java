@@ -7,6 +7,7 @@ import com.intellij.psi.PsiTreeChangeEvent;
 import com.intellij.psi.PsiTreeChangeListener;
 import com.xtu.plugin.flutter.component.assets.handler.AssetFileHandler;
 import com.xtu.plugin.flutter.component.assets.handler.PubSpecFileHandler;
+import com.xtu.plugin.flutter.service.StorageService;
 import com.xtu.plugin.flutter.utils.LogUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,32 +16,33 @@ import org.jetbrains.annotations.NotNull;
  */
 public class AssetsManager {
 
-    private static final AssetsManager sINSTANCE = new AssetsManager();
-
+    private final Project project;
     private final AssetFileHandler assetFileHandler;
     private final PubSpecFileHandler specFileHandler;
 
-    private AssetsManager() {
+    public AssetsManager(@NotNull Project project) {
+        this.project = project;
         specFileHandler = new PubSpecFileHandler();
         assetFileHandler = new AssetFileHandler(specFileHandler);
     }
 
-    public static AssetsManager getInstance() {
-        return sINSTANCE;
-    }
-
-    public void attach(Project project) {
+    public void attach() {
         LogUtils.info("AssetsManager attach");
         PsiManager.getInstance(project).addPsiTreeChangeListener(psiTreeChangeListener);
     }
 
-    public void detach(Project project) {
+    public void detach() {
         LogUtils.info("AssetsManager detach");
         PsiManager.getInstance(project).removePsiTreeChangeListener(psiTreeChangeListener);
     }
 
-
     private final PsiTreeChangeListener psiTreeChangeListener = new PsiTreeChangeListener() {
+
+        private boolean enableResCheck() {
+            return StorageService.getInstance(project).getState()
+                    .resCheckEnable;
+        }
+
         @Override
         public void beforeChildAddition(@NotNull PsiTreeChangeEvent event) {
         }
@@ -68,6 +70,7 @@ public class AssetsManager {
 
         @Override
         public void childAdded(@NotNull PsiTreeChangeEvent event) {
+            if (!enableResCheck()) return;
             if (event.getChild() instanceof PsiFile) {
                 assetFileHandler.onPsiFileAdded((PsiFile) event.getChild());
             }
@@ -75,6 +78,7 @@ public class AssetsManager {
 
         @Override
         public void childRemoved(@NotNull PsiTreeChangeEvent event) {
+            if (!enableResCheck()) return;
             if (event.getChild() instanceof PsiFile) {
                 assetFileHandler.onPsiFileRemoved((PsiFile) event.getChild());
             }
@@ -87,6 +91,7 @@ public class AssetsManager {
 
         @Override
         public void childrenChanged(@NotNull PsiTreeChangeEvent event) {
+            if (!enableResCheck()) return;
             if (event.getParent() instanceof PsiFile) {
                 specFileHandler.onPsiFileChanged((PsiFile) event.getParent());
             }
@@ -99,6 +104,7 @@ public class AssetsManager {
 
         @Override
         public void propertyChanged(@NotNull PsiTreeChangeEvent event) {
+            if (!enableResCheck()) return;
             if (PsiTreeChangeEvent.PROP_FILE_NAME.equals(event.getPropertyName())) {
                 assetFileHandler.onPsiFileChanged((PsiFile) event.getElement(), (String) event.getOldValue(), (String) event.getNewValue());
             }

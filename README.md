@@ -12,6 +12,7 @@ iFlutter是一款辅助Flutter开发的 IDEA 插件
 
 ## 功能说明
 - 资源实时注册
+- R资源重置
 - `Json` 转 `Dart Entity`
 - 一键生成 `fromJson`、`toJson` 方法
 - 提供 *HTTP MOCK*
@@ -67,6 +68,21 @@ Image.asset('images/bg_login');
 - **重点！！！**，如果AndroidStudio安装了 `iFlutter` 插件，此功能默认打开，如果想禁用此功能，可配置关闭，配置如下:
 
 ![资源联动配置](https://raw.githubusercontent.com/YangLang116/iFlutter/main/configs/config_enable_psi.png)
+
+---
+
+## R资源重置
+
+### 背景
+当项目开发接近尾期，不同分支代码需要 `Merge Code` 。但由于 `_res.dart` 文件是自动生成的，可能会出现`Merge Conflict` 问题 (通常情况下，利用AndroidStudio冲突解决魔法棒工具能很好处理)。 `iFlutter` 为了资源更好的同步，提供了重新生成资源文件的功能入口：
+
+![资源重新生成](https://raw.githubusercontent.com/YangLang116/iFlutter/main/configs/config_gen_res.png)
+
+### 补充说明
+`iFlutter` 重新生成资源拆分为如下两个操作:
+- 将 `指定目录` 资源重新注册到 `pubsepec.yaml` 中
+- 重新生成 `_res.dart` 文件
+
 ---
 
 ## `Json` 转 `Dart Entity`

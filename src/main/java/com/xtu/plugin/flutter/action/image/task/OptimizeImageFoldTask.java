@@ -2,7 +2,7 @@ package com.xtu.plugin.flutter.action.image.task;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
-import com.intellij.openapi.vfs.LocalFileSystem;
+import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.xtu.plugin.flutter.utils.*;
 import org.apache.commons.lang.StringUtils;
@@ -97,7 +97,6 @@ public class OptimizeImageFoldTask implements Runnable {
 
     private void refreshDirectory(File directory) {
         if (directory == null) return;
-        VirtualFile virtualFile = LocalFileSystem.getInstance().findFileByIoFile(directory);
-        if (virtualFile != null) virtualFile.refresh(false, true);
+        VfsUtil.markDirtyAndRefresh(true, directory.isDirectory(), directory.isDirectory(), directory);
     }
 }

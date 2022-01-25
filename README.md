@@ -13,6 +13,7 @@ iFlutter是一款辅助Flutter开发的 IDEA 插件
 ## 功能说明
 - 资源实时注册
 - R资源重置
+- 检查是否存在重复资源
 - `Json` 转 `Dart Entity`
 - 一键生成 `fromJson`、`toJson` 方法
 - 提供 *HTTP MOCK*
@@ -82,6 +83,15 @@ Image.asset('images/bg_login');
 `iFlutter` 重新生成资源拆分为如下两个操作:
 - 将 `指定目录` 资源重新注册到 `pubsepec.yaml` 中
 - 重新生成 `_res.dart` 文件
+
+---
+
+## 检查是否存在重复资源
+
+在项目版本需求开发周期内，同一个设计资源可能被不同的开发小伙伴重复引入，导致包体积增涨。`iFlutter` 支持检查项目中是否存在重复资源，效果如下：
+
+![重复资源检查动效](https://raw.githubusercontent.com/YangLang116/iFlutter/main/configs/res_duplicate.gif)
+
 
 ---
 

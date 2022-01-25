@@ -1,14 +1,24 @@
 package com.xtu.plugin.flutter.utils;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 
 public class FileUtils {
 
-    public static boolean isChildFile(String childFilePath, String parentDirName) {
-        return childFilePath.contains(File.separator + parentDirName + File.separator);
+    public static String getMd5(@NotNull File file) {
+        FileInputStream inputStream = null;
+        try {
+            inputStream = new FileInputStream(file);
+            return DigestUtils.md5Hex(inputStream);
+        } catch (Exception e) {
+            return null;
+        } finally {
+            CloseUtils.close(inputStream);
+        }
     }
 
     public static String getRelativePath(String parentPath, String childFilePath) {

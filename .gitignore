@@ -3,3 +3,4 @@
 .qodana
 build
 profiles
+.DS_Store

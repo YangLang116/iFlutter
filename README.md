@@ -1,5 +1,5 @@
 <!-- Plugin description -->
-iFlutter是一款辅助Flutter开发的 IDEA 插件
+iFlutter is an IDEA Plugin for Developer of Flutter
 <!-- Plugin description end -->
 
 ## [IDEA插件下载地址](https://github.com/YangLang116/iFlutter/tree/main/plugin-version)

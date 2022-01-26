@@ -3,6 +3,10 @@
 ## [Coming]
 ### Changed
 
+## [1.1.1] - 2022-01-26
+### Changed
+- support check duplicate resource
+
 ## [1.1.0] - 2022-01-25
 ### Changed
 - 支持检查项目是否存在重复文件

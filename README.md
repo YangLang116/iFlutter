@@ -8,7 +8,6 @@ iFlutter is an IDEA Plugin for Developer of Flutter
 
 ## iFlutter生态
 - 欢迎PR、issues、advice，一起共建Flutter生态
-- 减少无效工作，腾出时间更好的摸鱼！
 
 ## 功能说明
 - 资源实时注册

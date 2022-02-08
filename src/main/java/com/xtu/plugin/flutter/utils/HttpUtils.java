@@ -29,12 +29,13 @@ public class HttpUtils {
         return ipList;
     }
 
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     public static String getLocalIP() {
         Set<String> localIpAddress = getLocalIpAddress();
+        if (CollectionUtils.isEmpty(localIpAddress)) return null;
         for (String ipAddress : localIpAddress) {
-            System.out.println("ip -> " + ipAddress);
             if (ipAddress.startsWith("192.168")) return ipAddress;
         }
-        return null;
+        return localIpAddress.stream().findFirst().get();
     }
 }

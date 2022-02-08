@@ -15,6 +15,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.util.List;
 import java.util.Locale;
@@ -23,6 +24,7 @@ public final class HttpMockManager {
 
     private final Project project;
     private final MockWebServer webServer;
+    private String hostIP = "localhost";
 
     public HttpMockManager(@NotNull Project project) {
         this.project = project;
@@ -36,8 +38,13 @@ public final class HttpMockManager {
 
     public void activeServer() {
         try {
+            InetAddress inetAddress = Inet4Address.getLocalHost();
             String localIp = HttpUtils.getLocalIP();
-            this.webServer.start(InetAddress.getByName(localIp), 0);
+            if (StringUtils.isNotEmpty(localIp)) {
+                hostIP = localIp;
+                inetAddress = InetAddress.getByName(localIp);
+            }
+            this.webServer.start(inetAddress, 0);
         } catch (Exception e) {
             LogUtils.error("HttpMockManager activeServerIfNeed: " + e.getMessage());
             ToastUtil.make(project, MessageType.ERROR, e.getMessage());
@@ -53,11 +60,11 @@ public final class HttpMockManager {
     }
 
     public String getBaseUrl() {
-        return String.format(Locale.US, "http://%s:%d", webServer.getHostName(), webServer.getPort());
+        return String.format(Locale.US, "http://%s:%d", hostIP, webServer.getPort());
     }
 
     public String getUrl(String path) {
-        return webServer.url(path).toString();
+        return getBaseUrl() + path;
     }
 
     private static class HttpDispatcher extends Dispatcher {

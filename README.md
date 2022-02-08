@@ -2,13 +2,15 @@
 iFlutter is an IDEA Plugin for Developer of Flutter
 <!-- Plugin description end -->
 
-## [IDEA插件下载地址](https://github.com/YangLang116/iFlutter/tree/main/plugin-version)
-> 下载最新版本的zip文件，千万不要解压，直接拖拽到 AndroidStudio 中即可安装。
+## 插件安装
+插件已上传官方Plugins仓库，可搜索下载
 
+---
 
 ## iFlutter生态
 - 欢迎PR、issues、advice，一起共建Flutter生态
-- 减少无效工作，腾出时间更好的摸鱼！
+
+---
 
 ## 功能说明
 - 资源实时注册
@@ -21,6 +23,7 @@ iFlutter is an IDEA Plugin for Developer of Flutter
 - 内置常用的 `Live Template`
 
 ---
+
 ## 资源实时注册
 ### 背景：
 在Flutter开发过程中，我们可能需要为App添加素材文件，比如我们用Flutter开发了一个登录界面，

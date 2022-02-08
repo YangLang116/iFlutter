@@ -40,7 +40,7 @@ public class GenerateResAction extends AnAction {
         }
         List<String> newAssetNameList = new ArrayList<>();
         for (File assetFile : assetFileList) {
-            String relativePath = FileUtils.getRelativePath(projectPath, assetFile.getAbsolutePath());
+            String relativePath = FileUtils.getAssetPath(projectPath, assetFile);
             newAssetNameList.add(relativePath);
         }
         //keep asset list order

@@ -46,7 +46,7 @@ public class AssetFileHandler {
         String filePath = virtualFile.getPath();
         List<String> supportAssetFoldName = PluginUtils.supportAssetFoldName(project);
         for (String directoryName : supportAssetFoldName) {
-            String assetPrefixName = projectPath + File.separator + directoryName;
+            String assetPrefixName = projectPath + "/" + directoryName;
             if (filePath.startsWith(assetPrefixName)) {
                 return filePath.substring(projectPath.length() + 1);
             }

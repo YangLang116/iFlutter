@@ -11,7 +11,6 @@ import com.xtu.plugin.flutter.utils.PluginUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
 import java.util.List;
 
 //整理images目录下的图片
@@ -35,9 +34,9 @@ public class ImageFoldingAction extends AnAction {
             return;
         }
         String selectDirPath = virtualFile.getPath();
-        List<String> imageOptimizeFoldName = PluginUtils.supportImageOptimizeFoldName(project);
+        List<String> imageOptimizeFoldName = PluginUtils.supportAssetFoldName(project);
         for (String foldName : imageOptimizeFoldName) {
-            if (selectDirPath.equals(projectPath + File.separator + foldName)) {
+            if (selectDirPath.equals(projectPath + "/" + foldName)) {
                 e.getPresentation().setVisible(true);
                 return;
             }

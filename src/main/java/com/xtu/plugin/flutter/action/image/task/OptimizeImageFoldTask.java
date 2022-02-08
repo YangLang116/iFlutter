@@ -42,6 +42,7 @@ public class OptimizeImageFoldTask implements Runnable {
         if (imageFileList.size() <= 0) return;
         //整理图片位置
         String projectPath = PluginUtils.getProjectPath(project);
+        if(StringUtils.isEmpty(projectPath)) return;
         Map<String, String> pathMap = new HashMap<>();
         for (File imageFile : imageFileList) {
             String fileName = imageFile.getName();
@@ -49,7 +50,7 @@ public class OptimizeImageFoldTask implements Runnable {
             String destFoldName = fileName.split("_")[0];
             String parentFoldName = imageFile.getParentFile().getName();
             if (parentFoldName.equals(destFoldName)) continue;
-            String relativePath = FileUtils.getRelativePath(projectPath, imageFile.getAbsolutePath());
+            String relativePath = FileUtils.getAssetPath(projectPath, imageFile);
             File newImageDirectory = new File(imageDirectory, destFoldName);
             org.apache.commons.io.FileUtils.moveFileToDirectory(imageFile, newImageDirectory, true);
             pathMap.put(relativePath, imageDirectoryName + "/" + destFoldName + "/" + imageFile.getName());

@@ -32,6 +32,7 @@ public class HttpUtils {
     public static String getLocalIP() {
         Set<String> localIpAddress = getLocalIpAddress();
         for (String ipAddress : localIpAddress) {
+            System.out.println("ip -> " + ipAddress);
             if (ipAddress.startsWith("192.168")) return ipAddress;
         }
         return null;

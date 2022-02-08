@@ -16,7 +16,7 @@ public class PluginUtils {
         if (project == null) return null;
         String projectPath = project.getBasePath();
         if (StringUtils.isEmpty(projectPath)) return null;
-        if (projectPath.endsWith(File.separator)) {
+        if (projectPath.endsWith("/")) {
             projectPath = projectPath.substring(0, projectPath.length() - 1);
         }
         return projectPath;
@@ -31,9 +31,5 @@ public class PluginUtils {
 
     public static List<String> supportAssetFoldName(@NotNull Project project) {
         return StorageService.getInstance(project).getState().resDir;
-    }
-
-    public static List<String> supportImageOptimizeFoldName(@NotNull Project project) {
-        return StorageService.getInstance(project).getState().imageDir;
     }
 }

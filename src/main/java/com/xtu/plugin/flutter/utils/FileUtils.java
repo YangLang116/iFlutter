@@ -2,8 +2,8 @@ package com.xtu.plugin.flutter.utils;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 
@@ -21,13 +21,17 @@ public class FileUtils {
         }
     }
 
-    public static String getRelativePath(String parentPath, String childFilePath) {
-        if (StringUtils.isEmpty(parentPath)) return childFilePath;
-        if (!parentPath.endsWith(File.separator)) {
-            parentPath += File.separator;
+    @Nullable
+    public static String getAssetPath(@NotNull String parentPath, File childFile) {
+        File parentFile = new File(parentPath); //兼容windows
+        String parentAbsolutePath = parentFile.getAbsolutePath();
+        String childAbsolutePath = childFile.getAbsolutePath();
+        if (!childAbsolutePath.startsWith(parentAbsolutePath)) return null;
+        String relativePath = childAbsolutePath.substring(parentAbsolutePath.length());
+        if (relativePath.startsWith(File.separator)) {
+            relativePath = relativePath.substring(1);
         }
-        if (!childFilePath.startsWith(parentPath)) return null;
-        return childFilePath.substring(parentPath.length());
+        return relativePath.replace(File.separator, "/");
     }
 
     public static boolean write2File(File file, String content) {

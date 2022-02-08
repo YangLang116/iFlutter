@@ -145,17 +145,14 @@ public class J2DDialog extends DialogWrapper {
         //采用IO的方式写文件，而不是VFS，防止VFS没有同步文件内容到本地，导致Dart Format失败
         File resultFile = new File(selectDirectory.getPath(), childFileName);
         FileUtils.write2File(resultFile, content);
-        DartUtils.format(project, resultFile.getAbsolutePath());
-        //不能使用findFileByIoFile，因为刚创建的文件需要先刷新，然后在查找
-        final VirtualFile virtualFile = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(resultFile);
-        //更新交互UI
-        if (virtualFile != null) {
+        DartUtils.format(project, resultFile, virtualFile -> {
+            //更新交互UI
             StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);
             if (statusBar != null) {
                 statusBar.setInfo("Dart Entity Create Completed");
             }
             OpenFileDescriptor descriptor = new OpenFileDescriptor(project, virtualFile);
             FileEditorManager.getInstance(project).openTextEditor(descriptor, true);
-        }
+        });
     }
 }

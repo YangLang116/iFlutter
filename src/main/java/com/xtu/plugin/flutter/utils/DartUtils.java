@@ -1,12 +1,19 @@
 package com.xtu.plugin.flutter.utils;
 
+import com.intellij.codeInsight.actions.AbstractLayoutCodeProcessor;
+import com.intellij.codeInsight.actions.ReformatCodeProcessor;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.LocalFileSystem;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiManager;
+import com.intellij.psi.util.PsiUtilCore;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.Locale;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -36,18 +43,23 @@ public class DartUtils {
     }
 
     //格式化dart代码
-    public static void format(Project project, String filePath) {
-        String flutterPath = getFlutterPath(project);
-        if (StringUtils.isEmpty(flutterPath)) return;
-        File dartFmtFile = new File(flutterPath, "bin/cache/dart-sdk/bin/dartfmt".replace("/", File.separator));
-        String cmd = String.format(Locale.ROOT, "%s --overwrite %s", dartFmtFile.getAbsolutePath(), filePath);
-        try {
-            Process process = Runtime.getRuntime().exec(cmd);
-            int result = process.waitFor();
-            LogUtils.info("DartUtils format: result " + result);
-        } catch (Exception e) {
-            e.printStackTrace();
-            LogUtils.error("DartUtils format: " + e.getMessage());
-        }
+    public static void format(Project project, File dartFile, OnFormatCompleteListener listener) {
+        final VirtualFile virtualFile = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(dartFile);
+        if (virtualFile == null) return;
+        PsiManager psiManager = PsiManager.getInstance(project);
+        List<PsiFile> list = PsiUtilCore.toPsiFiles(psiManager, List.of(virtualFile));
+        AbstractLayoutCodeProcessor processor = new ReformatCodeProcessor(
+                project,
+                PsiUtilCore.toPsiFileArray(list),
+                () -> {
+                    if (listener != null) listener.finishFormat(virtualFile);
+                },
+                false);
+        processor.run();
+    }
+
+    public interface OnFormatCompleteListener {
+
+        void finishFormat(@NotNull VirtualFile virtualFile);
     }
 }

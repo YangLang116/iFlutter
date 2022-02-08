@@ -37,7 +37,7 @@ public class DuplicateResAnalysisAction extends AnAction {
         String selectDirPath = virtualFile.getPath();
         List<String> assetFoldNameList = PluginUtils.supportAssetFoldName(project);
         for (String foldName : assetFoldNameList) {
-            if (selectDirPath.equals(projectPath + File.separator + foldName)) {
+            if (selectDirPath.equals(projectPath + "/" + foldName)) {
                 e.getPresentation().setVisible(true);
                 return;
             }

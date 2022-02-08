@@ -28,7 +28,7 @@ public class J2DAction extends AnAction {
             return;
         }
         String path = virtualFile.getPath();
-        boolean isLibChildPath = path.startsWith(projectPath + File.separator + "lib");
+        boolean isLibChildPath = path.startsWith(projectPath + "/lib");
         if (!isLibChildPath) {
             e.getPresentation().setVisible(false);
             return;

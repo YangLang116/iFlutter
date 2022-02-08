@@ -19,7 +19,6 @@ public final class SettingsConfiguration implements SearchableConfigurable {
 
     private JPanel rootPanel;
     private JTextField resDetectField;
-    private JTextField imgDetectField;
     private JTextField ignoreResField;
     private JCheckBox flutter2EnableBox;
     private JCheckBox resCheckEnableBox;
@@ -52,7 +51,6 @@ public final class SettingsConfiguration implements SearchableConfigurable {
     public boolean isModified() {
         StorageEntity storageEntity = getStorageEntity();
         return !CollectionUtils.join(storageEntity.resDir, LIST_SPLIT_CHAR).equals(resDetectField.getText().trim())
-                || !CollectionUtils.join(storageEntity.imageDir, LIST_SPLIT_CHAR).equals(imgDetectField.getText().trim())
                 || !CollectionUtils.join(storageEntity.ignoreResExtension, LIST_SPLIT_CHAR).equals(ignoreResField.getText().trim())
                 || storageEntity.flutter2Enable != flutter2EnableBox.isSelected()
                 || storageEntity.resCheckEnable != resCheckEnableBox.isSelected();
@@ -63,8 +61,6 @@ public final class SettingsConfiguration implements SearchableConfigurable {
         StorageEntity storageEntity = getStorageEntity();
         String resDirListStr = CollectionUtils.join(storageEntity.resDir, LIST_SPLIT_CHAR);
         resDetectField.setText(resDirListStr);
-        String imgDirListStr = CollectionUtils.join(storageEntity.imageDir, LIST_SPLIT_CHAR);
-        imgDetectField.setText(imgDirListStr);
         String ignoreResExtensionStr = CollectionUtils.join(storageEntity.ignoreResExtension, LIST_SPLIT_CHAR);
         ignoreResField.setText(ignoreResExtensionStr);
         flutter2EnableBox.setSelected(storageEntity.flutter2Enable);
@@ -77,9 +73,6 @@ public final class SettingsConfiguration implements SearchableConfigurable {
         String resStr = resDetectField.getText().trim();
         storageEntity.resDir = StringUtils.isEmpty(resStr) ?
                 Collections.emptyList() : CollectionUtils.split(resStr, LIST_SPLIT_CHAR);
-        String imgStr = imgDetectField.getText().trim();
-        storageEntity.imageDir = StringUtils.isEmpty(imgStr) ?
-                Collections.emptyList() : CollectionUtils.split(imgStr, LIST_SPLIT_CHAR);
         String ignoreResExtensionStr = ignoreResField.getText().trim();
         storageEntity.ignoreResExtension = StringUtils.isEmpty(ignoreResExtensionStr) ?
                 Collections.emptyList() : CollectionUtils.split(ignoreResExtensionStr, LIST_SPLIT_CHAR);

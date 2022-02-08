@@ -82,7 +82,7 @@ public class DartRFileGenerator {
         }
         fileStringBuilder.append("}\n");
         FileUtils.write2File(resFile, fileStringBuilder.toString());
-        DartUtils.format(project, resFile.getAbsolutePath());
+        DartUtils.format(project, resFile, null);
     }
 
     private String getResName(String assetFileName) {

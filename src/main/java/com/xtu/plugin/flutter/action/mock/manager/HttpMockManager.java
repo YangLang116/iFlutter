@@ -86,6 +86,7 @@ public final class HttpMockManager {
                     if (StringUtils.equalsIgnoreCase(httpEntity.method, method)) {
                         return new MockResponse()
                                 .setResponseCode(200)
+                                .setHeader("Content-Type","application/json; charset=utf-8")
                                 .setBody(httpEntity.response);
                     } else {
                         return new MockResponse()

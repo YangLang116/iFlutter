@@ -174,9 +174,9 @@ images
 
 资源归类后，`iFlutter` 会自动调整 `pubspec.yaml` 中对资源的注册，以及所有使用该资源的 `*.dart`文件。
 
-**重点说明**: 并非所有目录都支持资源归类，默认 `images` 目录，开发者可自行调整，具体如下:
+**重点说明**: 并非所有目录都支持资源归类，默认 `assets` 、`images` 目录，开发者可自行调整，具体如下:
 
-![Res Category 配置](https://raw.githubusercontent.com/YangLang116/iFlutter/main/configs/config_opt_category.png)
+![Res Category 配置](https://raw.githubusercontent.com/YangLang116/iFlutter/main/configs/config_gen_r.png)
 
 ## 使用效果
 ![Res Category 动效](https://raw.githubusercontent.com/YangLang116/iFlutter/main/configs/cate_res.gif)

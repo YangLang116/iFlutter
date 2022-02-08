@@ -3,6 +3,10 @@
 ## [Coming]
 ### Changed
 
+## [1.1.2] - 2022-02-08
+### Changed
+- compatible windows
+
 ## [1.1.1] - 2022-01-26
 ### Changed
 - support check duplicate resource

@@ -5,7 +5,9 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.xtu.plugin.flutter.component.assets.code.DartRFileGenerator;
 import com.xtu.plugin.flutter.utils.LogUtils;
+import com.xtu.plugin.flutter.utils.PluginUtils;
 import com.xtu.plugin.flutter.utils.PubspecUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
@@ -42,11 +44,15 @@ public class PubSpecFileHandler {
         if (psiFile == null) return;
         VirtualFile virtualFile = psiFile.getVirtualFile();
         if (virtualFile == null) return;
-        String fileName = virtualFile.getName();
-        if (!PubspecUtils.getFileName().equals(fileName)) return;
         Project project = psiFile.getProject();
-        LogUtils.info("PubSpecFileHandler pubspec.yaml changed");
-        PubspecUtils.readAssetAtReadAction(project, assetList -> DartRFileGenerator.getInstance().generate(project, assetList));
+        String projectPath = PluginUtils.getProjectPath(project);
+        if (StringUtils.isEmpty(projectPath)) return;
+        String rootPubspecPath = projectPath + "/" + PubspecUtils.getFileName();
+        //root package pubspec.yaml changed
+        if (StringUtils.equals(rootPubspecPath, virtualFile.getPath())) {
+            LogUtils.info("PubSpecFileHandler pubspec.yaml changed");
+            PubspecUtils.readAssetAtReadAction(project, assetList -> DartRFileGenerator.getInstance().generate(project, assetList));
+        }
     }
 
 }

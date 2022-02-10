@@ -3,6 +3,10 @@
 ## [Coming]
 ### Changed
 
+## [1.1.3] - 2022-02-10
+### Changed
+- generate dependencies tree
+
 ## [1.1.2] - 2022-02-08
 ### Changed
 - compatible windows

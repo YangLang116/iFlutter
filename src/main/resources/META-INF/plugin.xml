@@ -43,8 +43,10 @@
                     class="com.xtu.plugin.flutter.action.j2d.J2DAction"/>
             <action id="com.xtu.plugin.flutter.HttpMockAction"
                     class="com.xtu.plugin.flutter.action.mock.HttpMockAction"/>
-            <action id="com.xtu.plugin.flutter.action.analysis.DuplicateResAnalysisAction"
+            <action id="com.xtu.plugin.flutter.DuplicateResAnalysisAction"
                     class="com.xtu.plugin.flutter.action.analysis.DuplicateResAnalysisAction"/>
+            <action id="com.xtu.plugin.flutter.DepAnalysisAction"
+                    class="com.xtu.plugin.flutter.action.analysis.DepAnalysisAction"/>
         </group>
         <action id="com.xtu.plugin.flutter.DartGenerateFromJsonAndToJsonAction"
                 class="com.xtu.plugin.flutter.action.generate.json.DartGenerateFromJsonAndToJsonAction">

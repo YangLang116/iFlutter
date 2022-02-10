@@ -16,6 +16,7 @@ iFlutter is an IDEA Plugin for Developer of Flutter
 - 资源实时注册
 - R资源重置
 - 检查是否存在重复资源
+- 生成 `Package Dependencies Tree`
 - `Json` 转 `Dart Entity`
 - 一键生成 `fromJson`、`toJson` 方法
 - 提供 *HTTP MOCK*
@@ -95,6 +96,13 @@ Image.asset('images/bg_login');
 
 ![重复资源检查动效](https://raw.githubusercontent.com/YangLang116/iFlutter/main/configs/res_duplicate.gif)
 
+
+---
+
+## 生成 `Package Dependencies Tree`
+用于分析Flutter项目包依赖关系，对于生成的结果支持 `Command/Control` + `F` 搜索
+
+![依赖树分析](https://raw.githubusercontent.com/YangLang116/iFlutter/main/configs/analysis_dep_tree.png)
 
 ---
 

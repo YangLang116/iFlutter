@@ -1,5 +1,6 @@
 package com.xtu.plugin.flutter.component.assets.handler;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
@@ -51,7 +52,9 @@ public class PubSpecFileHandler {
         //root package pubspec.yaml changed
         if (StringUtils.equals(rootPubspecPath, virtualFile.getPath())) {
             LogUtils.info("PubSpecFileHandler pubspec.yaml changed");
-            PubspecUtils.readAssetAtReadAction(project, assetList -> DartRFileGenerator.getInstance().generate(project, assetList));
+            PubspecUtils.readAssetAtReadAction(project, assetList ->
+                    //psi event thread，need invoke late
+                    ApplicationManager.getApplication().invokeLater(() -> DartRFileGenerator.getInstance().generate(project, assetList)));
         }
     }
 

@@ -16,6 +16,7 @@ import com.xtu.plugin.flutter.action.j2d.generate.J2DGenerator;
 import com.xtu.plugin.flutter.service.StorageService;
 import com.xtu.plugin.flutter.utils.*;
 import org.apache.commons.lang.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -142,17 +143,22 @@ public class J2DDialog extends DialogWrapper {
     }
 
     private void writeTask(Project project, VirtualFile selectDirectory, String childFileName, String content) {
-        //采用IO的方式写文件，而不是VFS，防止VFS没有同步文件内容到本地，导致Dart Format失败
-        File resultFile = new File(selectDirectory.getPath(), childFileName);
-        FileUtils.write2File(resultFile, content);
-        DartUtils.format(project, resultFile, virtualFile -> {
-            //更新交互UI
-            StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);
-            if (statusBar != null) {
-                statusBar.setInfo("Dart Entity Create Completed");
+        DartUtils.createDartFile(project, selectDirectory, childFileName, content, new DartUtils.OnCreateDartFileListener() {
+            @Override
+            public void onSuccess(@NotNull VirtualFile virtualFile) {
+                //更新交互UI
+                StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);
+                if (statusBar != null) {
+                    statusBar.setInfo("Dart Entity Create Completed");
+                }
+                OpenFileDescriptor descriptor = new OpenFileDescriptor(project, virtualFile);
+                FileEditorManager.getInstance(project).openTextEditor(descriptor, true);
             }
-            OpenFileDescriptor descriptor = new OpenFileDescriptor(project, virtualFile);
-            FileEditorManager.getInstance(project).openTextEditor(descriptor, true);
+
+            @Override
+            public void onFail(String message) {
+                ToastUtil.make(project, MessageType.ERROR, message);
+            }
         });
     }
 }

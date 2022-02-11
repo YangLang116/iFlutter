@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Properties;
 
@@ -43,9 +44,7 @@ public class DartUtils {
     }
 
     //格式化dart代码
-    public static void format(Project project, File dartFile, OnFormatCompleteListener listener) {
-        final VirtualFile virtualFile = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(dartFile);
-        if (virtualFile == null) return;
+    public static void format(Project project, VirtualFile virtualFile, OnFormatCompleteListener listener) {
         PsiManager psiManager = PsiManager.getInstance(project);
         List<PsiFile> list = PsiUtilCore.toPsiFiles(psiManager, List.of(virtualFile));
         AbstractLayoutCodeProcessor processor = new ReformatCodeProcessor(
@@ -61,5 +60,38 @@ public class DartUtils {
     public interface OnFormatCompleteListener {
 
         void finishFormat(@NotNull VirtualFile virtualFile);
+    }
+
+    //生成Dart类
+    public static void createDartFile(Project project,
+                                      VirtualFile parentDirectory,
+                                      String fileName,
+                                      String fileContent,
+                                      OnCreateDartFileListener listener) {
+        try {
+            VirtualFile childFile = parentDirectory.findChild(fileName);
+            if (childFile == null) {
+                childFile = parentDirectory.createChildData(project, fileName);
+            }
+            childFile.setBinaryContent(fileContent.getBytes(StandardCharsets.UTF_8));
+            format(project, childFile, virtualFile -> {
+                if (listener != null) {
+                    listener.onSuccess(virtualFile);
+                }
+            });
+        } catch (Exception e) {
+            LogUtils.error("DartUtils createDartFile: " + e.getMessage());
+            if (listener != null) {
+                listener.onFail(e.getMessage());
+            }
+        }
+    }
+
+    public interface OnCreateDartFileListener {
+
+        void onSuccess(@NotNull VirtualFile virtualFile);
+
+        void onFail(String message);
+
     }
 }

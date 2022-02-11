@@ -1,20 +1,23 @@
 package com.xtu.plugin.flutter.component.assets.code;
 
-import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.StatusBar;
 import com.intellij.openapi.wm.WindowManager;
-import com.xtu.plugin.flutter.service.StorageEntity;
 import com.xtu.plugin.flutter.service.StorageService;
 import com.xtu.plugin.flutter.utils.*;
 import org.apache.commons.lang.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DartRFileGenerator {
 
@@ -29,11 +32,12 @@ public class DartRFileGenerator {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public void generate(Project project, List<String> assetList) {
-        ApplicationManager.getApplication().runWriteAction(() -> {
+        WriteAction.run(() -> {
             try {
                 File libDirectory = new File(project.getBasePath(), "lib");
-                File rDirectory = new File(libDirectory, "res");
-                org.apache.commons.io.FileUtils.deleteDirectory(rDirectory);
+                VirtualFile libVirtualDirectory = LocalFileSystem.getInstance().findFileByIoFile(libDirectory);
+                assert libVirtualDirectory != null;
+                //create new res
                 Map<String, List<String>> assetCategory = new HashMap<>();
                 for (String assetFileName : assetList) {
                     String assetDirName = assetFileName.substring(0, assetFileName.indexOf("/"));
@@ -42,21 +46,20 @@ public class DartRFileGenerator {
                     List<String> assets = assetCategory.get(assetDirName);
                     assets.add(assetFileName);
                 }
+                VirtualFile resVirtualDirectory = libVirtualDirectory.findChild("res");
                 if (assetCategory.size() > 0) {
-                    if (!rDirectory.exists()) rDirectory.mkdirs();
-                    for (Map.Entry<String, List<String>> entry : assetCategory.entrySet()) {
-                        generateFile(project, rDirectory, entry.getKey(), entry.getValue());
+                    if (resVirtualDirectory == null) {
+                        resVirtualDirectory = libVirtualDirectory.createChildDirectory(project, "res");
                     }
+                    for (Map.Entry<String, List<String>> entry : assetCategory.entrySet()) {
+                        generateFile(project, resVirtualDirectory, entry.getKey(), entry.getValue());
+                    }
+                } else if (resVirtualDirectory != null) {
+                    resVirtualDirectory.delete(project);
                 }
-                //刷新lib目录
-                VirtualFile virtualFile = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(libDirectory);
-                if (virtualFile != null) {
-                    virtualFile.refresh(false, true, () -> {
-                        StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);
-                        if (statusBar != null) {
-                            statusBar.setInfo("R File Update Success");
-                        }
-                    });
+                StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);
+                if (statusBar != null) {
+                    statusBar.setInfo("R File Update Success");
                 }
             } catch (Exception e) {
                 LogUtils.error("DartRFileGenerator generate: " + e.getMessage());
@@ -66,9 +69,7 @@ public class DartRFileGenerator {
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    private void generateFile(Project project, File rDirectory, String assetDirName, List<String> assetFileNames) throws IOException {
-        File resFile = new File(rDirectory, assetDirName.toLowerCase() + "_res.dart");
-        if (!resFile.exists()) resFile.createNewFile();
+    private void generateFile(Project project, VirtualFile rDirectory, String assetDirName, List<String> assetFileNames) throws IOException {
         String className = StringUtil.upFirstChar(assetDirName) + "Res";
         StringBuilder fileStringBuilder = new StringBuilder();
         fileStringBuilder.append("/// This is a generated file do not edit.\n\n")
@@ -81,8 +82,18 @@ public class DartRFileGenerator {
             }
         }
         fileStringBuilder.append("}\n");
-        FileUtils.write2File(resFile, fileStringBuilder.toString());
-        DartUtils.format(project, resFile, null);
+        String fileName = assetDirName.toLowerCase() + "_res.dart";
+        DartUtils.createDartFile(project, rDirectory, fileName, fileStringBuilder.toString(), new DartUtils.OnCreateDartFileListener() {
+            @Override
+            public void onSuccess(@NotNull VirtualFile virtualFile) {
+                //ignore
+            }
+
+            @Override
+            public void onFail(String message) {
+                ToastUtil.make(project, MessageType.ERROR, message);
+            }
+        });
     }
 
     private String getResName(String assetFileName) {

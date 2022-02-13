@@ -1,0 +1,5 @@
+<idea-plugin>
+    <extensions defaultExtensionNs="com.intellij">
+        <!--        <annotator language="yaml" implementationClass="com.jetbrains.lang.dart.ide.annotator.DartAnnotator"/>-->
+    </extensions>
+</idea-plugin>

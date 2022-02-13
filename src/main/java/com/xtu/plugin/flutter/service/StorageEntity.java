@@ -1,5 +1,8 @@
 package com.xtu.plugin.flutter.service;
 
+import com.intellij.util.xmlb.annotations.Transient;
+import com.xtu.plugin.flutter.component.packages.update.PackageInfo;
+
 import java.util.*;
 
 public class StorageEntity {
@@ -14,6 +17,9 @@ public class StorageEntity {
     public boolean resCheckEnable = true;
     //HTTP Mock 配置
     public List<HttpEntity> httpEntityList = new ArrayList<>();
+    //最新版本信息
+    @Transient
+    public Map<String, PackageInfo> packageInfoMap = new HashMap<>();
 
     public StorageEntity() {
     }

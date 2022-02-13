@@ -51,8 +51,9 @@ public class HttpListDialog extends DialogWrapper implements ListSelectionListen
         return StorageService.getInstance(project).getState().httpEntityList;
     }
 
+    @Nullable
     @Override
-    protected @Nullable JComponent createCenterPanel() {
+    protected JComponent createCenterPanel() {
         String baseUrl = HttpMockManager.getService(project).getBaseUrl();
         hostView.setText(StringUtils.isEmpty(baseUrl) ? "Http Mock fail" : baseUrl);
         listView = new JBList<>();
@@ -140,13 +141,16 @@ public class HttpListDialog extends DialogWrapper implements ListSelectionListen
         popupMenu.show(component, (int) point.getX(), (int) point.getY());
     }
 
+    @Nullable
+    @NonNls
     @Override
-    protected @Nullable @NonNls String getDimensionServiceKey() {
+    protected String getDimensionServiceKey() {
         return getClass().getName();
     }
 
     @Override
-    protected Action @NotNull [] createActions() {
+    @NotNull
+    protected Action[] createActions() {
         return new Action[]{createConfigAction, confirmAction};
     }
 

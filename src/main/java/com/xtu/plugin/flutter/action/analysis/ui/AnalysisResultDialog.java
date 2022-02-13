@@ -57,25 +57,27 @@ public class AnalysisResultDialog extends DialogWrapper {
     }
 
     @Override
-    protected @Nullable
+    @Nullable
     @NonNls
-    String getDimensionServiceKey() {
+    protected String getDimensionServiceKey() {
         return getClass().getSimpleName();
     }
 
+    @Nullable
     @Override
-    public @Nullable JComponent getPreferredFocusedComponent() {
+    public JComponent getPreferredFocusedComponent() {
         return contentComponent;
     }
 
+    @NotNull
     @Override
-    protected Action @NotNull [] createActions() {
+    protected Action[] createActions() {
         return new Action[]{copyAction, getOKAction()};
     }
 
+    @Nullable
     @Override
-    protected @Nullable
-    JComponent createCenterPanel() {
+    protected JComponent createCenterPanel() {
         return new JBScrollPane(contentComponent);
     }
 

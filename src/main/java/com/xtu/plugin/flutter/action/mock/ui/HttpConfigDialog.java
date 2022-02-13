@@ -36,17 +36,21 @@ public class HttpConfigDialog extends DialogWrapper {
     }
 
     @Override
-    protected @Nullable @NonNls String getDimensionServiceKey() {
+    @Nullable
+    @NonNls
+    protected String getDimensionServiceKey() {
         return getClass().getName();
     }
 
     @Override
-    public @Nullable JComponent getPreferredFocusedComponent() {
+    @Nullable
+    public JComponent getPreferredFocusedComponent() {
         return pathView;
     }
 
     @Override
-    protected @Nullable JComponent createCenterPanel() {
+    @Nullable
+    protected JComponent createCenterPanel() {
         methodBox.setModel(new DefaultComboBoxModel<>(new String[]{"Get", "Post"}));
         if (inputEntity != null) {
             pathView.setText(inputEntity.path);
@@ -77,7 +81,8 @@ public class HttpConfigDialog extends DialogWrapper {
     }
 
     @Override
-    protected Action @NotNull [] createActions() {
+    @NotNull
+    protected Action[] createActions() {
         return new Action[]{saveAction, cancelAction};
     }
 

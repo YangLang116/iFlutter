@@ -51,7 +51,7 @@ public class FlutterPackageUpdater {
         String executorName = SystemInfo.isWindows ? "flutter.bat" : "flutter";
         File executorFile = new File(flutterPath, "bin" + File.separator + executorName);
         String command = executorFile.getAbsolutePath() + " pub outdated --dependency-overrides --dev-dependencies --no-prereleases --json";
-        CommandUtils.CommandResult commandResult = CommandUtils.executeSync(command, new File(projectPath), 2);
+        CommandUtils.CommandResult commandResult = CommandUtils.executeSync(command, new File(projectPath), 5);
         if (commandResult.code == CommandUtils.CommandResult.FAIL) return;
         try {
             final JSONObject versionJson = new JSONObject(commandResult.result);

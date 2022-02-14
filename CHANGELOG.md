@@ -3,6 +3,10 @@
 ## [Coming]
 ### Changed
 
+## [1.1.5] - 2022-02-14
+### Changed
+- check latest package version
+
 ## [1.1.4] - 2022-02-11
 ### Changed
 - fix file conflict

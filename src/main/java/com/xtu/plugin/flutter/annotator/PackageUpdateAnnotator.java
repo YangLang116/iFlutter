@@ -61,7 +61,13 @@ public class PackageUpdateAnnotator implements Annotator {
                 YAMLMapping gitValueMap = (YAMLMapping) git.getValue();
                 YAMLKeyValue urlKeyValue = gitValueMap.getKeyValueByKey("url");
                 if (urlKeyValue == null) return null;
-                return urlKeyValue.getValueText();
+                String url = urlKeyValue.getValueText();
+                if (StringUtils.isEmpty(url)) return url;
+                url = url.replace(".git", "");
+                if (url.startsWith("git@")) {
+                    url = url.replace("git@", "https://").replace(":", "/");
+                }
+                return url;
             }
             //host 依赖
             YAMLKeyValue hosted = ((YAMLMapping) value).getKeyValueByKey("hosted");

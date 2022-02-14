@@ -1,5 +1,6 @@
 package com.xtu.plugin.flutter.component.packages.update;
 
+import java.util.Locale;
 import java.util.Objects;
 
 public class PackageInfo {
@@ -16,11 +17,7 @@ public class PackageInfo {
 
     @Override
     public String toString() {
-        return "PackageInfo{" +
-                "name='" + name + '\'' +
-                ", currentVersion='" + currentVersion + '\'' +
-                ", latestVersion='" + latestVersion + '\'' +
-                '}';
+        return String.format(Locale.ROOT, "%s: %s -> %s", name, currentVersion, latestVersion);
     }
 
     @Override

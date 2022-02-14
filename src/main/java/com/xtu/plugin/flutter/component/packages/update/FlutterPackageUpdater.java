@@ -52,6 +52,7 @@ public class FlutterPackageUpdater {
         File executorFile = new File(flutterPath, "bin" + File.separator + executorName);
         String command = executorFile.getAbsolutePath() + " pub outdated --dependency-overrides --dev-dependencies --no-prereleases --json";
         CommandUtils.CommandResult commandResult = CommandUtils.executeSync(command, new File(projectPath), 5);
+        LogUtils.info("FlutterPackageUpdater pullLatestVersion: " + commandResult.result);
         if (commandResult.code == CommandUtils.CommandResult.FAIL) return;
         try {
             final JSONObject versionJson = new JSONObject(commandResult.result);

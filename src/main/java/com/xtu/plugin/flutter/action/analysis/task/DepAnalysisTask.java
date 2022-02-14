@@ -40,8 +40,8 @@ public class DepAnalysisTask extends Task.Backgroundable {
         String executorName = SystemInfo.isWindows ? "flutter.bat" : "flutter";
         File executorFile = new File(flutterPath, "bin" + File.separator + executorName);
         String command = executorFile.getAbsolutePath() + " pub deps";
-        String result = CommandUtils.executeSync(command, projectRootDir);
-        show(project, result);
+        CommandUtils.CommandResult commandResult = CommandUtils.executeSync(command, projectRootDir);
+        show(project, commandResult.result);
     }
 
     private void show(Project project, String message) {

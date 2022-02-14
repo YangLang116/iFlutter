@@ -12,7 +12,8 @@
     <depends>com.intellij.modules.lang</depends>
     -->
     <depends>com.intellij.modules.platform</depends>
-    <depends>Dart</depends>
+    <depends>io.flutter</depends>
+    <depends optional="true" config-file="yaml.xml">org.jetbrains.plugins.yaml</depends>
 
     <resource-bundle>message.ActionsBundle</resource-bundle>
 

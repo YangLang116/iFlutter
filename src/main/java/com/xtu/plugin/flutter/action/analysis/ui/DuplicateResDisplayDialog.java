@@ -46,18 +46,22 @@ public class DuplicateResDisplayDialog extends DialogWrapper {
         init();
     }
 
+    @Nullable
+    @NonNls
     @Override
-    protected @Nullable @NonNls String getDimensionServiceKey() {
+    protected String getDimensionServiceKey() {
         return DuplicateResDisplayDialog.class.getSimpleName();
     }
 
+    @NotNull
     @Override
-    protected Action @NotNull [] createActions() {
+    protected Action[] createActions() {
         return new Action[]{copyAction, getOKAction()};
     }
 
     @Override
-    protected @Nullable JComponent createCenterPanel() {
+    @Nullable
+    protected JComponent createCenterPanel() {
         //assemble data
         DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Duplicate File List");
         for (Map.Entry<String, List<File>> entry : this.duplicateData.entrySet()) {

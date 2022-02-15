@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="40" height="40" viewBox="0 0 120 120" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <g id="group_1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="group_2" transform="translate(4.000000, 15.001000)">
+            <polygon id="Fill-2" fill="#00D8C9"
+                     points="44.9856 9.23705556e-14 18.8316 26.154 33.4776 40.8 74.2796 9.23705556e-14"/>
+            <polygon id="Fill-3" fill="#FFBE3B"
+                     points="-6.57252031e-14 44.9856 14.646 59.6316 29.294 44.9856 14.646 30.3396"/>
+            <polygon id="Fill-4" fill="#00D8C9"
+                     points="74.2786 89.972 33.4786 49.17 18.8306 63.816 44.9866 89.972"/>
+            <polygon id="Fill-5" fill="#00B6BF"
+                     points="111.9838 90.013 52.3098 30.339 37.6638 44.985 82.7678 90.089"/>
+            <polygon id="Fill-6" fill="#00D8C9"
+                     points="93.1106 18.8294 52.3106 59.6314 37.6626 44.9854 63.8186 18.8294"/>
+        </g>
+    </g>
+</svg>

@@ -3,6 +3,11 @@
 ## [Coming]
 ### Changed
 
+## [1.1.6] - 2022-02-16
+### Changed
+- 添加PluginIcon
+- 修复Cache File Conflict问题
+
 ## [1.1.5] - 2022-02-14
 ### Changed
 - check latest package version

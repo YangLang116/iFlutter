@@ -2,8 +2,9 @@ package com.xtu.plugin.flutter.utils;
 
 import com.intellij.codeInsight.actions.AbstractLayoutCodeProcessor;
 import com.intellij.codeInsight.actions.ReformatCodeProcessor;
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
@@ -17,9 +18,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Properties;
 
-/**
- * 采用DartFmt命令格式化，避免iFlutter依赖Dart Plugin
- */
 public class DartUtils {
 
     private static String flutterPath;
@@ -51,6 +49,13 @@ public class DartUtils {
                 project,
                 PsiUtilCore.toPsiFileArray(list),
                 () -> {
+                    // 修复Dart插件`DartPostFormatProcessor` 仅同步document -psi，忽视了document - file的同步。
+                    // 导致出现 Cache File Conflict 问题
+                    FileDocumentManager fileDocumentManager = FileDocumentManager.getInstance();
+                    Document cachedDocument = fileDocumentManager.getCachedDocument(virtualFile);
+                    if (cachedDocument != null && fileDocumentManager.isDocumentUnsaved(cachedDocument)) {
+                        fileDocumentManager.saveDocument(cachedDocument);
+                    }
                     if (listener != null) listener.finishFormat(virtualFile);
                 },
                 false);

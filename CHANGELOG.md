@@ -3,10 +3,14 @@
 ## [Coming]
 ### Changed
 
+## [1.1.7] - 2022-02-16
+### Changed
+- convert dependency to local
+
 ## [1.1.6] - 2022-02-16
 ### Changed
-- 添加PluginIcon
-- 修复Cache File Conflict问题
+- add PluginIcon
+- fix Cache File Conflict
 
 ## [1.1.5] - 2022-02-14
 ### Changed

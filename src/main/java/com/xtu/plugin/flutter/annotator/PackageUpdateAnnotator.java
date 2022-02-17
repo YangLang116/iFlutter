@@ -8,50 +8,26 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.xtu.plugin.flutter.component.packages.update.PackageInfo;
 import com.xtu.plugin.flutter.service.StorageService;
-import com.xtu.plugin.flutter.utils.PluginUtils;
-import com.xtu.plugin.flutter.utils.PubspecUtils;
+import com.xtu.plugin.flutter.utils.YamlPsiUtils;
 import icons.PluginIcons;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.yaml.psi.YAMLFile;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLValue;
 
 import javax.swing.*;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
 public class PackageUpdateAnnotator implements Annotator {
 
-    private final List<String> dependencyList = List.of("dependencies", "dev_dependencies", "dependency_overrides");
-
 //    private static final String TIP_TO_FIX = "Package can Update";
-
-    private boolean isRootPubspec(@NotNull PsiElement element) {
-        YAMLFile yamlFile = PsiTreeUtil.getParentOfType(element, YAMLFile.class);
-        if (yamlFile == null) return false;
-        VirtualFile yamlVirtualFile = yamlFile.getVirtualFile();
-        if (yamlVirtualFile == null) return false;
-        Project project = element.getProject();
-        String projectPath = PluginUtils.getProjectPath(project);
-        if (StringUtils.isEmpty(projectPath)) return false;
-        return StringUtils.equals(yamlVirtualFile.getPath(), projectPath + "/" + PubspecUtils.getFileName());
-    }
-
-    private boolean isDependencyPsi(YAMLKeyValue psiElement) {
-        PsiElement key = psiElement.getKey();
-        if (key == null) return false;
-        return dependencyList.contains(key.getText());
-    }
 
     private String getPackageUrl(String packageName, YAMLValue value) {
         if (value instanceof YAMLMapping) {
@@ -85,11 +61,9 @@ public class PackageUpdateAnnotator implements Annotator {
     @Override
 
     public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
-        if (isRootPubspec(element) && element instanceof YAMLKeyValue) {
-            YAMLMapping parentMappingPsi = (YAMLMapping) element.getParent();
-            if (parentMappingPsi == null || !(parentMappingPsi.getParent() instanceof YAMLKeyValue)) return;
-            YAMLKeyValue dependencePsi = (YAMLKeyValue) parentMappingPsi.getParent();
-            if (!isDependencyPsi(dependencePsi)) return;
+        if (element instanceof YAMLKeyValue
+                && YamlPsiUtils.isRootPubspec(((YAMLKeyValue) element))
+                && YamlPsiUtils.isDependencyElement(((YAMLKeyValue) element))) {
             //element is package dependency psi
             String packageName = ((YAMLKeyValue) element).getKeyText();
             if (StringUtils.isEmpty(packageName)) return;

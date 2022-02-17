@@ -12,4 +12,5 @@ iFlutter is an IDEA Plugin for Developer of Flutter
   - 3、Dart代码生成
   - 4、Http接口Mock
   - 5、包检查更新
+  - 6、提取远程依赖
   

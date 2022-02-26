@@ -10,6 +10,7 @@ import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.StatusBar;
 import com.intellij.openapi.wm.WindowManager;
+import com.intellij.psi.PsiFile;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,6 +26,17 @@ public class PubspecUtils {
 
     public static String getFileName() {
         return "pubspec.yaml";
+    }
+
+    public static boolean isRootPubspecFile(PsiFile psiFile) {
+        if (psiFile == null) return false;
+        VirtualFile virtualFile = psiFile.getVirtualFile();
+        if (virtualFile == null) return false;
+        Project project = psiFile.getProject();
+        String projectPath = PluginUtils.getProjectPath(project);
+        if (StringUtils.isEmpty(projectPath)) return false;
+        String rootPubspecPath = projectPath + "/" + getFileName();
+        return StringUtils.equals(rootPubspecPath, virtualFile.getPath());
     }
 
     @Nullable

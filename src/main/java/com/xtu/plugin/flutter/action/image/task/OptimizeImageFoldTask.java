@@ -50,7 +50,7 @@ public class OptimizeImageFoldTask implements Runnable {
             String destFoldName = fileName.split("_")[0];
             String parentFoldName = imageFile.getParentFile().getName();
             if (parentFoldName.equals(destFoldName)) continue;
-            String relativePath = FileUtils.getAssetPath(projectPath, imageFile);
+            String relativePath = FileUtils.getRelativePath(projectPath, imageFile);
             File newImageDirectory = new File(imageDirectory, destFoldName);
             org.apache.commons.io.FileUtils.moveFileToDirectory(imageFile, newImageDirectory, true);
             pathMap.put(relativePath, imageDirectoryName + "/" + destFoldName + "/" + imageFile.getName());

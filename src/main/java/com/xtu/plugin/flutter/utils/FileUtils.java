@@ -22,7 +22,7 @@ public class FileUtils {
     }
 
     @Nullable
-    public static String getAssetPath(@NotNull String parentPath, File childFile) {
+    public static String getRelativePath(@NotNull String parentPath, File childFile) {
         File parentFile = new File(parentPath); //兼容windows
         String parentAbsolutePath = parentFile.getAbsolutePath();
         String childAbsolutePath = childFile.getAbsolutePath();

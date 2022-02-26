@@ -39,7 +39,7 @@ public class DuplicateResAnalysisTask implements Runnable {
 
     private void fillMd5ToMap(File file, Map<String, List<File>> listMap) {
         //show indicator text
-        String relativePath = FileUtils.getAssetPath(this.assetDirectory.getAbsolutePath(), file);
+        String relativePath = FileUtils.getRelativePath(this.assetDirectory.getAbsolutePath(), file);
         this.indicator.setText(relativePath);
         //fill data
         String fileMd5 = FileUtils.getMd5(file);

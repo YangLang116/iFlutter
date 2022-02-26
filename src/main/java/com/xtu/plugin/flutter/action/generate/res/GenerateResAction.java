@@ -47,7 +47,7 @@ public class GenerateResAction extends AnAction {
         }
         List<String> newAssetNameList = new ArrayList<>();
         for (File assetFile : assetFileList) {
-            String relativePath = FileUtils.getAssetPath(projectPath, assetFile);
+            String relativePath = FileUtils.getRelativePath(projectPath, assetFile);
             newAssetNameList.add(relativePath);
         }
         //duplicate and sort resource

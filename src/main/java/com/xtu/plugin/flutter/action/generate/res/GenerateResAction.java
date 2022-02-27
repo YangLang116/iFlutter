@@ -4,10 +4,7 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.xtu.plugin.flutter.component.assets.code.DartRFileGenerator;
-import com.xtu.plugin.flutter.utils.CollectionUtils;
-import com.xtu.plugin.flutter.utils.FileUtils;
-import com.xtu.plugin.flutter.utils.PluginUtils;
-import com.xtu.plugin.flutter.utils.PubspecUtils;
+import com.xtu.plugin.flutter.utils.*;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -47,8 +44,8 @@ public class GenerateResAction extends AnAction {
         }
         List<String> newAssetNameList = new ArrayList<>();
         for (File assetFile : assetFileList) {
-            String relativePath = FileUtils.getRelativePath(projectPath, assetFile);
-            newAssetNameList.add(relativePath);
+            String assetPath = AssetUtils.getAssetPath(projectPath, assetFile);
+            newAssetNameList.add(assetPath);
         }
         //duplicate and sort resource
         CollectionUtils.duplicateList(newAssetNameList);

@@ -54,6 +54,19 @@ public class OptimizeImageFoldTask implements Runnable {
         return new File(rootDirectory, subDirectoryName);
     }
 
+    //删除空文件夹
+    private void deleteEmptyDirectory(@NotNull File imageDirectory) {
+        File[] files = imageDirectory.listFiles();
+        if (files == null) return;
+        for (File file : files) {
+            if (file.isFile()) continue;
+            File[] subFileList = file.listFiles();
+            if (subFileList == null || subFileList.length < 1) {
+                boolean ignore = file.delete();
+            }
+        }
+    }
+
     private void optimizeImage(@NotNull Project project, @NotNull File imageDirectory) throws Exception {
         List<File> imageFileList = new ArrayList<>();
         FileUtils.scanDirectory(imageDirectory, imageFileList::add);
@@ -75,6 +88,8 @@ public class OptimizeImageFoldTask implements Runnable {
             pathMap.put(oldAssetPath, newAssetPath);
         }
         if (pathMap.size() <= 0) return;
+        //删除空目录
+        deleteEmptyDirectory(imageDirectory);
         //刷新images目录
         refreshDirectory(imageDirectory);
         //更新dart文件中所有资源引用

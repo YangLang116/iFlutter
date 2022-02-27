@@ -1,20 +1,23 @@
 package com.xtu.plugin.flutter.utils;
 
 import com.amihaiemil.eoyaml.*;
+import com.intellij.openapi.application.Application;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectUtil;
 import com.intellij.openapi.ui.MessageType;
-import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.StatusBar;
 import com.intellij.openapi.wm.WindowManager;
+import com.intellij.psi.PsiDocumentManager;
+import com.intellij.psi.PsiFile;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
 import java.io.OutputStreamWriter;
 import java.util.*;
 
@@ -27,12 +30,22 @@ public class PubspecUtils {
         return "pubspec.yaml";
     }
 
+    public static boolean isRootPubspecFile(PsiFile psiFile) {
+        if (psiFile == null) return false;
+        VirtualFile virtualFile = psiFile.getVirtualFile();
+        if (virtualFile == null) return false;
+        Project project = psiFile.getProject();
+        String projectPath = PluginUtils.getProjectPath(project);
+        if (StringUtils.isEmpty(projectPath)) return false;
+        String rootPubspecPath = projectPath + "/" + getFileName();
+        return StringUtils.equals(rootPubspecPath, virtualFile.getPath());
+    }
+
     @Nullable
     private static VirtualFile getPubspecFile(@NotNull Project project) {
-        String projectPath = PluginUtils.getProjectPath(project);
-        if (StringUtils.isEmpty(projectPath)) return null;
-        File pubSpec = new File(projectPath, getFileName());
-        return LocalFileSystem.getInstance().findFileByIoFile(pubSpec);
+        VirtualFile projectDir = ProjectUtil.guessProjectDir(project);
+        if (projectDir == null) return null;
+        return projectDir.findChild(getFileName());
     }
 
     private static YamlMapping readYamlContent(@NotNull VirtualFile pubSpecFile) throws Exception {
@@ -108,15 +121,20 @@ public class PubspecUtils {
 
     // read asset list from pubspec file
     public static void readAssetAtReadAction(@NotNull Project project, @NotNull YamlReadListener listener) {
-        ReadAction.run(() -> {
-            try {
-                List<String> assetList = getAssetList(project);
-                listener.onGet(assetList);
-            } catch (Exception exception) {
-                LogUtils.error("PubspecUtils readAssetAtReadAction -> " + exception.getMessage());
-                ToastUtil.make(project, MessageType.ERROR, exception.getMessage());
-            }
-        });
+        ApplicationManager.getApplication()
+                .invokeLater(() -> WriteAction.run(() -> {
+                    //保存所有修改
+                    PsiDocumentManager.getInstance(project).commitAllDocuments();
+                    ReadAction.run(() -> {
+                        try {
+                            List<String> assetList = getAssetList(project);
+                            listener.onGet(assetList);
+                        } catch (Exception exception) {
+                            LogUtils.error("PubspecUtils readAssetAtReadAction -> " + exception.getMessage());
+                            ToastUtil.make(project, MessageType.ERROR, exception.getMessage());
+                        }
+                    });
+                }));
     }
 
     // write asset to pubspec file

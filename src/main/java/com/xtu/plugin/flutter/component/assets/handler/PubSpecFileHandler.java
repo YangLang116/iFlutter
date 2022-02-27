@@ -2,13 +2,10 @@ package com.xtu.plugin.flutter.component.assets.handler;
 
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.xtu.plugin.flutter.component.assets.code.DartRFileGenerator;
 import com.xtu.plugin.flutter.utils.LogUtils;
-import com.xtu.plugin.flutter.utils.PluginUtils;
 import com.xtu.plugin.flutter.utils.PubspecUtils;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
@@ -42,16 +39,10 @@ public class PubSpecFileHandler {
 
 
     public void onPsiFileChanged(PsiFile psiFile) {
-        if (psiFile == null) return;
-        VirtualFile virtualFile = psiFile.getVirtualFile();
-        if (virtualFile == null) return;
-        Project project = psiFile.getProject();
-        String projectPath = PluginUtils.getProjectPath(project);
-        if (StringUtils.isEmpty(projectPath)) return;
-        String rootPubspecPath = projectPath + "/" + PubspecUtils.getFileName();
         //root package pubspec.yaml changed
-        if (StringUtils.equals(rootPubspecPath, virtualFile.getPath())) {
+        if (PubspecUtils.isRootPubspecFile(psiFile)) {
             LogUtils.info("PubSpecFileHandler pubspec.yaml changed");
+            final Project project = psiFile.getProject();
             PubspecUtils.readAssetAtReadAction(project, assetList ->
                     //psi event thread，need invoke late
                     ApplicationManager.getApplication().invokeLater(() -> DartRFileGenerator.getInstance().generate(project, assetList)));

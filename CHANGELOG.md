@@ -3,6 +3,10 @@
 ## [Coming]
 ### Changed
 
+## [1.2.0] - 2022-02-27
+### Changed
+- compatible dimension
+
 ## [1.1.7] - 2022-02-16
 ### Changed
 - convert dependency to local

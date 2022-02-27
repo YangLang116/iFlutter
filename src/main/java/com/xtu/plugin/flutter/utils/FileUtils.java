@@ -1,5 +1,6 @@
 package com.xtu.plugin.flutter.utils;
 
+import com.intellij.psi.PsiFile;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
@@ -8,6 +9,13 @@ import org.jetbrains.annotations.Nullable;
 import java.io.*;
 
 public class FileUtils {
+
+    @Nullable
+    public static File fromPsiFile(PsiFile psiFile) {
+        if (psiFile == null) return null;
+        String filePath = psiFile.getVirtualFile().getPath();
+        return new File(filePath);
+    }
 
     public static String getMd5(@NotNull File file) {
         FileInputStream inputStream = null;
@@ -22,7 +30,7 @@ public class FileUtils {
     }
 
     @Nullable
-    public static String getAssetPath(@NotNull String parentPath, File childFile) {
+    public static String getRelativePath(@NotNull String parentPath, File childFile) {
         File parentFile = new File(parentPath); //兼容windows
         String parentAbsolutePath = parentFile.getAbsolutePath();
         String childAbsolutePath = childFile.getAbsolutePath();

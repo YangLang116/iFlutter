@@ -133,7 +133,7 @@ public class ConvertDependencyToLocalTask extends Task.Backgroundable {
             removeAnnotator(project, packageName);
             LocalFileSystem.getInstance()
                     .refreshAndFindFileByIoFile(localDependencyFile);
-            String relativePath = com.xtu.plugin.flutter.utils.FileUtils.getAssetPath(projectPath, localDependencyFile);
+            String relativePath = com.xtu.plugin.flutter.utils.FileUtils.getRelativePath(projectPath, localDependencyFile);
 //          创建新的psi，并替换老的依赖方式
 //          flutter_custom_calendar:
 //              path: dependencies/flutter_custom_calendar

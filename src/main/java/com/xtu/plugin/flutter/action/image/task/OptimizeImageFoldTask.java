@@ -5,6 +5,7 @@ import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.xtu.plugin.flutter.utils.*;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -55,15 +56,16 @@ public class OptimizeImageFoldTask implements Runnable {
     }
 
     //删除空文件夹
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private void deleteEmptyDirectory(@NotNull File imageDirectory) {
         File[] files = imageDirectory.listFiles();
-        if (files == null) return;
+        if (ArrayUtils.isEmpty(files)) {
+            imageDirectory.delete();
+            return;
+        }
         for (File file : files) {
             if (file.isFile()) continue;
-            File[] subFileList = file.listFiles();
-            if (subFileList == null || subFileList.length < 1) {
-                boolean ignore = file.delete();
-            }
+            deleteEmptyDirectory(file);
         }
     }
 

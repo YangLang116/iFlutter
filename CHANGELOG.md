@@ -3,6 +3,10 @@
 ## [Coming]
 ### Changed
 
+## [1.2.1] - 2022-02-28
+### Changed
+- optimize psi
+
 ## [1.2.0] - 2022-02-27
 ### Changed
 - compatible dimension

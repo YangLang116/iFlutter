@@ -123,12 +123,12 @@ public class OptimizeImageFoldTask implements Runnable {
             }
         }
         //更新pubspec.yaml中资源引用
-        PubspecUtils.readAssetAtReadAction(project, assetList -> {
+        PubspecUtils.readAsset(project, assetList -> {
             List<String> newAssetList = new ArrayList<>();
             for (String asset : assetList) {
                 newAssetList.add(pathMap.getOrDefault(asset, asset));
             }
-            PubspecUtils.writeAssetAtWriteAction(project, newAssetList);
+            PubspecUtils.writeAsset(project, newAssetList);
         });
     }
 

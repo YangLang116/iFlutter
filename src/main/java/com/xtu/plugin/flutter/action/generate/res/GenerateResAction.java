@@ -50,12 +50,12 @@ public class GenerateResAction extends AnAction {
         //duplicate and sort resource
         CollectionUtils.duplicateList(newAssetNameList);
         Collections.sort(newAssetNameList);
-        PubspecUtils.readAssetAtReadAction(project, assetList -> {
+        PubspecUtils.readAsset(project, assetList -> {
             //force refresh R file
             if (newAssetNameList.equals(assetList)) {
                 DartRFileGenerator.getInstance().generate(project, assetList);
             } else { //update asset
-                PubspecUtils.writeAssetAtWriteAction(project, newAssetNameList);
+                PubspecUtils.writeAsset(project, newAssetNameList);
             }
         });
     }

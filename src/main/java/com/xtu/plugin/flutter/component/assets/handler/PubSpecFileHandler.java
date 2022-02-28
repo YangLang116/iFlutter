@@ -14,26 +14,26 @@ public class PubSpecFileHandler {
 
     void addAsset(@NotNull Project project, String assetName) {
         LogUtils.info("PubSpecFileHandler addAsset: " + assetName);
-        PubspecUtils.readAssetAtReadAction(project, assetList -> {
+        PubspecUtils.readAsset(project, assetList -> {
             assetList.add(assetName);
-            PubspecUtils.writeAssetAtWriteAction(project, assetList);
+            PubspecUtils.writeAsset(project, assetList);
         });
     }
 
     void removeAsset(@NotNull Project project, String assetName) {
         LogUtils.info("PubSpecFileHandler removeAsset: " + assetName);
-        PubspecUtils.readAssetAtReadAction(project, assetList -> {
+        PubspecUtils.readAsset(project, assetList -> {
             assetList.remove(assetName);
-            PubspecUtils.writeAssetAtWriteAction(project, assetList);
+            PubspecUtils.writeAsset(project, assetList);
         });
     }
 
     void changeAsset(Project project, String oldAssetName, String newAssetName) {
         LogUtils.info(String.format(Locale.ROOT, "PubSpecFileHandler changeAsset(%s -> %s)", oldAssetName, newAssetName));
-        PubspecUtils.readAssetAtReadAction(project, assetList -> {
+        PubspecUtils.readAsset(project, assetList -> {
             assetList.remove(oldAssetName);
             assetList.add(newAssetName);
-            PubspecUtils.writeAssetAtWriteAction(project, assetList);
+            PubspecUtils.writeAsset(project, assetList);
         });
     }
 
@@ -43,7 +43,7 @@ public class PubSpecFileHandler {
         if (PubspecUtils.isRootPubspecFile(psiFile)) {
             LogUtils.info("PubSpecFileHandler pubspec.yaml changed");
             final Project project = psiFile.getProject();
-            PubspecUtils.readAssetAtReadAction(project, assetList ->
+            PubspecUtils.readAsset(project, assetList ->
                     //psi event thread，need invoke late
                     ApplicationManager.getApplication().invokeLater(() -> DartRFileGenerator.getInstance().generate(project, assetList)));
         }

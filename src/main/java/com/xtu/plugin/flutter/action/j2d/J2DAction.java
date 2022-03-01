@@ -10,8 +10,6 @@ import com.xtu.plugin.flutter.utils.PluginUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-
 public class J2DAction extends AnAction {
 
     @Override
@@ -29,18 +27,19 @@ public class J2DAction extends AnAction {
         }
         String path = virtualFile.getPath();
         boolean isLibChildPath = path.startsWith(projectPath + "/lib");
-        if (!isLibChildPath) {
+        if (isLibChildPath) {
+            e.getPresentation().setVisible(virtualFile.isDirectory());
+        } else {
             e.getPresentation().setVisible(false);
-            return;
         }
-        e.getPresentation().setVisible(virtualFile.isDirectory());
     }
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
         Project project = e.getProject();
-        VirtualFile selectDirectory = e.getData(PlatformDataKeys.VIRTUAL_FILE);
-        J2DDialog dialog = new J2DDialog(project, selectDirectory);
+        VirtualFile virtualDirectory = e.getData(PlatformDataKeys.VIRTUAL_FILE);
+        if (project == null || virtualDirectory == null) return;
+        J2DDialog dialog = new J2DDialog(project, virtualDirectory);
         dialog.show();
     }
 }

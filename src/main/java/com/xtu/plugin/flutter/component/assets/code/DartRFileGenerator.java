@@ -1,12 +1,9 @@
 package com.xtu.plugin.flutter.component.assets.code;
 
-import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.wm.StatusBar;
-import com.intellij.openapi.wm.WindowManager;
 import com.xtu.plugin.flutter.service.StorageService;
 import com.xtu.plugin.flutter.utils.*;
 import org.apache.commons.lang.StringUtils;
@@ -32,40 +29,36 @@ public class DartRFileGenerator {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public void generate(Project project, List<String> assetList) {
-        WriteAction.run(() -> {
-            try {
-                File libDirectory = new File(project.getBasePath(), "lib");
-                VirtualFile libVirtualDirectory = LocalFileSystem.getInstance().findFileByIoFile(libDirectory);
-                assert libVirtualDirectory != null;
-                //create new res
-                Map<String, List<String>> assetCategory = new HashMap<>();
-                for (String assetFileName : assetList) {
-                    String assetDirName = assetFileName.substring(0, assetFileName.indexOf("/"));
-                    if (!assetCategory.containsKey(assetDirName))
-                        assetCategory.put(assetDirName, new ArrayList<>());
-                    List<String> assets = assetCategory.get(assetDirName);
-                    assets.add(assetFileName);
+        //create new res
+        Map<String, List<String>> assetCategory = new HashMap<>();
+        for (String assetFileName : assetList) {
+            String assetDirName = assetFileName.substring(0, assetFileName.indexOf("/"));
+            if (!assetCategory.containsKey(assetDirName))
+                assetCategory.put(assetDirName, new ArrayList<>());
+            List<String> assets = assetCategory.get(assetDirName);
+            assets.add(assetFileName);
+        }
+        try {
+            //virtual file
+            File libDirectory = new File(project.getBasePath(), "lib");
+            LocalFileSystem localFileSystem = LocalFileSystem.getInstance();
+            final VirtualFile libVirtualDirectory = localFileSystem.refreshAndFindFileByIoFile(libDirectory);
+            assert libVirtualDirectory != null;
+            VirtualFile resVirtualDirectory = libVirtualDirectory.findChild("res");
+            if (assetCategory.size() > 0) {
+                if (resVirtualDirectory == null) {
+                    resVirtualDirectory = libVirtualDirectory.createChildDirectory(project, "res");
                 }
-                VirtualFile resVirtualDirectory = libVirtualDirectory.findChild("res");
-                if (assetCategory.size() > 0) {
-                    if (resVirtualDirectory == null) {
-                        resVirtualDirectory = libVirtualDirectory.createChildDirectory(project, "res");
-                    }
-                    for (Map.Entry<String, List<String>> entry : assetCategory.entrySet()) {
-                        generateFile(project, resVirtualDirectory, entry.getKey(), entry.getValue());
-                    }
-                } else if (resVirtualDirectory != null) {
-                    resVirtualDirectory.delete(project);
+                for (Map.Entry<String, List<String>> entry : assetCategory.entrySet()) {
+                    generateFile(project, resVirtualDirectory, entry.getKey(), entry.getValue());
                 }
-                StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);
-                if (statusBar != null) {
-                    statusBar.setInfo("R File Update Success");
-                }
-            } catch (Exception e) {
-                LogUtils.error("DartRFileGenerator generate: " + e.getMessage());
-                ToastUtil.make(project, MessageType.ERROR, e.getMessage());
+            } else if (resVirtualDirectory != null) {
+                resVirtualDirectory.delete(project);
             }
-        });
+        } catch (Exception e) {
+            LogUtils.error("DartRFileGenerator generate: " + e.getMessage());
+            ToastUtil.make(project, MessageType.ERROR, e.getMessage());
+        }
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")

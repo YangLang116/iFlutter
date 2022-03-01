@@ -48,19 +48,18 @@ public class PubspecUtils {
     }
 
     @Nullable
-    private static PsiFile getRootPubspecFile(@NotNull Project project) {
+    private static YAMLFile getRootPubspecFile(@NotNull Project project) {
         VirtualFile rootProjectDir = ProjectUtil.guessProjectDir(project);
         if (rootProjectDir == null) return null;
         VirtualFile rootPubspecFile = rootProjectDir.findChild(getFileName());
         if (rootPubspecFile == null) return null;
-        return PsiManager.getInstance(project).findFile(rootPubspecFile);
+        return (YAMLFile) PsiManager.getInstance(project).findFile(rootPubspecFile);
     }
 
     @Nullable
     private static YAMLSequence getAssetSequence(@NotNull Project project) {
-        PsiFile rootPubspecFile = getRootPubspecFile(project);
-        if (rootPubspecFile == null) return null;
-        YAMLFile yamlFile = (YAMLFile) rootPubspecFile;
+        YAMLFile yamlFile = getRootPubspecFile(project);
+        if (yamlFile == null) return null;
         YAMLDocument document = yamlFile.getDocuments().get(0);
         YAMLMapping rootMapping = (YAMLMapping) document.getTopLevelValue();
         if (rootMapping == null) return null;
@@ -86,39 +85,48 @@ public class PubspecUtils {
 
     private static void readAssetInReadAction(@NotNull Project project, @NotNull YamlReadListener listener) {
         ReadAction.run(() -> {
-            YAMLSequence assetSequence = getAssetSequence(project);
-            if (assetSequence == null) return;
-            List<YAMLSequenceItem> assetSequenceItems = assetSequence.getItems();
             List<String> assetList = new ArrayList<>();
-            for (YAMLSequenceItem assetSequenceItem : assetSequenceItems) {
-                YAMLValue itemValue = assetSequenceItem.getValue();
-                if (itemValue == null) continue;
-                assetList.add(itemValue.getText());
+            YAMLSequence assetSequence = getAssetSequence(project);
+            if (assetSequence != null) {
+                List<YAMLSequenceItem> assetSequenceItems = assetSequence.getItems();
+                for (YAMLSequenceItem assetSequenceItem : assetSequenceItems) {
+                    YAMLValue itemValue = assetSequenceItem.getValue();
+                    if (itemValue == null) continue;
+                    String itemText = itemValue.getText();
+                    if (StringUtils.isEmpty(itemText)) continue;
+                    assetList.add(itemText);
+                }
+                CollectionUtils.duplicateList(assetList);
+                Collections.sort(assetList);
             }
-            CollectionUtils.duplicateList(assetList);
-            Collections.sort(assetList);
             listener.onGet(assetList);
         });
     }
 
     public static void writeAsset(@NotNull Project project,
                                   @NotNull List<String> assetList) {
+        //pure asset list
+        CollectionUtils.duplicateList(assetList);
+        Collections.sort(assetList);
         ReadAction.run(() -> {
-            YAMLSequence assetSequence = getAssetSequence(project);
-            if (assetSequence == null) return;
-            CollectionUtils.duplicateList(assetList);
-            Collections.sort(assetList);
+            YAMLSequence oldAssetSequence = getAssetSequence(project);
             ApplicationManager.getApplication()
                     .invokeLater(() -> WriteCommandAction.runWriteCommandAction(project, () -> {
-                        StringBuilder newAssetBuilder = new StringBuilder();
-                        for (String asset : assetList) {
-                            newAssetBuilder.append("- ").append(asset).append("\n");
-                        }
                         YAMLElementGenerator elementGenerator = YAMLElementGenerator.getInstance(project);
-                        YAMLFile tempYamlFile = elementGenerator.createDummyYamlWithText(newAssetBuilder.toString());
-                        YAMLSequence newAssetSequence = PsiTreeUtil.findChildOfType(tempYamlFile, YAMLSequence.class);
+                        YAMLSequence newAssetSequence;
+                        if (CollectionUtils.isEmpty(assetList)) {
+                            newAssetSequence = elementGenerator.createEmptySequence();
+                        } else {
+                            StringBuilder newAssetBuilder = new StringBuilder();
+                            for (String asset : assetList) {
+                                newAssetBuilder.append("- ").append(asset).append("\n");
+                            }
+                            YAMLFile tempYamlFile = elementGenerator.createDummyYamlWithText(newAssetBuilder.toString());
+                            newAssetSequence = PsiTreeUtil.findChildOfType(tempYamlFile, YAMLSequence.class);
+                        }
                         if (newAssetSequence == null) return;
-                        PsiElement placeElement = assetSequence.replace(newAssetSequence);
+                        PsiElement placeElement = mountNewAssetSequence(project, newAssetSequence, elementGenerator, oldAssetSequence);
+                        if (placeElement == null) return;
                         PsiFile psiFile = PsiTreeUtil.getParentOfType(placeElement, PsiFile.class);
                         assert psiFile != null;
                         PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(project);
@@ -134,6 +142,40 @@ public class PubspecUtils {
                     }));
         });
     }
+
+    @Nullable
+    private static PsiElement mountNewAssetSequence(@NotNull Project project,
+                                                    @NotNull YAMLSequence newAssetSequence,
+                                                    @NotNull YAMLElementGenerator elementGenerator,
+                                                    @Nullable YAMLSequence oldAssetSequence) {
+        if (oldAssetSequence != null) {
+            return oldAssetSequence.replace(newAssetSequence);
+        }
+        //add psiElement to Psi Tree
+        YAMLFile psiFile = getRootPubspecFile(project);
+        if (psiFile == null) return null;
+        YAMLDocument document = psiFile.getDocuments().get(0);
+        YAMLValue topLevelValue = document.getTopLevelValue();
+        if (!(topLevelValue instanceof YAMLMapping)) return null;
+        YAMLKeyValue flutterKeyValue = ((YAMLMapping) topLevelValue).getKeyValueByKey(NODE_FLUTTER);
+        //ensure flutter psi exist
+        if (flutterKeyValue == null || flutterKeyValue.getValue() == null) {
+            flutterKeyValue = elementGenerator.createYamlKeyValue(NODE_FLUTTER, NODE_ASSET + ":temp");
+            ((YAMLMapping) topLevelValue).putKeyValue(flutterKeyValue);
+            YAMLMapping flutterValue = ((YAMLMapping) flutterKeyValue.getValue());
+            assert flutterValue != null;
+            YAMLKeyValue assetKeyValue = flutterValue.getKeyValueByKey(NODE_ASSET);
+            assert assetKeyValue != null;
+            assetKeyValue.setValue(newAssetSequence);
+            return newAssetSequence;
+        }
+        YAMLMapping flutterValue = (YAMLMapping) flutterKeyValue.getValue();
+        YAMLKeyValue assetKeyValue = elementGenerator.createYamlKeyValue(NODE_ASSET, "");
+        assetKeyValue.setValue(newAssetSequence);
+        flutterValue.putKeyValue(assetKeyValue);
+        return newAssetSequence;
+    }
+
 
     private static void notifyPubspecUpdate(Project project) {
         StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);

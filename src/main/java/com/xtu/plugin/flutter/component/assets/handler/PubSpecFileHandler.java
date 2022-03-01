@@ -1,6 +1,5 @@
 package com.xtu.plugin.flutter.component.assets.handler;
 
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.xtu.plugin.flutter.component.assets.code.DartRFileGenerator;
@@ -44,8 +43,7 @@ public class PubSpecFileHandler {
             LogUtils.info("PubSpecFileHandler pubspec.yaml changed");
             final Project project = psiFile.getProject();
             PubspecUtils.readAsset(project, assetList ->
-                    //psi event thread，need invoke late
-                    ApplicationManager.getApplication().invokeLater(() -> DartRFileGenerator.getInstance().generate(project, assetList)));
+                    DartRFileGenerator.getInstance().generate(project, assetList));
         }
     }
 

@@ -1,12 +1,10 @@
 package com.xtu.plugin.flutter.action.j2d.ui;
 
-import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.MessageType;
-import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.StatusBar;
 import com.intellij.openapi.wm.WindowManager;
@@ -14,7 +12,10 @@ import com.intellij.ui.components.JBScrollPane;
 import com.intellij.util.ui.JBUI;
 import com.xtu.plugin.flutter.action.j2d.generate.J2DGenerator;
 import com.xtu.plugin.flutter.service.StorageService;
-import com.xtu.plugin.flutter.utils.*;
+import com.xtu.plugin.flutter.utils.DartUtils;
+import com.xtu.plugin.flutter.utils.LogUtils;
+import com.xtu.plugin.flutter.utils.StringUtil;
+import com.xtu.plugin.flutter.utils.ToastUtil;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,7 +25,6 @@ import org.json.JSONObject;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 
 public class J2DDialog extends DialogWrapper {
 
@@ -136,7 +136,7 @@ public class J2DDialog extends DialogWrapper {
             JSONObject jsonObject = new JSONObject(jsonData);
             J2DGenerator generator = new J2DGenerator(enableFlutter2);
             final String result = generator.generate(className, jsonObject);
-            WriteAction.run(() -> writeTask(project, selectDirectory, fileName, result));
+            writeTask(project, selectDirectory, fileName, result);
         } catch (Exception e) {
             ToastUtil.make(project, MessageType.ERROR, e.getMessage());
         }

@@ -1,11 +1,10 @@
 package com.xtu.plugin.flutter.utils;
 
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.WriteAction;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.codeStyle.CodeStyleManager;
@@ -48,8 +47,6 @@ public class DartUtils {
         if (psiFile != null) {
             CodeStyleManager.getInstance(project).reformat(psiFile);
         }
-        PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(project);
-        psiDocumentManager.commitAllDocuments();
         listener.finishFormat(virtualFile);
     }
 
@@ -65,7 +62,7 @@ public class DartUtils {
                                       String fileContent,
                                       OnCreateDartFileListener listener) {
         ApplicationManager.getApplication()
-                .invokeLater(() -> WriteAction.run(() -> {
+                .invokeLater(() -> WriteCommandAction.runWriteCommandAction(project, () -> {
                     try {
                         VirtualFile childFile = parentDirectory.findChild(fileName);
                         if (childFile == null) {

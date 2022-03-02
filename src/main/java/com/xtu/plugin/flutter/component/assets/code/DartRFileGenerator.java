@@ -49,10 +49,22 @@ public class DartRFileGenerator {
                 if (resVirtualDirectory == null) {
                     resVirtualDirectory = libVirtualDirectory.createChildDirectory(project, "res");
                 }
+                List<String> usefulFileNameList = new ArrayList<>();
                 for (Map.Entry<String, List<String>> entry : assetCategory.entrySet()) {
-                    generateFile(project, resVirtualDirectory, entry.getKey(), entry.getValue());
+                    String fileName = generateFile(project, resVirtualDirectory, entry.getKey(), entry.getValue());
+                    usefulFileNameList.add(fileName);
+                }
+                //删除无用文件
+                VirtualFile[] childrenFileList = resVirtualDirectory.getChildren();
+                if (childrenFileList != null) {
+                    for (VirtualFile virtualFile : childrenFileList) {
+                        String subFileName = virtualFile.getName();
+                        if (usefulFileNameList.contains(subFileName)) continue;
+                        virtualFile.delete(project);
+                    }
                 }
             } else if (resVirtualDirectory != null) {
+                //删除无用文件
                 resVirtualDirectory.delete(project);
             }
         } catch (Exception e) {
@@ -62,7 +74,8 @@ public class DartRFileGenerator {
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    private void generateFile(Project project, VirtualFile rDirectory, String assetDirName, List<String> assetFileNames) throws IOException {
+    @NotNull
+    private String generateFile(Project project, VirtualFile rDirectory, String assetDirName, List<String> assetFileNames) throws IOException {
         String className = StringUtil.upFirstChar(assetDirName) + "Res";
         StringBuilder fileStringBuilder = new StringBuilder();
         fileStringBuilder.append("/// This is a generated file do not edit.\n\n")
@@ -87,6 +100,7 @@ public class DartRFileGenerator {
                 ToastUtil.make(project, MessageType.ERROR, message);
             }
         });
+        return fileName;
     }
 
     private String getResName(String assetFileName) {

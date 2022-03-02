@@ -25,9 +25,7 @@ public class AssetUtils {
     //获取asset配置
     @Nullable
     public static String getAssetPath(String projectPath, File assetFile) {
-        if (StringUtils.isEmpty(projectPath)
-                || assetFile == null)
-            return null;
+        if (StringUtils.isEmpty(projectPath) || assetFile == null) return null;
         String relativePath = FileUtils.getRelativePath(projectPath, assetFile);
         if (StringUtils.isEmpty(relativePath)) return null;
         String parentName = assetFile.getParentFile().getName();

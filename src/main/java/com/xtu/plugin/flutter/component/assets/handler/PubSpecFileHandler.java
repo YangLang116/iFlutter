@@ -7,14 +7,15 @@ import com.xtu.plugin.flutter.utils.LogUtils;
 import com.xtu.plugin.flutter.utils.PubspecUtils;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Locale;
 
 public class PubSpecFileHandler {
 
-    void addAsset(@NotNull Project project, String assetName) {
-        LogUtils.info("PubSpecFileHandler addAsset: " + assetName);
+    void addAsset(@NotNull Project project, @NotNull List<String> assetNameList) {
+        LogUtils.info("PubSpecFileHandler addAsset: " + assetNameList);
         PubspecUtils.readAsset(project, assetList -> {
-            assetList.add(assetName);
+            assetList.addAll(assetNameList);
             PubspecUtils.writeAsset(project, assetList);
         });
     }

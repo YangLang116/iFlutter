@@ -11,7 +11,6 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.StatusBar;
 import com.intellij.openapi.wm.WindowManager;
 import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.codeStyle.CodeStyleManager;
@@ -36,6 +35,7 @@ public class PubspecUtils {
         return "pubspec.yaml";
     }
 
+    //判断当前文件是否根目录pubspec.yaml文件
     public static boolean isRootPubspecFile(PsiFile psiFile) {
         if (psiFile == null) return false;
         VirtualFile virtualFile = psiFile.getVirtualFile();
@@ -47,6 +47,7 @@ public class PubspecUtils {
         return StringUtils.equals(rootPubspecPath, virtualFile.getPath());
     }
 
+    //获取根目录pubspec.yaml文件psi
     @Nullable
     private static YAMLFile getRootPubspecFile(@NotNull Project project) {
         VirtualFile rootProjectDir = ProjectUtil.guessProjectDir(project);
@@ -56,12 +57,19 @@ public class PubspecUtils {
         return (YAMLFile) PsiManager.getInstance(project).findFile(rootPubspecFile);
     }
 
+    //读取pubspec.yaml文件顶级YAMLValue内容
     @Nullable
-    private static YAMLSequence getAssetSequence(@NotNull Project project) {
+    private static YAMLMapping getTopLevelMapping(@NotNull Project project) {
         YAMLFile yamlFile = getRootPubspecFile(project);
         if (yamlFile == null) return null;
         YAMLDocument document = yamlFile.getDocuments().get(0);
-        YAMLMapping rootMapping = (YAMLMapping) document.getTopLevelValue();
+        return (YAMLMapping) document.getTopLevelValue();
+    }
+
+    //读取flutter#asset内容
+    @Nullable
+    private static YAMLSequence getAssetSequence(@NotNull Project project) {
+        YAMLMapping rootMapping = getTopLevelMapping(project);
         if (rootMapping == null) return null;
         YAMLKeyValue flutterKeyValue = rootMapping.getKeyValueByKey(NODE_FLUTTER);
         if (flutterKeyValue == null) return null;
@@ -74,7 +82,7 @@ public class PubspecUtils {
         return (YAMLSequence) assetValue;
     }
 
-    // read asset list from pubspec file
+    // 读取资源列表
     public static void readAsset(@NotNull Project project, @NotNull YamlReadListener listener) {
         ApplicationManager.getApplication()
                 .invokeLater(() -> WriteAction.run(() -> {
@@ -103,6 +111,7 @@ public class PubspecUtils {
         });
     }
 
+    //更新资源列表
     public static void writeAsset(@NotNull Project project,
                                   @NotNull List<String> assetList) {
         //pure asset list
@@ -113,69 +122,64 @@ public class PubspecUtils {
             ApplicationManager.getApplication()
                     .invokeLater(() -> WriteCommandAction.runWriteCommandAction(project, () -> {
                         YAMLElementGenerator elementGenerator = YAMLElementGenerator.getInstance(project);
-                        YAMLSequence newAssetSequence;
-                        if (CollectionUtils.isEmpty(assetList)) {
-                            newAssetSequence = elementGenerator.createEmptySequence();
-                        } else {
-                            StringBuilder newAssetBuilder = new StringBuilder();
-                            for (String asset : assetList) {
-                                newAssetBuilder.append("- ").append(asset).append("\n");
+                        //asset is configuration
+                        if (oldAssetSequence != null) {
+                            YAMLSequence newAssetSequence;
+                            if (CollectionUtils.isEmpty(assetList)) {
+                                newAssetSequence = elementGenerator.createEmptySequence();
+                            } else {
+                                StringBuilder newAssetBuilder = new StringBuilder();
+                                for (String asset : assetList) {
+                                    newAssetBuilder.append("- ").append(asset).append("\n");
+                                }
+                                YAMLFile tempYamlFile = elementGenerator.createDummyYamlWithText(newAssetBuilder.toString());
+                                newAssetSequence = PsiTreeUtil.findChildOfType(tempYamlFile, YAMLSequence.class);
                             }
-                            YAMLFile tempYamlFile = elementGenerator.createDummyYamlWithText(newAssetBuilder.toString());
-                            newAssetSequence = PsiTreeUtil.findChildOfType(tempYamlFile, YAMLSequence.class);
+                            if (newAssetSequence == null) return;
+                            oldAssetSequence.replace(newAssetSequence);
+                        } else {
+                            YAMLMapping topLevelMapping = getTopLevelMapping(project);
+                            if (topLevelMapping == null) return;
+                            YAMLKeyValue flutterKeyValue = topLevelMapping.getKeyValueByKey(NODE_FLUTTER);
+                            if (flutterKeyValue == null || !(flutterKeyValue.getValue() instanceof YAMLMapping)) {
+                                //add flutter psi
+                                StringBuilder flutterPsiBuilder = new StringBuilder()
+                                        .append("flutter:\n  assets:\n");
+                                for (String asset : assetList) {
+                                    flutterPsiBuilder.append("    - ").append(asset).append("\n");
+                                }
+                                YAMLFile tempYamlFile = elementGenerator.createDummyYamlWithText(flutterPsiBuilder.toString());
+                                YAMLKeyValue newFlutterKeyValue = PsiTreeUtil.findChildOfType(tempYamlFile, YAMLKeyValue.class);
+                                if (newFlutterKeyValue == null) return;
+                                topLevelMapping.putKeyValue(newFlutterKeyValue);
+                            } else {
+                                //add flutter#asset psi
+                                YAMLMapping flutterValue = (YAMLMapping) flutterKeyValue.getValue();
+                                StringBuilder assetPsiBuilder = new StringBuilder("assets:\n");
+                                for (String asset : assetList) {
+                                    assetPsiBuilder.append("  - ").append(asset).append("\n");
+                                }
+                                YAMLFile tempYamlFile = elementGenerator.createDummyYamlWithText(assetPsiBuilder.toString());
+                                YAMLKeyValue newAssetKeyValue = PsiTreeUtil.findChildOfType(tempYamlFile, YAMLKeyValue.class);
+                                if (newAssetKeyValue == null) return;
+                                flutterValue.putKeyValue(newAssetKeyValue);
+                            }
                         }
-                        if (newAssetSequence == null) return;
-                        PsiElement placeElement = mountNewAssetSequence(project, newAssetSequence, elementGenerator, oldAssetSequence);
-                        if (placeElement == null) return;
-                        PsiFile psiFile = PsiTreeUtil.getParentOfType(placeElement, PsiFile.class);
-                        assert psiFile != null;
+                        YAMLFile rootPubspecFile = getRootPubspecFile(project);
+                        assert rootPubspecFile != null;
                         PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(project);
-                        Document document = psiDocumentManager.getDocument(psiFile);
+                        Document document = psiDocumentManager.getDocument(rootPubspecFile);
                         //sync psi - document
                         if (document != null) {
                             psiDocumentManager.doPostponedOperationsAndUnblockDocument(document);
                         }
-                        CodeStyleManager.getInstance(project).reformat(psiFile);
+                        CodeStyleManager.getInstance(project).reformat(rootPubspecFile);
                         psiDocumentManager.commitAllDocuments();
                         //refresh UI
                         notifyPubspecUpdate(project);
                     }));
         });
     }
-
-    @Nullable
-    private static PsiElement mountNewAssetSequence(@NotNull Project project,
-                                                    @NotNull YAMLSequence newAssetSequence,
-                                                    @NotNull YAMLElementGenerator elementGenerator,
-                                                    @Nullable YAMLSequence oldAssetSequence) {
-        if (oldAssetSequence != null) {
-            return oldAssetSequence.replace(newAssetSequence);
-        }
-        //add psiElement to Psi Tree
-        YAMLFile psiFile = getRootPubspecFile(project);
-        if (psiFile == null) return null;
-        YAMLDocument document = psiFile.getDocuments().get(0);
-        YAMLValue topLevelValue = document.getTopLevelValue();
-        if (!(topLevelValue instanceof YAMLMapping)) return null;
-        YAMLKeyValue flutterKeyValue = ((YAMLMapping) topLevelValue).getKeyValueByKey(NODE_FLUTTER);
-        //ensure flutter psi exist
-        if (flutterKeyValue == null || flutterKeyValue.getValue() == null) {
-            flutterKeyValue = elementGenerator.createYamlKeyValue(NODE_FLUTTER, NODE_ASSET + ":temp");
-            ((YAMLMapping) topLevelValue).putKeyValue(flutterKeyValue);
-            YAMLMapping flutterValue = ((YAMLMapping) flutterKeyValue.getValue());
-            assert flutterValue != null;
-            YAMLKeyValue assetKeyValue = flutterValue.getKeyValueByKey(NODE_ASSET);
-            assert assetKeyValue != null;
-            assetKeyValue.setValue(newAssetSequence);
-            return newAssetSequence;
-        }
-        YAMLMapping flutterValue = (YAMLMapping) flutterKeyValue.getValue();
-        YAMLKeyValue assetKeyValue = elementGenerator.createYamlKeyValue(NODE_ASSET, "");
-        assetKeyValue.setValue(newAssetSequence);
-        flutterValue.putKeyValue(assetKeyValue);
-        return newAssetSequence;
-    }
-
 
     private static void notifyPubspecUpdate(Project project) {
         StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);

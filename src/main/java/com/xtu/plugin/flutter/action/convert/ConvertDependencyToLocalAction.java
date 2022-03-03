@@ -22,6 +22,7 @@ import org.jetbrains.yaml.psi.YAMLFile;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 
 import java.io.File;
+import java.util.List;
 
 public class ConvertDependencyToLocalAction extends AnAction {
 
@@ -68,11 +69,25 @@ public class ConvertDependencyToLocalAction extends AnAction {
         chooserDescriptor.setTitle("选择依赖存放位置");
         VirtualFile chooseDirectory = FileChooser.chooseFile(chooserDescriptor, project, ProjectUtil.guessProjectDir(project));
         if (chooseDirectory == null) return;
-        if (!chooseDirectory.getPath().startsWith(projectPath)) {
+        String filePath = chooseDirectory.getPath();
+        if (!filePath.startsWith(projectPath)) {
             ToastUtil.make(project, MessageType.ERROR, "请选择当前项目下的文件目录存放依赖");
             return;
         }
-        File outputDirectory = new File(chooseDirectory.getPath());
+        //disallow res dir or lib
+        if (filePath.startsWith(projectPath + "/lib")) {
+            ToastUtil.make(project, MessageType.ERROR, "lib目录下不允许存放本地依赖");
+            return;
+        }
+        List<String> assetFoldNameList = PluginUtils.supportAssetFoldName(project);
+        for (String foldName : assetFoldNameList) {
+            if (filePath.startsWith(projectPath + "/" + foldName)) {
+                ToastUtil.make(project, MessageType.ERROR, "资源目录下不允许存放本地依赖");
+                return;
+            }
+        }
+
+        File outputDirectory = new File(filePath);
         new ConvertDependencyToLocalTask(project, packageName,
                 ((YAMLKeyValue) yamlPsiElement.getParent()), outputDirectory)
                 .queue();

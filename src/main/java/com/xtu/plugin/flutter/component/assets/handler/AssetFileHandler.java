@@ -22,7 +22,7 @@ public class AssetFileHandler {
     public void onPsiFileAdded(PsiFile psiFile) {
         String assetPath = getAssetFilePath(psiFile);
         if (assetPath == null) return;
-        specFileHandler.addAsset(psiFile.getProject(), assetPath);
+        specFileHandler.addAsset(psiFile.getProject(), List.of(assetPath));
     }
 
     public void onPsiFileRemoved(PsiFile psiFile) {
@@ -30,24 +30,27 @@ public class AssetFileHandler {
         if (assetPath == null) return;
         File assetFile = FileUtils.fromPsiFile(psiFile);
         String projectPath = PluginUtils.getProjectPath(psiFile.getProject());
-        //判断是否还存在其他dimension资源
-        if (AssetUtils.hasOtherDimensionAsset(projectPath, assetFile)) return;
-        specFileHandler.removeAsset(psiFile.getProject(), assetPath);
+        //判断是否还存在其他dimension资源,兼容IDEA自动引用处理，需要强制保留assetPath
+        if (AssetUtils.hasOtherDimensionAsset(projectPath, assetFile)) {
+            specFileHandler.addAsset(psiFile.getProject(), List.of(assetPath));
+        } else {
+            specFileHandler.removeAsset(psiFile.getProject(), assetPath);
+        }
     }
 
     public void onPsiFileChanged(PsiFile psiFile, String oldValue, String newValue) {
-        String assetPath = getAssetFilePath(psiFile);
-        if (assetPath == null) return;
+        String newAssetPath = getAssetFilePath(psiFile);
+        if (newAssetPath == null) return;
         String projectPath = PluginUtils.getProjectPath(psiFile.getProject());
         File newAssetFile = FileUtils.fromPsiFile(psiFile);
         assert newAssetFile != null;
         File oldAssetFile = new File(newAssetFile.getParentFile(), oldValue);
-        //判断是否还存在其他dimension资源
+        String oldAssetPath = newAssetPath.replace(newValue, oldValue);
+        //判断是否还存在其他dimension资源,兼容IDEA自动引用处理，需要强制保留oldAssetPath
         if (AssetUtils.hasOtherDimensionAsset(projectPath, oldAssetFile)) {
-            specFileHandler.addAsset(psiFile.getProject(), assetPath);
+            specFileHandler.addAsset(psiFile.getProject(), List.of(newAssetPath, oldAssetPath));
         } else {
-            String oldAssetPath = assetPath.replace(newValue, oldValue);
-            specFileHandler.changeAsset(psiFile.getProject(), oldAssetPath, assetPath);
+            specFileHandler.changeAsset(psiFile.getProject(), oldAssetPath, newAssetPath);
         }
     }
 

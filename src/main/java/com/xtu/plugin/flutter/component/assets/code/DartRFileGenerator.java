@@ -1,12 +1,9 @@
 package com.xtu.plugin.flutter.component.assets.code;
 
-import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.wm.StatusBar;
-import com.intellij.openapi.wm.WindowManager;
 import com.xtu.plugin.flutter.service.StorageService;
 import com.xtu.plugin.flutter.utils.*;
 import org.apache.commons.lang.StringUtils;
@@ -32,47 +29,56 @@ public class DartRFileGenerator {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public void generate(Project project, List<String> assetList) {
-        WriteAction.run(() -> {
-            try {
-                File libDirectory = new File(project.getBasePath(), "lib");
-                VirtualFile libVirtualDirectory = LocalFileSystem.getInstance().findFileByIoFile(libDirectory);
-                assert libVirtualDirectory != null;
-                //create new res
-                Map<String, List<String>> assetCategory = new HashMap<>();
-                for (String assetFileName : assetList) {
-                    String assetDirName = assetFileName.substring(0, assetFileName.indexOf("/"));
-                    if (!assetCategory.containsKey(assetDirName))
-                        assetCategory.put(assetDirName, new ArrayList<>());
-                    List<String> assets = assetCategory.get(assetDirName);
-                    assets.add(assetFileName);
+        //create new res
+        Map<String, List<String>> assetCategory = new HashMap<>();
+        for (String assetFileName : assetList) {
+            String assetDirName = assetFileName.substring(0, assetFileName.indexOf("/"));
+            if (!assetCategory.containsKey(assetDirName))
+                assetCategory.put(assetDirName, new ArrayList<>());
+            List<String> assets = assetCategory.get(assetDirName);
+            assets.add(assetFileName);
+        }
+        try {
+            //virtual file
+            File libDirectory = new File(project.getBasePath(), "lib");
+            LocalFileSystem localFileSystem = LocalFileSystem.getInstance();
+            final VirtualFile libVirtualDirectory = localFileSystem.refreshAndFindFileByIoFile(libDirectory);
+            assert libVirtualDirectory != null;
+            VirtualFile resVirtualDirectory = libVirtualDirectory.findChild("res");
+            if (assetCategory.size() > 0) {
+                if (resVirtualDirectory == null) {
+                    resVirtualDirectory = libVirtualDirectory.createChildDirectory(project, "res");
                 }
-                VirtualFile resVirtualDirectory = libVirtualDirectory.findChild("res");
-                if (assetCategory.size() > 0) {
-                    if (resVirtualDirectory == null) {
-                        resVirtualDirectory = libVirtualDirectory.createChildDirectory(project, "res");
+                List<String> usefulFileNameList = new ArrayList<>();
+                for (Map.Entry<String, List<String>> entry : assetCategory.entrySet()) {
+                    String fileName = generateFile(project, resVirtualDirectory, entry.getKey(), entry.getValue());
+                    usefulFileNameList.add(fileName);
+                }
+                //删除无用文件
+                VirtualFile[] childrenFileList = resVirtualDirectory.getChildren();
+                if (childrenFileList != null) {
+                    for (VirtualFile virtualFile : childrenFileList) {
+                        String subFileName = virtualFile.getName();
+                        if (usefulFileNameList.contains(subFileName)) continue;
+                        virtualFile.delete(project);
                     }
-                    for (Map.Entry<String, List<String>> entry : assetCategory.entrySet()) {
-                        generateFile(project, resVirtualDirectory, entry.getKey(), entry.getValue());
-                    }
-                } else if (resVirtualDirectory != null) {
-                    resVirtualDirectory.delete(project);
                 }
-                StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);
-                if (statusBar != null) {
-                    statusBar.setInfo("R File Update Success");
-                }
-            } catch (Exception e) {
-                LogUtils.error("DartRFileGenerator generate: " + e.getMessage());
-                ToastUtil.make(project, MessageType.ERROR, e.getMessage());
+            } else if (resVirtualDirectory != null) {
+                //删除无用文件
+                resVirtualDirectory.delete(project);
             }
-        });
+        } catch (Exception e) {
+            LogUtils.error("DartRFileGenerator generate: " + e.getMessage());
+            ToastUtil.make(project, MessageType.ERROR, e.getMessage());
+        }
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    private void generateFile(Project project, VirtualFile rDirectory, String assetDirName, List<String> assetFileNames) throws IOException {
+    @NotNull
+    private String generateFile(Project project, VirtualFile rDirectory, String assetDirName, List<String> assetFileNames) throws IOException {
         String className = StringUtil.upFirstChar(assetDirName) + "Res";
         StringBuilder fileStringBuilder = new StringBuilder();
-        fileStringBuilder.append("/// This is a generated file do not edit.\n\n")
+        fileStringBuilder.append("///Generated file. Do not edit.\n\n")
                 .append("class ").append(className).append(" {\n");
         if (!CollectionUtils.isEmpty(assetFileNames)) {
             for (String assetFileName : assetFileNames) {
@@ -94,6 +100,7 @@ public class DartRFileGenerator {
                 ToastUtil.make(project, MessageType.ERROR, message);
             }
         });
+        return fileName;
     }
 
     private String getResName(String assetFileName) {
@@ -102,7 +109,9 @@ public class DartRFileGenerator {
         if (endIndex < startIndex) {
             endIndex = assetFileName.length();
         }
-        String variantName = assetFileName.substring(startIndex, endIndex).toUpperCase();
+        String variantName = assetFileName.substring(startIndex, endIndex)
+                .toUpperCase()
+                .replace("-", "_");
         //replace specific char
         variantName = variantName.replace("-", "_");
         return variantName;

@@ -79,6 +79,7 @@ public class DartRFileGenerator {
         String className = StringUtil.upFirstChar(assetDirName) + "Res";
         StringBuilder fileStringBuilder = new StringBuilder();
         fileStringBuilder.append("///Generated file. Do not edit.\n\n")
+                .append("// ignore_for_file: constant_identifier_names\n")
                 .append("class ").append(className).append(" {\n");
         if (!CollectionUtils.isEmpty(assetFileNames)) {
             for (String assetFileName : assetFileNames) {

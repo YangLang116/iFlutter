@@ -55,6 +55,7 @@ public class DartFontFileGenerator {
     private void generateFile(Project project, VirtualFile rDirectory, @NotNull List<String> fontAssetList) {
         StringBuilder fileStringBuilder = new StringBuilder();
         fileStringBuilder.append("///Generated file. Do not edit.\n\n")
+                .append("// ignore_for_file: constant_identifier_names\n")
                 .append("class ").append(FONT_CLASS_NAME).append(" {\n");
         for (String fontAsset : fontAssetList) {
             String fontFamily = FontUtils.getFontFamily(fontAsset);

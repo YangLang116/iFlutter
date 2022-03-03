@@ -6,6 +6,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.wm.WindowManager;
+import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.treeStructure.Tree;
 import com.xtu.plugin.flutter.utils.ToastUtil;
 import org.jetbrains.annotations.NonNls;
@@ -73,7 +74,7 @@ public class DuplicateResDisplayDialog extends DialogWrapper {
         }
         Tree tree = new Tree(rootNode);
         tree.setCellRenderer(new DefaultTreeCellRenderer());
-        return tree;
+        return new JBScrollPane(tree);
     }
 
     private static class DuplicateFile {

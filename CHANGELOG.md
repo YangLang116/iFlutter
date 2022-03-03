@@ -6,6 +6,7 @@
 ## [1.2.1] - 2022-02-28
 ### Changed
 - optimize psi
+- support font asset register
 
 ## [1.2.0] - 2022-02-27
 ### Changed

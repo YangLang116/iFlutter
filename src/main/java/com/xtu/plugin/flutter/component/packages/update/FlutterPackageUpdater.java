@@ -21,6 +21,8 @@ public class FlutterPackageUpdater {
     private final Project project;
     private final Timer latestVersionChecker;
 
+    private volatile boolean isDetach = false;
+
     public FlutterPackageUpdater(@NotNull Project project) {
         this.project = project;
         this.latestVersionChecker = new Timer("Flutter Package Version Updater", true);
@@ -38,11 +40,13 @@ public class FlutterPackageUpdater {
     }
 
     public void detach() {
+        this.isDetach = true;
         LogUtils.info("FlutterPackageUpdater detach");
         this.latestVersionChecker.cancel();
     }
 
     private void pullLatestVersion() {
+        if (this.isDetach) return;
         LogUtils.info("FlutterPackageUpdater pullLatestVersion");
         String projectPath = PluginUtils.getProjectPath(project);
         if (StringUtils.isEmpty(projectPath)) return;

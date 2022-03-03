@@ -30,6 +30,8 @@ public class PubspecUtils {
 
     private static final String NODE_FLUTTER = "flutter";
     private static final String NODE_ASSET = "assets";
+    private static final String NODE_FONT = "fonts";
+    private static final String NODE_FONT_ASSET = "asset";
 
     public static String getFileName() {
         return "pubspec.yaml";
@@ -82,6 +84,22 @@ public class PubspecUtils {
         return (YAMLSequence) assetValue;
     }
 
+    //读取flutter#font内容
+    @Nullable
+    private static YAMLSequence getFontSequence(@NotNull Project project) {
+        YAMLMapping rootMapping = getTopLevelMapping(project);
+        if (rootMapping == null) return null;
+        YAMLKeyValue flutterKeyValue = rootMapping.getKeyValueByKey(NODE_FLUTTER);
+        if (flutterKeyValue == null) return null;
+        YAMLValue flutterValue = flutterKeyValue.getValue();
+        if (!(flutterValue instanceof YAMLMapping)) return null;
+        YAMLKeyValue assetKeyValue = ((YAMLMapping) flutterValue).getKeyValueByKey(NODE_FONT);
+        if (assetKeyValue == null) return null;
+        YAMLValue fontValue = assetKeyValue.getValue();
+        if (!(fontValue instanceof YAMLSequence)) return null;
+        return (YAMLSequence) fontValue;
+    }
+
     // 读取资源列表
     public static void readAsset(@NotNull Project project, @NotNull YamlReadListener listener) {
         ApplicationManager.getApplication()
@@ -93,6 +111,7 @@ public class PubspecUtils {
 
     private static void readAssetInReadAction(@NotNull Project project, @NotNull YamlReadListener listener) {
         ReadAction.run(() -> {
+            //asset list
             List<String> assetList = new ArrayList<>();
             YAMLSequence assetSequence = getAssetSequence(project);
             if (assetSequence != null) {
@@ -107,64 +126,55 @@ public class PubspecUtils {
                 CollectionUtils.duplicateList(assetList);
                 Collections.sort(assetList);
             }
-            listener.onGet(assetList);
+            //font family list
+            List<String> fontAssetList = new ArrayList<>();
+            YAMLSequence fontSequence = getFontSequence(project);
+            if (fontSequence != null) {
+                List<YAMLSequenceItem> fontSequenceItems = fontSequence.getItems();
+                for (YAMLSequenceItem fontSequenceItem : fontSequenceItems) {
+                    YAMLValue fontValue = fontSequenceItem.getValue();
+                    if (!(fontValue instanceof YAMLMapping)) continue;
+                    YAMLKeyValue inFontKeyValue = ((YAMLMapping) fontValue).getKeyValueByKey(NODE_FONT);
+                    if (inFontKeyValue == null) continue;
+                    YAMLValue inFontValue = inFontKeyValue.getValue();
+                    if (!(inFontValue instanceof YAMLSequence)) continue;
+                    List<YAMLSequenceItem> items = ((YAMLSequence) inFontValue).getItems();
+                    if (CollectionUtils.isEmpty(items)) continue;
+                    YAMLSequenceItem yamlSequenceItem = items.get(0);
+                    if (!(yamlSequenceItem.getValue() instanceof YAMLMapping)) continue;
+                    YAMLKeyValue fontAssetKeyValue = ((YAMLMapping) yamlSequenceItem.getValue()).getKeyValueByKey(NODE_FONT_ASSET);
+                    if (fontAssetKeyValue == null) continue;
+                    String fontAsset = fontAssetKeyValue.getValueText();
+                    if (StringUtils.isEmpty(fontAsset)) continue;
+                    fontAssetList.add(fontAsset);
+                }
+                CollectionUtils.duplicateList(fontAssetList);
+                Collections.sort(fontAssetList);
+            }
+            listener.onGet(assetList, fontAssetList);
         });
     }
 
     //更新资源列表
     public static void writeAsset(@NotNull Project project,
-                                  @NotNull List<String> assetList) {
+                                  @NotNull List<String> assetList,
+                                  @NotNull List<String> fontList) {
         //pure asset list
         CollectionUtils.duplicateList(assetList);
         Collections.sort(assetList);
+        //pure font list
+        CollectionUtils.duplicateList(fontList);
+        Collections.sort(fontList);
         ReadAction.run(() -> {
             YAMLSequence oldAssetSequence = getAssetSequence(project);
+            YAMLSequence oldFontSequence = getFontSequence(project);
             ApplicationManager.getApplication()
                     .invokeLater(() -> WriteCommandAction.runWriteCommandAction(project, () -> {
                         YAMLElementGenerator elementGenerator = YAMLElementGenerator.getInstance(project);
-                        //asset is configuration
-                        if (oldAssetSequence != null) {
-                            YAMLSequence newAssetSequence;
-                            if (CollectionUtils.isEmpty(assetList)) {
-                                newAssetSequence = elementGenerator.createEmptySequence();
-                            } else {
-                                StringBuilder newAssetBuilder = new StringBuilder();
-                                for (String asset : assetList) {
-                                    newAssetBuilder.append("- ").append(asset).append("\n");
-                                }
-                                YAMLFile tempYamlFile = elementGenerator.createDummyYamlWithText(newAssetBuilder.toString());
-                                newAssetSequence = PsiTreeUtil.findChildOfType(tempYamlFile, YAMLSequence.class);
-                            }
-                            if (newAssetSequence == null) return;
-                            oldAssetSequence.replace(newAssetSequence);
-                        } else {
-                            YAMLMapping topLevelMapping = getTopLevelMapping(project);
-                            if (topLevelMapping == null) return;
-                            YAMLKeyValue flutterKeyValue = topLevelMapping.getKeyValueByKey(NODE_FLUTTER);
-                            if (flutterKeyValue == null || !(flutterKeyValue.getValue() instanceof YAMLMapping)) {
-                                //add flutter psi
-                                StringBuilder flutterPsiBuilder = new StringBuilder()
-                                        .append("flutter:\n  assets:\n");
-                                for (String asset : assetList) {
-                                    flutterPsiBuilder.append("    - ").append(asset).append("\n");
-                                }
-                                YAMLFile tempYamlFile = elementGenerator.createDummyYamlWithText(flutterPsiBuilder.toString());
-                                YAMLKeyValue newFlutterKeyValue = PsiTreeUtil.findChildOfType(tempYamlFile, YAMLKeyValue.class);
-                                if (newFlutterKeyValue == null) return;
-                                topLevelMapping.putKeyValue(newFlutterKeyValue);
-                            } else {
-                                //add flutter#asset psi
-                                YAMLMapping flutterValue = (YAMLMapping) flutterKeyValue.getValue();
-                                StringBuilder assetPsiBuilder = new StringBuilder("assets:\n");
-                                for (String asset : assetList) {
-                                    assetPsiBuilder.append("  - ").append(asset).append("\n");
-                                }
-                                YAMLFile tempYamlFile = elementGenerator.createDummyYamlWithText(assetPsiBuilder.toString());
-                                YAMLKeyValue newAssetKeyValue = PsiTreeUtil.findChildOfType(tempYamlFile, YAMLKeyValue.class);
-                                if (newAssetKeyValue == null) return;
-                                flutterValue.putKeyValue(newAssetKeyValue);
-                            }
-                        }
+                        //modify asset
+                        if (modifyAssetFail(project, assetList, oldAssetSequence, elementGenerator)) return;
+                        //modify font
+                        if (modifyFontFail(project, fontList, oldFontSequence, elementGenerator)) return;
                         YAMLFile rootPubspecFile = getRootPubspecFile(project);
                         assert rootPubspecFile != null;
                         PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(project);
@@ -181,6 +191,108 @@ public class PubspecUtils {
         });
     }
 
+    //修复font#asset节点
+    private static boolean modifyAssetFail(@NotNull Project project,
+                                           @NotNull List<String> assetList,
+                                           @Nullable YAMLSequence oldAssetSequence,
+                                           @NotNull YAMLElementGenerator elementGenerator) {
+        if (oldAssetSequence != null) {
+            YAMLSequence newAssetSequence;
+            if (CollectionUtils.isEmpty(assetList)) {
+                newAssetSequence = elementGenerator.createEmptySequence();
+            } else {
+                StringBuilder newAssetBuilder = new StringBuilder();
+                for (String asset : assetList) {
+                    newAssetBuilder.append("- ").append(asset).append("\n");
+                }
+                YAMLFile tempYamlFile = elementGenerator.createDummyYamlWithText(newAssetBuilder.toString());
+                newAssetSequence = PsiTreeUtil.findChildOfType(tempYamlFile, YAMLSequence.class);
+            }
+            if (newAssetSequence == null) return true;
+            oldAssetSequence.replace(newAssetSequence);
+        } else {
+            YAMLMapping topLevelMapping = getTopLevelMapping(project);
+            if (topLevelMapping == null) return true;
+            YAMLKeyValue flutterKeyValue = topLevelMapping.getKeyValueByKey(NODE_FLUTTER);
+            if (flutterKeyValue == null || !(flutterKeyValue.getValue() instanceof YAMLMapping)) {
+                //add flutter psi
+                StringBuilder flutterPsiBuilder = new StringBuilder()
+                        .append("flutter:\n  assets:\n");
+                for (String asset : assetList) {
+                    flutterPsiBuilder.append("    - ").append(asset).append("\n");
+                }
+                YAMLFile tempYamlFile = elementGenerator.createDummyYamlWithText(flutterPsiBuilder.toString());
+                YAMLKeyValue newFlutterKeyValue = PsiTreeUtil.findChildOfType(tempYamlFile, YAMLKeyValue.class);
+                if (newFlutterKeyValue == null) return true;
+                topLevelMapping.putKeyValue(newFlutterKeyValue);
+            } else {
+                //add flutter#asset psi
+                YAMLMapping flutterValue = (YAMLMapping) flutterKeyValue.getValue();
+                StringBuilder assetPsiBuilder = new StringBuilder("assets:\n");
+                for (String asset : assetList) {
+                    assetPsiBuilder.append("  - ").append(asset).append("\n");
+                }
+                YAMLFile tempYamlFile = elementGenerator.createDummyYamlWithText(assetPsiBuilder.toString());
+                YAMLKeyValue newAssetKeyValue = PsiTreeUtil.findChildOfType(tempYamlFile, YAMLKeyValue.class);
+                if (newAssetKeyValue == null) return true;
+                flutterValue.putKeyValue(newAssetKeyValue);
+            }
+        }
+        return false;
+    }
+
+    //修复font#font节点
+    private static boolean modifyFontFail(@NotNull Project project,
+                                          @NotNull List<String> fontList,
+                                          @Nullable YAMLSequence oldFontSequence,
+                                          @NotNull YAMLElementGenerator elementGenerator) {
+        if (oldFontSequence != null) {
+            YAMLSequence newFontSequence;
+            if (CollectionUtils.isEmpty(fontList)) {
+                newFontSequence = elementGenerator.createEmptySequence();
+            } else {
+//                - family: DINPro_CondBold
+//                  fonts:
+//                    - asset: assets/fonts/DINPro_CondBold.otf
+                StringBuilder newFontBuilder = new StringBuilder();
+                for (String fontAsset : fontList) {
+                    String fontFamily = FontUtils.getFontFamily(fontAsset);
+                    newFontBuilder.append("- family: ").append(fontFamily).append("\n")
+                            .append("  fonts:").append("\n")
+                            .append("    - asset: ").append(fontAsset).append("\n");
+                }
+                YAMLFile tempYamlFile = elementGenerator.createDummyYamlWithText(newFontBuilder.toString());
+                newFontSequence = PsiTreeUtil.findChildOfType(tempYamlFile, YAMLSequence.class);
+            }
+            if (newFontSequence == null) return true;
+            oldFontSequence.replace(newFontSequence);
+        } else {
+            YAMLMapping topLevelMapping = getTopLevelMapping(project);
+            if (topLevelMapping == null) return true;
+            YAMLKeyValue flutterKeyValue = topLevelMapping.getKeyValueByKey(NODE_FLUTTER);
+            assert flutterKeyValue != null;
+            YAMLMapping flutterValue = ((YAMLMapping) flutterKeyValue.getValue());
+            assert flutterValue != null;
+//            fonts:
+//              - family: DINPro_CondBold
+//                fonts:
+//                  - asset: assets/fonts/DINPro_CondBold.otf
+            StringBuilder newFontBuilder = new StringBuilder();
+            newFontBuilder.append("fonts:").append("\n");
+            for (String fontAsset : fontList) {
+                String fontFamily = FontUtils.getFontFamily(fontAsset);
+                newFontBuilder.append("  - family: ").append(fontFamily).append("\n");
+                newFontBuilder.append("    fonts:").append("\n");
+                newFontBuilder.append("      - asset: ").append(fontAsset).append("\n");
+            }
+            YAMLFile tempYamlFile = elementGenerator.createDummyYamlWithText(newFontBuilder.toString());
+            YAMLKeyValue fontKeyValue = PsiTreeUtil.findChildOfType(tempYamlFile, YAMLKeyValue.class);
+            if (fontKeyValue == null) return true;
+            flutterValue.putKeyValue(fontKeyValue);
+        }
+        return false;
+    }
+
     private static void notifyPubspecUpdate(Project project) {
         StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);
         if (statusBar != null) {
@@ -190,7 +302,7 @@ public class PubspecUtils {
 
     public interface YamlReadListener {
 
-        void onGet(@NotNull List<String> assetList);
+        void onGet(@NotNull List<String> assetList, @NotNull List<String> fontList);
 
     }
 }

@@ -109,7 +109,9 @@ public class DartRFileGenerator {
         if (endIndex < startIndex) {
             endIndex = assetFileName.length();
         }
-        String variantName = assetFileName.substring(startIndex, endIndex).toUpperCase();
+        String variantName = assetFileName.substring(startIndex, endIndex)
+                .toUpperCase()
+                .replace("-", "_");
         //replace specific char
         variantName = variantName.replace("-", "_");
         return variantName;

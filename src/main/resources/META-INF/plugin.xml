@@ -51,6 +51,11 @@
             <separator/>
             <action id="com.xtu.plugin.flutter.DepAnalysisAction"
                     class="com.xtu.plugin.flutter.action.analysis.DepAnalysisAction"/>
+            <separator/>
+            <action id="com.xtu.plugin.flutter.PubSearchAction"
+                    class="com.xtu.plugin.flutter.action.pub.search.PubSearchAction">
+                <keyboard-shortcut first-keystroke="alt f" keymap="$default"/>
+            </action>
         </group>
         <action id="com.xtu.plugin.flutter.DartGenerateFromJsonAndToJsonAction"
                 icon="PluginIcons.LOGO"

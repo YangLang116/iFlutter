@@ -3,6 +3,11 @@
 ## [Coming]
 ### Changed
 
+## [1.2.2] - 2022-03-04
+### Changed
+- optimize action group
+- add pub search
+
 ## [1.2.1] - 2022-02-28
 ### Changed
 - optimize psi

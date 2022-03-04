@@ -78,8 +78,9 @@ public class DartRFileGenerator {
     private String generateFile(Project project, VirtualFile rDirectory, String assetDirName, List<String> assetFileNames) throws IOException {
         String className = StringUtil.upFirstChar(assetDirName) + "Res";
         StringBuilder fileStringBuilder = new StringBuilder();
-        fileStringBuilder.append("///Generated file. Do not edit.\n\n")
+        fileStringBuilder.append("/// Generated file. Do not edit.\n\n")
                 .append("// ignore_for_file: constant_identifier_names\n")
+                .append("// ignore_for_file: lines_longer_than_80_chars\n")
                 .append("class ").append(className).append(" {\n");
         if (!CollectionUtils.isEmpty(assetFileNames)) {
             for (String assetFileName : assetFileNames) {

@@ -1,69 +1,33 @@
 package com.xtu.plugin.flutter.action.convert;
 
-import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectUtil;
 import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
+import com.xtu.plugin.flutter.action.BaseDependencyAction;
 import com.xtu.plugin.flutter.action.convert.task.ConvertDependencyToLocalTask;
 import com.xtu.plugin.flutter.utils.PluginUtils;
 import com.xtu.plugin.flutter.utils.ToastUtil;
-import com.xtu.plugin.flutter.utils.YamlPsiUtils;
+import kotlin.Pair;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.yaml.psi.YAMLFile;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 
 import java.io.File;
 import java.util.List;
 
-public class ConvertDependencyToLocalAction extends AnAction {
-
-    @Override
-    public void update(@NotNull AnActionEvent e) {
-        Project project = e.getProject();
-        Editor editor = e.getData(CommonDataKeys.EDITOR);
-        if (project == null || editor == null) {
-            e.getPresentation().setVisible(false);
-            return;
-        }
-        PsiFile psiFile = e.getData(CommonDataKeys.PSI_FILE);
-        if (!(psiFile instanceof YAMLFile && YamlPsiUtils.isRootPubspec(((YAMLFile) psiFile)))) {
-            e.getPresentation().setVisible(false);
-            return;
-        }
-        int offset = editor.getCaretModel().getOffset();
-        PsiElement yamlPsiElement = psiFile.findElementAt(offset);
-        if (yamlPsiElement != null
-                && yamlPsiElement.getParent() instanceof YAMLKeyValue
-                && YamlPsiUtils.isDependencyElement(((YAMLKeyValue) yamlPsiElement.getParent()))) {
-            //select packageName element
-            e.getPresentation().setVisible(true);
-        } else {
-            e.getPresentation().setVisible(false);
-        }
-    }
+public class ConvertDependencyToLocalAction extends BaseDependencyAction {
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
         Project project = e.getProject();
         String projectPath = PluginUtils.getProjectPath(project);
         if (StringUtils.isEmpty(projectPath)) return;
-        Editor editor = e.getData(CommonDataKeys.EDITOR);
-        PsiFile psiFile = e.getData(CommonDataKeys.PSI_FILE);
-        if (editor == null || psiFile == null) return;
-        int offset = editor.getCaretModel().getOffset();
-        PsiElement yamlPsiElement = psiFile.findElementAt(offset);
-        if (yamlPsiElement == null) return;
-        String packageName = ((YAMLKeyValue) yamlPsiElement.getParent()).getKeyText();
-        if (StringUtils.isEmpty(packageName)) return;
+        Pair<String, YAMLKeyValue> packageInfo = getPackageInfo(e);
+        if (packageInfo == null) return;
         FileChooserDescriptor chooserDescriptor = new FileChooserDescriptor(false, true,
                 false, false, false, false);
         chooserDescriptor.setTitle("选择依赖存放位置");
@@ -88,8 +52,8 @@ public class ConvertDependencyToLocalAction extends AnAction {
         }
 
         File outputDirectory = new File(filePath);
-        new ConvertDependencyToLocalTask(project, packageName,
-                ((YAMLKeyValue) yamlPsiElement.getParent()), outputDirectory)
+        new ConvertDependencyToLocalTask(project, packageInfo.getFirst(),
+                packageInfo.getSecond(), outputDirectory)
                 .queue();
     }
 }

@@ -15,6 +15,17 @@ iFlutter is an IDEA Plugin for Developer of Flutter
   - 4、Http接口Mock
   - 5、包检查更新
   - 6、提取远程依赖
+  - 7、Pub快捷搜索
+
+## 版本更新
+### v1.2.2
+- 优化 `iFlutter` 功能分区
+- 新增Pub快捷搜索
+
+### v1.2.1
+- 优化资源注册逻辑
+- 新增字体文件注册逻辑
+- 修复重复文件弹窗无法滚动问题
   
 ## 其他
 建议直接使用 [Intellij IDEA](https://www.jetbrains.com/idea/) 代替 `AndroidStudio` 开发Flutter项目：  

@@ -16,8 +16,12 @@ iFlutter is an IDEA Plugin for Developer of Flutter
   - 5、包检查更新
   - 6、提取远程依赖
   - 7、Pub快捷搜索
+  - 8、依赖快速定位
 
 ## 版本更新
+### v1.2.3
+- 新增依赖定位
+
 ### v1.2.2
 - 优化 `iFlutter` 功能分区
 - 新增Pub快捷搜索

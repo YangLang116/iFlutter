@@ -3,10 +3,16 @@
         <annotator language="yaml" implementationClass="com.xtu.plugin.flutter.annotator.PackageUpdateAnnotator"/>
     </extensions>
     <actions resource-bundle="message.ActionsBundle">
-        <action id="com.xtu.plugin.flutter.ConvertDependencyToLocalAction"
-                icon="PluginIcons.LOGO"
-                class="com.xtu.plugin.flutter.action.convert.ConvertDependencyToLocalAction">
+        <group>
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
-        </action>
+            <action id="com.xtu.plugin.flutter.ConvertDependencyToLocalAction"
+                    icon="PluginIcons.LOGO"
+                    class="com.xtu.plugin.flutter.action.convert.ConvertDependencyToLocalAction">
+            </action>
+            <action id="com.xtu.plugin.flutter.YamlPackageAnchorAction"
+                    icon="PluginIcons.LOGO"
+                    class="com.xtu.plugin.flutter.action.anchor.yaml.YamlPackageAnchorAction">
+            </action>
+        </group>
     </actions>
 </idea-plugin>

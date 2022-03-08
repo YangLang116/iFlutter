@@ -3,6 +3,10 @@
 ## [Coming]
 ### Changed
 
+## [1.2.3] - 2022-03-08
+### Changed
+- support dependency anchor
+
 ## [1.2.2] - 2022-03-04
 ### Changed
 - optimize action group

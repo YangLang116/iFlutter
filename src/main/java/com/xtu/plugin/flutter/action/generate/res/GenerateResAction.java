@@ -5,14 +5,19 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.xtu.plugin.flutter.component.assets.code.DartFontFileGenerator;
 import com.xtu.plugin.flutter.component.assets.code.DartRFileGenerator;
-import com.xtu.plugin.flutter.utils.*;
-import org.apache.commons.lang.StringUtils;
-import org.jetbrains.annotations.NotNull;
-
+import com.xtu.plugin.flutter.service.StorageService;
+import com.xtu.plugin.flutter.utils.AssetUtils;
+import com.xtu.plugin.flutter.utils.CollectionUtils;
+import com.xtu.plugin.flutter.utils.FileUtils;
+import com.xtu.plugin.flutter.utils.FontUtils;
+import com.xtu.plugin.flutter.utils.PluginUtils;
+import com.xtu.plugin.flutter.utils.PubspecUtils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.apache.commons.lang.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 public class GenerateResAction extends AnAction {
 
@@ -29,8 +34,13 @@ public class GenerateResAction extends AnAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
         Project project = e.getProject();
+        generateFile(project);
+    }
+
+    public static void generateFile(Project project) {
         String projectPath = PluginUtils.getProjectPath(project);
-        if (StringUtils.isEmpty(projectPath)) return;
+        if (StringUtils.isEmpty(projectPath))
+            return;
         List<File> assetFileList = new ArrayList<>();
         List<String> assetFoldNameList = PluginUtils.supportAssetFoldName(project);
         for (String assetFoldName : assetFoldNameList) {
@@ -60,15 +70,19 @@ public class GenerateResAction extends AnAction {
         //duplicate and sort font resource
         CollectionUtils.duplicateList(newFontList);
         Collections.sort(newFontList);
-
-        PubspecUtils.readAsset(project, (assetList, fontList) -> {
-            //force generate Res File
-            if (assetList.equals(newAssetList) && fontList.equals(newFontList)) {
-                DartRFileGenerator.getInstance().generate(project, newAssetList);
-                DartFontFileGenerator.getInstance().generate(project, newFontList);
-            } else {
-                PubspecUtils.writeAsset(project, newAssetList, newFontList);
-            }
-        });
+        if (StorageService.getInstance(project).getState().updatePubsepc){
+            PubspecUtils.readAsset(project, (assetList, fontList) -> {
+                //force generate Res File
+                if (assetList.equals(newAssetList) && fontList.equals(newFontList)) {
+                    DartRFileGenerator.getInstance().generate(project, newAssetList);
+                    DartFontFileGenerator.getInstance().generate(project, newFontList);
+                } else {
+                    PubspecUtils.writeAsset(project, newAssetList, newFontList);
+                }
+            });
+        }else {
+            DartRFileGenerator.getInstance().generate(project, newAssetList);
+            DartFontFileGenerator.getInstance().generate(project, newFontList);
+        }
     }
 }

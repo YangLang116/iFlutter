@@ -1,14 +1,18 @@
 package com.xtu.plugin.flutter.component.assets;
 
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiDirectory;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiTreeChangeEvent;
 import com.intellij.psi.PsiTreeChangeListener;
+import com.xtu.plugin.flutter.action.generate.res.GenerateResAction;
 import com.xtu.plugin.flutter.component.assets.handler.AssetFileHandler;
 import com.xtu.plugin.flutter.component.assets.handler.PubSpecFileHandler;
 import com.xtu.plugin.flutter.service.StorageService;
 import com.xtu.plugin.flutter.utils.LogUtils;
+import com.xtu.plugin.flutter.utils.PluginUtils;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -42,6 +46,10 @@ public class AssetsManager {
             return !StorageService.getInstance(project).getState()
                     .resCheckEnable;
         }
+        private boolean disableUpdatePubsepc() {
+            return !StorageService.getInstance(project).getState()
+                    .updatePubsepc;
+        }
 
         @Override
         public void beforeChildAddition(@NotNull PsiTreeChangeEvent event) {
@@ -71,6 +79,9 @@ public class AssetsManager {
         @Override
         public void childAdded(@NotNull PsiTreeChangeEvent event) {
             if (disableResCheck()) return;
+            if (checkDisableUpdatePubsepc(event)) {
+                return;
+            }
             if (event.getChild() instanceof PsiFile) {
                 assetFileHandler.onPsiFileAdded((PsiFile) event.getChild());
             }
@@ -79,9 +90,26 @@ public class AssetsManager {
         @Override
         public void childRemoved(@NotNull PsiTreeChangeEvent event) {
             if (disableResCheck()) return;
+            if (checkDisableUpdatePubsepc(event)) {
+                return;
+            }
             if (event.getChild() instanceof PsiFile) {
                 assetFileHandler.onPsiFileRemoved((PsiFile) event.getChild());
             }
+        }
+
+        private boolean checkDisableUpdatePubsepc(@NotNull PsiTreeChangeEvent event) {
+            if (disableUpdatePubsepc()){
+                PsiElement parent = event.getParent();
+                if (parent instanceof PsiDirectory){
+                    PsiDirectory psiDirectory = (PsiDirectory)parent;
+                    if (PluginUtils.supportAssetFoldName(psiDirectory.getProject()).contains(psiDirectory.getName())) {
+                        GenerateResAction.generateFile(parent.getProject());
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         @Override
@@ -92,6 +120,9 @@ public class AssetsManager {
         @Override
         public void childrenChanged(@NotNull PsiTreeChangeEvent event) {
             if (disableResCheck()) return;
+            if (checkDisableUpdatePubsepc(event)) {
+                return;
+            }
             if (event.getParent() instanceof PsiFile) {
                 specFileHandler.onPsiFileChanged((PsiFile) event.getParent());
             }
@@ -104,7 +135,10 @@ public class AssetsManager {
 
         @Override
         public void propertyChanged(@NotNull PsiTreeChangeEvent event) {
-            if (disableResCheck()) return;
+            if (disableResCheck()||disableUpdatePubsepc()) return;
+            if (checkDisableUpdatePubsepc(event)) {
+                return;
+            }
             if (PsiTreeChangeEvent.PROP_FILE_NAME.equals(event.getPropertyName())) {
                 assetFileHandler.onPsiFileChanged((PsiFile) event.getElement(), (String) event.getOldValue(), (String) event.getNewValue());
             }

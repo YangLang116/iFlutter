@@ -6,10 +6,12 @@ import com.intellij.openapi.project.Project;
 import com.xtu.plugin.flutter.service.StorageEntity;
 import com.xtu.plugin.flutter.service.StorageService;
 import com.xtu.plugin.flutter.utils.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-
-import javax.swing.*;
 import java.util.Collections;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import org.apache.commons.lang.StringUtils;
 
 public final class SettingsConfiguration implements SearchableConfigurable {
 
@@ -22,6 +24,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
     private JTextField ignoreResField;
     private JCheckBox flutter2EnableBox;
     private JCheckBox resCheckEnableBox;
+    private JCheckBox updatePubsepcEnableBox;
 
     public SettingsConfiguration(Project project) {
         this.project = project;
@@ -53,7 +56,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
         return !CollectionUtils.join(storageEntity.resDir, LIST_SPLIT_CHAR).equals(resDetectField.getText().trim())
                 || !CollectionUtils.join(storageEntity.ignoreResExtension, LIST_SPLIT_CHAR).equals(ignoreResField.getText().trim())
                 || storageEntity.flutter2Enable != flutter2EnableBox.isSelected()
-                || storageEntity.resCheckEnable != resCheckEnableBox.isSelected();
+                || storageEntity.resCheckEnable != resCheckEnableBox.isSelected() || storageEntity.updatePubsepc != updatePubsepcEnableBox.isSelected() ;
     }
 
     @Override
@@ -65,6 +68,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
         ignoreResField.setText(ignoreResExtensionStr);
         flutter2EnableBox.setSelected(storageEntity.flutter2Enable);
         resCheckEnableBox.setSelected(storageEntity.resCheckEnable);
+        updatePubsepcEnableBox.setSelected(storageEntity.updatePubsepc);
     }
 
     @Override
@@ -78,5 +82,6 @@ public final class SettingsConfiguration implements SearchableConfigurable {
                 Collections.emptyList() : CollectionUtils.split(ignoreResExtensionStr, LIST_SPLIT_CHAR);
         storageEntity.flutter2Enable = flutter2EnableBox.isSelected();
         storageEntity.resCheckEnable = resCheckEnableBox.isSelected();
+        storageEntity.updatePubsepc = updatePubsepcEnableBox.isSelected();
     }
 }

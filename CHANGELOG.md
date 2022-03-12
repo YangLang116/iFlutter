@@ -3,6 +3,10 @@
 ## [Coming]
 ### Changed
 
+## [1.3.0] - 2022-03-12
+### Changed
+- register resource with folder
+
 ## [1.2.3] - 2022-03-08
 ### Changed
 - support dependency anchor

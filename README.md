@@ -20,18 +20,18 @@ iFlutter is an IDEA Plugin for Developer of Flutter
 
 ## 版本更新
 ### v1.3.0
-- 支持以目录的形式注册资源
+- 支持以目录的形式注册资源 [wiki](https://github.com/YangLang116/iFlutter/wiki/1%E3%80%81%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86#%E6%B3%A8%E5%86%8C%E8%B5%84%E6%BA%90%E7%9B%AE%E5%BD%95)
 
 ### v1.2.3
-- 新增依赖定位
+- 新增依赖定位 [wiki](https://github.com/YangLang116/iFlutter/wiki/8%E3%80%81%E4%BE%9D%E8%B5%96%E5%BF%AB%E9%80%9F%E5%AE%9A%E4%BD%8D)
 
 ### v1.2.2
 - 优化 `iFlutter` 功能分区
-- 新增Pub快捷搜索
+- 新增Pub快捷搜索 [wiki](https://github.com/YangLang116/iFlutter/wiki/7%E3%80%81Pub%E5%BF%AB%E6%8D%B7%E6%90%9C%E7%B4%A2)
 
 ### v1.2.1
 - 优化资源注册逻辑
-- 新增字体文件注册逻辑
+- 新增字体文件注册逻辑 [wiki](https://github.com/YangLang116/iFlutter/wiki/1%E3%80%81%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86#%E6%B3%A8%E5%86%8C%E5%AD%97%E4%BD%93)
 - 修复重复文件弹窗无法滚动问题
   
 ## 其他

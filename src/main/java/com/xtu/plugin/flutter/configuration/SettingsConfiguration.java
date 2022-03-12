@@ -1,8 +1,13 @@
 package com.xtu.plugin.flutter.configuration;
 
+import com.intellij.openapi.application.Application;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.ModalityState;
+import com.intellij.openapi.application.impl.ApplicationImpl;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.Messages;
 import com.xtu.plugin.flutter.service.StorageEntity;
 import com.xtu.plugin.flutter.service.StorageService;
 import com.xtu.plugin.flutter.utils.CollectionUtils;
@@ -22,6 +27,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
     private JTextField ignoreResField;
     private JCheckBox flutter2EnableBox;
     private JCheckBox resCheckEnableBox;
+    private JCheckBox foldRegisterBox;
 
     public SettingsConfiguration(Project project) {
         this.project = project;
@@ -53,7 +59,8 @@ public final class SettingsConfiguration implements SearchableConfigurable {
         return !CollectionUtils.join(storageEntity.resDir, LIST_SPLIT_CHAR).equals(resDetectField.getText().trim())
                 || !CollectionUtils.join(storageEntity.ignoreResExtension, LIST_SPLIT_CHAR).equals(ignoreResField.getText().trim())
                 || storageEntity.flutter2Enable != flutter2EnableBox.isSelected()
-                || storageEntity.resCheckEnable != resCheckEnableBox.isSelected();
+                || storageEntity.resCheckEnable != resCheckEnableBox.isSelected()
+                || storageEntity.foldRegisterEnable != foldRegisterBox.isSelected();
     }
 
     @Override
@@ -65,6 +72,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
         ignoreResField.setText(ignoreResExtensionStr);
         flutter2EnableBox.setSelected(storageEntity.flutter2Enable);
         resCheckEnableBox.setSelected(storageEntity.resCheckEnable);
+        foldRegisterBox.setSelected(storageEntity.foldRegisterEnable);
     }
 
     @Override
@@ -78,5 +86,20 @@ public final class SettingsConfiguration implements SearchableConfigurable {
                 Collections.emptyList() : CollectionUtils.split(ignoreResExtensionStr, LIST_SPLIT_CHAR);
         storageEntity.flutter2Enable = flutter2EnableBox.isSelected();
         storageEntity.resCheckEnable = resCheckEnableBox.isSelected();
+        //检查是否更新了注册方式
+        if (storageEntity.foldRegisterEnable != foldRegisterBox.isSelected()) {
+            storageEntity.foldRegisterEnable = foldRegisterBox.isSelected();
+            reStartIDE();
+        }
     }
+
+    private void reStartIDE() {
+        Application application = ApplicationManager.getApplication();
+        application.invokeLater(() -> {
+            Messages.showMessageDialog(project, "资源注册方式发生修改，IDEA需要重启", "iFlutter提示", null);
+            ((ApplicationImpl) application).restart(true);
+        }, ModalityState.NON_MODAL);
+    }
+
+
 }

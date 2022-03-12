@@ -3,8 +3,6 @@ package com.xtu.plugin.flutter.action.generate.res;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
-import com.xtu.plugin.flutter.component.assets.code.DartFontFileGenerator;
-import com.xtu.plugin.flutter.component.assets.code.DartRFileGenerator;
 import com.xtu.plugin.flutter.utils.*;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -31,18 +29,7 @@ public class GenerateResAction extends AnAction {
         Project project = e.getProject();
         String projectPath = PluginUtils.getProjectPath(project);
         if (StringUtils.isEmpty(projectPath)) return;
-        List<File> assetFileList = new ArrayList<>();
-        List<String> assetFoldNameList = PluginUtils.supportAssetFoldName(project);
-        for (String assetFoldName : assetFoldNameList) {
-            File assetDirectory = new File(projectPath, assetFoldName);
-            FileUtils.scanDirectory(assetDirectory, (file -> {
-                String fileName = file.getName();
-                //修复隐藏文件导致，生成的res.dart文件异常，如mac下的.DS_Store文件
-                if (!fileName.startsWith(".")) {
-                    assetFileList.add(file);
-                }
-            }));
-        }
+        List<File> assetFileList = PluginUtils.getAllAssetFile(project);
         List<String> newAssetList = new ArrayList<>();
         List<String> newFontList = new ArrayList<>();
         for (File assetFile : assetFileList) {
@@ -63,12 +50,7 @@ public class GenerateResAction extends AnAction {
 
         PubspecUtils.readAsset(project, (assetList, fontList) -> {
             //force generate Res File
-            if (assetList.equals(newAssetList) && fontList.equals(newFontList)) {
-                DartRFileGenerator.getInstance().generate(project, newAssetList);
-                DartFontFileGenerator.getInstance().generate(project, newFontList);
-            } else {
-                PubspecUtils.writeAsset(project, newAssetList, newFontList);
-            }
+            PubspecUtils.writeAsset(project, newAssetList, newFontList);
         });
     }
 }

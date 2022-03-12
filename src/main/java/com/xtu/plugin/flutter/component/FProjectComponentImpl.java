@@ -4,6 +4,7 @@ import com.intellij.openapi.project.Project;
 import com.xtu.plugin.flutter.action.mock.manager.HttpMockManager;
 import com.xtu.plugin.flutter.component.assets.AssetsManager;
 import com.xtu.plugin.flutter.component.packages.update.FlutterPackageUpdater;
+import com.xtu.plugin.flutter.service.asset.AssetStorageService;
 import org.jetbrains.annotations.NotNull;
 
 public class FProjectComponentImpl implements FProjectComponent {
@@ -23,6 +24,7 @@ public class FProjectComponentImpl implements FProjectComponent {
         this.assetsManager.attach();
         this.packageUpdater.attach();
         HttpMockManager.getService(project).activeServer();
+        AssetStorageService.refreshAssetIfNeed(project);
     }
 
     @Override

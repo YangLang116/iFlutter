@@ -15,6 +15,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.xtu.plugin.flutter.service.asset.AssetStorageService;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -113,18 +114,22 @@ public class PubspecUtils {
         ReadAction.run(() -> {
             //asset list
             List<String> assetList = new ArrayList<>();
-            YAMLSequence assetSequence = getAssetSequence(project);
-            if (assetSequence != null) {
-                List<YAMLSequenceItem> assetSequenceItems = assetSequence.getItems();
-                for (YAMLSequenceItem assetSequenceItem : assetSequenceItems) {
-                    YAMLValue itemValue = assetSequenceItem.getValue();
-                    if (itemValue == null) continue;
-                    String itemText = itemValue.getText();
-                    if (StringUtils.isEmpty(itemText)) continue;
-                    assetList.add(itemText);
+            if (PluginUtils.isFoldRegister(project)) {
+                assetList.addAll(AssetStorageService.getAssetList(project));
+            } else {
+                YAMLSequence assetSequence = getAssetSequence(project);
+                if (assetSequence != null) {
+                    List<YAMLSequenceItem> assetSequenceItems = assetSequence.getItems();
+                    for (YAMLSequenceItem assetSequenceItem : assetSequenceItems) {
+                        YAMLValue itemValue = assetSequenceItem.getValue();
+                        if (itemValue == null) continue;
+                        String itemText = itemValue.getText();
+                        if (StringUtils.isEmpty(itemText)) continue;
+                        assetList.add(itemText);
+                    }
+                    CollectionUtils.duplicateList(assetList);
+                    Collections.sort(assetList);
                 }
-                CollectionUtils.duplicateList(assetList);
-                Collections.sort(assetList);
             }
             //font family list
             List<String> fontAssetList = new ArrayList<>();
@@ -196,6 +201,9 @@ public class PubspecUtils {
                                            @NotNull List<String> assetList,
                                            @Nullable YAMLSequence oldAssetSequence,
                                            @NotNull YAMLElementGenerator elementGenerator) {
+        if (PluginUtils.isFoldRegister(project)) {
+            assetList = AssetStorageService.updateAsset(project, assetList);
+        }
         if (oldAssetSequence != null) {
             YAMLSequence newAssetSequence;
             if (CollectionUtils.isEmpty(assetList)) {

@@ -3,8 +3,6 @@ package com.xtu.plugin.flutter.action.generate.res;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
-import com.xtu.plugin.flutter.component.assets.code.DartFontFileGenerator;
-import com.xtu.plugin.flutter.component.assets.code.DartRFileGenerator;
 import com.xtu.plugin.flutter.utils.*;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -52,12 +50,7 @@ public class GenerateResAction extends AnAction {
 
         PubspecUtils.readAsset(project, (assetList, fontList) -> {
             //force generate Res File
-            if (assetList.equals(newAssetList) && fontList.equals(newFontList)) {
-                DartRFileGenerator.getInstance().generate(project, newAssetList);
-                DartFontFileGenerator.getInstance().generate(project, newFontList);
-            } else {
-                PubspecUtils.writeAsset(project, newAssetList, newFontList);
-            }
+            PubspecUtils.writeAsset(project, newAssetList, newFontList);
         });
     }
 }

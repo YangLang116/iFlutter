@@ -102,7 +102,7 @@ public class AssetStorageService implements PersistentStateComponent<AssetStorag
             }
             int index = asset.lastIndexOf('/');
             if (index < 0) continue;
-            assetFoldList.add(asset.substring(0, index));
+            assetFoldList.add(asset.substring(0, index + 1));
         }
         CollectionUtils.duplicateList(assetFoldList);
         Collections.sort(assetFoldList);

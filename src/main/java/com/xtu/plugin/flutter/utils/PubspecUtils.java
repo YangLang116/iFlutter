@@ -205,20 +205,19 @@ public class PubspecUtils {
             assetList = AssetStorageService.updateAsset(project, assetList);
         }
         if (oldAssetSequence != null) {
-            YAMLSequence newAssetSequence;
             if (CollectionUtils.isEmpty(assetList)) {
-                newAssetSequence = elementGenerator.createEmptySequence();
-            } else {
-                StringBuilder newAssetBuilder = new StringBuilder();
-                for (String asset : assetList) {
-                    newAssetBuilder.append("- ").append(asset).append("\n");
-                }
-                YAMLFile tempYamlFile = elementGenerator.createDummyYamlWithText(newAssetBuilder.toString());
-                newAssetSequence = PsiTreeUtil.findChildOfType(tempYamlFile, YAMLSequence.class);
+                oldAssetSequence.getParent().delete();
+                return false;
             }
+            StringBuilder newAssetBuilder = new StringBuilder();
+            for (String asset : assetList) {
+                newAssetBuilder.append("- ").append(asset).append("\n");
+            }
+            YAMLFile tempYamlFile = elementGenerator.createDummyYamlWithText(newAssetBuilder.toString());
+            YAMLSequence newAssetSequence = PsiTreeUtil.findChildOfType(tempYamlFile, YAMLSequence.class);
             if (newAssetSequence == null) return true;
             oldAssetSequence.replace(newAssetSequence);
-        } else {
+        } else if (!CollectionUtils.isEmpty(assetList)) {
             YAMLMapping topLevelMapping = getTopLevelMapping(project);
             if (topLevelMapping == null) return true;
             YAMLKeyValue flutterKeyValue = topLevelMapping.getKeyValueByKey(NODE_FLUTTER);
@@ -255,26 +254,25 @@ public class PubspecUtils {
                                           @Nullable YAMLSequence oldFontSequence,
                                           @NotNull YAMLElementGenerator elementGenerator) {
         if (oldFontSequence != null) {
-            YAMLSequence newFontSequence;
             if (CollectionUtils.isEmpty(fontList)) {
-                newFontSequence = elementGenerator.createEmptySequence();
-            } else {
-//                - family: DINPro_CondBold
-//                  fonts:
-//                    - asset: assets/fonts/DINPro_CondBold.otf
-                StringBuilder newFontBuilder = new StringBuilder();
-                for (String fontAsset : fontList) {
-                    String fontFamily = FontUtils.getFontFamily(fontAsset);
-                    newFontBuilder.append("- family: ").append(fontFamily).append("\n")
-                            .append("  fonts:").append("\n")
-                            .append("    - asset: ").append(fontAsset).append("\n");
-                }
-                YAMLFile tempYamlFile = elementGenerator.createDummyYamlWithText(newFontBuilder.toString());
-                newFontSequence = PsiTreeUtil.findChildOfType(tempYamlFile, YAMLSequence.class);
+                oldFontSequence.getParent().delete();
+                return false;
             }
+//          - family: DINPro_CondBold
+//            fonts:
+//              - asset: assets/fonts/DINPro_CondBold.otf
+            StringBuilder newFontBuilder = new StringBuilder();
+            for (String fontAsset : fontList) {
+                String fontFamily = FontUtils.getFontFamily(fontAsset);
+                newFontBuilder.append("- family: ").append(fontFamily).append("\n")
+                        .append("  fonts:").append("\n")
+                        .append("    - asset: ").append(fontAsset).append("\n");
+            }
+            YAMLFile tempYamlFile = elementGenerator.createDummyYamlWithText(newFontBuilder.toString());
+            YAMLSequence newFontSequence = PsiTreeUtil.findChildOfType(tempYamlFile, YAMLSequence.class);
             if (newFontSequence == null) return true;
             oldFontSequence.replace(newFontSequence);
-        } else {
+        } else if (!CollectionUtils.isEmpty(fontList)) {
             YAMLMapping topLevelMapping = getTopLevelMapping(project);
             if (topLevelMapping == null) return true;
             YAMLKeyValue flutterKeyValue = topLevelMapping.getKeyValueByKey(NODE_FLUTTER);

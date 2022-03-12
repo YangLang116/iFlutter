@@ -17,6 +17,8 @@ public class StorageEntity {
     public boolean resCheckEnable = true;
     //HTTP Mock 配置
     public List<HttpEntity> httpEntityList = new ArrayList<>();
+    //资源是否以目录形式注册
+    public boolean foldRegisterEnable = false;
     //最新版本信息
     @Transient
     public Map<String, PackageInfo> packageInfoMap = new HashMap<>();
@@ -33,7 +35,8 @@ public class StorageEntity {
                 && resCheckEnable == that.resCheckEnable
                 && Objects.equals(resDir, that.resDir)
                 && Objects.equals(ignoreResExtension, that.ignoreResExtension)
-                && Objects.equals(httpEntityList, that.httpEntityList);
+                && Objects.equals(httpEntityList, that.httpEntityList)
+                && foldRegisterEnable == that.foldRegisterEnable;
     }
 
     @Override
@@ -44,6 +47,7 @@ public class StorageEntity {
                 ", flutter2Enable=" + flutter2Enable +
                 ", resCheckEnable=" + resCheckEnable +
                 ", httpEntityList=" + httpEntityList +
+                ", foldRegisterEnable=" + foldRegisterEnable +
                 '}';
     }
 }

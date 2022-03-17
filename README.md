@@ -8,7 +8,7 @@ iFlutter is an IDEA Plugin for Developer of Flutter
 
 ## 说明
 - 插件安装：插件已上传官方Plugins仓库，可搜索 `iFlutter` 下载
-- 功能说明：[Wiki](https://github.com/YangLang116/iFlutter/wiki)
+- 功能说明：[Wiki](https://iflutter.toolu.cn)
   - 1、资源文件管理
   - 2、依赖树生成
   - 3、Dart代码生成
@@ -23,18 +23,18 @@ iFlutter is an IDEA Plugin for Developer of Flutter
 - 修复资源替换res文件丢失问题
 
 ### v1.3.0
-- 支持以目录的形式注册资源
+- 支持以目录的形式注册资源 [wiki](https://iflutter.toolu.cn/content/chapter-1/part-2.html)
 
 ### v1.2.3
-- 新增依赖定位
+- 新增依赖定位 [wiki](https://iflutter.toolu.cn/content/chapter-8/part-1.html)
 
 ### v1.2.2
 - 优化 `iFlutter` 功能分区
-- 新增Pub快捷搜索
+- 新增Pub快捷搜索 [wiki](https://iflutter.toolu.cn/content/chapter-7/part-1.html)
 
 ### v1.2.1
 - 优化资源注册逻辑
-- 新增字体文件注册逻辑
+- 新增字体文件注册逻辑 [wiki](https://iflutter.toolu.cn/content/chapter-1/part-3.html)
 - 修复重复文件弹窗无法滚动问题
   
 ## 其他

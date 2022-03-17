@@ -170,11 +170,12 @@ public class PubspecUtils {
         //pure font list
         CollectionUtils.duplicateList(fontList);
         Collections.sort(fontList);
-        ReadAction.run(() -> {
-            YAMLSequence oldAssetSequence = getAssetSequence(project);
-            YAMLSequence oldFontSequence = getFontSequence(project);
-            ApplicationManager.getApplication()
-                    .invokeLater(() -> WriteCommandAction.runWriteCommandAction(project, () -> {
+
+        ApplicationManager.getApplication()
+                .invokeLater(() -> ReadAction.run(() -> {
+                    YAMLSequence oldAssetSequence = getAssetSequence(project);
+                    YAMLSequence oldFontSequence = getFontSequence(project);
+                    WriteAction.run(() -> WriteCommandAction.runWriteCommandAction(project, () -> {
                         YAMLElementGenerator elementGenerator = YAMLElementGenerator.getInstance(project);
                         //modify asset
                         if (modifyAssetFail(project, assetList, oldAssetSequence, elementGenerator)) return;
@@ -193,7 +194,7 @@ public class PubspecUtils {
                         //refresh UI
                         notifyPubspecUpdate(project);
                     }));
-        });
+                }));
     }
 
     //修复font#asset节点

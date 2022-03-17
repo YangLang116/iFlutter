@@ -3,6 +3,10 @@
 ## [Coming]
 ### Changed
 
+## [1.3.1] - 2022-03-17
+### Changed
+- fix replace res question
+
 ## [1.3.0] - 2022-03-12
 ### Changed
 - register resource with folder

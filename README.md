@@ -4,7 +4,7 @@ iFlutter is an IDEA Plugin for Developer of Flutter
 
 ## iFlutter是一款辅助Flutter开发的 IDEA 插件
 
-![platforms](https://img.shields.io/badge/platforms-macos%20%7C%20windows%20%7C%20linux-blue) ![tools](https://img.shields.io/badge/idea-intellij_IDEA%20%7C%20AndroidStudio-blue) ![licence](https://img.shields.io/badge/licence-MIT-blue) ![version](https://img.shields.io/badge/version-v1.3.0-blue)
+![platforms](https://img.shields.io/badge/platforms-macos%20%7C%20windows%20%7C%20linux-blue) ![tools](https://img.shields.io/badge/idea-intellij_IDEA%20%7C%20AndroidStudio-blue) ![licence](https://img.shields.io/badge/licence-MIT-blue) ![version](https://img.shields.io/badge/version-v1.3.1-blue)
 
 ## 说明
 - 插件安装：插件已上传官方Plugins仓库，可搜索 `iFlutter` 下载
@@ -19,6 +19,9 @@ iFlutter is an IDEA Plugin for Developer of Flutter
   - 8、依赖快速定位
 
 ## 版本更新
+### v1.3.1
+- 修复资源替换res文件丢失问题
+
 ### v1.3.0
 - 支持以目录的形式注册资源
 

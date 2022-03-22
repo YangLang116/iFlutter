@@ -1,23 +1,37 @@
 package com.xtu.plugin.flutter.annotator;
 
+import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
+import com.intellij.codeInspection.util.IntentionFamilyName;
+import com.intellij.codeInspection.util.IntentionName;
 import com.intellij.ide.BrowserUtil;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.markup.GutterIconRenderer;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectUtil;
+import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.util.IncorrectOperationException;
 import com.xtu.plugin.flutter.component.packages.update.PackageInfo;
 import com.xtu.plugin.flutter.service.StorageService;
 import com.xtu.plugin.flutter.utils.YamlPsiUtils;
 import icons.PluginIcons;
+import io.flutter.pub.PubRoot;
+import io.flutter.sdk.FlutterSdk;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.yaml.YAMLElementGenerator;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 import org.jetbrains.yaml.psi.YAMLMapping;
+import org.jetbrains.yaml.psi.YAMLScalar;
 import org.jetbrains.yaml.psi.YAMLValue;
 
 import javax.swing.*;
@@ -27,7 +41,7 @@ import java.util.Objects;
 
 public class PackageUpdateAnnotator implements Annotator {
 
-//    private static final String TIP_TO_FIX = "Package can Update";
+    private static final String TIP_TO_FIX = "Update Package";
 
     private String getPackageUrl(String packageName, YAMLValue value) {
         if (value instanceof YAMLMapping) {
@@ -76,7 +90,7 @@ public class PackageUpdateAnnotator implements Annotator {
             holder.newSilentAnnotation(HighlightSeverity.WARNING)
                     .range(element)
                     .gutterIconRenderer(new PackageUpdateIconRenderer(packageUrl, packageInfo))
-//                    .withFix(new PackageUpdateFix(packageInfo))
+                    .withFix(new PackageUpdateFix(packageInfo, (YAMLKeyValue) element))
                     .create();
         }
     }
@@ -147,77 +161,70 @@ public class PackageUpdateAnnotator implements Annotator {
         }
     }
 
-//    自动修复
-//    private static class PackageUpdateFix extends BaseIntentionAction {
-//
-//        private final PackageInfo packageInfo;
-//
-//        private PackageUpdateFix(PackageInfo packageInfo) {
-//            this.packageInfo = packageInfo;
-//        }
-//
-//        @Override
-//        @NotNull
-//        @IntentionFamilyName
-//        public String getFamilyName() {
-//            return TIP_TO_FIX;
-//        }
-//
-//        @Override
-//        @IntentionName
-//        @NotNull
-//        public String getText() {
-//            return getTipInfo();
-//        }
-//
-//        private String getTipInfo() {
-//            return String.format(Locale.ROOT, "%s can update: %s -> %s",
-//                    packageInfo.name,
-//                    packageInfo.currentVersion,
-//                    packageInfo.latestVersion);
-//        }
-//
-//        @Override
-//        public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
-//            return true;
-//        }
-//
-//        @Override
-//        public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
-//            String projectPath = PluginUtils.getProjectPath(project);
-//            if (StringUtils.isEmpty(projectPath)) return;
-//            String flutterPath = DartUtils.getFlutterPath(project);
-//            if (StringUtils.isEmpty(flutterPath)) return;
-//            String executorName = SystemInfo.isWindows ? "flutter.bat" : "flutter";
-//            File executorFile = new File(flutterPath, "bin" + File.separator + executorName);
-//            final String command = String.format(Locale.ROOT, "%s pub upgrade %s --major-versions",
-//                    executorFile.getAbsolutePath(),
-//                    packageInfo.name);
-//            new Task.Backgroundable(project, getTipInfo(), false) {
-//                @Override
-//                public void run(@NotNull ProgressIndicator indicator) {
-//                    indicator.setIndeterminate(true);
-//                    CommandUtils.CommandResult commandResult = CommandUtils.executeSync(command, new File(projectPath));
-//                    ApplicationManager.getApplication().invokeLater(() -> refreshPsi(commandResult));
-//                    indicator.setIndeterminate(false);
-//                    indicator.setFraction(1);
-//                }
-//
-//                private void refreshPsi(CommandUtils.CommandResult commandResult) {
-//                    if (commandResult.code == CommandUtils.CommandResult.SUCCESS) {
-//                        removeAnnotator(project, packageInfo.name); //remove annotator icon
-//                        file.getVirtualFile().refresh(true, false,
-//                                () -> ToastUtil.make(project, MessageType.INFO, packageInfo.name + " Update Success"));
-//                    } else {
-//                        ToastUtil.make(project, MessageType.ERROR, packageInfo.name + " Update fail");
-//                    }
-//                }
-//
-//                private void removeAnnotator(Project project, String packageName) {
-//                    Map<String, PackageInfo> infoMap = StorageService.getInstance(project).getState().packageInfoMap;
-//                    infoMap.remove(packageName);
-//                }
-//            }.queue();
-//        }
-//    }
+    // 自动修复
+    private static class PackageUpdateFix extends BaseIntentionAction {
+
+        private final PackageInfo packageInfo;
+        private final YAMLKeyValue oldDependencyElement;
+
+        private PackageUpdateFix(PackageInfo packageInfo, YAMLKeyValue yamlKeyValue) {
+            this.packageInfo = packageInfo;
+            this.oldDependencyElement = yamlKeyValue;
+        }
+
+        @Override
+        @NotNull
+        @IntentionFamilyName
+        public String getFamilyName() {
+            return TIP_TO_FIX;
+        }
+
+        @Override
+        @IntentionName
+        @NotNull
+        public String getText() {
+            return TIP_TO_FIX;
+        }
+
+        @Override
+        public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
+            return true;
+        }
+
+        @Override
+        public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
+            YAMLElementGenerator elementGenerator = YAMLElementGenerator.getInstance(project);
+            YAMLValue value = oldDependencyElement.getValue();
+            if (value instanceof YAMLScalar) {
+                YAMLKeyValue newDependencyElement = elementGenerator.createYamlKeyValue(packageInfo.name, packageInfo.latestVersion);
+                oldDependencyElement.replace(newDependencyElement);
+            } else if (value instanceof YAMLMapping) {
+                YAMLKeyValue oldVersionElement = ((YAMLMapping) value).getKeyValueByKey("version");
+                if (oldVersionElement == null) return;
+                YAMLKeyValue newVersionElement = elementGenerator.createYamlKeyValue("version", packageInfo.latestVersion);
+                oldVersionElement.replace(newVersionElement);
+            }
+            PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(project);
+            Document document = psiDocumentManager.getDocument(file);
+            if (document != null) {
+                psiDocumentManager.doPostponedOperationsAndUnblockDocument(document);
+            }
+            psiDocumentManager.commitAllDocuments();
+            runPubGet(project);
+        }
+
+        //执行pub get
+        private void runPubGet(Project project) {
+            ApplicationManager.getApplication()
+                    .invokeLater(() -> {
+                        FlutterSdk sdk = FlutterSdk.getFlutterSdk(project);
+                        if (sdk != null) {
+                            PubRoot root = PubRoot.forDirectory(ProjectUtil.guessProjectDir(project));
+                            if (root != null) {
+                                sdk.startPubGet(root, project);
+                            }
+                        }
+                    });
+        }
+    }
 }

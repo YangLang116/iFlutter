@@ -51,11 +51,12 @@ public class FlutterPackageUpdater {
 
     public void postPullLatestVersion() {
         if (this.latestVersionChecker.isShutdown()) return;
-        if (postRefreshFuture == null || postRefreshFuture.isDone() || postRefreshFuture.isCancelled()) {
-            LogUtils.info("FlutterPackageUpdater postPullLatestVersion");
-            //delay to wait pub get success
-            postRefreshFuture = this.latestVersionChecker.schedule(this::pullLatestVersion, 10, TimeUnit.SECONDS);
+        if (postRefreshFuture != null && !postRefreshFuture.isDone() && !postRefreshFuture.isCancelled()) {
+            postRefreshFuture.cancel(true);
         }
+        LogUtils.info("FlutterPackageUpdater postPullLatestVersion");
+        //delay to wait pub get success
+        postRefreshFuture = this.latestVersionChecker.schedule(this::pullLatestVersion, 15, TimeUnit.SECONDS);
     }
 
     private void pullLatestVersion() {

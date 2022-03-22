@@ -1,14 +1,13 @@
 package com.xtu.plugin.flutter.component.assets;
 
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.PsiTreeChangeEvent;
-import com.intellij.psi.PsiTreeChangeListener;
+import com.intellij.psi.*;
 import com.xtu.plugin.flutter.component.assets.handler.AssetFileHandler;
 import com.xtu.plugin.flutter.component.assets.handler.PubSpecFileHandler;
+import com.xtu.plugin.flutter.component.packages.update.FlutterPackageUpdater;
 import com.xtu.plugin.flutter.service.StorageService;
 import com.xtu.plugin.flutter.utils.LogUtils;
+import com.xtu.plugin.flutter.utils.PubspecUtils;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -19,9 +18,11 @@ public class AssetsManager {
     private final Project project;
     private final AssetFileHandler assetFileHandler;
     private final PubSpecFileHandler specFileHandler;
+    private final FlutterPackageUpdater packageUpdater;
 
-    public AssetsManager(@NotNull Project project) {
+    public AssetsManager(@NotNull Project project, @NotNull FlutterPackageUpdater packageUpdater) {
         this.project = project;
+        this.packageUpdater = packageUpdater;
         specFileHandler = new PubSpecFileHandler();
         assetFileHandler = new AssetFileHandler(specFileHandler);
     }
@@ -91,8 +92,10 @@ public class AssetsManager {
 
         @Override
         public void childrenChanged(@NotNull PsiTreeChangeEvent event) {
-            if (disableResCheck()) return;
-            if (event.getParent() instanceof PsiFile) {
+            PsiElement eventParent = event.getParent();
+            if (eventParent instanceof PsiFile && PubspecUtils.isRootPubspecFile(((PsiFile) eventParent))) {
+                packageUpdater.postPullLatestVersion();
+                if (disableResCheck()) return;
                 specFileHandler.onPsiFileChanged((PsiFile) event.getParent());
             }
         }

@@ -67,14 +67,12 @@ public class PubSpecFileHandler {
 
     public void onPsiFileChanged(PsiFile psiFile) {
         //root package pubspec.yaml changed
-        if (PubspecUtils.isRootPubspecFile(psiFile)) {
-            LogUtils.info("PubSpecFileHandler pubspec.yaml changed");
-            final Project project = psiFile.getProject();
-            PubspecUtils.readAsset(project, (assetList, fontList) -> {
-                DartRFileGenerator.getInstance().generate(project, assetList);
-                DartFontFileGenerator.getInstance().generate(project, fontList);
-            });
-        }
+        LogUtils.info("PubSpecFileHandler pubspec.yaml changed");
+        final Project project = psiFile.getProject();
+        PubspecUtils.readAsset(project, (assetList, fontList) -> {
+            DartRFileGenerator.getInstance().generate(project, assetList);
+            DartFontFileGenerator.getInstance().generate(project, fontList);
+        });
     }
 
 }

@@ -15,8 +15,8 @@ public class FProjectComponentImpl implements FProjectComponent {
 
     public FProjectComponentImpl(@NotNull Project project) {
         this.project = project;
-        this.assetsManager = new AssetsManager(project);
         this.packageUpdater = new FlutterPackageUpdater(project);
+        this.assetsManager = new AssetsManager(project, packageUpdater);
     }
 
     @Override

@@ -14,39 +14,52 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class FlutterPackageUpdater {
 
     private final Project project;
-    private final Timer latestVersionChecker;
+    private final ScheduledExecutorService latestVersionChecker;
 
-    private volatile boolean isDetach = false;
+    private Future<?> postRefreshFuture;
 
     public FlutterPackageUpdater(@NotNull Project project) {
         this.project = project;
-        this.latestVersionChecker = new Timer("Flutter Package Version Updater", true);
+        this.latestVersionChecker = Executors.newScheduledThreadPool(1);
     }
 
     public void attach() {
         LogUtils.info("FlutterPackageUpdater attach");
-        //定时拉取最新版本，间隔10分钟
-        this.latestVersionChecker.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                pullLatestVersion();
-            }
-        }, 0, 5 * 60 * 1000);
+        //定时拉取最新版本，间隔5分钟
+        this.latestVersionChecker.scheduleWithFixedDelay(this::pullLatestVersion, 0, 5, TimeUnit.MINUTES);
     }
 
     public void detach() {
-        this.isDetach = true;
         LogUtils.info("FlutterPackageUpdater detach");
-        this.latestVersionChecker.cancel();
+        try {
+            this.latestVersionChecker.shutdown();
+        } catch (Exception e) {
+            LogUtils.error("FlutterPackageUpdater detach: " + e.getMessage());
+        }
+    }
+
+    public void postPullLatestVersion() {
+        if (this.latestVersionChecker.isShutdown()) return;
+        if (postRefreshFuture == null || postRefreshFuture.isDone() || postRefreshFuture.isCancelled()) {
+            LogUtils.info("FlutterPackageUpdater postPullLatestVersion");
+            //delay to wait pub get success
+            postRefreshFuture = this.latestVersionChecker.schedule(this::pullLatestVersion, 10, TimeUnit.SECONDS);
+        }
     }
 
     private void pullLatestVersion() {
-        if (this.isDetach) return;
+        if (this.latestVersionChecker.isShutdown()) return;
         LogUtils.info("FlutterPackageUpdater pullLatestVersion");
         String projectPath = PluginUtils.getProjectPath(project);
         if (StringUtils.isEmpty(projectPath)) return;
@@ -91,6 +104,7 @@ public class FlutterPackageUpdater {
     }
 
     private void updatePackageInfo(List<PackageInfo> packageInfoList) {
+        if (this.latestVersionChecker.isShutdown()) return;
         LogUtils.info("FlutterPackageUpdater updatePackageInfo: " + packageInfoList);
         Map<String, PackageInfo> infoMap = StorageService.getInstance(project).getState().packageInfoMap;
         infoMap.clear();

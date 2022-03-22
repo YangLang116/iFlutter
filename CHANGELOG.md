@@ -3,6 +3,10 @@
 ## [Coming]
 ### Changed
 
+## [1.3.2] - 2022-03-22
+### Changed
+- optimize version checker
+
 ## [1.3.1] - 2022-03-17
 ### Changed
 - fix replace res question

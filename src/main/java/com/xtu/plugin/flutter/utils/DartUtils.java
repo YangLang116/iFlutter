@@ -18,6 +18,17 @@ import java.util.Properties;
 
 public class DartUtils {
 
+    public static boolean isBuiltInType(String type) {
+        return StringUtils.equals(type, "String")
+                || StringUtils.equals(type, "bool")
+                || StringUtils.equals(type, "int")
+                || StringUtils.equals(type, "double")
+                || StringUtils.equals(type, "num")
+                || StringUtils.equals(type, "var")
+                || StringUtils.equals(type, "dynamic")
+                || StringUtils.equals(type, "Object");
+    }
+
     private static String flutterPath;
 
     public static String getFlutterPath(@NotNull Project project) {

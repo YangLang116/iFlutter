@@ -9,6 +9,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.jetbrains.lang.dart.ide.generation.BaseCreateMethodsFix;
 import com.jetbrains.lang.dart.psi.*;
 import com.xtu.plugin.flutter.action.generate.json.entity.DartFieldEntity;
+import com.xtu.plugin.flutter.utils.DartUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -85,7 +86,7 @@ public class CreateFromJsonAndToJsonCodeFix extends BaseCreateMethodsFix<DartCom
             for (DartFieldEntity fieldEntity : dartFieldList) {
                 if (StringUtils.equals(fieldEntity.type, "List")
                         && !StringUtils.isEmpty(fieldEntity.argumentType)
-                        && !StringUtils.equals(fieldEntity.argumentType, "dynamic")) {
+                        && !DartUtils.isBuiltInType(fieldEntity.argumentType)) {
                     template.addTextSegment(String.format(Locale.US,
                             "%s: json['%s'] == null ? [] : \nList<%s>.unmodifiable(\njson['%s'].map((x) => %s.fromJson(x))),",
                             fieldEntity.name, fieldEntity.name, fieldEntity.argumentType, fieldEntity.name, fieldEntity.argumentType));

@@ -2,9 +2,10 @@ package com.xtu.plugin.flutter.utils;
 
 public class StringUtil {
 
-    public static String upFirstChar(String str) {
-        if (str == null || str.length() < 1) return str;
-        return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
+    public static String getClassName(String str) {
+        String name = toCamelCase(str);
+        if(name == null) return null;
+        return name.substring(0, 1).toUpperCase() + name.substring(1);
     }
 
     public static String splashName(String name) {
@@ -27,7 +28,7 @@ public class StringUtil {
         boolean needUpCase = false;
         for (int i = 0; i < len; i++) {
             char c = name.charAt(i);
-            if (c == '_') {
+            if (c == '_' || c == '-') {
                 needUpCase = true;
                 continue;
             }

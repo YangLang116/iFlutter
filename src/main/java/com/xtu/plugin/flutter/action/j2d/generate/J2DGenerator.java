@@ -66,7 +66,7 @@ public class J2DGenerator {
                     fromJsonBodySb.append(String.format(Locale.ROOT, "%s: json['%s'],", typeEntity.displayName, typeEntity.key));
                 } else if (typeEntity.isList) {
                     if (typeEntity.subType != null && typeEntity.subType.isObject) {
-                        fromJsonBodySb.append(String.format(Locale.ROOT, "%s: json['%s'] == null? []: List<%s>.unmodifiable(json['%s'].map((x) => %s.fromJson(x))),",
+                        fromJsonBodySb.append(String.format(Locale.ROOT, "%s: json['%s'] == null? []: \nList<%s>.unmodifiable(\njson['%s'].map((x) => %s.fromJson(x))),",
                                 typeEntity.displayName, typeEntity.key, typeEntity.subType.type, typeEntity.key, typeEntity.subType.type));
                     } else {
                         fromJsonBodySb.append(String.format(Locale.ROOT, "%s: json['%s'],", typeEntity.displayName, typeEntity.key));

@@ -87,7 +87,7 @@ public class CreateFromJsonAndToJsonCodeFix extends BaseCreateMethodsFix<DartCom
                         && !StringUtils.isEmpty(fieldEntity.argumentType)
                         && !StringUtils.equals(fieldEntity.argumentType, "dynamic")) {
                     template.addTextSegment(String.format(Locale.US,
-                            "%s: json['%s'] == null ? [] : List<%s>.unmodifiable(json['%s'].map((x) => %s.fromJson(x))),",
+                            "%s: json['%s'] == null ? [] : \nList<%s>.unmodifiable(\njson['%s'].map((x) => %s.fromJson(x))),",
                             fieldEntity.name, fieldEntity.name, fieldEntity.argumentType, fieldEntity.name, fieldEntity.argumentType));
                 } else {
                     template.addTextSegment(String.format(Locale.US, "%s: json['%s'],", fieldEntity.name, fieldEntity.name));

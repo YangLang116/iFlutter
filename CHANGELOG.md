@@ -3,6 +3,10 @@
 ## [Coming]
 ### Changed
 
+## [1.3.4] - 2022-04-09
+### Changed
+- analyze useless asset
+
 ## [1.3.3] - 2022-03-23
 ### Changed
 - optimize json2dart

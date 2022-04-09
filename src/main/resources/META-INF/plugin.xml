@@ -43,6 +43,8 @@
                     class="com.xtu.plugin.flutter.action.image.ImageFoldingAction"/>
             <action id="com.xtu.plugin.flutter.DuplicateResAnalysisAction"
                     class="com.xtu.plugin.flutter.action.analysis.DuplicateResAnalysisAction"/>
+            <action id="com.xtu.plugin.flutter.UselessResAnalysisAction"
+                    class="com.xtu.plugin.flutter.action.analysis.UselessResAnalysisAction"/>
             <separator/>
             <action id="com.xtu.plugin.flutter.J2DAction"
                     class="com.xtu.plugin.flutter.action.j2d.J2DAction"/>

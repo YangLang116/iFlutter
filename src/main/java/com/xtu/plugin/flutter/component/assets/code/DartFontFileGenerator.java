@@ -18,7 +18,7 @@ import java.util.List;
 public class DartFontFileGenerator {
 
     private static final String FONT_FILE_NAME = "i_font_res.dart";
-    private static final String FONT_CLASS_NAME = "FontRes";
+    public static final String FONT_CLASS_NAME = "FontRes";
 
     private static final DartFontFileGenerator sInstance = new DartFontFileGenerator();
 
@@ -60,7 +60,7 @@ public class DartFontFileGenerator {
                 .append("class ").append(FONT_CLASS_NAME).append(" {\n");
         for (String fontAsset : fontAssetList) {
             String fontFamily = FontUtils.getFontFamily(fontAsset);
-            String variantName = fontFamily.toUpperCase().replace("-", "_");
+            String variantName = getFontVariant(fontFamily);
             fileStringBuilder.append("  static const String ")
                     .append(variantName).append(" = '").append(fontFamily)
                     .append("';\n");
@@ -77,5 +77,10 @@ public class DartFontFileGenerator {
                 ToastUtil.make(project, MessageType.ERROR, message);
             }
         });
+    }
+
+    @NotNull
+    public static String getFontVariant(String fontFamily) {
+        return fontFamily.toUpperCase().replace("-", "_");
     }
 }

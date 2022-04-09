@@ -76,7 +76,7 @@ public class DartRFileGenerator {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @NotNull
     private String generateFile(Project project, VirtualFile rDirectory, String assetDirName, List<String> assetFileNames) throws IOException {
-        String className = StringUtil.getClassName(assetDirName) + "Res";
+        String className = getClassName(assetDirName);
         StringBuilder fileStringBuilder = new StringBuilder();
         fileStringBuilder.append("/// Generated file. Do not edit.\n\n")
                 .append("// ignore_for_file: constant_identifier_names\n")
@@ -105,7 +105,12 @@ public class DartRFileGenerator {
         return fileName;
     }
 
-    private String getResName(String assetFileName) {
+    @NotNull
+    public static String getClassName(String assetDirName) {
+        return StringUtil.getClassName(assetDirName) + "Res";
+    }
+
+    public static String getResName(String assetFileName) {
         int startIndex = assetFileName.lastIndexOf("/") + 1;
         int endIndex = assetFileName.lastIndexOf(".");
         if (endIndex < startIndex) {

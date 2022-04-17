@@ -3,6 +3,11 @@
 ## [Coming]
 ### Changed
 
+## [1.3.5] - 2022-04-17
+### Changed
+- fix Git Question for i_font_res.dart
+- add intl support
+
 ## [1.3.4] - 2022-04-09
 ### Changed
 - analyze useless asset

@@ -14,6 +14,7 @@
     <depends>com.intellij.modules.platform</depends>
     <depends>io.flutter</depends>
     <depends config-file="yaml.xml">org.jetbrains.plugins.yaml</depends>
+    <depends optional="true" config-file="intl.xml">com.localizely.flutter-intl</depends>
 
     <resource-bundle>message.ActionsBundle</resource-bundle>
 
@@ -48,6 +49,15 @@
             <separator/>
             <action id="com.xtu.plugin.flutter.J2DAction"
                     class="com.xtu.plugin.flutter.action.j2d.J2DAction"/>
+            <separator/>
+            <action id="com.xtu.plugin.flutter.AddIntlAction"
+                    class="com.xtu.plugin.flutter.action.intl.action.AddIntlAction">
+                <keyboard-shortcut first-keystroke="alt a" keymap="$default"/>
+            </action>
+            <action id="com.xtu.plugin.flutter.RemoveIntlAction"
+                    class="com.xtu.plugin.flutter.action.intl.action.RemoveIntlAction">
+                <keyboard-shortcut first-keystroke="alt r" keymap="$default"/>
+            </action>
             <separator/>
             <action id="com.xtu.plugin.flutter.HttpMockAction"
                     class="com.xtu.plugin.flutter.action.mock.HttpMockAction"/>

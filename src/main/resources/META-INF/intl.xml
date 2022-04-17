@@ -1,0 +1,16 @@
+<idea-plugin>
+    <actions resource-bundle="message.ActionsBundle">
+        <action id="com.xtu.plugin.flutter.inject.AddIntlAction"
+                class="com.xtu.plugin.flutter.action.intl.action.AddIntlAction"
+                icon="PluginIcons.LOGO">
+            <add-to-group group-id="FlutterIntlToolsActionGroup" anchor="after"
+                          relative-to-action="flutterIntl.removeLocale"/>
+        </action>
+        <action id="com.xtu.plugin.flutter.inject.RemoveIntlAction"
+                class="com.xtu.plugin.flutter.action.intl.action.RemoveIntlAction"
+                icon="PluginIcons.LOGO">
+            <add-to-group group-id="FlutterIntlToolsActionGroup" anchor="after"
+                          relative-to-action="com.xtu.plugin.flutter.inject.AddIntlAction"/>
+        </action>
+    </actions>
+</idea-plugin>

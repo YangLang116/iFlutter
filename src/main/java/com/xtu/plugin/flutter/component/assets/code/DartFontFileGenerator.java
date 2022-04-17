@@ -11,6 +11,7 @@ import com.xtu.plugin.flutter.utils.ToastUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 ///字体资源文件"i_font_res.dart"生成
@@ -19,6 +20,9 @@ public class DartFontFileGenerator {
 
     private static final String FONT_FILE_NAME = "i_font_res.dart";
     public static final String FONT_CLASS_NAME = "FontRes";
+
+    //缓存上一次写入记录，避免重复写入
+    private volatile List<String> latestFontList = new ArrayList<>();
 
     private static final DartFontFileGenerator sInstance = new DartFontFileGenerator();
 
@@ -30,6 +34,7 @@ public class DartFontFileGenerator {
     }
 
     public void generate(Project project, @NotNull List<String> fontAssetList) {
+        if(fontAssetList.equals(latestFontList)) return;
         try {
             File libDirectory = new File(project.getBasePath(), "lib");
             LocalFileSystem localFileSystem = LocalFileSystem.getInstance();
@@ -45,6 +50,8 @@ public class DartFontFileGenerator {
                 VirtualFile fontVirtualFile = resVirtualDirectory.findChild(FONT_FILE_NAME);
                 if (fontVirtualFile != null) fontVirtualFile.delete(project);
             }
+            latestFontList.clear();
+            latestFontList.addAll(fontAssetList);
         } catch (Exception e) {
             LogUtils.error("DartRFileGenerator generate: " + e.getMessage());
             ToastUtil.make(project, MessageType.ERROR, e.getMessage());

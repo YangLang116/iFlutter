@@ -11,12 +11,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DartRFileGenerator {
+
+    //缓存上一次写入记录，避免重复写入
+    private volatile List<String> latestAssetList = new ArrayList<>();
 
     private static final DartRFileGenerator sInstance = new DartRFileGenerator();
 
@@ -28,7 +28,8 @@ public class DartRFileGenerator {
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public void generate(Project project, List<String> assetList) {
+    public void generate(Project project,@NotNull List<String> assetList) {
+        if(assetList.equals(latestAssetList)) return;
         //create new res
         Map<String, List<String>> assetCategory = new HashMap<>();
         for (String assetFileName : assetList) {
@@ -67,6 +68,8 @@ public class DartRFileGenerator {
                 //删除无用文件
                 resVirtualDirectory.delete(project);
             }
+            latestAssetList.clear();
+            latestAssetList.addAll(assetList);
         } catch (Exception e) {
             LogUtils.error("DartRFileGenerator generate: " + e.getMessage());
             ToastUtil.make(project, MessageType.ERROR, e.getMessage());

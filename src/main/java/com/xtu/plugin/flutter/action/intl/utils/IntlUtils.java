@@ -12,11 +12,20 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 public class IntlUtils {
+
+    private static final Map<String, String> sIntl2TransCode = new HashMap<>();
+
+    static {
+        sIntl2TransCode.put("vi", "vie"); //越南语
+        sIntl2TransCode.put("es", "spa");  //西班牙语
+        sIntl2TransCode.put("ja", "jp"); //日语
+        sIntl2TransCode.put("ko", "kor"); //韩语
+        sIntl2TransCode.put("fr", "fra"); //法语
+        sIntl2TransCode.put("ar", "ara"); //阿拉伯语
+    }
 
     @Nullable
     public static String getLocale(@NotNull String fileName) {
@@ -104,5 +113,14 @@ public class IntlUtils {
                 return null;
             });
         });
+    }
+
+    public static String transCodeFromLocale(@NotNull String locale) {
+        //兼容 en_GB 和 en
+        int underLineIndex = locale.indexOf("_");
+        if (underLineIndex >= 0) {
+            locale = locale.substring(0, underLineIndex);
+        }
+        return sIntl2TransCode.getOrDefault(locale, locale);
     }
 }

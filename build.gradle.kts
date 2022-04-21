@@ -28,6 +28,7 @@ repositories {
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     implementation("com.squareup.okhttp3:mockwebserver:4.9.3")
+    implementation("com.squareup.okhttp3:okhttp:4.9.3")
 }
 
 // Configure Gradle IntelliJ Plugin - read more: https://github.com/JetBrains/gradle-intellij-plugin

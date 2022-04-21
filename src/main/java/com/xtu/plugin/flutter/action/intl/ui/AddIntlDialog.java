@@ -1,28 +1,53 @@
 package com.xtu.plugin.flutter.action.intl.ui;
 
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.util.ui.JBUI;
+import com.xtu.plugin.flutter.action.intl.translate.TransApi;
+import com.xtu.plugin.flutter.action.intl.utils.IntlUtils;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
+import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class AddIntlDialog extends DialogWrapper {
 
-    private final List<String> localeList;
+    private static final String defaultAppId = "20220420001182709";
+    private static final String defaultAppSecret = "Jq7NWiluWPYwKoILFQ1V";
+
+    private boolean hasTranslate;
     private JTextField keyTextField;
+    private final TransApi transApi;
+    private final List<String> localeList;
     private final Map<String, JTextField> localeFieldMap = new HashMap<>();
 
     public AddIntlDialog(@Nullable Project project, @NotNull List<String> localeList) {
         super(project, null, false, IdeModalityType.PROJECT, true);
         this.localeList = localeList;
+        this.transApi = initTransApi();
         init();
+    }
+
+    private TransApi initTransApi() {
+        return new TransApi(defaultAppId, defaultAppSecret);
     }
 
     @Override
@@ -59,6 +84,16 @@ public class AddIntlDialog extends DialogWrapper {
             localeItemBox.add(localeLabel);
             localeItemBox.add(Box.createHorizontalStrut(10));
             JTextField localeTextField = new JTextField();
+            localeTextField.addFocusListener(new FocusAdapter() {
+                @Override
+                public void focusLost(FocusEvent e) {
+                    if (hasTranslate) return;
+                    String inputStr = localeTextField.getText().trim();
+                    if (StringUtils.isEmpty(inputStr)) return;
+                    hasTranslate = true;
+                    translateLocaleList(locale, localeTextField);
+                }
+            });
             localeItemBox.add(localeTextField);
             localeFieldMap.put(locale, localeTextField);
             rootPanel.add(localeItemBox);
@@ -67,7 +102,8 @@ public class AddIntlDialog extends DialogWrapper {
     }
 
     @Override
-    public @Nullable JComponent getPreferredFocusedComponent() {
+    @Nullable
+    public JComponent getPreferredFocusedComponent() {
         return keyTextField;
     }
 
@@ -88,5 +124,62 @@ public class AddIntlDialog extends DialogWrapper {
             localeMap.put(entry.getKey(), value);
         }
         return localeMap;
+    }
+
+    private void translateLocaleList(@NotNull String sourceLocale,
+                                     @NotNull JTextField sourceTextField) {
+        String word = sourceTextField.getText().trim();
+        for (Map.Entry<String, JTextField> textFieldEntry : localeFieldMap.entrySet()) {
+            String locale = textFieldEntry.getKey();
+            JTextField textField = textFieldEntry.getValue();
+            if (textField == sourceTextField) continue;
+            translateLocale(word, sourceLocale, locale, textField);
+        }
+    }
+
+    private void translateLocale(@NotNull String word,
+                                 @NotNull String sourceLocale,
+                                 @NotNull String destLocale,
+                                 @NotNull JTextField destTextField) {
+        String from = IntlUtils.transCodeFromLocale(sourceLocale);
+        String to = IntlUtils.transCodeFromLocale(destLocale);
+        this.transApi.getTransResult(word, from, to, new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                //ignore
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                ResponseBody body = response.body();
+                if (body == null) return;
+                String content = body.string();
+                if (StringUtils.isEmpty(content)) return;
+                fillResultToUI(content, destTextField);
+            }
+        });
+    }
+
+    private String parseResult(@NotNull String content) {
+        //{"from":"zh","to":"en","trans_result":[{"src":"\u6d4b\u8bd5","dst":"test"}]}
+        try {
+            JSONObject resultJson = new JSONObject(content);
+            JSONArray transArray = resultJson.optJSONArray("trans_result");
+            if (transArray == null || transArray.length() <= 0) return null;
+            JSONObject transJson = transArray.optJSONObject(0);
+            return transJson.optString("dst");
+        } catch (JSONException e) {
+            return null;
+        }
+    }
+
+    private void fillResultToUI(@NotNull String content, @NotNull JTextField destTextField) {
+        String result = parseResult(content);
+        if (StringUtils.isEmpty(result)) return;
+        ApplicationManager.getApplication().invokeLater(() -> {
+            String oldContent = destTextField.getText().trim();
+            if (!StringUtils.isEmpty(oldContent)) return;
+            destTextField.setText(result);
+        }, ModalityState.any());
     }
 }

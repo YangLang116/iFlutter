@@ -22,6 +22,10 @@ public class StorageEntity {
     //最新版本信息
     @Transient
     public Map<String, PackageInfo> packageInfoMap = new HashMap<>();
+    //翻译api key
+    public String apiKey = "20220420001182709";
+    //翻译api secret
+    public String apiSecret = "Jq7NWiluWPYwKoILFQ1V";
 
     public StorageEntity() {
     }
@@ -36,7 +40,9 @@ public class StorageEntity {
                 && Objects.equals(resDir, that.resDir)
                 && Objects.equals(ignoreResExtension, that.ignoreResExtension)
                 && Objects.equals(httpEntityList, that.httpEntityList)
-                && foldRegisterEnable == that.foldRegisterEnable;
+                && foldRegisterEnable == that.foldRegisterEnable
+                && Objects.equals(apiKey, that.apiKey)
+                && Objects.equals(apiSecret, that.apiSecret);
     }
 
     @Override
@@ -48,6 +54,8 @@ public class StorageEntity {
                 ", resCheckEnable=" + resCheckEnable +
                 ", httpEntityList=" + httpEntityList +
                 ", foldRegisterEnable=" + foldRegisterEnable +
+                ", apiKey=" + apiKey +
+                ", apiSecret=" + apiSecret +
                 '}';
     }
 }

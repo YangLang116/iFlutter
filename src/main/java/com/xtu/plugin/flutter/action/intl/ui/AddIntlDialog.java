@@ -7,6 +7,8 @@ import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.util.ui.JBUI;
 import com.xtu.plugin.flutter.action.intl.translate.TransApi;
 import com.xtu.plugin.flutter.action.intl.utils.IntlUtils;
+import com.xtu.plugin.flutter.service.StorageEntity;
+import com.xtu.plugin.flutter.service.StorageService;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -30,24 +32,27 @@ import java.util.Map;
 
 public class AddIntlDialog extends DialogWrapper {
 
-    private static final String defaultAppId = "20220420001182709";
-    private static final String defaultAppSecret = "Jq7NWiluWPYwKoILFQ1V";
-
     private boolean hasTranslate;
     private JTextField keyTextField;
+    private Project project;
     private final TransApi transApi;
     private final List<String> localeList;
     private final Map<String, JTextField> localeFieldMap = new HashMap<>();
 
     public AddIntlDialog(@Nullable Project project, @NotNull List<String> localeList) {
         super(project, null, false, IdeModalityType.PROJECT, true);
+        this.project = project;
         this.localeList = localeList;
         this.transApi = initTransApi();
         init();
     }
 
     private TransApi initTransApi() {
-        return new TransApi(defaultAppId, defaultAppSecret);
+        StorageService storageService = StorageService.getInstance(project);
+        StorageEntity storageEntity = storageService.getState();
+        String apiId = storageEntity.apiKey;
+        String apiSecret = storageEntity.apiSecret;
+        return new TransApi(apiId, apiSecret);
     }
 
     @Override

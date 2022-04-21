@@ -15,6 +15,7 @@ import org.apache.commons.lang.StringUtils;
 
 import javax.swing.*;
 import java.util.Collections;
+import java.util.Objects;
 
 public final class SettingsConfiguration implements SearchableConfigurable {
 
@@ -28,6 +29,8 @@ public final class SettingsConfiguration implements SearchableConfigurable {
     private JCheckBox flutter2EnableBox;
     private JCheckBox resCheckEnableBox;
     private JCheckBox foldRegisterBox;
+    private JTextField apiKeyField;
+    private JTextField apiSecretField;
 
     public SettingsConfiguration(Project project) {
         this.project = project;
@@ -60,7 +63,10 @@ public final class SettingsConfiguration implements SearchableConfigurable {
                 || !CollectionUtils.join(storageEntity.ignoreResExtension, LIST_SPLIT_CHAR).equals(ignoreResField.getText().trim())
                 || storageEntity.flutter2Enable != flutter2EnableBox.isSelected()
                 || storageEntity.resCheckEnable != resCheckEnableBox.isSelected()
-                || storageEntity.foldRegisterEnable != foldRegisterBox.isSelected();
+                || storageEntity.foldRegisterEnable != foldRegisterBox.isSelected()
+                || !Objects.equals(storageEntity.apiKey, apiKeyField.getText().trim())
+                || !Objects.equals(storageEntity.apiSecret, apiSecretField.getText().trim());
+
     }
 
     @Override
@@ -73,6 +79,8 @@ public final class SettingsConfiguration implements SearchableConfigurable {
         flutter2EnableBox.setSelected(storageEntity.flutter2Enable);
         resCheckEnableBox.setSelected(storageEntity.resCheckEnable);
         foldRegisterBox.setSelected(storageEntity.foldRegisterEnable);
+        apiKeyField.setText(storageEntity.apiKey);
+        apiSecretField.setText(storageEntity.apiSecret);
     }
 
     @Override
@@ -86,6 +94,8 @@ public final class SettingsConfiguration implements SearchableConfigurable {
                 Collections.emptyList() : CollectionUtils.split(ignoreResExtensionStr, LIST_SPLIT_CHAR);
         storageEntity.flutter2Enable = flutter2EnableBox.isSelected();
         storageEntity.resCheckEnable = resCheckEnableBox.isSelected();
+        storageEntity.apiKey = apiKeyField.getText().trim();
+        storageEntity.apiSecret = apiSecretField.getText().trim();
         //检查是否更新了注册方式
         if (storageEntity.foldRegisterEnable != foldRegisterBox.isSelected()) {
             storageEntity.foldRegisterEnable = foldRegisterBox.isSelected();

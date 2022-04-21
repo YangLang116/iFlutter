@@ -23,13 +23,14 @@ public class IntlResManager {
 
     public static void addLocaleAssetList(@NotNull Project project,
                                           @NotNull String key,
-                                          @NotNull Map<String, String> localeMap) {
+                                          @NotNull Map<String, String> localeMap,
+                                          boolean canReplaceKey) {
         boolean isSuccess = true;
         for (Map.Entry<String, String> entry : localeMap.entrySet()) {
             String locale = entry.getKey();
             String content = entry.getValue();
             try {
-                IntlUtils.addLocaleValue(project, locale, key, content);
+                IntlUtils.addLocaleValue(project, locale, key, content, canReplaceKey);
             } catch (IntlException e) {
                 isSuccess = false;
                 String fileName = IntlUtils.getFileName(locale);

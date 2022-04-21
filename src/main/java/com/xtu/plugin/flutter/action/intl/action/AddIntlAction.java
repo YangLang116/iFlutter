@@ -43,6 +43,7 @@ public class AddIntlAction extends BaseIntlAction {
                 return;
             }
         }
-        IntlResManager.addLocaleAssetList(project, key, localeMap);
+        boolean canReplaceKey = addIntlDialog.canReplaceKey();
+        IntlResManager.addLocaleAssetList(project, key, localeMap, canReplaceKey);
     }
 }

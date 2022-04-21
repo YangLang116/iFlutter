@@ -33,6 +33,7 @@ import java.util.Map;
 public class AddIntlDialog extends DialogWrapper {
 
     private boolean hasTranslate;
+    private JCheckBox replaceBox;
     private JTextField keyTextField;
     private Project project;
     private final TransApi transApi;
@@ -103,6 +104,13 @@ public class AddIntlDialog extends DialogWrapper {
             localeFieldMap.put(locale, localeTextField);
             rootPanel.add(localeItemBox);
         }
+        //replace key
+        rootPanel.add(Box.createVerticalStrut(5));
+        replaceBox = new JCheckBox();
+        replaceBox.setText("Can Replace Key");
+        replaceBox.setSelected(false);
+        replaceBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+        rootPanel.add(replaceBox);
         return rootPanel;
     }
 
@@ -120,6 +128,10 @@ public class AddIntlDialog extends DialogWrapper {
 
     public String getKey() {
         return this.keyTextField.getText().trim();
+    }
+
+    public boolean canReplaceKey() {
+        return this.replaceBox.isSelected();
     }
 
     public Map<String, String> getLocaleMap() {

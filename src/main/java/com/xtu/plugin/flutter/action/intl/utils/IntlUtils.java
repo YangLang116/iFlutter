@@ -79,13 +79,14 @@ public class IntlUtils {
     public static void addLocaleValue(@Nullable Project project,
                                       @NotNull String locale,
                                       @NotNull String key,
-                                      @NotNull String value) throws Throwable {
+                                      @NotNull String value,
+                                      boolean canReplaceKey) throws Throwable {
         ReadAction.run(() -> {
             VirtualFile localeFile = getLocalFile(project, locale);
             if (localeFile == null) return;
             String content = new String(localeFile.contentsToByteArray());
             JSONObject resultJson = new JSONObject(content);
-            if (resultJson.keySet().contains(key)) {
+            if (!canReplaceKey && resultJson.keySet().contains(key)) {
                 throw new IntlException(key + "已经存在");
             }
             resultJson.put(key, value);

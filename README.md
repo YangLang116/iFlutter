@@ -4,7 +4,7 @@ iFlutter is an IDEA Plugin for Developer of Flutter
 
 ## iFlutter是一款辅助Flutter开发的 IDEA 插件
 
-![platforms](https://img.shields.io/badge/platforms-macos%20%7C%20windows%20%7C%20linux-blue) ![tools](https://img.shields.io/badge/idea-intellij_IDEA%20%7C%20AndroidStudio-blue) ![licence](https://img.shields.io/badge/licence-MIT-blue) ![version](https://img.shields.io/badge/version-v1.3.5-blue)
+![platforms](https://img.shields.io/badge/platforms-macos%20%7C%20windows%20%7C%20linux-blue) ![tools](https://img.shields.io/badge/idea-intellij_IDEA%20%7C%20AndroidStudio-blue) ![licence](https://img.shields.io/badge/licence-MIT-blue) ![version](https://img.shields.io/badge/version-v1.3.6-blue)
 
 ## 说明
 - 插件安装：插件已上传官方Plugins仓库，可搜索 `iFlutter` 下载
@@ -20,6 +20,9 @@ iFlutter is an IDEA Plugin for Developer of Flutter
   - 9、支持国际化
 
 ## 版本更新
+### v1.3.6
+- 国际化添加自动翻译 [wiki](https://iflutter.toolu.cn/content/chapter-9/part-1.html)
+
 ### v1.3.5
 - 支持国际化 [wiki](https://iflutter.toolu.cn/content/chapter-9/part-1.html)
 - 修复i_font_res.dart的Git问题

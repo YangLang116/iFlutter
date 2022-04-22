@@ -6,7 +6,6 @@ import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.util.SystemInfo;
-import com.xtu.plugin.flutter.action.intl.exception.IntlException;
 import com.xtu.plugin.flutter.action.intl.utils.IntlUtils;
 import com.xtu.plugin.flutter.utils.CommandUtils;
 import com.xtu.plugin.flutter.utils.DartUtils;
@@ -31,14 +30,10 @@ public class IntlResManager {
             String content = entry.getValue();
             try {
                 IntlUtils.addLocaleValue(project, locale, key, content, canReplaceKey);
-            } catch (IntlException e) {
-                isSuccess = false;
-                String fileName = IntlUtils.getFileName(locale);
-                ToastUtil.make(project, MessageType.ERROR, fileName + ": " + e.getMessage());
             } catch (Throwable e) {
                 isSuccess = false;
                 String fileName = IntlUtils.getFileName(locale);
-                ToastUtil.make(project, MessageType.ERROR, fileName + ": 处理异常");
+                ToastUtil.make(project, MessageType.ERROR, fileName + ": " + e.getMessage());
             }
         }
         if (isSuccess) {
@@ -53,14 +48,10 @@ public class IntlResManager {
         for (String locale : localeList) {
             try {
                 IntlUtils.removeLocaleValue(project, locale, key);
-            } catch (IntlException e) {
-                isSuccess = false;
-                String fileName = IntlUtils.getFileName(locale);
-                ToastUtil.make(project, MessageType.ERROR, fileName + ": " + e.getMessage());
             } catch (Throwable e) {
                 isSuccess = false;
                 String fileName = IntlUtils.getFileName(locale);
-                ToastUtil.make(project, MessageType.ERROR, fileName + ": 处理异常");
+                ToastUtil.make(project, MessageType.ERROR, fileName + ": " + e.getMessage());
             }
         }
         if (isSuccess) {

@@ -86,7 +86,7 @@ public class AddIntlDialog extends DialogWrapper {
             localeItemBox.setAlignmentX(Component.LEFT_ALIGNMENT);
             localeItemBox.setBorder(JBUI.Borders.emptyBottom(5));
             JLabel localeLabel = new JLabel(locale);
-            localeLabel.setMinimumSize(new Dimension(100, 0));
+            localeLabel.setPreferredSize(new Dimension(30, 0));
             localeItemBox.add(localeLabel);
             localeItemBox.add(Box.createHorizontalStrut(10));
             JTextField localeTextField = new JTextField();

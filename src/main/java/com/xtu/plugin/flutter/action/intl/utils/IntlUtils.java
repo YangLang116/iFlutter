@@ -6,7 +6,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectUtil;
 import com.intellij.openapi.util.ThrowableComputable;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.xtu.plugin.flutter.action.intl.exception.IntlException;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -87,7 +86,7 @@ public class IntlUtils {
             String content = new String(localeFile.contentsToByteArray());
             JSONObject resultJson = new JSONObject(content);
             if (!canReplaceKey && resultJson.keySet().contains(key)) {
-                throw new IntlException(key + "已经存在");
+                throw new IllegalStateException(key + " 已经存在");
             }
             resultJson.put(key, value);
             byte[] resultBytes = resultJson.toString(2).getBytes();

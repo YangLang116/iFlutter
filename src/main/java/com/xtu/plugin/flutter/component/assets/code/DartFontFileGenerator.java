@@ -19,7 +19,7 @@ import java.util.List;
 public class DartFontFileGenerator {
 
     private static final String FONT_FILE_NAME = "i_font_res.dart";
-    public static final String FONT_CLASS_NAME = "FontRes";
+    private static final String FONT_CLASS_NAME = "FontRes";
 
     //缓存上一次写入记录，避免重复写入
     private final List<String> latestFontList = new ArrayList<>();
@@ -34,7 +34,7 @@ public class DartFontFileGenerator {
     }
 
     public void generate(Project project, @NotNull List<String> fontAssetList) {
-        if(fontAssetList.equals(latestFontList)) return;
+        if (fontAssetList.equals(latestFontList)) return;
         try {
             File libDirectory = new File(project.getBasePath(), "lib");
             LocalFileSystem localFileSystem = LocalFileSystem.getInstance();
@@ -89,5 +89,13 @@ public class DartFontFileGenerator {
     @NotNull
     public static String getFontVariant(String fontFamily) {
         return fontFamily.toUpperCase().replace("-", "_");
+    }
+
+    public static String getFileName() {
+        return FONT_FILE_NAME;
+    }
+
+    public static String getClassName() {
+        return FONT_CLASS_NAME;
     }
 }

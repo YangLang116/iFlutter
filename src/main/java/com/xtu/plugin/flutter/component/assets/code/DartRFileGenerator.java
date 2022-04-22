@@ -27,9 +27,8 @@ public class DartRFileGenerator {
         return sInstance;
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    public void generate(Project project,@NotNull List<String> assetList) {
-        if(assetList.equals(latestAssetList)) return;
+    public void generate(Project project, @NotNull List<String> assetList) {
+        if (assetList.equals(latestAssetList)) return;
         //create new res
         Map<String, List<String>> assetCategory = new HashMap<>();
         for (String assetFileName : assetList) {
@@ -56,17 +55,9 @@ public class DartRFileGenerator {
                     usefulFileNameList.add(fileName);
                 }
                 //删除无用文件
-                VirtualFile[] childrenFileList = resVirtualDirectory.getChildren();
-                if (childrenFileList != null) {
-                    for (VirtualFile virtualFile : childrenFileList) {
-                        String subFileName = virtualFile.getName();
-                        if (usefulFileNameList.contains(subFileName)) continue;
-                        virtualFile.delete(project);
-                    }
-                }
+                deleteUselessFile(project, resVirtualDirectory, usefulFileNameList);
             } else if (resVirtualDirectory != null) {
-                //删除无用文件
-                resVirtualDirectory.delete(project);
+                deleteUselessFile(project, resVirtualDirectory, Collections.emptyList());
             }
             latestAssetList.clear();
             latestAssetList.addAll(assetList);
@@ -76,9 +67,21 @@ public class DartRFileGenerator {
         }
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private void deleteUselessFile(@NotNull Project project,
+                                   @NotNull VirtualFile directory,
+                                   @NotNull List<String> excludeNameList) throws IOException {
+        VirtualFile[] children = directory.getChildren();
+        if (children == null) return;
+        for (VirtualFile child : children) {
+            String fileName = child.getName();
+            if (Objects.equals(fileName, DartFontFileGenerator.getFileName())) continue;
+            if (excludeNameList.contains(fileName)) continue;
+            child.delete(project);
+        }
+    }
+
     @NotNull
-    private String generateFile(Project project, VirtualFile rDirectory, String assetDirName, List<String> assetFileNames) throws IOException {
+    private String generateFile(Project project, VirtualFile rDirectory, String assetDirName, List<String> assetFileNames) {
         String className = getClassName(assetDirName);
         StringBuilder fileStringBuilder = new StringBuilder();
         fileStringBuilder.append("/// Generated file. Do not edit.\n\n")

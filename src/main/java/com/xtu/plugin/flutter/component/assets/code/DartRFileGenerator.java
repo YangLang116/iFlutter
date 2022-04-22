@@ -16,7 +16,7 @@ import java.util.*;
 public class DartRFileGenerator {
 
     //缓存上一次写入记录，避免重复写入
-    private volatile List<String> latestAssetList = new ArrayList<>();
+    private final List<String> latestAssetList = new ArrayList<>();
 
     private static final DartRFileGenerator sInstance = new DartRFileGenerator();
 

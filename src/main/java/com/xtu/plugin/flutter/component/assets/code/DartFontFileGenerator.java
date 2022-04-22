@@ -22,7 +22,7 @@ public class DartFontFileGenerator {
     public static final String FONT_CLASS_NAME = "FontRes";
 
     //缓存上一次写入记录，避免重复写入
-    private volatile List<String> latestFontList = new ArrayList<>();
+    private final List<String> latestFontList = new ArrayList<>();
 
     private static final DartFontFileGenerator sInstance = new DartFontFileGenerator();
 

@@ -26,6 +26,11 @@ public class StorageEntity {
     public String apiKey = "20220420001182709";
     //翻译api secret
     public String apiSecret = "Jq7NWiluWPYwKoILFQ1V";
+    //最大图片
+    public int maxPicSize = 500;
+    //最大图片宽高
+    public int maxPicWidth = 720;
+    public int maxPicHeight = 1080;
 
     public StorageEntity() {
     }
@@ -42,7 +47,10 @@ public class StorageEntity {
                 && Objects.equals(httpEntityList, that.httpEntityList)
                 && foldRegisterEnable == that.foldRegisterEnable
                 && Objects.equals(apiKey, that.apiKey)
-                && Objects.equals(apiSecret, that.apiSecret);
+                && Objects.equals(apiSecret, that.apiSecret)
+                && maxPicSize == that.maxPicSize
+                && maxPicWidth == that.maxPicWidth
+                && maxPicHeight == that.maxPicHeight;
     }
 
     @Override
@@ -56,6 +64,9 @@ public class StorageEntity {
                 ", foldRegisterEnable=" + foldRegisterEnable +
                 ", apiKey=" + apiKey +
                 ", apiSecret=" + apiSecret +
+                ", maxPicSize=" + maxPicSize +
+                ", maxPicWidth=" + maxPicWidth +
+                ", maxPicHeight=" + maxPicHeight +
                 '}';
     }
 }

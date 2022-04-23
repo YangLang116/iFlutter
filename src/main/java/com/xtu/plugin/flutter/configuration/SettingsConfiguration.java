@@ -4,7 +4,6 @@ import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.application.impl.ApplicationImpl;
-import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
@@ -14,6 +13,10 @@ import com.xtu.plugin.flutter.utils.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
 import javax.swing.*;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.PlainDocument;
+import java.awt.*;
 import java.util.Collections;
 import java.util.Objects;
 
@@ -31,6 +34,9 @@ public final class SettingsConfiguration implements SearchableConfigurable {
     private JCheckBox foldRegisterBox;
     private JTextField apiKeyField;
     private JTextField apiSecretField;
+    private JTextField maxPicSizeField;
+    private JTextField maxPicWidthField;
+    private JTextField maxPicHeightField;
 
     public SettingsConfiguration(Project project) {
         this.project = project;
@@ -48,6 +54,9 @@ public final class SettingsConfiguration implements SearchableConfigurable {
 
     @Override
     public JComponent createComponent() {
+        maxPicSizeField.setDocument(new NumberDocument());
+        maxPicWidthField.setDocument(new NumberDocument());
+        maxPicHeightField.setDocument(new NumberDocument());
         return rootPanel;
     }
 
@@ -65,7 +74,10 @@ public final class SettingsConfiguration implements SearchableConfigurable {
                 || storageEntity.resCheckEnable != resCheckEnableBox.isSelected()
                 || storageEntity.foldRegisterEnable != foldRegisterBox.isSelected()
                 || !Objects.equals(storageEntity.apiKey, apiKeyField.getText().trim())
-                || !Objects.equals(storageEntity.apiSecret, apiSecretField.getText().trim());
+                || !Objects.equals(storageEntity.apiSecret, apiSecretField.getText().trim())
+                || storageEntity.maxPicSize != Integer.parseInt(maxPicSizeField.getText().trim())
+                || storageEntity.maxPicWidth != Integer.parseInt(maxPicWidthField.getText().trim())
+                || storageEntity.maxPicHeight != Integer.parseInt(maxPicHeightField.getText().trim());
 
     }
 
@@ -81,10 +93,13 @@ public final class SettingsConfiguration implements SearchableConfigurable {
         foldRegisterBox.setSelected(storageEntity.foldRegisterEnable);
         apiKeyField.setText(storageEntity.apiKey);
         apiSecretField.setText(storageEntity.apiSecret);
+        maxPicSizeField.setText(String.valueOf(storageEntity.maxPicSize));
+        maxPicWidthField.setText(String.valueOf(storageEntity.maxPicWidth));
+        maxPicHeightField.setText(String.valueOf(storageEntity.maxPicHeight));
     }
 
     @Override
-    public void apply() throws ConfigurationException {
+    public void apply() {
         StorageEntity storageEntity = getStorageEntity();
         String resStr = resDetectField.getText().trim();
         storageEntity.resDir = StringUtils.isEmpty(resStr) ?
@@ -96,6 +111,9 @@ public final class SettingsConfiguration implements SearchableConfigurable {
         storageEntity.resCheckEnable = resCheckEnableBox.isSelected();
         storageEntity.apiKey = apiKeyField.getText().trim();
         storageEntity.apiSecret = apiSecretField.getText().trim();
+        storageEntity.maxPicSize = Integer.parseInt(maxPicSizeField.getText().trim());
+        storageEntity.maxPicWidth = Integer.parseInt(maxPicWidthField.getText().trim());
+        storageEntity.maxPicHeight = Integer.parseInt(maxPicHeightField.getText().trim());
         //检查是否更新了注册方式
         if (storageEntity.foldRegisterEnable != foldRegisterBox.isSelected()) {
             storageEntity.foldRegisterEnable = foldRegisterBox.isSelected();
@@ -112,4 +130,23 @@ public final class SettingsConfiguration implements SearchableConfigurable {
     }
 
 
+    private static class NumberDocument extends PlainDocument {
+
+        public void insertString(int var1, String var2, AttributeSet var3) throws BadLocationException {
+            if (this.isNumeric(var2)) {
+                super.insertString(var1, var2, var3);
+            } else {
+                Toolkit.getDefaultToolkit().beep();
+            }
+        }
+
+        private boolean isNumeric(String var1) {
+            try {
+                Long.valueOf(var1);
+                return true;
+            } catch (NumberFormatException var3) {
+                return false;
+            }
+        }
+    }
 }

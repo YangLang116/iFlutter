@@ -2,6 +2,7 @@ package com.xtu.plugin.flutter.component.assets;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
+import com.xtu.plugin.flutter.component.analysis.ImageSizeAnalyzer;
 import com.xtu.plugin.flutter.component.assets.handler.AssetFileHandler;
 import com.xtu.plugin.flutter.component.assets.handler.PubSpecFileHandler;
 import com.xtu.plugin.flutter.component.packages.update.FlutterPackageUpdater;
@@ -19,12 +20,14 @@ public class AssetsManager {
     private final AssetFileHandler assetFileHandler;
     private final PubSpecFileHandler specFileHandler;
     private final FlutterPackageUpdater packageUpdater;
+    private final ImageSizeAnalyzer imageSizeAnalyzer;
 
     public AssetsManager(@NotNull Project project, @NotNull FlutterPackageUpdater packageUpdater) {
         this.project = project;
         this.packageUpdater = packageUpdater;
-        specFileHandler = new PubSpecFileHandler();
-        assetFileHandler = new AssetFileHandler(specFileHandler);
+        this.specFileHandler = new PubSpecFileHandler();
+        this.assetFileHandler = new AssetFileHandler(specFileHandler);
+        this.imageSizeAnalyzer = new ImageSizeAnalyzer(project);
     }
 
     public void attach() {
@@ -71,9 +74,11 @@ public class AssetsManager {
 
         @Override
         public void childAdded(@NotNull PsiTreeChangeEvent event) {
-            if (disableResCheck()) return;
             if (event.getChild() instanceof PsiFile) {
-                assetFileHandler.onPsiFileAdded((PsiFile) event.getChild());
+                PsiFile psiFile = (PsiFile) event.getChild();
+                imageSizeAnalyzer.onPsiFileAdd(psiFile);
+                if (disableResCheck()) return;
+                assetFileHandler.onPsiFileAdded(psiFile);
             }
         }
 

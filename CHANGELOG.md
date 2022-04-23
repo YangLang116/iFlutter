@@ -3,6 +3,10 @@
 ## [Coming]
 ### Changed
 
+## [1.3.7] - 2022-04-23
+### Changed
+- check image size 
+
 ## [1.3.6] - 2022-04-21
 ### Changed
 - support translate for intl

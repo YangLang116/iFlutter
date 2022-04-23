@@ -5,6 +5,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
+import com.xtu.plugin.flutter.service.StorageEntity;
+import com.xtu.plugin.flutter.service.StorageService;
 import com.xtu.plugin.flutter.utils.AssetUtils;
 import com.xtu.plugin.flutter.utils.ImageUtils;
 import org.jetbrains.annotations.NotNull;
@@ -29,18 +31,23 @@ public class ImageSizeAnalyzer {
 
     private void analysisImageSize(@NotNull VirtualFile imageVirtualFile) {
         final String filePath = imageVirtualFile.getPath();
+        StorageService storageService = StorageService.getInstance(project);
+        StorageEntity storageEntity = storageService.getState();
+        final int maxPicSize = storageEntity.maxPicSize;
+        final int maxPicWidth = storageEntity.maxPicWidth;
+        final int maxPicHeight = storageEntity.maxPicHeight;
         ApplicationManager.getApplication().executeOnPooledThread(() -> {
             final File imageFile = new File(filePath);
             int imageSize = ImageUtils.getImageSize(imageFile);
-            if (imageSize > 100) {
-                showWarnDialog(String.format("%s 大小超标:\n标准: %d k\n当前: %d k", imageFile.getName(), 100, imageSize));
+            if (imageSize > maxPicSize) {
+                showWarnDialog(String.format("%s 大小超标:\n标准: %d k\n当前: %d k", imageFile.getName(), maxPicSize, imageSize));
                 return;
             }
             ImageUtils.PicDimension imageDimension = ImageUtils.getImageDimension(imageFile);
-            if (imageDimension != null && (imageDimension.width > 100 || imageDimension.height > 100)) {
+            if (imageDimension != null && (imageDimension.width > maxPicWidth || imageDimension.height > maxPicHeight)) {
                 showWarnDialog(String.format("%s 尺寸超标:\n标准: %d x %d\n当前: %d x %d",
                         imageFile.getName(),
-                        100, 100,
+                        maxPicWidth, maxPicHeight,
                         imageDimension.width, imageDimension.height));
             }
         });

@@ -125,7 +125,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
         Application application = ApplicationManager.getApplication();
         application.invokeLater(() -> {
             Messages.showMessageDialog(project, "资源注册方式发生修改，IDEA需要重启", "iFlutter提示", null);
-            ((ApplicationImpl) application).restart(true);
+            application.restart();
         }, ModalityState.NON_MODAL);
     }
 

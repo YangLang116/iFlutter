@@ -12,6 +12,7 @@ import com.xtu.plugin.flutter.component.assets.handler.AssetFileHandler;
 import com.xtu.plugin.flutter.component.assets.handler.PubSpecFileHandler;
 import com.xtu.plugin.flutter.component.packages.update.FlutterPackageUpdater;
 import com.xtu.plugin.flutter.service.StorageService;
+import com.xtu.plugin.flutter.utils.FileUtils;
 import com.xtu.plugin.flutter.utils.LogUtils;
 import com.xtu.plugin.flutter.utils.PubspecUtils;
 import org.jetbrains.annotations.NotNull;
@@ -57,11 +58,15 @@ public class AssetsManager implements BulkFileListener {
     public void after(@NotNull List<? extends VFileEvent> events) {
         PsiManager psiManager = PsiManager.getInstance(project);
         for (VFileEvent event : events) {
-            VirtualFile virtualFile = event.getFile();
-            if (virtualFile == null || virtualFile.isDirectory()) continue;
-            PsiFile psiFile = psiManager.findFile(virtualFile);
+            if (event instanceof VFileCopyEvent) {
+                VirtualFile virtualFile = ((VFileCopyEvent) event).findCreatedFile();
+                PsiFile psiFile = FileUtils.vf2PsiFile(psiManager, virtualFile);
+                if (psiFile != null) onPsiFileAdded(psiFile);
+                continue;
+            }
+            PsiFile psiFile = FileUtils.vf2PsiFile(psiManager, event.getFile());
             if (psiFile == null) continue;
-            if (event instanceof VFileCreateEvent || event instanceof VFileCopyEvent) {
+            if (event instanceof VFileCreateEvent) {
                 onPsiFileAdded(psiFile);
             } else if (event instanceof VFileDeleteEvent) {
                 onPsiFileDeleted(psiFile);

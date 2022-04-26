@@ -1,7 +1,12 @@
 package com.xtu.plugin.flutter.component.assets;
 
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.*;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
+import com.intellij.openapi.vfs.newvfs.BulkFileListener;
+import com.intellij.openapi.vfs.newvfs.events.*;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiManager;
 import com.xtu.plugin.flutter.component.analysis.ImageSizeAnalyzer;
 import com.xtu.plugin.flutter.component.assets.handler.AssetFileHandler;
 import com.xtu.plugin.flutter.component.assets.handler.PubSpecFileHandler;
@@ -11,10 +16,13 @@ import com.xtu.plugin.flutter.utils.LogUtils;
 import com.xtu.plugin.flutter.utils.PubspecUtils;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+import java.util.Objects;
+
 /**
  * 处理flutter项目中的资源文件
  */
-public class AssetsManager {
+public class AssetsManager implements BulkFileListener {
 
     private final Project project;
     private final AssetFileHandler assetFileHandler;
@@ -32,92 +40,67 @@ public class AssetsManager {
 
     public void attach() {
         LogUtils.info("AssetsManager attach");
-        PsiManager.getInstance(project).addPsiTreeChangeListener(psiTreeChangeListener);
+        project.getMessageBus().connect()
+                .subscribe(VirtualFileManager.VFS_CHANGES, this);
     }
 
     public void detach() {
         LogUtils.info("AssetsManager detach");
-        PsiManager.getInstance(project).removePsiTreeChangeListener(psiTreeChangeListener);
     }
 
-    private final PsiTreeChangeListener psiTreeChangeListener = new PsiTreeChangeListener() {
+    private boolean disableResCheck() {
+        return !StorageService.getInstance(project).getState()
+                .resCheckEnable;
+    }
 
-        private boolean disableResCheck() {
-            return !StorageService.getInstance(project).getState()
-                    .resCheckEnable;
-        }
-
-        @Override
-        public void beforeChildAddition(@NotNull PsiTreeChangeEvent event) {
-        }
-
-        @Override
-        public void beforeChildRemoval(@NotNull PsiTreeChangeEvent event) {
-        }
-
-        @Override
-        public void beforeChildReplacement(@NotNull PsiTreeChangeEvent event) {
-        }
-
-        @Override
-        public void beforeChildMovement(@NotNull PsiTreeChangeEvent event) {
-        }
-
-        @Override
-        public void beforeChildrenChange(@NotNull PsiTreeChangeEvent event) {
-        }
-
-        @Override
-        public void beforePropertyChange(@NotNull PsiTreeChangeEvent event) {
-
-        }
-
-        @Override
-        public void childAdded(@NotNull PsiTreeChangeEvent event) {
-            if (event.getChild() instanceof PsiFile) {
-                PsiFile psiFile = (PsiFile) event.getChild();
-                imageSizeAnalyzer.onPsiFileAdd(psiFile);
-                if (disableResCheck()) return;
-                assetFileHandler.onPsiFileAdded(psiFile);
+    @Override
+    public void after(@NotNull List<? extends VFileEvent> events) {
+        PsiManager psiManager = PsiManager.getInstance(project);
+        for (VFileEvent event : events) {
+            VirtualFile virtualFile = event.getFile();
+            if (virtualFile == null || virtualFile.isDirectory()) continue;
+            PsiFile psiFile = psiManager.findFile(virtualFile);
+            if (psiFile == null) continue;
+            if (event instanceof VFileCreateEvent || event instanceof VFileCopyEvent) {
+                onPsiFileAdded(psiFile);
+            } else if (event instanceof VFileDeleteEvent) {
+                onPsiFileDeleted(psiFile);
+            } else if (event instanceof VFilePropertyChangeEvent) {
+                String propertyName = ((VFilePropertyChangeEvent) event).getPropertyName();
+                if (Objects.equals(VirtualFile.PROP_NAME, propertyName)) {
+                    String oldValue = (String) ((VFilePropertyChangeEvent) event).getOldValue();
+                    String newValue = (String) ((VFilePropertyChangeEvent) event).getNewValue();
+                    onPsiFilePropertyChanged(psiFile, oldValue, newValue);
+                }
+            } else if (event instanceof VFileContentChangeEvent) {
+                onPsiFileContentChanged(psiFile);
             }
         }
+    }
 
-        @Override
-        public void childRemoved(@NotNull PsiTreeChangeEvent event) {
+    private void onPsiFileAdded(@NotNull PsiFile psiFile) {
+        this.imageSizeAnalyzer.onPsiFileAdd(psiFile);
+        if (disableResCheck()) return;
+        this.assetFileHandler.onPsiFileAdded(psiFile);
+    }
+
+    private void onPsiFileDeleted(@NotNull PsiFile psiFile) {
+        if (disableResCheck()) return;
+        this.assetFileHandler.onPsiFileRemoved(psiFile);
+    }
+
+    private void onPsiFilePropertyChanged(@NotNull PsiFile psiFile,
+                                          String oldName,
+                                          String newName) {
+        if (disableResCheck()) return;
+        this.assetFileHandler.onPsiFileChanged(psiFile, oldName, newName);
+    }
+
+    private void onPsiFileContentChanged(@NotNull PsiFile psiFile) {
+        if (PubspecUtils.isRootPubspecFile((psiFile))) {
+            this.packageUpdater.postPullLatestVersion();
             if (disableResCheck()) return;
-            if (event.getChild() instanceof PsiFile) {
-                assetFileHandler.onPsiFileRemoved((PsiFile) event.getChild());
-            }
+            this.specFileHandler.onPsiFileChanged(psiFile);
         }
-
-        @Override
-        public void childReplaced(@NotNull PsiTreeChangeEvent event) {
-
-        }
-
-        @Override
-        public void childrenChanged(@NotNull PsiTreeChangeEvent event) {
-            PsiElement eventParent = event.getParent();
-            if (eventParent instanceof PsiFile && PubspecUtils.isRootPubspecFile(((PsiFile) eventParent))) {
-                packageUpdater.postPullLatestVersion();
-                if (disableResCheck()) return;
-                specFileHandler.onPsiFileChanged((PsiFile) event.getParent());
-            }
-        }
-
-        @Override
-        public void childMoved(@NotNull PsiTreeChangeEvent event) {
-
-        }
-
-        @Override
-        public void propertyChanged(@NotNull PsiTreeChangeEvent event) {
-            if (disableResCheck()) return;
-            if (PsiTreeChangeEvent.PROP_FILE_NAME.equals(event.getPropertyName())) {
-                assetFileHandler.onPsiFileChanged((PsiFile) event.getElement(), (String) event.getOldValue(), (String) event.getNewValue());
-            }
-        }
-    };
-
-
+    }
 }

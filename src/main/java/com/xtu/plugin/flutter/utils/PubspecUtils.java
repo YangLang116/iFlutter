@@ -5,6 +5,7 @@ import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectUtil;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -185,12 +186,12 @@ public class PubspecUtils {
                         assert rootPubspecFile != null;
                         PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(project);
                         Document document = psiDocumentManager.getDocument(rootPubspecFile);
-                        //sync psi - document
                         if (document != null) {
+                            //sync psi - document
                             psiDocumentManager.doPostponedOperationsAndUnblockDocument(document);
+                            //sync psi - vfs
+                            FileDocumentManager.getInstance().saveDocument(document);
                         }
-                        CodeStyleManager.getInstance(project).reformat(rootPubspecFile);
-                        psiDocumentManager.commitAllDocuments();
                         //refresh UI
                         notifyPubspecUpdate(project);
                     }));

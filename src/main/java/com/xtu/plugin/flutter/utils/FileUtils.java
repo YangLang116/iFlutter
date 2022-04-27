@@ -16,6 +16,7 @@ public class FileUtils {
     public static PsiFile vf2PsiFile(@NotNull PsiManager psiManager,
                                      @Nullable VirtualFile virtualFile) {
         if (virtualFile == null || virtualFile.isDirectory()) return null;
+        if (!virtualFile.isValid()) return null;
         return psiManager.findFile(virtualFile);
     }
 

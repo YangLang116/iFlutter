@@ -4,6 +4,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.xtu.plugin.flutter.service.StorageEntity;
+import com.xtu.plugin.flutter.service.StorageService;
 import com.xtu.plugin.flutter.utils.*;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -28,9 +30,13 @@ public class OptimizeImageFoldTask implements Runnable {
     @Override
     public void run() {
         File imageDirectory = new File(virtualFile.getPath());
+        StorageEntity storageEntity = StorageService.getInstance(project).getState();
+        boolean oldStatus = storageEntity.resCheckEnable;
         try {
+            storageEntity.resCheckEnable = false; // 归整资源时，为防止反复对pubspec.yaml读写，临时关闭资源监听
             optimizeImage(project, imageDirectory);  //扫描图片，将图片进行分类
         } catch (Exception e) {
+            storageEntity.resCheckEnable = oldStatus;
             LogUtils.error("OptimizeImageFoldTask run: " + e.getMessage());
             ToastUtil.make(project, MessageType.ERROR, "图片目录优化失败");
         }

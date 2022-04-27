@@ -1,12 +1,11 @@
 package com.xtu.plugin.flutter.component.assets.handler;
 
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.xtu.plugin.flutter.utils.AssetUtils;
 import com.xtu.plugin.flutter.utils.FileUtils;
 import com.xtu.plugin.flutter.utils.PluginUtils;
-import org.apache.commons.lang.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.List;
@@ -51,6 +50,25 @@ public class AssetFileHandler {
             specFileHandler.addAsset(psiFile.getProject(), List.of(newAssetPath, oldAssetPath));
         } else {
             specFileHandler.changeAsset(psiFile.getProject(), oldAssetPath, newAssetPath);
+        }
+    }
+
+    public void onPsiFileMoved(@NotNull PsiFile oldPsiFile, @NotNull PsiFile newPsiFile) {
+        Project project = newPsiFile.getProject();
+        String newAssetPath = getAssetFilePath(newPsiFile);
+        if (newAssetPath == null) return;
+        String oldAssetPath = getAssetFilePath(oldPsiFile);
+        if (oldAssetPath == null) {
+            specFileHandler.addAsset(project, List.of(newAssetPath));
+            return;
+        }
+        String projectPath = PluginUtils.getProjectPath(project);
+        File oldAssetFile = FileUtils.fromPsiFile(oldPsiFile);
+        //判断是否还存在其他dimension资源,兼容IDEA自动引用处理，需要强制保留assetPath
+        if (AssetUtils.hasOtherDimensionAsset(projectPath, oldAssetFile)) {
+            specFileHandler.addAsset(project, List.of(newAssetPath, oldAssetPath));
+        } else {
+            specFileHandler.changeAsset(project, oldAssetPath, newAssetPath);
         }
     }
 

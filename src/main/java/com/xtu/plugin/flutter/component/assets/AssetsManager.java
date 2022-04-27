@@ -64,6 +64,17 @@ public class AssetsManager implements BulkFileListener {
                 if (psiFile != null) onPsiFileAdded(psiFile);
                 continue;
             }
+            if (event instanceof VFileMoveEvent) {
+                VirtualFile oldFile = ((VFileMoveEvent) event).getFile();
+                VirtualFile newParent = ((VFileMoveEvent) event).getNewParent();
+                VirtualFile newFile = newParent.findChild(oldFile.getName());
+                PsiFile oldPsiFile = FileUtils.vf2PsiFile(psiManager, oldFile);
+                PsiFile newPsiFile = FileUtils.vf2PsiFile(psiManager, newFile);
+                if (oldPsiFile != null && newPsiFile != null) {
+                    onPsiFileMove(oldPsiFile, newPsiFile);
+                }
+                continue;
+            }
             PsiFile psiFile = FileUtils.vf2PsiFile(psiManager, event.getFile());
             if (psiFile == null) continue;
             if (event instanceof VFileCreateEvent) {
@@ -99,6 +110,11 @@ public class AssetsManager implements BulkFileListener {
                                           String newName) {
         if (disableResCheck()) return;
         this.assetFileHandler.onPsiFileChanged(psiFile, oldName, newName);
+    }
+
+    private void onPsiFileMove(PsiFile oldPsiFile, PsiFile newPsiFile) {
+        if (disableResCheck()) return;
+        this.assetFileHandler.onPsiFileMoved(oldPsiFile, newPsiFile);
     }
 
     private void onPsiFileContentChanged(@NotNull PsiFile psiFile) {

@@ -40,11 +40,7 @@ public class PubspecUtils {
     }
 
     //判断当前文件是否根目录pubspec.yaml文件
-    public static boolean isRootPubspecFile(PsiFile psiFile) {
-        if (psiFile == null) return false;
-        VirtualFile virtualFile = psiFile.getVirtualFile();
-        if (virtualFile == null) return false;
-        Project project = psiFile.getProject();
+    public static boolean isRootPubspecFile(@NotNull Project project, @NotNull VirtualFile virtualFile) {
         String projectPath = PluginUtils.getProjectPath(project);
         if (StringUtils.isEmpty(projectPath)) return false;
         String rootPubspecPath = projectPath + "/" + getFileName();

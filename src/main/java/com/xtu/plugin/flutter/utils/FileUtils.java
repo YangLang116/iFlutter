@@ -1,8 +1,5 @@
 package com.xtu.plugin.flutter.utils;
 
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
@@ -11,21 +8,6 @@ import org.jetbrains.annotations.Nullable;
 import java.io.*;
 
 public class FileUtils {
-
-    @Nullable
-    public static PsiFile vf2PsiFile(@NotNull PsiManager psiManager,
-                                     @Nullable VirtualFile virtualFile) {
-        if (virtualFile == null || virtualFile.isDirectory()) return null;
-        if (!virtualFile.isValid()) return null;
-        return psiManager.findFile(virtualFile);
-    }
-
-    @Nullable
-    public static File fromPsiFile(PsiFile psiFile) {
-        if (psiFile == null) return null;
-        String filePath = psiFile.getVirtualFile().getPath();
-        return new File(filePath);
-    }
 
     public static String getMd5(@NotNull File file) {
         FileInputStream inputStream = null;

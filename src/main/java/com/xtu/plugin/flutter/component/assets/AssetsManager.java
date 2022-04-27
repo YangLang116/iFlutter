@@ -5,14 +5,11 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.openapi.vfs.newvfs.BulkFileListener;
 import com.intellij.openapi.vfs.newvfs.events.*;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
 import com.xtu.plugin.flutter.component.analysis.ImageSizeAnalyzer;
 import com.xtu.plugin.flutter.component.assets.handler.AssetFileHandler;
 import com.xtu.plugin.flutter.component.assets.handler.PubSpecFileHandler;
 import com.xtu.plugin.flutter.component.packages.update.FlutterPackageUpdater;
 import com.xtu.plugin.flutter.service.StorageService;
-import com.xtu.plugin.flutter.utils.FileUtils;
 import com.xtu.plugin.flutter.utils.LogUtils;
 import com.xtu.plugin.flutter.utils.PubspecUtils;
 import org.jetbrains.annotations.NotNull;
@@ -56,72 +53,69 @@ public class AssetsManager implements BulkFileListener {
 
     @Override
     public void after(@NotNull List<? extends VFileEvent> events) {
-        PsiManager psiManager = PsiManager.getInstance(project);
         for (VFileEvent event : events) {
             if (event instanceof VFileCopyEvent) {
                 VirtualFile virtualFile = ((VFileCopyEvent) event).findCreatedFile();
-                PsiFile psiFile = FileUtils.vf2PsiFile(psiManager, virtualFile);
-                if (psiFile != null) onPsiFileAdded(psiFile);
+                if (virtualFile != null) onFileAdded(project, virtualFile);
                 continue;
             }
             if (event instanceof VFileMoveEvent) {
                 VirtualFile oldFile = ((VFileMoveEvent) event).getFile();
                 VirtualFile newParent = ((VFileMoveEvent) event).getNewParent();
                 VirtualFile newFile = newParent.findChild(oldFile.getName());
-                PsiFile oldPsiFile = FileUtils.vf2PsiFile(psiManager, oldFile);
-                PsiFile newPsiFile = FileUtils.vf2PsiFile(psiManager, newFile);
-                if (oldPsiFile != null && newPsiFile != null) {
-                    onPsiFileMove(oldPsiFile, newPsiFile);
-                }
+                if (newFile != null) onFileMove(project, oldFile, newFile);
                 continue;
             }
-            PsiFile psiFile = FileUtils.vf2PsiFile(psiManager, event.getFile());
-            if (psiFile == null) continue;
+            VirtualFile virtualFile = event.getFile();
+            if (virtualFile == null) continue;
             if (event instanceof VFileCreateEvent) {
-                onPsiFileAdded(psiFile);
+                onFileAdded(project, virtualFile);
             } else if (event instanceof VFileDeleteEvent) {
-                onPsiFileDeleted(psiFile);
+                onFileDeleted(project, virtualFile);
             } else if (event instanceof VFilePropertyChangeEvent) {
                 String propertyName = ((VFilePropertyChangeEvent) event).getPropertyName();
                 if (Objects.equals(VirtualFile.PROP_NAME, propertyName)) {
                     String oldValue = (String) ((VFilePropertyChangeEvent) event).getOldValue();
                     String newValue = (String) ((VFilePropertyChangeEvent) event).getNewValue();
-                    onPsiFilePropertyChanged(psiFile, oldValue, newValue);
+                    onFilePropertyChanged(project, virtualFile, oldValue, newValue);
                 }
             } else if (event instanceof VFileContentChangeEvent) {
-                onPsiFileContentChanged(psiFile);
+                onFileContentChanged(project, virtualFile);
             }
         }
     }
 
-    private void onPsiFileAdded(@NotNull PsiFile psiFile) {
-        this.imageSizeAnalyzer.onPsiFileAdd(psiFile);
+    private void onFileAdded(@NotNull Project project, @NotNull VirtualFile virtualFile) {
+        this.imageSizeAnalyzer.onPsiFileAdd(project, virtualFile);
         if (disableResCheck()) return;
-        this.assetFileHandler.onPsiFileAdded(psiFile);
+        this.assetFileHandler.onFileAdded(project, virtualFile);
     }
 
-    private void onPsiFileDeleted(@NotNull PsiFile psiFile) {
+    private void onFileDeleted(@NotNull Project project, @NotNull VirtualFile virtualFile) {
         if (disableResCheck()) return;
-        this.assetFileHandler.onPsiFileRemoved(psiFile);
+        this.assetFileHandler.onFileRemoved(project, virtualFile);
     }
 
-    private void onPsiFilePropertyChanged(@NotNull PsiFile psiFile,
-                                          String oldName,
-                                          String newName) {
+    private void onFilePropertyChanged(@NotNull Project project,
+                                       @NotNull VirtualFile virtualFile,
+                                       @NotNull String oldName,
+                                       @NotNull String newName) {
         if (disableResCheck()) return;
-        this.assetFileHandler.onPsiFileChanged(psiFile, oldName, newName);
+        this.assetFileHandler.onFileChanged(project, virtualFile, oldName, newName);
     }
 
-    private void onPsiFileMove(PsiFile oldPsiFile, PsiFile newPsiFile) {
+    private void onFileMove(@NotNull Project project,
+                            @NotNull VirtualFile oldFile,
+                            @NotNull VirtualFile newFile) {
         if (disableResCheck()) return;
-        this.assetFileHandler.onPsiFileMoved(oldPsiFile, newPsiFile);
+        this.assetFileHandler.onFileMoved(project, oldFile, newFile);
     }
 
-    private void onPsiFileContentChanged(@NotNull PsiFile psiFile) {
-        if (PubspecUtils.isRootPubspecFile((psiFile))) {
+    private void onFileContentChanged(@NotNull Project project, @NotNull VirtualFile virtualFile) {
+        if (PubspecUtils.isRootPubspecFile(project, virtualFile)) {
             this.packageUpdater.postPullLatestVersion();
             if (disableResCheck()) return;
-            this.specFileHandler.onPsiFileChanged(psiFile);
+            this.specFileHandler.onPsiFileChanged(project);
         }
     }
 }

@@ -4,7 +4,6 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiFile;
 import com.xtu.plugin.flutter.service.StorageEntity;
 import com.xtu.plugin.flutter.service.StorageService;
 import com.xtu.plugin.flutter.utils.AssetUtils;
@@ -21,10 +20,8 @@ public class ImageSizeAnalyzer {
         this.project = project;
     }
 
-    public void onPsiFileAdd(PsiFile psiFile) {
-        if (!AssetUtils.isAssetFile(psiFile)) return;
-        VirtualFile virtualFile = psiFile.getVirtualFile();
-        if (virtualFile == null) return;
+    public void onPsiFileAdd(@NotNull Project project, @NotNull VirtualFile virtualFile) {
+        if (!AssetUtils.isAssetFile(project, virtualFile)) return;
         if (!ImageUtils.isImageFile(virtualFile)) return;
         analysisImageSize(virtualFile);
     }

@@ -2,7 +2,6 @@ package com.xtu.plugin.flutter.utils;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiFile;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -83,13 +82,10 @@ public class AssetUtils {
         return false;
     }
 
-    public static boolean isAssetFile(PsiFile psiFile) {
-        if (psiFile == null) return false;
-        VirtualFile virtualFile = psiFile.getVirtualFile();
-        if (virtualFile == null || virtualFile.isDirectory()) return false;
+    public static boolean isAssetFile(@NotNull Project project, @NotNull VirtualFile virtualFile) {
+        if (virtualFile.isDirectory()) return false;
         if (virtualFile.getName().startsWith(".")) return false;
         String filePath = virtualFile.getPath();
-        Project project = psiFile.getProject();
         String projectPath = PluginUtils.getProjectPath(project);
         if (StringUtils.isEmpty(projectPath)) return false;
         List<String> supportAssetFoldName = PluginUtils.supportAssetFoldName(project);

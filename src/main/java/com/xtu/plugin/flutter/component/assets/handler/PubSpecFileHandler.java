@@ -1,7 +1,6 @@
 package com.xtu.plugin.flutter.component.assets.handler;
 
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiFile;
 import com.xtu.plugin.flutter.component.assets.code.DartFontFileGenerator;
 import com.xtu.plugin.flutter.component.assets.code.DartRFileGenerator;
 import com.xtu.plugin.flutter.utils.FontUtils;
@@ -64,11 +63,9 @@ public class PubSpecFileHandler {
         });
     }
 
-
-    public void onPsiFileChanged(PsiFile psiFile) {
+    public void onPsiFileChanged(@NotNull Project project) {
         //root package pubspec.yaml changed
         LogUtils.info("PubSpecFileHandler pubspec.yaml changed");
-        final Project project = psiFile.getProject();
         PubspecUtils.readAsset(project, (assetList, fontList) -> {
             DartRFileGenerator.getInstance().generate(project, assetList);
             DartFontFileGenerator.getInstance().generate(project, fontList);

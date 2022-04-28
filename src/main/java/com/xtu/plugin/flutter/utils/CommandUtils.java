@@ -26,7 +26,6 @@ public class CommandUtils {
             if (errorBuffer.length() > 0) return new CommandResult(CommandResult.FAIL, errorBuffer.toString());
             return new CommandResult(CommandResult.SUCCESS, resultBuffer.toString());
         } catch (Exception e) {
-            LogUtils.error("CommandUtils executeSync: " + e.getMessage());
             return new CommandResult(CommandResult.FAIL, e.getMessage());
         } finally {
             CloseUtils.close(resultStream);

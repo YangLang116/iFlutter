@@ -44,6 +44,7 @@ public class DuplicateResDisplayDialog extends DialogWrapper {
         this.copyAction = new CopyAction();
         this.setHorizontalStretch(2.0f);
         this.setVerticalStretch(1.2f);
+        setTitle("Duplicate Resources in Project");
         init();
     }
 

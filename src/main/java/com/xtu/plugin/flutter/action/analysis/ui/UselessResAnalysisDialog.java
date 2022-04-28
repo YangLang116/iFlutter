@@ -25,6 +25,7 @@ public class UselessResAnalysisDialog extends DialogWrapper {
         this.project = project;
         this.result = result;
         this.copyAction = new CopyAction();
+        setTitle("Useless Resources in Project");
         init();
     }
 

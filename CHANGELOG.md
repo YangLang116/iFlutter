@@ -3,9 +3,15 @@
 ## [Coming]
 ### Changed
 
+## [2.0.0] - 2022-04-29
+### Changed
+- register resources with multi file
+- register resources by dragging
+- register resources with finder
+
 ## [1.3.7] - 2022-04-23
 ### Changed
-- check image size 
+- check image size
 
 ## [1.3.6] - 2022-04-21
 ### Changed

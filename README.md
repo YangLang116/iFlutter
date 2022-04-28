@@ -4,7 +4,7 @@ iFlutter is an IDEA Plugin for Developer of Flutter
 
 ## iFlutter是一款辅助Flutter开发的 IDEA 插件
 
-![platforms](https://img.shields.io/badge/platforms-macos%20%7C%20windows%20%7C%20linux-blue) ![tools](https://img.shields.io/badge/idea-intellij_IDEA%20%7C%20AndroidStudio-blue) ![licence](https://img.shields.io/badge/licence-MIT-blue) ![version](https://img.shields.io/badge/version-v1.3.7-blue)
+![platforms](https://img.shields.io/badge/platforms-macos%20%7C%20windows%20%7C%20linux-blue) ![tools](https://img.shields.io/badge/idea-intellij_IDEA%20%7C%20AndroidStudio-blue) ![licence](https://img.shields.io/badge/licence-MIT-blue) ![version](https://img.shields.io/badge/version-v2.0.0-blue)
 
 ## 说明
 - 插件安装：插件已上传官方Plugins仓库，可搜索 `iFlutter` 下载
@@ -20,6 +20,12 @@ iFlutter is an IDEA Plugin for Developer of Flutter
   - 9、支持国际化
 
 ## 版本更新
+### v2.0.0
+- 支持将资源文件拖拽到项目的资源目录上，进行注册资源
+- 支持将资源文件直接复制到资源文件夹中，进行注册资源
+- 支持同时对多个资源文件进行注册
+- 优化若干交互细节
+
 ### v1.3.7
 - 支持对新增图片进行大小监测 [wiki](https://iflutter.toolu.cn/content/chapter-1/part-8.html)
 

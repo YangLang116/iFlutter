@@ -23,7 +23,7 @@ public class AssetFileHandler {
         specFileHandler.addAsset(project, List.of(assetPath));
     }
 
-    public void onFileRemoved(@NotNull Project project, @NotNull VirtualFile virtualFile) {
+    public void onFileDeleted(@NotNull Project project, @NotNull VirtualFile virtualFile) {
         String assetPath = getAssetFilePath(project, virtualFile);
         if (assetPath == null) return;
         File assetFile = new File(virtualFile.getPath());
@@ -60,7 +60,7 @@ public class AssetFileHandler {
         String oldAssetPath = getAssetFilePath(project, oldFile);
         String newAssetPath = getAssetFilePath(project, newFile);
         if (oldAssetPath != null && newAssetPath == null) {
-            onFileRemoved(project, oldFile);
+            onFileDeleted(project, oldFile);
             return;
         }
         if (newAssetPath == null) return;

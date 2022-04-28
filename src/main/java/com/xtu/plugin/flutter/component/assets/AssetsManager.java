@@ -93,7 +93,7 @@ public class AssetsManager implements BulkFileListener {
 
     private void onFileDeleted(@NotNull Project project, @NotNull VirtualFile virtualFile) {
         if (disableResCheck()) return;
-        this.assetFileHandler.onFileRemoved(project, virtualFile);
+        this.assetFileHandler.onFileDeleted(project, virtualFile);
     }
 
     private void onFilePropertyChanged(@NotNull Project project,

@@ -43,7 +43,7 @@ public class FlutterPackageUpdater {
     public void detach() {
         LogUtils.info("FlutterPackageUpdater detach");
         try {
-            this.latestVersionChecker.shutdown();
+            this.latestVersionChecker.shutdownNow();
         } catch (Exception e) {
             LogUtils.error("FlutterPackageUpdater detach: " + e.getMessage());
         }
@@ -60,19 +60,20 @@ public class FlutterPackageUpdater {
     }
 
     private void pullLatestVersion() {
-        if (this.latestVersionChecker.isShutdown()) return;
-        LogUtils.info("FlutterPackageUpdater pullLatestVersion");
-        String projectPath = PluginUtils.getProjectPath(project);
-        if (StringUtils.isEmpty(projectPath)) return;
-        String flutterPath = DartUtils.getFlutterPath(project);
-        if (StringUtils.isEmpty(flutterPath)) return;
-        String executorName = SystemInfo.isWindows ? "flutter.bat" : "flutter";
-        File executorFile = new File(flutterPath, "bin" + File.separator + executorName);
-        String command = executorFile.getAbsolutePath() + " pub outdated --dependency-overrides --dev-dependencies --no-prereleases --json";
-        CommandUtils.CommandResult commandResult = CommandUtils.executeSync(command, new File(projectPath), 5);
-        LogUtils.info("FlutterPackageUpdater pullLatestVersion: " + commandResult.result);
-        if (commandResult.code == CommandUtils.CommandResult.FAIL) return;
         try {
+            if (this.latestVersionChecker.isShutdown()) return;
+            LogUtils.info("FlutterPackageUpdater pullLatestVersion");
+            String projectPath = PluginUtils.getProjectPath(project);
+            if (StringUtils.isEmpty(projectPath)) return;
+            String flutterPath = DartUtils.getFlutterPath(project);
+            if (StringUtils.isEmpty(flutterPath)) return;
+            String executorName = SystemInfo.isWindows ? "flutter.bat" : "flutter";
+            File executorFile = new File(flutterPath, "bin" + File.separator + executorName);
+            String command = executorFile.getAbsolutePath() + " pub outdated --dependency-overrides --dev-dependencies --no-prereleases --json";
+            CommandUtils.CommandResult commandResult = CommandUtils.executeSync(command, new File(projectPath), 5);
+            LogUtils.info("FlutterPackageUpdater pullLatestVersion: " + commandResult.result);
+            if (commandResult.code == CommandUtils.CommandResult.FAIL) return;
+
             final JSONObject versionJson = new JSONObject(commandResult.result);
             JSONArray packageInfoList = versionJson.optJSONArray("packages");
             if (packageInfoList == null) return;

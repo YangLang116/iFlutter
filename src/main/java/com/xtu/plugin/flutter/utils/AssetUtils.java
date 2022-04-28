@@ -97,4 +97,21 @@ public class AssetUtils {
         }
         return false;
     }
+
+    public static boolean isAssetFile(@NotNull Project project, @NotNull File file) {
+        if (file.isDirectory()) return false;
+        if (file.getName().startsWith(".")) return false;
+        String filePath = file.getAbsolutePath();
+        String projectPath = PluginUtils.getProjectPath(project);
+        if (StringUtils.isEmpty(projectPath)) return false;
+        File projectDirectory = new File(projectPath);
+        List<String> supportAssetFoldName = PluginUtils.supportAssetFoldName(project);
+        for (String directoryName : supportAssetFoldName) {
+            File tempFile = new File(projectDirectory, directoryName);
+            if (filePath.startsWith(tempFile.getAbsolutePath())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

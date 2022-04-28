@@ -14,6 +14,7 @@ import com.xtu.plugin.flutter.utils.LogUtils;
 import com.xtu.plugin.flutter.utils.PubspecUtils;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.util.List;
 import java.util.Objects;
 
@@ -60,9 +61,11 @@ public class AssetsManager implements BulkFileListener {
                 continue;
             }
             if (event instanceof VFileMoveEvent) {
-                VirtualFile oldFile = ((VFileMoveEvent) event).getFile();
+                String fileName = ((VFileMoveEvent) event).getFile().getName();
+                VirtualFile oldParent = ((VFileMoveEvent) event).getOldParent();
+                File oldFile = new File(oldParent.getPath(), fileName);
                 VirtualFile newParent = ((VFileMoveEvent) event).getNewParent();
-                VirtualFile newFile = newParent.findChild(oldFile.getName());
+                VirtualFile newFile = newParent.findChild(fileName);
                 if (newFile != null) onFileMove(project, oldFile, newFile);
                 continue;
             }
@@ -105,7 +108,7 @@ public class AssetsManager implements BulkFileListener {
     }
 
     private void onFileMove(@NotNull Project project,
-                            @NotNull VirtualFile oldFile,
+                            @NotNull File oldFile,
                             @NotNull VirtualFile newFile) {
         if (disableResCheck()) return;
         this.assetFileHandler.onFileMoved(project, oldFile, newFile);

@@ -158,6 +158,7 @@ public class PubspecUtils {
     }
 
     //更新资源列表
+    //该方法必须运行在EDT#ReadAction中
     public static void writeAsset(@NotNull Project project,
                                   @NotNull List<String> assetList,
                                   @NotNull List<String> fontList) {
@@ -168,30 +169,27 @@ public class PubspecUtils {
         CollectionUtils.duplicateList(fontList);
         Collections.sort(fontList);
 
-        ApplicationManager.getApplication()
-                .invokeLater(() -> ReadAction.run(() -> {
-                    YAMLSequence oldAssetSequence = getAssetSequence(project);
-                    YAMLSequence oldFontSequence = getFontSequence(project);
-                    WriteAction.run(() -> WriteCommandAction.runWriteCommandAction(project, () -> {
-                        YAMLElementGenerator elementGenerator = YAMLElementGenerator.getInstance(project);
-                        //modify asset
-                        if (modifyAssetFail(project, assetList, oldAssetSequence, elementGenerator)) return;
-                        //modify font
-                        if (modifyFontFail(project, fontList, oldFontSequence, elementGenerator)) return;
-                        YAMLFile rootPubspecFile = getRootPubspecFile(project);
-                        assert rootPubspecFile != null;
-                        PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(project);
-                        Document document = psiDocumentManager.getDocument(rootPubspecFile);
-                        if (document != null) {
-                            //sync psi - document
-                            psiDocumentManager.doPostponedOperationsAndUnblockDocument(document);
-                            //sync psi - vfs
-                            FileDocumentManager.getInstance().saveDocument(document);
-                        }
-                        //refresh UI
-                        notifyPubspecUpdate(project);
-                    }));
-                }));
+        YAMLSequence oldAssetSequence = getAssetSequence(project);
+        YAMLSequence oldFontSequence = getFontSequence(project);
+        WriteAction.run(() -> WriteCommandAction.runWriteCommandAction(project, () -> {
+            YAMLElementGenerator elementGenerator = YAMLElementGenerator.getInstance(project);
+            //modify asset
+            if (modifyAssetFail(project, assetList, oldAssetSequence, elementGenerator)) return;
+            //modify font
+            if (modifyFontFail(project, fontList, oldFontSequence, elementGenerator)) return;
+            YAMLFile rootPubspecFile = getRootPubspecFile(project);
+            assert rootPubspecFile != null;
+            PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(project);
+            Document document = psiDocumentManager.getDocument(rootPubspecFile);
+            if (document != null) {
+                //sync psi - document
+                psiDocumentManager.doPostponedOperationsAndUnblockDocument(document);
+                //sync psi - vfs
+                FileDocumentManager.getInstance().saveDocument(document);
+            }
+            //refresh UI
+            notifyPubspecUpdate(project);
+        }));
     }
 
     //修复font#asset节点

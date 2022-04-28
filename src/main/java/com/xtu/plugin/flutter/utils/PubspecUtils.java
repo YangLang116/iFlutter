@@ -274,25 +274,39 @@ public class PubspecUtils {
             YAMLMapping topLevelMapping = getTopLevelMapping(project);
             if (topLevelMapping == null) return true;
             YAMLKeyValue flutterKeyValue = topLevelMapping.getKeyValueByKey(NODE_FLUTTER);
-            assert flutterKeyValue != null;
-            YAMLMapping flutterValue = ((YAMLMapping) flutterKeyValue.getValue());
-            assert flutterValue != null;
+            if (flutterKeyValue == null || !(flutterKeyValue.getValue() instanceof YAMLMapping)) {
+                StringBuilder flutterFontBuilder = new StringBuilder()
+                        .append("flutter:").append("\n")
+                        .append("  fonts:").append("\n");
+                for (String fontAsset : fontList) {
+                    String fontFamily = FontUtils.getFontFamily(fontAsset);
+                    flutterFontBuilder.append("    - family: ").append(fontFamily).append("\n");
+                    flutterFontBuilder.append("      fonts:").append("\n");
+                    flutterFontBuilder.append("        - asset: ").append(fontAsset).append("\n");
+                }
+                YAMLFile tempYamlFile = elementGenerator.createDummyYamlWithText(flutterFontBuilder.toString());
+                YAMLKeyValue newFlutterKeyValue = PsiTreeUtil.findChildOfType(tempYamlFile, YAMLKeyValue.class);
+                if (newFlutterKeyValue == null) return true;
+                topLevelMapping.putKeyValue(newFlutterKeyValue);
+            } else {
+                YAMLMapping flutterValue = ((YAMLMapping) flutterKeyValue.getValue());
 //            fonts:
 //              - family: DINPro_CondBold
 //                fonts:
 //                  - asset: assets/fonts/DINPro_CondBold.otf
-            StringBuilder newFontBuilder = new StringBuilder();
-            newFontBuilder.append("fonts:").append("\n");
-            for (String fontAsset : fontList) {
-                String fontFamily = FontUtils.getFontFamily(fontAsset);
-                newFontBuilder.append("  - family: ").append(fontFamily).append("\n");
-                newFontBuilder.append("    fonts:").append("\n");
-                newFontBuilder.append("      - asset: ").append(fontAsset).append("\n");
+                StringBuilder newFontBuilder = new StringBuilder();
+                newFontBuilder.append("fonts:").append("\n");
+                for (String fontAsset : fontList) {
+                    String fontFamily = FontUtils.getFontFamily(fontAsset);
+                    newFontBuilder.append("  - family: ").append(fontFamily).append("\n");
+                    newFontBuilder.append("    fonts:").append("\n");
+                    newFontBuilder.append("      - asset: ").append(fontAsset).append("\n");
+                }
+                YAMLFile tempYamlFile = elementGenerator.createDummyYamlWithText(newFontBuilder.toString());
+                YAMLKeyValue fontKeyValue = PsiTreeUtil.findChildOfType(tempYamlFile, YAMLKeyValue.class);
+                if (fontKeyValue == null) return true;
+                flutterValue.putKeyValue(fontKeyValue);
             }
-            YAMLFile tempYamlFile = elementGenerator.createDummyYamlWithText(newFontBuilder.toString());
-            YAMLKeyValue fontKeyValue = PsiTreeUtil.findChildOfType(tempYamlFile, YAMLKeyValue.class);
-            if (fontKeyValue == null) return true;
-            flutterValue.putKeyValue(fontKeyValue);
         }
         return false;
     }

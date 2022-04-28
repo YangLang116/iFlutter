@@ -68,6 +68,7 @@ public class AssetStorageService implements PersistentStateComponent<AssetStorag
             }
         }
         List<String> assetList = this.storageEntity.assetList;
+        assetList.clear();
         assetList.addAll(newAssetList);
         CollectionUtils.duplicateList(assetList);
         Collections.sort(assetList);

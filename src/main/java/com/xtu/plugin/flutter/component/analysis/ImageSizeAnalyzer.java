@@ -37,12 +37,12 @@ public class ImageSizeAnalyzer {
             final File imageFile = new File(filePath);
             int imageSize = ImageUtils.getImageSize(imageFile);
             if (imageSize > maxPicSize) {
-                showWarnDialog(String.format("%s 大小超标:\n标准: %d k\n当前: %d k", imageFile.getName(), maxPicSize, imageSize));
+                showWarnDialog(String.format("%s 大小超标:\n\n最大值: %d k\n当前: %d k", imageFile.getName(), maxPicSize, imageSize));
                 return;
             }
             ImageUtils.PicDimension imageDimension = ImageUtils.getImageDimension(imageFile);
             if (imageDimension != null && (imageDimension.width > maxPicWidth || imageDimension.height > maxPicHeight)) {
-                showWarnDialog(String.format("%s 尺寸超标:\n标准: %d x %d\n当前: %d x %d",
+                showWarnDialog(String.format("%s 尺寸超标:\n\n最大值: %d x %d\n当前: %d x %d",
                         imageFile.getName(),
                         maxPicWidth, maxPicHeight,
                         imageDimension.width, imageDimension.height));
@@ -51,7 +51,7 @@ public class ImageSizeAnalyzer {
     }
 
     private void showWarnDialog(@NotNull String tip) {
-        ApplicationManager.getApplication().invokeAndWait(() ->
+        ApplicationManager.getApplication().invokeLater(() ->
                 Messages.showWarningDialog(project, tip, "新增不规范的图片"));
     }
 }

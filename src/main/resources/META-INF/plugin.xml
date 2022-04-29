@@ -64,6 +64,9 @@
                     class="com.xtu.plugin.flutter.action.pub.search.PubSearchAction">
                 <keyboard-shortcut first-keystroke="alt f" keymap="$default"/>
             </action>
+            <separator/>
+            <action id="com.xtu.plugin.flutter.UsageAction"
+                    class="com.xtu.plugin.flutter.action.usage.UsageAction"/>
         </group>
         <action id="com.xtu.plugin.flutter.DartGenerateFromJsonAndToJsonAction"
                 icon="PluginIcons.LOGO"

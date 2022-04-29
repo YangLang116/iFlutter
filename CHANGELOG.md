@@ -3,6 +3,10 @@
 ## [Coming]
 ### Changed
 
+## [2.0.1] - 2022-04-29
+### Changed
+- open document quickly
+
 ## [2.0.0] - 2022-04-29
 ### Changed
 - register resources with multi file

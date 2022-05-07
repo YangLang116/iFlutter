@@ -72,8 +72,19 @@ public class PackageUpdateAnnotator implements Annotator {
         return String.format(Locale.ROOT, "https://pub.dev/packages/%s/versions", packageName);
     }
 
-    @Override
+    @Nullable
+    private String getCodeVersion(YAMLValue value) {
+        if (value instanceof YAMLScalar) {
+            return ((YAMLScalar) value).getTextValue();
+        } else if (value instanceof YAMLMapping) {
+            YAMLKeyValue versionElement = ((YAMLMapping) value).getKeyValueByKey("version");
+            if (versionElement == null) return null;
+            return versionElement.getValueText();
+        }
+        return null;
+    }
 
+    @Override
     public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
         if (element instanceof YAMLKeyValue
                 && YamlPsiUtils.isRootPubspec(((YAMLKeyValue) element))
@@ -85,6 +96,10 @@ public class PackageUpdateAnnotator implements Annotator {
             PackageInfo packageInfo = getPackageInfo(project, packageName);
             if (packageInfo == null) return;
             YAMLValue dependencyWayPsi = ((YAMLKeyValue) element).getValue();
+            String codeVersion = getCodeVersion(dependencyWayPsi);
+            if (codeVersion == null
+                    || codeVersion.contains(packageInfo.latestVersion)
+                    || Objects.equals(packageInfo.currentVersion, packageInfo.latestVersion)) return;
             String packageUrl = getPackageUrl(packageName, dependencyWayPsi);
             if (StringUtils.isEmpty(packageUrl)) return;
             holder.newSilentAnnotation(HighlightSeverity.WARNING)

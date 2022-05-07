@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -26,8 +25,6 @@ public class FlutterPackageUpdater {
 
     private final Project project;
     private final ScheduledExecutorService latestVersionChecker;
-
-    private Future<?> postRefreshFuture;
 
     public FlutterPackageUpdater(@NotNull Project project) {
         this.project = project;
@@ -47,16 +44,6 @@ public class FlutterPackageUpdater {
         } catch (Exception e) {
             LogUtils.error("FlutterPackageUpdater detach: " + e.getMessage());
         }
-    }
-
-    public void postPullLatestVersion() {
-        if (this.latestVersionChecker.isShutdown()) return;
-        if (postRefreshFuture != null && !postRefreshFuture.isDone() && !postRefreshFuture.isCancelled()) {
-            postRefreshFuture.cancel(true);
-        }
-        LogUtils.info("FlutterPackageUpdater postPullLatestVersion");
-        //delay to wait pub get success
-        postRefreshFuture = this.latestVersionChecker.schedule(this::pullLatestVersion, 15, TimeUnit.SECONDS);
     }
 
     private void pullLatestVersion() {
@@ -85,8 +72,7 @@ public class FlutterPackageUpdater {
                 String latestVersion = parseVersion(packageInfo, "latest");
                 if (StringUtils.isEmpty(packageName)
                         || StringUtils.isEmpty(currentVersion)
-                        || StringUtils.isEmpty(latestVersion)
-                        || StringUtils.equals(currentVersion, latestVersion)) {
+                        || StringUtils.isEmpty(latestVersion)) {
                     continue;
                 }
                 packageVersionList.add(new PackageInfo(packageName, currentVersion, latestVersion));

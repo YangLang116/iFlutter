@@ -8,7 +8,6 @@ import com.intellij.openapi.vfs.newvfs.events.*;
 import com.xtu.plugin.flutter.component.analysis.ImageSizeAnalyzer;
 import com.xtu.plugin.flutter.component.assets.handler.AssetFileHandler;
 import com.xtu.plugin.flutter.component.assets.handler.PubSpecFileHandler;
-import com.xtu.plugin.flutter.component.packages.update.FlutterPackageUpdater;
 import com.xtu.plugin.flutter.service.StorageService;
 import com.xtu.plugin.flutter.utils.LogUtils;
 import com.xtu.plugin.flutter.utils.PubspecUtils;
@@ -26,12 +25,10 @@ public class AssetsManager implements BulkFileListener {
     private final Project project;
     private final AssetFileHandler assetFileHandler;
     private final PubSpecFileHandler specFileHandler;
-    private final FlutterPackageUpdater packageUpdater;
     private final ImageSizeAnalyzer imageSizeAnalyzer;
 
-    public AssetsManager(@NotNull Project project, @NotNull FlutterPackageUpdater packageUpdater) {
+    public AssetsManager(@NotNull Project project) {
         this.project = project;
-        this.packageUpdater = packageUpdater;
         this.specFileHandler = new PubSpecFileHandler();
         this.assetFileHandler = new AssetFileHandler(specFileHandler);
         this.imageSizeAnalyzer = new ImageSizeAnalyzer(project);
@@ -116,7 +113,6 @@ public class AssetsManager implements BulkFileListener {
 
     private void onFileContentChanged(@NotNull Project project, @NotNull VirtualFile virtualFile) {
         if (PubspecUtils.isRootPubspecFile(project, virtualFile)) {
-            this.packageUpdater.postPullLatestVersion();
             if (disableResCheck()) return;
             this.specFileHandler.onPsiFileChanged(project);
         }

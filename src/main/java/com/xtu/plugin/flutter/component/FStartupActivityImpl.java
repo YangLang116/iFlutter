@@ -23,7 +23,7 @@ public class FStartupActivityImpl implements StartupActivity, Disposable {
         Disposer.register(project, this);
         this.project = project;
         this.packageUpdater = new FlutterPackageUpdater(project);
-        this.assetsManager = new AssetsManager(project, packageUpdater);
+        this.assetsManager = new AssetsManager(project);
         //initialization
         this.assetsManager.attach();
         this.packageUpdater.attach();

@@ -3,6 +3,10 @@
 ## [Coming]
 ### Changed
 
+## [2.0.2] - 2022-05-07
+### Changed
+- optimize version checker
+
 ## [2.0.1] - 2022-04-29
 ### Changed
 - open document quickly

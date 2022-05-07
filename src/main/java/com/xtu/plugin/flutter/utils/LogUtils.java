@@ -9,12 +9,10 @@ public class LogUtils {
     }
 
     public static void info(String message) {
-        System.out.println(message);
         getLogger().info(message);
     }
 
     public static void error(String message) {
-        System.out.println(message);
         getLogger().error(message);
     }
 

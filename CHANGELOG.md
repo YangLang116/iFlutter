@@ -3,6 +3,10 @@
 ## [Coming]
 ### Changed
 
+## [2.0.3] - 2022-05-26
+### Changed
+- optimize json2dart
+
 ## [2.0.2] - 2022-05-07
 ### Changed
 - optimize version checker

@@ -36,7 +36,7 @@ public class StringUtil {
                 sb.append(Character.toUpperCase(c));
                 needUpCase = false;
             } else {
-                sb.append(Character.toLowerCase(c));
+                sb.append(c);
             }
         }
         return sb.toString();

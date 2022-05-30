@@ -8,9 +8,13 @@ iFlutter is an IDEA Plugin for Developer of Flutter
 
 ## 最新公告
 
-[MediaFilePreviewer](https://github.com/YangLang116/MediaFilePreviewer): 一款支持Lottie、SVGA预览的IDEA插件  
+- [MediaFilePreviewer](https://github.com/YangLang116/MediaFilePreviewer): 一款支持Lottie、SVGA预览的IDEA插件  
 插件安装：插件已上传官方Plugins仓库，可搜索 `MediaFilePreviewer` 下载  
 使用文档：[点击跳转](https://iflutter.toolu.cn/content/chapter-10/part-1.html)
+
+- [GameCenter](https://github.com/YangLang116/GameCenter):支持IDEA中展示游戏菜单  
+插件安装：插件已上传官方Plugins仓库，可搜索 `GameCenter` 下载  
+使用文档：[点击跳转](https://iflutter.toolu.cn/content/chapter-11/part-1.html)
 
 ## 说明
 

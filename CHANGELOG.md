@@ -3,6 +3,10 @@
 ## [Coming]
 ### Changed
 
+## [2.0.4] - 2022-08-15
+### Changed
+- add description in configuration
+
 ## [2.0.3] - 2022-05-26
 ### Changed
 - optimize json2dart

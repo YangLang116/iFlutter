@@ -1,15 +1,16 @@
 package com.xtu.plugin.flutter.configuration;
 
+import com.intellij.ide.BrowserUtil;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ModalityState;
-import com.intellij.openapi.application.impl.ApplicationImpl;
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.xtu.plugin.flutter.service.StorageEntity;
 import com.xtu.plugin.flutter.service.StorageService;
 import com.xtu.plugin.flutter.utils.CollectionUtils;
+import icons.PluginIcons;
 import org.apache.commons.lang.StringUtils;
 
 import javax.swing.*;
@@ -17,6 +18,8 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Collections;
 import java.util.Objects;
 
@@ -37,6 +40,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
     private JTextField maxPicSizeField;
     private JTextField maxPicWidthField;
     private JTextField maxPicHeightField;
+    private JLabel githubLabel;
 
     public SettingsConfiguration(Project project) {
         this.project = project;
@@ -96,6 +100,15 @@ public final class SettingsConfiguration implements SearchableConfigurable {
         maxPicSizeField.setText(String.valueOf(storageEntity.maxPicSize));
         maxPicWidthField.setText(String.valueOf(storageEntity.maxPicWidth));
         maxPicHeightField.setText(String.valueOf(storageEntity.maxPicHeight));
+        githubLabel.setIcon(PluginIcons.GITHUB);
+        githubLabel.setText("<html><u>Github</u></html>");
+        githubLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+        githubLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                BrowserUtil.open("https://github.com/YangLang116/iFlutter");
+            }
+        });
     }
 
     @Override

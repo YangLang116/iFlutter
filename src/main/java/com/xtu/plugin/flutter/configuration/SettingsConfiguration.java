@@ -25,6 +25,7 @@ import java.util.Objects;
 
 public final class SettingsConfiguration implements SearchableConfigurable {
 
+    private static final String sGithubUrl = "https://github.com/YangLang116/iFlutter";
     private static final String LIST_SPLIT_CHAR = ",";
 
     private final Project project;
@@ -106,7 +107,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
         githubLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                BrowserUtil.open("https://github.com/YangLang116/iFlutter");
+                BrowserUtil.open(sGithubUrl);
             }
         });
     }

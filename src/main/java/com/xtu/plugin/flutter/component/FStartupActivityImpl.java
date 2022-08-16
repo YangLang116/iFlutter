@@ -8,6 +8,7 @@ import com.xtu.plugin.flutter.action.mock.manager.HttpMockManager;
 import com.xtu.plugin.flutter.component.assets.AssetsManager;
 import com.xtu.plugin.flutter.component.packages.update.FlutterPackageUpdater;
 import com.xtu.plugin.flutter.service.asset.AssetStorageService;
+import com.xtu.plugin.flutter.upgrader.UpgradeManager;
 import com.xtu.plugin.flutter.utils.LogUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,6 +30,7 @@ public class FStartupActivityImpl implements StartupActivity, Disposable {
         this.packageUpdater.attach();
         HttpMockManager.getService(project).activeServer();
         AssetStorageService.refreshAssetIfNeed(project);
+        UpgradeManager.getInstance().checkPluginVersion(project);
     }
 
     @Override

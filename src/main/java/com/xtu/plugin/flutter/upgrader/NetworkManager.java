@@ -1,9 +1,9 @@
 package com.xtu.plugin.flutter.upgrader;
 
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
+import okhttp3.*;
 
+import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class NetworkManager {
@@ -30,5 +30,16 @@ public class NetworkManager {
                 .url(requestUrl)
                 .build();
         mOkHttpClient.newCall(request).enqueue(callback);
+    }
+
+    public Response postAsync(String url, Map<String, String> headers, String body) throws IOException {
+        RequestBody requestBody = RequestBody.create(body, MediaType.parse("application/json"));
+        Request.Builder requestBuilder = new Request.Builder();
+        requestBuilder.url(url);
+        for (Map.Entry<String, String> header : headers.entrySet()) {
+            requestBuilder.addHeader(header.getKey(), header.getValue());
+        }
+        requestBuilder.post(requestBody);
+        return mOkHttpClient.newCall(requestBuilder.build()).execute();
     }
 }

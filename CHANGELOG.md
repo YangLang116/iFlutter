@@ -6,6 +6,8 @@
 ## [2.0.4] - 2022-08-15
 ### Changed
 - add description in configuration
+- support check for updates
+- support submit a question
 
 ## [2.0.3] - 2022-05-26
 ### Changed

@@ -36,6 +36,8 @@ iFlutter is an IDEA Plugin for Developer of Flutter
 ### v2.0.4
 
 - 支持新版本检查更新提醒
+- 支持一键提交issue到Github
+- Configuration界面添加Github信息
 
 ### v2.0.3
 

@@ -85,7 +85,7 @@ public class FErrorReporter extends ErrorReportSubmitter {
         Response response = null;
         try {
             response = networkManager.postAsync(sUrl, headers, requestBody);
-            return response.code() == 200;
+            return response.code() == 201;
         } catch (Exception e) {
             LogUtils.error("FErrorReporter postErrorMsg: " + e.getMessage());
             return false;

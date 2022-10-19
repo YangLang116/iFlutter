@@ -15,6 +15,7 @@ import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.util.NlsActions;
 import com.intellij.util.Consumer;
 import com.xtu.plugin.flutter.upgrader.NetworkManager;
+import com.xtu.plugin.flutter.utils.CloseUtils;
 import com.xtu.plugin.flutter.utils.LogUtils;
 import com.xtu.plugin.flutter.utils.ToastUtil;
 import okhttp3.Response;
@@ -80,12 +81,16 @@ public class FErrorReporter extends ErrorReportSubmitter {
         info += ("StackTrace: \n" + errorInfo);
         FErrorInfo fErrorInfo = new FErrorInfo(title, info);
         String requestBody = gson.toJson(fErrorInfo);
+        NetworkManager networkManager = NetworkManager.getInstance();
+        Response response = null;
         try {
-            Response response = NetworkManager.getInstance().postAsync(sUrl, headers, requestBody);
+            response = networkManager.postAsync(sUrl, headers, requestBody);
             return response.code() == 200;
         } catch (Exception e) {
             LogUtils.error("FErrorReporter postErrorMsg: " + e.getMessage());
             return false;
+        } finally {
+            if (response != null) CloseUtils.close(response);
         }
     }
 }

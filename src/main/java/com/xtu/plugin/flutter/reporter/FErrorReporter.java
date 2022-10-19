@@ -72,7 +72,7 @@ public class FErrorReporter extends ErrorReportSubmitter {
     private boolean postErrorMsg(String additionalInfo, String errorInfo) {
         Map<String, String> headers = new HashMap<>();
         headers.put("Accept", "application/vnd.github+json");
-        headers.put("Authorization", "token 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");
+        headers.put("Authorization", "token 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");
         String title = "iFlutter issue(By Plugin)";
         String info = "";
         if (!StringUtils.isEmpty(additionalInfo)) {

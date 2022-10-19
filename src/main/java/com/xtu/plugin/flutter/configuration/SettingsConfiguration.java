@@ -26,6 +26,7 @@ import java.util.Objects;
 public final class SettingsConfiguration implements SearchableConfigurable {
 
     private static final String sGithubUrl = "https://github.com/YangLang116/iFlutter";
+    private static final String sPluginUrl = "https://plugins.jetbrains.com/plugin/18457-iflutter";
     private static final String LIST_SPLIT_CHAR = ",";
 
     private final Project project;
@@ -42,6 +43,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
     private JTextField maxPicWidthField;
     private JTextField maxPicHeightField;
     private JLabel githubLabel;
+    private JLabel starLabel;
 
     public SettingsConfiguration(Project project) {
         this.project = project;
@@ -101,13 +103,24 @@ public final class SettingsConfiguration implements SearchableConfigurable {
         maxPicSizeField.setText(String.valueOf(storageEntity.maxPicSize));
         maxPicWidthField.setText(String.valueOf(storageEntity.maxPicWidth));
         maxPicHeightField.setText(String.valueOf(storageEntity.maxPicHeight));
+        //添加Github地址
         githubLabel.setIcon(PluginIcons.GITHUB);
-        githubLabel.setText("<html><u>Github</u></html>");
+        githubLabel.setText("<html><u>Source Code</u></html>");
         githubLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
         githubLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 BrowserUtil.open(sGithubUrl);
+            }
+        });
+        //添加评分地址
+        starLabel.setIcon(PluginIcons.STAR);
+        starLabel.setText("<html><u>Star Plugin</u></html>");
+        starLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+        starLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                BrowserUtil.open(sPluginUrl);
             }
         });
     }

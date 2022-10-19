@@ -3,6 +3,10 @@
 ## [Coming]
 ### Changed
 
+## [2.0.5] - 2022-10-19
+### Changed
+- fix issue feedback fail
+
 ## [2.0.4] - 2022-08-15
 ### Changed
 - add description in configuration

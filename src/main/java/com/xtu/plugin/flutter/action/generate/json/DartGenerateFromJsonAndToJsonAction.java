@@ -16,11 +16,8 @@ public class DartGenerateFromJsonAndToJsonAction extends BaseDartGenerateAction 
     private boolean hasToJson;
 
     protected boolean doEnable(@Nullable DartClass dartClass) {
-        if (dartClass == null) {
-            return false;
-        } else {
-            return !doesClassContainFromJsonAndToJson(dartClass);
-        }
+        if (dartClass == null) return false;
+        return !doesClassContainFromJsonAndToJson(dartClass);
     }
 
     public boolean doesClassContainFromJsonAndToJson(@NotNull DartClass dartClass) {

@@ -263,7 +263,7 @@ public class PubspecUtils {
                 for (FontUtils.FontAsset font : family.fonts) {
                     newFontBuilder.append("    - asset: ").append(font.asset).append("\n");
                     for (Map.Entry<String, String> extras : font.extras.entrySet()) {
-                        String extraLine = String.format("    - %s: %s", extras.getKey(), extras.getValue());
+                        String extraLine = String.format("      %s: %s", extras.getKey(), extras.getValue());
                         newFontBuilder.append(extraLine).append("\n");
                     }
                 }
@@ -287,7 +287,7 @@ public class PubspecUtils {
                     for (FontUtils.FontAsset font : family.fonts) {
                         flutterFontBuilder.append("        - asset: ").append(font.asset).append("\n");
                         for (Map.Entry<String, String> extras : font.extras.entrySet()) {
-                            String extraLine = String.format("        - %s: %s", extras.getKey(), extras.getValue());
+                            String extraLine = String.format("          %s: %s", extras.getKey(), extras.getValue());
                             flutterFontBuilder.append(extraLine).append("\n");
                         }
                     }
@@ -311,7 +311,7 @@ public class PubspecUtils {
                     for (FontUtils.FontAsset font : family.fonts) {
                         newFontBuilder.append("      - asset: ").append(font.asset).append("\n");
                         for (Map.Entry<String, String> extras : font.extras.entrySet()) {
-                            String extraLine = String.format("      - %s: %s", extras.getKey(), extras.getValue());
+                            String extraLine = String.format("        %s: %s", extras.getKey(), extras.getValue());
                             newFontBuilder.append(extraLine).append("\n");
                         }
                     }

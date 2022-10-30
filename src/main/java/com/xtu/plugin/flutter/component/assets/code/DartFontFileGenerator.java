@@ -4,14 +4,12 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.xtu.plugin.flutter.utils.DartUtils;
-import com.xtu.plugin.flutter.utils.FontUtils;
-import com.xtu.plugin.flutter.utils.LogUtils;
-import com.xtu.plugin.flutter.utils.ToastUtil;
+import com.xtu.plugin.flutter.utils.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 ///字体资源文件"i_font_res.dart"生成
@@ -58,15 +56,21 @@ public class DartFontFileGenerator {
         }
     }
 
-    @NotNull
     private void generateFile(Project project, VirtualFile rDirectory, @NotNull List<String> fontAssetList) {
         StringBuilder fileStringBuilder = new StringBuilder();
         fileStringBuilder.append("/// Generated file. Do not edit.\n\n")
                 .append("// ignore_for_file: constant_identifier_names\n")
                 .append("// ignore_for_file: lines_longer_than_80_chars\n")
                 .append("class ").append(FONT_CLASS_NAME).append(" {\n");
+        List<String> familyList = new ArrayList<>();
         for (String fontAsset : fontAssetList) {
-            String fontFamily = FontUtils.getFontFamily(fontAsset);
+            String fontFamily = FontUtils.getFontFamilyName(fontAsset);
+            familyList.add(fontFamily);
+        }
+        CollectionUtils.duplicateList(familyList);
+        Collections.sort(familyList);
+
+        for (String fontFamily : familyList) {
             String variantName = getFontVariant(fontFamily);
             fileStringBuilder.append("  static const String ")
                     .append(variantName).append(" = '").append(fontFamily)

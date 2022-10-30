@@ -3,13 +3,15 @@ package com.xtu.plugin.flutter.action.generate.res;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
-import com.xtu.plugin.flutter.utils.*;
+import com.xtu.plugin.flutter.utils.AssetUtils;
+import com.xtu.plugin.flutter.utils.FontUtils;
+import com.xtu.plugin.flutter.utils.PluginUtils;
+import com.xtu.plugin.flutter.utils.PubspecUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class GenerateResAction extends AnAction {
@@ -41,13 +43,6 @@ public class GenerateResAction extends AnAction {
                 newAssetList.add(assetPath);
             }
         }
-        //duplicate and sort asset resource
-        CollectionUtils.duplicateList(newAssetList);
-        Collections.sort(newAssetList);
-        //duplicate and sort font resource
-        CollectionUtils.duplicateList(newFontList);
-        Collections.sort(newFontList);
-
         PubspecUtils.readAsset(project, (assetList, fontList) -> {
             //force generate Res File
             PubspecUtils.writeAsset(project, newAssetList, newFontList);

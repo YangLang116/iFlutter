@@ -57,7 +57,7 @@ public class UselessResAnalysisTask extends Task.Backgroundable {
             assetList.add(relativePath);
             //字体font_family表示
             if (FontUtils.isFontAsset(relativePath)) {
-                String fontFamilyName = FontUtils.getFontFamily(relativePath);
+                String fontFamilyName = FontUtils.getFontFamilyName(relativePath);
                 assetList.add(fontFamilyName);
                 //添加字体R表示方式
                 String fontClassName = DartFontFileGenerator.getClassName();

@@ -12,9 +12,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.StatusBar;
 import com.intellij.openapi.wm.WindowManager;
 import com.intellij.psi.PsiDocumentManager;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
-import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.xtu.plugin.flutter.service.asset.AssetStorageService;
 import org.apache.commons.lang.StringUtils;
@@ -23,10 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.YAMLElementGenerator;
 import org.jetbrains.yaml.psi.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 public class PubspecUtils {
 
@@ -141,14 +136,14 @@ public class PubspecUtils {
                     YAMLValue inFontValue = inFontKeyValue.getValue();
                     if (!(inFontValue instanceof YAMLSequence)) continue;
                     List<YAMLSequenceItem> items = ((YAMLSequence) inFontValue).getItems();
-                    if (CollectionUtils.isEmpty(items)) continue;
-                    YAMLSequenceItem yamlSequenceItem = items.get(0);
-                    if (!(yamlSequenceItem.getValue() instanceof YAMLMapping)) continue;
-                    YAMLKeyValue fontAssetKeyValue = ((YAMLMapping) yamlSequenceItem.getValue()).getKeyValueByKey(NODE_FONT_ASSET);
-                    if (fontAssetKeyValue == null) continue;
-                    String fontAsset = fontAssetKeyValue.getValueText();
-                    if (StringUtils.isEmpty(fontAsset)) continue;
-                    fontAssetList.add(fontAsset);
+                    for (YAMLSequenceItem fontItem : items) {
+                        if (!(fontItem.getValue() instanceof YAMLMapping)) continue;
+                        YAMLKeyValue fontAssetKeyValue = ((YAMLMapping) fontItem.getValue()).getKeyValueByKey(NODE_FONT_ASSET);
+                        if (fontAssetKeyValue == null) continue;
+                        String fontAsset = fontAssetKeyValue.getValueText();
+                        if (StringUtils.isEmpty(fontAsset)) continue;
+                        fontAssetList.add(fontAsset);
+                    }
                 }
                 CollectionUtils.duplicateList(fontAssetList);
                 Collections.sort(fontAssetList);
@@ -254,15 +249,24 @@ public class PubspecUtils {
                 oldFontSequence.getParent().delete();
                 return false;
             }
-//          - family: DINPro_CondBold
-//            fonts:
-//              - asset: assets/fonts/DINPro_CondBold.otf
+            //fonts:
+            //    - family: test
+            //      fonts:
+            //        - asset: fonts/test.ttf
+            //        - asset: fonts/test@style_italic.ttf
+            //          style: italic
+            List<FontUtils.FontFamily> fontFamilyList = FontUtils.getFontFamilyList(fontList);
             StringBuilder newFontBuilder = new StringBuilder();
-            for (String fontAsset : fontList) {
-                String fontFamily = FontUtils.getFontFamily(fontAsset);
-                newFontBuilder.append("- family: ").append(fontFamily).append("\n")
-                        .append("  fonts:").append("\n")
-                        .append("    - asset: ").append(fontAsset).append("\n");
+            for (FontUtils.FontFamily family : fontFamilyList) {
+                newFontBuilder.append("- family: ").append(family.family).append("\n");
+                newFontBuilder.append("  fonts:").append("\n");
+                for (FontUtils.FontAsset font : family.fonts) {
+                    newFontBuilder.append("    - asset: ").append(font.asset).append("\n");
+                    for (Map.Entry<String, String> extras : font.extras.entrySet()) {
+                        String extraLine = String.format("    - %s: %s", extras.getKey(), extras.getValue());
+                        newFontBuilder.append(extraLine).append("\n");
+                    }
+                }
             }
             YAMLFile tempYamlFile = elementGenerator.createDummyYamlWithText(newFontBuilder.toString());
             YAMLSequence newFontSequence = PsiTreeUtil.findChildOfType(tempYamlFile, YAMLSequence.class);
@@ -276,11 +280,17 @@ public class PubspecUtils {
                 StringBuilder flutterFontBuilder = new StringBuilder()
                         .append("flutter:").append("\n")
                         .append("  fonts:").append("\n");
-                for (String fontAsset : fontList) {
-                    String fontFamily = FontUtils.getFontFamily(fontAsset);
-                    flutterFontBuilder.append("    - family: ").append(fontFamily).append("\n");
+                List<FontUtils.FontFamily> fontFamilyList = FontUtils.getFontFamilyList(fontList);
+                for (FontUtils.FontFamily family : fontFamilyList) {
+                    flutterFontBuilder.append("    - family: ").append(family.family).append("\n");
                     flutterFontBuilder.append("      fonts:").append("\n");
-                    flutterFontBuilder.append("        - asset: ").append(fontAsset).append("\n");
+                    for (FontUtils.FontAsset font : family.fonts) {
+                        flutterFontBuilder.append("        - asset: ").append(font.asset).append("\n");
+                        for (Map.Entry<String, String> extras : font.extras.entrySet()) {
+                            String extraLine = String.format("        - %s: %s", extras.getKey(), extras.getValue());
+                            flutterFontBuilder.append(extraLine).append("\n");
+                        }
+                    }
                 }
                 YAMLFile tempYamlFile = elementGenerator.createDummyYamlWithText(flutterFontBuilder.toString());
                 YAMLKeyValue newFlutterKeyValue = PsiTreeUtil.findChildOfType(tempYamlFile, YAMLKeyValue.class);
@@ -294,11 +304,17 @@ public class PubspecUtils {
 //                  - asset: assets/fonts/DINPro_CondBold.otf
                 StringBuilder newFontBuilder = new StringBuilder();
                 newFontBuilder.append("fonts:").append("\n");
-                for (String fontAsset : fontList) {
-                    String fontFamily = FontUtils.getFontFamily(fontAsset);
-                    newFontBuilder.append("  - family: ").append(fontFamily).append("\n");
+                List<FontUtils.FontFamily> fontFamilyList = FontUtils.getFontFamilyList(fontList);
+                for (FontUtils.FontFamily family : fontFamilyList) {
+                    newFontBuilder.append("  - family: ").append(family.family).append("\n");
                     newFontBuilder.append("    fonts:").append("\n");
-                    newFontBuilder.append("      - asset: ").append(fontAsset).append("\n");
+                    for (FontUtils.FontAsset font : family.fonts) {
+                        newFontBuilder.append("      - asset: ").append(font.asset).append("\n");
+                        for (Map.Entry<String, String> extras : font.extras.entrySet()) {
+                            String extraLine = String.format("      - %s: %s", extras.getKey(), extras.getValue());
+                            newFontBuilder.append(extraLine).append("\n");
+                        }
+                    }
                 }
                 YAMLFile tempYamlFile = elementGenerator.createDummyYamlWithText(newFontBuilder.toString());
                 YAMLKeyValue fontKeyValue = PsiTreeUtil.findChildOfType(tempYamlFile, YAMLKeyValue.class);

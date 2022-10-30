@@ -3,6 +3,19 @@
 ## [Coming]
 ### Changed
 
+## [2.0.6] - 2022-10-30
+### Changed
+- support font variant, [more detail](https://iflutter.toolu.cn/content/chapter-1/part-3.html)
+```yaml
+flutter:
+  fonts:
+    - family: font
+      fonts:
+        - asset: assets/fonts/font.ttf
+        - asset: assets/fonts/font@weight_500.ttf
+          weight: 500
+```
+
 ## [2.0.5] - 2022-10-19
 ### Changed
 - fix issue feedback fail

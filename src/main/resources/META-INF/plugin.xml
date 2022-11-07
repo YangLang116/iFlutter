@@ -13,6 +13,7 @@
     -->
     <depends>com.intellij.modules.platform</depends>
     <depends>io.flutter</depends>
+    <depends>org.intellij.groovy</depends>
     <depends config-file="yaml.xml">org.jetbrains.plugins.yaml</depends>
     <depends optional="true" config-file="intl.xml">com.localizely.flutter-intl</depends>
 

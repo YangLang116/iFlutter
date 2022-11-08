@@ -21,8 +21,6 @@ public class UpgradeManager {
 
     private static final String sGroupId = "com.xtu.plugin.flutter.upgrade";
     private static final String sUrl = "https://iflutter.toolu.cn/iflutter-version.json";
-    private static final String sActionText = "Upgrade Detail";
-    private static final String sActionUrl = "https://plugins.jetbrains.com/plugin/18457-iflutter/versions";
 
     private UpgradeManager() {
     }
@@ -35,9 +33,7 @@ public class UpgradeManager {
 
     public void checkPluginVersion(Project project) {
         final String currentVersion = PluginUtils.getPluginVersion();
-        final String url = sUrl
-                + "?version=" + currentVersion
-                + "&os=" + SystemInfo.getOsNameAndVersion();
+        final String url = sUrl + "?version=" + currentVersion + "&os=" + SystemInfo.getOsNameAndVersion();
         NetworkManager.getInstance().get(url, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -56,28 +52,32 @@ public class UpgradeManager {
                 if (versionInfo != null && !TextUtils.isEmpty(versionInfo.version)) {
                     String serverVersion = versionInfo.version;
                     if (PluginUtils.compareVersion(currentVersion, serverVersion) > 0) { //有新版更新
-                        pushNotification(project, versionInfo.title, versionInfo.subtitle, versionInfo.content);
+                        pushNotification(project,
+                                versionInfo.title, versionInfo.subtitle, versionInfo.content,
+                                versionInfo.detailBtnText, versionInfo.detailUrl);
                     }
                 }
             }
         });
     }
 
-    private void pushNotification(Project project, String title, String subtitle, String content) {
+    private void pushNotification(Project project,
+                                  String title, String subtitle, String content,
+                                  String detailBtnText, String detailUrl) {
         NotificationGroupManager.getInstance()
                 .getNotificationGroup(sGroupId)
-                .createNotification(title, subtitle, content, NotificationType.INFORMATION,
+                .createNotification(title, subtitle, content,
+                        NotificationType.INFORMATION,
                         new NotificationListener.UrlOpeningListener(true))
-                .setImportant(true)
-                .addAction(createDetailAction())
+                .setImportant(true).addAction(createDetailAction(detailBtnText, detailUrl))
                 .notify(project);
     }
 
-    private AnAction createDetailAction() {
-        return new NotificationAction(sActionText) {
+    private AnAction createDetailAction(String detailBtnText, String detailUrl) {
+        return new NotificationAction(detailBtnText) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e, @NotNull Notification notification) {
-                BrowserUtil.open(sActionUrl);
+                BrowserUtil.open(detailUrl);
             }
         };
     }

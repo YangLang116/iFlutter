@@ -6,14 +6,6 @@ public class VersionInfo {
     public String title;
     public String subtitle;
     public String content;
-
-    @Override
-    public String toString() {
-        return "VersionInfo{" +
-                "version='" + version + '\'' +
-                ", title='" + title + '\'' +
-                ", subtitle='" + subtitle + '\'' +
-                ", content='" + content + '\'' +
-                '}';
-    }
+    public String detailBtnText;
+    public String detailUrl;
 }

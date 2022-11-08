@@ -1,11 +1,20 @@
 package com.xtu.plugin.flutter.service;
 
 import com.intellij.util.xmlb.annotations.Transient;
+import com.xtu.plugin.flutter.action.pub.speed.helper.AndroidGradleMaker;
 import com.xtu.plugin.flutter.component.packages.update.PackageInfo;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.*;
 
 public class StorageEntity {
+
+    //默认镜像仓库地址
+    private static final List<String> DEFAULT_MIRROR_REPO = Arrays.asList("https://maven.aliyun.com/repository/jcenter",
+            "https://maven.aliyun.com/repository/central",
+            "https://maven.aliyun.com/repository/google",
+            "https://maven.aliyun.com/repository/public",
+            "https://maven.aliyun.com/repository/gradle-plugin");
 
     //资源变化检测目录，用于实时生成R文件
     public List<String> resDir = Arrays.asList("assets", "images");
@@ -31,6 +40,8 @@ public class StorageEntity {
     //最大图片宽高
     public int maxPicWidth = 720;
     public int maxPicHeight = 1080;
+    //仓库镜像地址
+    public String mirrorRepoStr = StringUtils.join(DEFAULT_MIRROR_REPO, AndroidGradleMaker.REPO_SPLIT);
 
     public StorageEntity() {
     }
@@ -50,7 +61,8 @@ public class StorageEntity {
                 && Objects.equals(apiSecret, that.apiSecret)
                 && maxPicSize == that.maxPicSize
                 && maxPicWidth == that.maxPicWidth
-                && maxPicHeight == that.maxPicHeight;
+                && maxPicHeight == that.maxPicHeight
+                && Objects.equals(mirrorRepoStr, that.mirrorRepoStr);
     }
 
     @Override
@@ -67,6 +79,7 @@ public class StorageEntity {
                 ", maxPicSize=" + maxPicSize +
                 ", maxPicWidth=" + maxPicWidth +
                 ", maxPicHeight=" + maxPicHeight +
+                ", mirrorRepoStr=" + mirrorRepoStr +
                 '}';
     }
 }

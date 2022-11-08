@@ -10,6 +10,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.xtu.plugin.flutter.action.pub.speed.entity.AndroidMavenInfo;
+import com.xtu.plugin.flutter.service.StorageService;
 import com.xtu.plugin.flutter.utils.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,11 +23,7 @@ import java.util.List;
 
 public class AndroidGradleMaker {
 
-    private static final List<String> mavenMirrorRepo = Arrays.asList("https://maven.aliyun.com/repository/jcenter",
-            "https://maven.aliyun.com/repository/central",
-            "https://maven.aliyun.com/repository/google",
-            "https://maven.aliyun.com/repository/public",
-            "https://maven.aliyun.com/repository/gradle-plugin");
+    public static final String REPO_SPLIT = ",";
 
     public static void start(@NotNull Project project,
                              @NotNull GroovyFile gradlePsiFile,
@@ -43,8 +40,11 @@ public class AndroidGradleMaker {
                             @NotNull GroovyFile gradlePsiFile,
                             @Nullable AndroidMavenInfo buildScriptMaven,
                             @Nullable AndroidMavenInfo rootProjectMaven) {
-        modifyRepositoryPsi(project, buildScriptMaven);
-        modifyRepositoryPsi(project, rootProjectMaven);
+        StorageService storageService = StorageService.getInstance(project);
+        String mirrorRepoStr = storageService.getState().mirrorRepoStr;
+        List<String> mavenMirrorRepo = Arrays.asList(mirrorRepoStr.split(REPO_SPLIT));
+        modifyRepositoryPsi(project, mavenMirrorRepo, buildScriptMaven);
+        modifyRepositoryPsi(project, mavenMirrorRepo, rootProjectMaven);
         //刷新文件
         PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(project);
         Document document = psiDocumentManager.getDocument(gradlePsiFile);
@@ -57,6 +57,7 @@ public class AndroidGradleMaker {
     }
 
     private static void modifyRepositoryPsi(@NotNull Project project,
+                                            @NotNull List<String> mavenMirrorRepo,
                                             @Nullable AndroidMavenInfo androidMavenInfo) {
         if (androidMavenInfo == null) return;
         List<String> addMavenList = ArrayUtils.sub(mavenMirrorRepo, androidMavenInfo.mavenList);

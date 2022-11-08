@@ -7,6 +7,7 @@ import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
+import com.xtu.plugin.flutter.action.pub.speed.ui.MirrorRepoDialog;
 import com.xtu.plugin.flutter.service.StorageEntity;
 import com.xtu.plugin.flutter.service.StorageService;
 import com.xtu.plugin.flutter.utils.CollectionUtils;
@@ -44,6 +45,8 @@ public final class SettingsConfiguration implements SearchableConfigurable {
     private JTextField maxPicHeightField;
     private JLabel githubLabel;
     private JLabel starLabel;
+    private String mirrorRepoStr;
+    private JButton mirrorRepoBtn;
 
     public SettingsConfiguration(Project project) {
         this.project = project;
@@ -64,6 +67,33 @@ public final class SettingsConfiguration implements SearchableConfigurable {
         maxPicSizeField.setDocument(new NumberDocument());
         maxPicWidthField.setDocument(new NumberDocument());
         maxPicHeightField.setDocument(new NumberDocument());
+        //添加Github地址
+        githubLabel.setIcon(PluginIcons.GITHUB);
+        githubLabel.setText("<html><u>Source Code</u></html>");
+        githubLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+        githubLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                BrowserUtil.open(sGithubUrl);
+            }
+        });
+        //添加评分地址
+        starLabel.setIcon(PluginIcons.STAR);
+        starLabel.setText("<html><u>Star Plugin</u></html>");
+        starLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+        starLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                BrowserUtil.open(sPluginUrl);
+            }
+        });
+        //修改镜像仓库
+        mirrorRepoBtn.addActionListener(e -> {
+            MirrorRepoDialog mirrorRepoDialog = new MirrorRepoDialog(project);
+            boolean isOk = mirrorRepoDialog.showAndGet();
+            if (!isOk) return;
+            mirrorRepoStr = mirrorRepoDialog.getRepoStr();
+        });
         return rootPanel;
     }
 
@@ -80,6 +110,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
                 || storageEntity.flutter2Enable != flutter2EnableBox.isSelected()
                 || storageEntity.resCheckEnable != resCheckEnableBox.isSelected()
                 || storageEntity.foldRegisterEnable != foldRegisterBox.isSelected()
+                || !Objects.equals(storageEntity.mirrorRepoStr, mirrorRepoStr)
                 || !Objects.equals(storageEntity.apiKey, apiKeyField.getText().trim())
                 || !Objects.equals(storageEntity.apiSecret, apiSecretField.getText().trim())
                 || storageEntity.maxPicSize != Integer.parseInt(maxPicSizeField.getText().trim())
@@ -103,26 +134,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
         maxPicSizeField.setText(String.valueOf(storageEntity.maxPicSize));
         maxPicWidthField.setText(String.valueOf(storageEntity.maxPicWidth));
         maxPicHeightField.setText(String.valueOf(storageEntity.maxPicHeight));
-        //添加Github地址
-        githubLabel.setIcon(PluginIcons.GITHUB);
-        githubLabel.setText("<html><u>Source Code</u></html>");
-        githubLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
-        githubLabel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                BrowserUtil.open(sGithubUrl);
-            }
-        });
-        //添加评分地址
-        starLabel.setIcon(PluginIcons.STAR);
-        starLabel.setText("<html><u>Star Plugin</u></html>");
-        starLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
-        starLabel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                BrowserUtil.open(sPluginUrl);
-            }
-        });
+        mirrorRepoStr = storageEntity.mirrorRepoStr;
     }
 
     @Override
@@ -141,6 +153,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
         storageEntity.maxPicSize = Integer.parseInt(maxPicSizeField.getText().trim());
         storageEntity.maxPicWidth = Integer.parseInt(maxPicWidthField.getText().trim());
         storageEntity.maxPicHeight = Integer.parseInt(maxPicHeightField.getText().trim());
+        storageEntity.mirrorRepoStr = mirrorRepoStr;
         //检查是否更新了注册方式
         if (storageEntity.foldRegisterEnable != foldRegisterBox.isSelected()) {
             storageEntity.foldRegisterEnable = foldRegisterBox.isSelected();

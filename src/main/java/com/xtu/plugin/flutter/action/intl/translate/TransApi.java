@@ -1,6 +1,6 @@
 package com.xtu.plugin.flutter.action.intl.translate;
 
-import com.xtu.plugin.flutter.action.intl.utils.Md5Utils;
+import com.xtu.plugin.flutter.utils.Md5Utils;
 import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;

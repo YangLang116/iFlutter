@@ -1,4 +1,4 @@
-package com.xtu.plugin.flutter.action.intl.utils;
+package com.xtu.plugin.flutter.utils;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

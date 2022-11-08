@@ -13,6 +13,7 @@
     -->
     <depends>com.intellij.modules.platform</depends>
     <depends>io.flutter</depends>
+    <depends>com.intellij.modules.java</depends>
     <depends>org.intellij.groovy</depends>
     <depends config-file="yaml.xml">org.jetbrains.plugins.yaml</depends>
     <depends optional="true" config-file="intl.xml">com.localizely.flutter-intl</depends>
@@ -64,6 +65,8 @@
             <action id="com.xtu.plugin.flutter.DepAnalysisAction"
                     class="com.xtu.plugin.flutter.action.analysis.DepAnalysisAction"/>
             <separator/>
+            <action id="com.xtu.plugin.flutter.PubSpeedAction"
+                    class="com.xtu.plugin.flutter.action.pub.speed.PubSpeedAction"/>
             <action id="com.xtu.plugin.flutter.PubSearchAction"
                     class="com.xtu.plugin.flutter.action.pub.search.PubSearchAction">
                 <keyboard-shortcut first-keystroke="alt f" keymap="$default"/>

@@ -9,10 +9,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
 import com.xtu.plugin.flutter.action.pub.speed.entity.AndroidMavenInfo;
 import com.xtu.plugin.flutter.action.pub.speed.entity.AndroidPluginInfo;
-import com.xtu.plugin.flutter.utils.LogUtils;
-import com.xtu.plugin.flutter.utils.PluginUtils;
-import com.xtu.plugin.flutter.utils.PsiUtils;
-import com.xtu.plugin.flutter.utils.ToastUtil;
+import com.xtu.plugin.flutter.utils.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -46,6 +43,7 @@ public class AndroidGradleParser {
         }
         try {
             List<AndroidPluginInfo> androidPluginList = new ArrayList<>();
+            //添加插件项目
             List<String> pluginLines = FileUtils.readLines(pluginFile, StandardCharsets.UTF_8);
             for (String pluginLine : pluginLines) {
                 String[] pluginMeta = pluginLine.split("=");
@@ -64,15 +62,34 @@ public class AndroidGradleParser {
                 androidPluginList.add(rootAndroid);
             }
             parseGradleFile(project, androidPluginList);
+            //修改flutter脚本
+            parseFlutterGradleFile(project);
         } catch (Exception e) {
             LogUtils.error("PubSpeedHelper parseAndroidPluginList: " + e.getMessage());
             ToastUtil.make(project, MessageType.ERROR, e.getMessage());
         }
     }
 
+    private static void parseFlutterGradleFile(Project project) {
+        String flutterPath = DartUtils.getFlutterPath(project);
+        if (StringUtils.isEmpty(flutterPath)) {
+            ToastUtil.make(project, MessageType.ERROR, "must set flutter.sdk in local.properties");
+            return;
+        }
+        String relativePath = "packages/flutter_tools/gradle/flutter.gradle".replace("/", File.separator);
+        File gradleFile = new File(flutterPath, relativePath);
+        GroovyFile gradlePsiFile = getGroovyFile(project, gradleFile);
+        if (gradlePsiFile == null) return;
+        AndroidMavenInfo buildScriptMaven = parseBuildScriptMavenList(gradlePsiFile);
+        AndroidMavenInfo rootProjectMaven = parseRootProjectMavenList(gradlePsiFile);
+        if (buildScriptMaven == null && rootProjectMaven == null) return;
+        AndroidGradleMaker.start(project, gradlePsiFile, buildScriptMaven, rootProjectMaven);
+    }
+
     private static void parseGradleFile(@NotNull Project project, List<AndroidPluginInfo> androidPluginList) {
         for (AndroidPluginInfo pluginInfo : androidPluginList) {
-            GroovyFile gradlePsiFile = getGroovyFile(project, pluginInfo.androidDirectory);
+            File gradleFile = new File(pluginInfo.androidDirectory, "build.gradle");
+            GroovyFile gradlePsiFile = getGroovyFile(project, gradleFile);
             if (gradlePsiFile == null) continue;
             AndroidMavenInfo buildScriptMaven = parseBuildScriptMavenList(gradlePsiFile);
             AndroidMavenInfo rootProjectMaven = parseRootProjectMavenList(gradlePsiFile);
@@ -82,8 +99,7 @@ public class AndroidGradleParser {
     }
 
     @Nullable
-    private static GroovyFile getGroovyFile(@NotNull Project project, @NotNull File androidDirectory) {
-        File gradleFile = new File(androidDirectory, "build.gradle");
+    private static GroovyFile getGroovyFile(@NotNull Project project, @NotNull File gradleFile) {
         if (!gradleFile.exists()) return null;
         VirtualFile gradleVirtualFile = VfsUtil.findFileByIoFile(gradleFile, true);
         if (gradleVirtualFile == null) return null;

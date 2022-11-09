@@ -3,6 +3,10 @@
 ## [Coming]
 ### Changed
 
+## [2.0.7] - 2022-11-09
+### Add
+- inject the mirror repository into the project (including the imported plugin), to solve the timeout problem caused by qiang, and to optimize the project build speed.
+
 ## [2.0.6] - 2022-10-30
 ### Changed
 - support font variant, [more detail](https://iflutter.toolu.cn/content/chapter-1/part-3.html)

@@ -10,11 +10,11 @@ import java.util.*;
 public class StorageEntity {
 
     //默认镜像仓库地址
-    private static final List<String> DEFAULT_MIRROR_REPO = Arrays.asList("https://maven.aliyun.com/repository/jcenter",
-            "https://maven.aliyun.com/repository/central",
-            "https://maven.aliyun.com/repository/google",
+    private static final List<String> DEFAULT_MIRROR_REPO = Arrays.asList("https://maven.aliyun.com/repository/gradle-plugin",
             "https://maven.aliyun.com/repository/public",
-            "https://maven.aliyun.com/repository/gradle-plugin");
+            "https://maven.aliyun.com/repository/google",
+            "https://maven.aliyun.com/repository/central",
+            "https://maven.aliyun.com/repository/jcenter");
 
     //资源变化检测目录，用于实时生成R文件
     public List<String> resDir = Arrays.asList("assets", "images");

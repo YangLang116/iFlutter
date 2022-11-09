@@ -109,6 +109,19 @@ public class AndroidGradleParser {
     @SuppressWarnings("SpellCheckingInspection")
     @Nullable
     private static AndroidMavenInfo parseRootProjectMavenList(@NotNull GroovyFile gradlePsiFile) {
+        //allprojects{ repositories{} }
+        List<GrMethodCallExpression> allprojects = PsiUtils.findChildren(gradlePsiFile,
+                GrMethodCallExpression.class,
+                "allprojects");
+        for (GrMethodCallExpression allprojectPsi : allprojects) {
+            GrClosableBlock block = PsiUtils.findFirstChildByType(allprojectPsi, GrClosableBlock.class);
+            if (block == null) continue;
+            GrMethodCallExpression repositoriesExpr = PsiUtils.findFirstChild(block,
+                    GrMethodCallExpression.class,
+                    "repositories");
+            if (repositoriesExpr == null) continue;
+            return parseRepositoriesPsi(repositoriesExpr);
+        }
         //rootProject.allprojects节点
         GrMethodCallExpression allProjectExpr = PsiUtils.findFirstChild(gradlePsiFile,
                 GrMethodCallExpression.class,

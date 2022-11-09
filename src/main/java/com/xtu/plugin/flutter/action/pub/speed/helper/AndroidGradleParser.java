@@ -45,8 +45,8 @@ public class AndroidGradleParser {
             return;
         }
         try {
-            List<String> pluginLines = FileUtils.readLines(pluginFile, StandardCharsets.UTF_8);
             List<AndroidPluginInfo> androidPluginList = new ArrayList<>();
+            List<String> pluginLines = FileUtils.readLines(pluginFile, StandardCharsets.UTF_8);
             for (String pluginLine : pluginLines) {
                 String[] pluginMeta = pluginLine.split("=");
                 if (pluginMeta.length != 2) continue;
@@ -56,6 +56,12 @@ public class AndroidGradleParser {
                 if (!androidDirectory.exists()) continue;
                 AndroidPluginInfo androidPlugin = new AndroidPluginInfo(pluginName, androidDirectory);
                 androidPluginList.add(androidPlugin);
+            }
+            //添加根项目
+            File rootAndroidDirectory = new File(projectPath, "android");
+            if (rootAndroidDirectory.exists()) {
+                AndroidPluginInfo rootAndroid = new AndroidPluginInfo("Root", rootAndroidDirectory);
+                androidPluginList.add(rootAndroid);
             }
             parseGradleFile(project, androidPluginList);
         } catch (Exception e) {

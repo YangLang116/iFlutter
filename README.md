@@ -30,10 +30,11 @@ iFlutter is an IDEA Plugin for Developer of Flutter
     - 7、Pub快捷搜索
     - 8、依赖快速定位
     - 9、支持国际化
+    - 10、支持镜像仓库注入
 
 ## 版本更新
 ### v2.0.7
-- 注入镜像仓库到项目(包括引入的plugin)，解决qiang导致的Timeout问题，优化项目编译速度
+- 注入镜像仓库到项目(包括引入的plugin)，解决qiang导致的Timeout问题，优化项目编译速度，[使用说明](https://iflutter.toolu.cn/content/chapter-12/part-1.html)
 
 ### v2.0.6
 - 支持字体文件变体，[使用说明](https://iflutter.toolu.cn/content/chapter-1/part-3.html)
@@ -87,10 +88,6 @@ flutter:
 
 - 支持国际化 [wiki](https://iflutter.toolu.cn/content/chapter-9/part-1.html)
 - 修复i_font_res.dart的Git问题
-
-## 交流群
-
- <img src="https://iflutter.toolu.cn/configs/qq.jpg" width="120"  alt="QQ"/>
 
 ## 其他
 

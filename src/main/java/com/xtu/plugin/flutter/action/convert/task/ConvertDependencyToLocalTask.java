@@ -66,18 +66,18 @@ public class ConvertDependencyToLocalTask extends Task.Backgroundable {
         if (StringUtils.isEmpty(projectPath)) return;
         File packageConfigFile = new File(projectPath, ".packages");
         if (!packageConfigFile.exists()) {
-            ToastUtil.make(project, MessageType.ERROR, "请先flutter pub get!");
+            ToastUtil.make(project, MessageType.ERROR, "please run `flutter pub get` first!");
             return;
         }
         String packageLibCacheUri = getPackageCacheUri(packageConfigFile, packageName);
         if (StringUtils.isEmpty(packageLibCacheUri)) {
-            ToastUtil.make(project, MessageType.ERROR, "请先flutter pub get!");
+            ToastUtil.make(project, MessageType.ERROR, "please run `flutter pub get` first!");
             return;
         }
         String packageLibCachePath = packageLibCacheUri.replace("file://", "");
         File packageCacheRootDirectory = new File(packageLibCachePath).getParentFile();
         if (!packageCacheRootDirectory.exists()) {
-            ToastUtil.make(project, MessageType.ERROR, "请先flutter pub get!");
+            ToastUtil.make(project, MessageType.ERROR, "please run `flutter pub get` first!");
             return;
         }
         try {

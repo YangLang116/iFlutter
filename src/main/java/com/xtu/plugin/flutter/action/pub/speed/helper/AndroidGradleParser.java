@@ -38,7 +38,7 @@ public class AndroidGradleParser {
         if (StringUtils.isEmpty(projectPath)) return;
         File pluginFile = new File(projectPath, ".flutter-plugins");
         if (!pluginFile.exists()) {
-            ToastUtil.make(project, MessageType.ERROR, "请先flutter pub get!");
+            ToastUtil.make(project, MessageType.ERROR, "please run `flutter pub get` first!");
             return;
         }
         try {

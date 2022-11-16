@@ -19,6 +19,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class MirrorRepoDialog extends DialogWrapper {
@@ -40,8 +41,10 @@ public class MirrorRepoDialog extends DialogWrapper {
     private List<String> getRepoList() {
         StorageService storageService = StorageService.getInstance(project);
         String mirrorRepoStr = storageService.getState().mirrorRepoStr;
-        String[] repoList = mirrorRepoStr.split(AndroidGradleMaker.REPO_SPLIT);
-        return Arrays.asList(repoList);
+        String[] repoArray = mirrorRepoStr.split(AndroidGradleMaker.REPO_SPLIT);
+        List<String> repoList = Arrays.asList(repoArray);
+        Collections.reverse(repoList);
+        return repoList;
     }
 
     @Override
@@ -70,7 +73,7 @@ public class MirrorRepoDialog extends DialogWrapper {
 
     public String getRepoStr() {
         List<String> repoList = new ArrayList<>();
-        for (int i = 0; i < listModel.size(); i++) {
+        for (int i = listModel.size() - 1; i >= 0; i--) {
             String repo = listModel.elementAt(i);
             repoList.add(repo);
         }
@@ -80,7 +83,7 @@ public class MirrorRepoDialog extends DialogWrapper {
     private void addRepo() {
         String repo = Messages.showInputDialog(project, "", "Add Mirror Repo Url", null);
         if (repo == null) return;
-        listModel.addElement(repo);
+        listModel.insertElementAt(repo, 0);
     }
 
     private String getRepoByPoint(Point point) {

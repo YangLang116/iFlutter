@@ -21,6 +21,7 @@ public class DartGenerateFromJsonAndToJsonAction extends BaseDartGenerateAction 
     }
 
     public boolean doesClassContainFromJsonAndToJson(@NotNull DartClass dartClass) {
+        boolean hasFromJson = false;
         DartFactoryConstructorDeclaration[] constructorDeclarationList = PsiTreeUtil.getChildrenOfType(
                 DartResolveUtil.getBody(dartClass),
                 DartFactoryConstructorDeclaration.class);
@@ -32,7 +33,10 @@ public class DartGenerateFromJsonAndToJsonAction extends BaseDartGenerateAction 
                 }
             }
         }
-        hasToJson = doesClassContainMethod(dartClass, "toJson");
+        boolean hasToJson = doesClassContainMethod(dartClass, "toJson");
+        //更新状态
+        this.hasFromJson = hasFromJson;
+        this.hasToJson = hasToJson;
         return hasFromJson && hasToJson;
     }
 

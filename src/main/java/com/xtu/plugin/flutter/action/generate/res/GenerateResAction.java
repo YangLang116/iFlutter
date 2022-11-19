@@ -43,9 +43,7 @@ public class GenerateResAction extends AnAction {
                 newAssetList.add(assetPath);
             }
         }
-        PubspecUtils.readAsset(project, (assetList, fontList) -> {
-            //force generate Res File
-            PubspecUtils.writeAsset(project, newAssetList, newFontList);
-        });
+        //force generate Res File
+        PubspecUtils.writeAsset(project, newAssetList, newFontList);
     }
 }

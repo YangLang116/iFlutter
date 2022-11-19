@@ -27,7 +27,10 @@ public class DartRFileGenerator {
         return sInstance;
     }
 
-    public void generate(Project project, @NotNull List<String> assetList) {
+    public void generate(@NotNull Project project,
+                         @NotNull String projectName,
+                         @NotNull String projectVersion,
+                         @NotNull List<String> assetList) {
         if (assetList.equals(latestAssetList)) return;
         //create new res
         Map<String, List<String>> assetCategory = new HashMap<>();
@@ -51,7 +54,9 @@ public class DartRFileGenerator {
                 }
                 List<String> usefulFileNameList = new ArrayList<>();
                 for (Map.Entry<String, List<String>> entry : assetCategory.entrySet()) {
-                    String fileName = generateFile(project, resVirtualDirectory, entry.getKey(), entry.getValue());
+                    String fileName = generateFile(project, resVirtualDirectory,
+                            entry.getKey(), entry.getValue(),
+                            projectName, projectVersion);
                     usefulFileNameList.add(fileName);
                 }
                 //删除无用文件
@@ -81,13 +86,19 @@ public class DartRFileGenerator {
     }
 
     @NotNull
-    private String generateFile(Project project, VirtualFile rDirectory, String assetDirName, List<String> assetFileNames) {
+    private String generateFile(@NotNull Project project, @NotNull VirtualFile rDirectory,
+                                @NotNull String assetDirName, @NotNull List<String> assetFileNames,
+                                @NotNull String projectName,
+                                @NotNull String projectVersion) {
         String className = getClassName(assetDirName);
         StringBuilder fileStringBuilder = new StringBuilder();
         fileStringBuilder.append("/// Generated file. Do not edit.\n\n")
                 .append("// ignore_for_file: constant_identifier_names\n")
                 .append("// ignore_for_file: lines_longer_than_80_chars\n")
                 .append("class ").append(className).append(" {\n");
+        //create name and version
+        fileStringBuilder.append("  static const String PLUGIN_NAME = '").append(projectName).append("';\n");
+        fileStringBuilder.append("  static const String PLUGIN_VERSION = '").append(projectVersion).append("';\n");
         if (!CollectionUtils.isEmpty(assetFileNames)) {
             for (String assetFileName : assetFileNames) {
                 if (needIgnoreAsset(project, assetFileName)) continue;
@@ -122,12 +133,9 @@ public class DartRFileGenerator {
         if (endIndex < startIndex) {
             endIndex = assetFileName.length();
         }
-        String variantName = assetFileName.substring(startIndex, endIndex)
+        return assetFileName.substring(startIndex, endIndex)
                 .toUpperCase()
                 .replace("-", "_");
-        //replace specific char
-        variantName = variantName.replace("-", "_");
-        return variantName;
     }
 
     private boolean needIgnoreAsset(Project project, String assetFileName) {

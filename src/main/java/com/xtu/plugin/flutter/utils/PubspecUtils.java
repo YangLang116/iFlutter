@@ -93,6 +93,26 @@ public class PubspecUtils {
         return (YAMLSequence) fontValue;
     }
 
+    @NotNull
+    private static String getProjectName(@NotNull Project project) {
+        YAMLMapping rootMapping = getTopLevelMapping(project);
+        if (rootMapping == null) return project.getName();
+        YAMLKeyValue nameKeyValue = rootMapping.getKeyValueByKey("name");
+        if (nameKeyValue == null) return project.getName();
+        return nameKeyValue.getValueText();
+    }
+
+    @NotNull
+    private static String getProjectVersion(@NotNull Project project) {
+        final String defaultVersion = "1.0.0";
+        YAMLMapping rootMapping = getTopLevelMapping(project);
+        if (rootMapping == null) return defaultVersion;
+        YAMLKeyValue versionKeyValue = rootMapping.getKeyValueByKey("version");
+        if (versionKeyValue == null) return defaultVersion;
+        return versionKeyValue.getValueText();
+    }
+
+
     // 读取资源列表
     public static void readAsset(@NotNull Project project, @NotNull YamlReadListener listener) {
         ApplicationManager.getApplication()
@@ -148,7 +168,11 @@ public class PubspecUtils {
                 CollectionUtils.duplicateList(fontAssetList);
                 Collections.sort(fontAssetList);
             }
-            listener.onGet(assetList, fontAssetList);
+            //project name
+            String projectName = getProjectName(project);
+            //project version
+            String projectVersion = getProjectVersion(project);
+            listener.onGet(projectName, projectVersion, assetList, fontAssetList);
         });
     }
 
@@ -334,7 +358,10 @@ public class PubspecUtils {
 
     public interface YamlReadListener {
 
-        void onGet(@NotNull List<String> assetList, @NotNull List<String> fontList);
+        void onGet(@NotNull String projectName,
+                   @NotNull String projectVersion,
+                   @NotNull List<String> assetList,
+                   @NotNull List<String> fontList);
 
     }
 }

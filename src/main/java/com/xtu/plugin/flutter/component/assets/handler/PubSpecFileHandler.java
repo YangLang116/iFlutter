@@ -16,7 +16,7 @@ public class PubSpecFileHandler {
 
     void addAsset(@NotNull Project project, @NotNull List<String> addAssetList) {
         LogUtils.info("PubSpecFileHandler addAsset: " + addAssetList);
-        PubspecUtils.readAsset(project, (assetList, fontList) -> {
+        PubspecUtils.readAsset(project, (name, version, assetList, fontList) -> {
             List<String> newAssetList = new ArrayList<>(assetList);
             List<String> newFontList = new ArrayList<>(fontList);
             for (String asset : addAssetList) {
@@ -32,7 +32,7 @@ public class PubSpecFileHandler {
 
     void removeAsset(@NotNull Project project, String removeAsset) {
         LogUtils.info("PubSpecFileHandler removeAsset: " + removeAsset);
-        PubspecUtils.readAsset(project, (assetList, fontList) -> {
+        PubspecUtils.readAsset(project, (name, version, assetList, fontList) -> {
             List<String> newAssetList = new ArrayList<>(assetList);
             List<String> newFontList = new ArrayList<>(fontList);
             if (FontUtils.isFontAsset(removeAsset)) {
@@ -46,7 +46,7 @@ public class PubSpecFileHandler {
 
     void changeAsset(Project project, String oldAssetName, String newAssetName) {
         LogUtils.info(String.format(Locale.ROOT, "PubSpecFileHandler changeAsset(%s -> %s)", oldAssetName, newAssetName));
-        PubspecUtils.readAsset(project, (assetList, fontList) -> {
+        PubspecUtils.readAsset(project, (name, version, assetList, fontList) -> {
             List<String> newAssetList = new ArrayList<>(assetList);
             List<String> newFontList = new ArrayList<>(fontList);
             if (FontUtils.isFontAsset(oldAssetName)) {
@@ -66,8 +66,8 @@ public class PubSpecFileHandler {
     public void onPsiFileChanged(@NotNull Project project) {
         //root package pubspec.yaml changed
         LogUtils.info("PubSpecFileHandler pubspec.yaml changed");
-        PubspecUtils.readAsset(project, (assetList, fontList) -> {
-            DartRFileGenerator.getInstance().generate(project, assetList);
+        PubspecUtils.readAsset(project, (name, version, assetList, fontList) -> {
+            DartRFileGenerator.getInstance().generate(project, name, version, assetList);
             DartFontFileGenerator.getInstance().generate(project, fontList);
         });
     }

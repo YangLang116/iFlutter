@@ -112,7 +112,7 @@ public class AndroidGradleParser {
             AndroidMavenInfo buildScriptRepository = parseBuildScriptRepository(gradlePsiFile);
             AndroidMavenInfo rootProjectRepository = parseRootProjectRepository(gradlePsiFile);
             AndroidMavenInfo projectRepository = parseProjectRepository(gradlePsiFile);
-            if (buildScriptRepository == null && rootProjectRepository == null && projectRepository == null) return;
+            if (buildScriptRepository == null && rootProjectRepository == null && projectRepository == null) continue;
             AndroidGradleMaker.start(project, gradlePsiFile,
                     buildScriptRepository, rootProjectRepository, projectRepository);
         }

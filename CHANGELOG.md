@@ -3,6 +3,12 @@
 ## [Coming]
 ### Changed
 
+## [2.1.0] - 2022-11-20
+### Changed
+- add 'PLUGIN_NAME'、'PLUGIN_VERSION' to R file
+- fix `fromJson` fail
+- optimize mirror repo code
+
 ## [2.0.7] - 2022-11-09
 ### Add
 - inject the mirror repository into the project (including the imported plugin), to solve the timeout problem caused by qiang, and to optimize the project build speed.

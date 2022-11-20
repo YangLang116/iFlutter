@@ -64,7 +64,7 @@ public class IntlUtils {
         VirtualFile intlDir = getIntlDir(project);
         if (intlDir == null) return null;
         VirtualFile[] children = intlDir.getChildren();
-        if (children == null || children.length <= 0) return null;
+        if (children == null || children.length == 0) return null;
         List<String> localeList = new ArrayList<>();
         for (VirtualFile child : children) {
             String locale = getLocale(child.getName());

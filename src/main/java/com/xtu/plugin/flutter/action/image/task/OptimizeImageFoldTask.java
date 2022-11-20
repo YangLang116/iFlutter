@@ -79,7 +79,7 @@ public class OptimizeImageFoldTask implements Runnable {
     private void optimizeImage(@NotNull Project project, @NotNull File imageDirectory) throws Exception {
         List<File> imageFileList = new ArrayList<>();
         FileUtils.scanDirectory(imageDirectory, imageFileList::add);
-        if (imageFileList.size() <= 0) return;
+        if (imageFileList.size() == 0) return;
         //整理图片位置
         String projectPath = PluginUtils.getProjectPath(project);
         if (StringUtils.isEmpty(projectPath)) return;
@@ -96,7 +96,7 @@ public class OptimizeImageFoldTask implements Runnable {
             String newAssetPath = AssetUtils.getAssetPath(projectPath, new File(newImageDirectory, fileName));
             pathMap.put(oldAssetPath, newAssetPath);
         }
-        if (pathMap.size() <= 0) return;
+        if (pathMap.size() == 0) return;
         //删除空目录
         deleteEmptyDirectory(imageDirectory);
         //刷新images目录

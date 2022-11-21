@@ -6,6 +6,8 @@ iFlutter is an IDEA Plugin for Developer of Flutter
 
 ![platforms](https://img.shields.io/badge/platforms-macos%20%7C%20windows%20%7C%20linux-blue) ![tools](https://img.shields.io/badge/idea-intellij_IDEA%20%7C%20AndroidStudio-blue) ![licence](https://img.shields.io/badge/licence-MIT-blue) ![version](https://img.shields.io/badge/version-v2.1.0-blue)
 
+**插件改为最低兼容211版本，如遇到无法安装，请升级AndroidStudio**
+
 ## 最新公告
 
 - [MediaFilePreviewer](https://github.com/YangLang116/MediaFilePreviewer): 一款支持Lottie、SVGA预览的IDEA插件  

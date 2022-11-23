@@ -4,7 +4,7 @@ iFlutter is an IDEA Plugin for Developer of Flutter
 
 ## iFlutter是一款辅助Flutter开发的 IDEA 插件
 
-![platforms](https://img.shields.io/badge/platforms-macos%20%7C%20windows%20%7C%20linux-blue) ![tools](https://img.shields.io/badge/idea-intellij_IDEA%20%7C%20AndroidStudio-blue) ![licence](https://img.shields.io/badge/licence-MIT-blue) ![version](https://img.shields.io/badge/version-v2.1.0-blue)
+![platforms](https://img.shields.io/badge/platforms-macos%20%7C%20windows%20%7C%20linux-blue) ![tools](https://img.shields.io/badge/idea-intellij_IDEA%20%7C%20AndroidStudio-blue) ![licence](https://img.shields.io/badge/licence-MIT-blue) ![version](https://img.shields.io/badge/version-v2.1.1-blue)
 
 ## 最新公告
 
@@ -34,6 +34,9 @@ iFlutter is an IDEA Plugin for Developer of Flutter
     - 10、支持镜像仓库注入
 
 ## 版本更新
+### v2.1.1
+- 优化`fromJson`、`toJson`生成逻辑
+
 ### v2.1.0
 - 生成的R文件中添加'PLUGIN_NAME'、'PLUGIN_VERSION'字段
 - 修复fromJson生成失败问题

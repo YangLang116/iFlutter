@@ -3,6 +3,10 @@
 ## [Coming]
 ### Changed
 
+## [2.1.1] - 2022-11-23
+### Changed
+- optimize `fromJson`、`toJson`
+
 ## [2.1.0] - 2022-11-20
 ### Changed
 - add 'PLUGIN_NAME'、'PLUGIN_VERSION' to R file

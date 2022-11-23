@@ -10,7 +10,6 @@ import com.jetbrains.lang.dart.ide.generation.BaseCreateMethodsFix;
 import com.jetbrains.lang.dart.psi.*;
 import com.xtu.plugin.flutter.action.generate.json.entity.DartFieldEntity;
 import com.xtu.plugin.flutter.utils.DartUtils;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -22,9 +21,11 @@ public class CreateFromJsonAndToJsonCodeFix extends BaseCreateMethodsFix<DartCom
 
     private final boolean hasFromJson;
     private final boolean hasToJson;
+    private final boolean enableFlutter2;
 
-    public CreateFromJsonAndToJsonCodeFix(@NotNull DartClass dartClass, boolean hasFromJson, boolean hasToJson) {
+    public CreateFromJsonAndToJsonCodeFix(@NotNull DartClass dartClass, boolean enableFlutter2, boolean hasFromJson, boolean hasToJson) {
         super(dartClass);
+        this.enableFlutter2 = enableFlutter2;
         this.hasFromJson = hasFromJson;
         this.hasToJson = hasToJson;
     }
@@ -68,11 +69,15 @@ public class CreateFromJsonAndToJsonCodeFix extends BaseCreateMethodsFix<DartCom
             DartReferenceExpression referenceExpression = PsiTreeUtil.getChildOfType(dartSimpleType, DartReferenceExpression.class);
             if (referenceExpression == null) continue;
             fieldEntity.type = referenceExpression.getText();
+            fieldEntity.isBuiltInType = DartUtils.isBuiltInType(referenceExpression);
             DartTypeArguments typeArguments = PsiTreeUtil.getChildOfType(dartSimpleType, DartTypeArguments.class);
             if (typeArguments != null) {
                 DartReferenceExpression argumentReference = PsiTreeUtil.findChildOfType(typeArguments, DartReferenceExpression.class);
                 if (argumentReference != null) {
-                    fieldEntity.argumentType = argumentReference.getText();
+                    DartFieldEntity argumentEntity = new DartFieldEntity();
+                    argumentEntity.type = argumentReference.getText();
+                    argumentEntity.isBuiltInType = DartUtils.isBuiltInType(argumentReference);
+                    fieldEntity.argument = argumentEntity;
                 }
             }
             dartFieldList.add(fieldEntity);
@@ -84,12 +89,18 @@ public class CreateFromJsonAndToJsonCodeFix extends BaseCreateMethodsFix<DartCom
                     "factory %s.fromJson(Map<String, dynamic> json) {return %s(",
                     className, className));
             for (DartFieldEntity fieldEntity : dartFieldList) {
-                if (StringUtils.equals(fieldEntity.type, "List")
-                        && !StringUtils.isEmpty(fieldEntity.argumentType)
-                        && !DartUtils.isBuiltInType(fieldEntity.argumentType)) {
-                    template.addTextSegment(String.format(Locale.US,
-                            "%s: json['%s'] == null ? [] : \nList<%s>.unmodifiable(\njson['%s'].map((x) => %s.fromJson(x))),",
-                            fieldEntity.name, fieldEntity.name, fieldEntity.argumentType, fieldEntity.name, fieldEntity.argumentType));
+                if (fieldEntity.isList()) {
+                    DartFieldEntity argument = fieldEntity.argument;
+                    if (argument != null && !argument.isBuiltInType) {
+                        template.addTextSegment(String.format(Locale.US,
+                                "%s: json['%s'] == null ? [] : \nList<%s>.unmodifiable(\njson['%s'].map((x) => %s.fromJson(x))),",
+                                fieldEntity.name, fieldEntity.name, argument.type, fieldEntity.name, argument.type));
+                    } else {
+                        template.addTextSegment(String.format(Locale.US, "%s: json['%s'],", fieldEntity.name, fieldEntity.name));
+                    }
+                } else if (!fieldEntity.isBuiltInType) {
+                    template.addTextSegment(String.format(Locale.US, "%s: %s.fromJson(json['%s']),",
+                            fieldEntity.name, fieldEntity.type, fieldEntity.name));
                 } else {
                     template.addTextSegment(String.format(Locale.US, "%s: json['%s'],", fieldEntity.name, fieldEntity.name));
                 }
@@ -99,7 +110,21 @@ public class CreateFromJsonAndToJsonCodeFix extends BaseCreateMethodsFix<DartCom
         if (!hasToJson) {
             template.addTextSegment("Map<String, dynamic> toJson() => {");
             for (DartFieldEntity fieldEntity : dartFieldList) {
-                template.addTextSegment(String.format(Locale.US, "'%s': %s,", fieldEntity.name, fieldEntity.name));
+                if (fieldEntity.isList()) {
+                    DartFieldEntity argument = fieldEntity.argument;
+                    if (argument != null && !argument.isBuiltInType) {
+                        template.addTextSegment(String.format(Locale.US,
+                                "'%s': %s%s.map((e) => e.toJson()).toString(),",
+                                fieldEntity.name, fieldEntity.name, enableFlutter2 ? "?" : ""));
+                    } else {
+                        template.addTextSegment(String.format(Locale.US, "'%s': %s,", fieldEntity.name, fieldEntity.name));
+                    }
+                } else if (!fieldEntity.isBuiltInType) {
+                    template.addTextSegment(String.format(Locale.US, "'%s': %s%s.toJson(),",
+                            fieldEntity.name, fieldEntity.name, enableFlutter2 ? "?" : ""));
+                } else {
+                    template.addTextSegment(String.format(Locale.US, "'%s': %s,", fieldEntity.name, fieldEntity.name));
+                }
             }
             template.addTextSegment("};\n");
         }

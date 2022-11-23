@@ -5,9 +5,13 @@ import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.codeStyle.CodeStyleManager;
+import com.intellij.psi.util.PsiTreeUtil;
+import com.jetbrains.lang.dart.psi.DartReferenceExpression;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,15 +22,18 @@ import java.util.Properties;
 
 public class DartUtils {
 
-    public static boolean isBuiltInType(String type) {
-        return StringUtils.equals(type, "String")
-                || StringUtils.equals(type, "bool")
-                || StringUtils.equals(type, "int")
-                || StringUtils.equals(type, "double")
-                || StringUtils.equals(type, "num")
-                || StringUtils.equals(type, "var")
-                || StringUtils.equals(type, "dynamic")
-                || StringUtils.equals(type, "Object");
+    public static boolean isBuiltInType(@NotNull DartReferenceExpression referenceExpression) {
+        Project project = referenceExpression.getProject();
+        String flutterPath = getFlutterPath(project);
+        if (StringUtils.isEmpty(flutterPath)) return false;
+        PsiReference reference = referenceExpression.getReference();
+        if (reference == null) return false;
+        PsiElement resolvePsiElement = reference.resolve();
+        PsiFile filePsi = PsiTreeUtil.getParentOfType(resolvePsiElement, PsiFile.class);
+        if (filePsi == null) return false;
+        VirtualFile dartFile = filePsi.getVirtualFile();
+        if (dartFile == null) return false;
+        return PathUtils.isChildPath(flutterPath, dartFile.getPath());
     }
 
     private static String flutterPath;

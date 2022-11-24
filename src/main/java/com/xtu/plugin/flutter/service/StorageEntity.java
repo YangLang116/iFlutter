@@ -42,6 +42,8 @@ public class StorageEntity {
     public int maxPicHeight = 1080;
     //仓库镜像地址
     public String mirrorRepoStr = StringUtils.join(DEFAULT_MIRROR_REPO, AndroidGradleMaker.REPO_SPLIT);
+    //是否带包名生成资源文件
+    public boolean registerResWithPackage = false;
 
     public StorageEntity() {
     }
@@ -61,6 +63,7 @@ public class StorageEntity {
                 && Objects.equals(apiSecret, that.apiSecret)
                 && maxPicSize == that.maxPicSize
                 && maxPicWidth == that.maxPicWidth
+                && registerResWithPackage == that.registerResWithPackage
                 && maxPicHeight == that.maxPicHeight
                 && Objects.equals(mirrorRepoStr, that.mirrorRepoStr);
     }
@@ -74,12 +77,14 @@ public class StorageEntity {
                 ", resCheckEnable=" + resCheckEnable +
                 ", httpEntityList=" + httpEntityList +
                 ", foldRegisterEnable=" + foldRegisterEnable +
-                ", apiKey=" + apiKey +
-                ", apiSecret=" + apiSecret +
+                ", packageInfoMap=" + packageInfoMap +
+                ", apiKey='" + apiKey + '\'' +
+                ", apiSecret='" + apiSecret + '\'' +
                 ", maxPicSize=" + maxPicSize +
                 ", maxPicWidth=" + maxPicWidth +
                 ", maxPicHeight=" + maxPicHeight +
-                ", mirrorRepoStr=" + mirrorRepoStr +
+                ", mirrorRepoStr='" + mirrorRepoStr + '\'' +
+                ", registerResWithPackage=" + registerResWithPackage +
                 '}';
     }
 }

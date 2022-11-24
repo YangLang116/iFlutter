@@ -3,6 +3,10 @@
 ## [Coming]
 ### Changed
 
+## [2.1.2] - 2022-11-24
+### Changed
+- support register res for Flutter Plugin
+
 ## [2.1.1] - 2022-11-23
 ### Changed
 - optimize `fromJson`、`toJson`

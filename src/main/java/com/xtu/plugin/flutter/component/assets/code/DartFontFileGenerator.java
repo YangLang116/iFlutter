@@ -31,7 +31,7 @@ public class DartFontFileGenerator {
         return sInstance;
     }
 
-    public void generate(Project project, @NotNull List<String> fontAssetList) {
+    public void generate(@NotNull Project project, @NotNull String resPrefix, @NotNull List<String> fontAssetList) {
         if (fontAssetList.equals(latestFontList)) return;
         try {
             File libDirectory = new File(project.getBasePath(), "lib");
@@ -43,7 +43,7 @@ public class DartFontFileGenerator {
                 if (resVirtualDirectory == null) {
                     resVirtualDirectory = libVirtualDirectory.createChildDirectory(project, "res");
                 }
-                generateFile(project, resVirtualDirectory, fontAssetList);
+                generateFile(project, resVirtualDirectory, resPrefix, fontAssetList);
             } else if (resVirtualDirectory != null) {
                 VirtualFile fontVirtualFile = resVirtualDirectory.findChild(FONT_FILE_NAME);
                 if (fontVirtualFile != null) fontVirtualFile.delete(project);
@@ -56,7 +56,9 @@ public class DartFontFileGenerator {
         }
     }
 
-    private void generateFile(Project project, VirtualFile rDirectory, @NotNull List<String> fontAssetList) {
+    private void generateFile(Project project, VirtualFile rDirectory,
+                              @NotNull String resPrefix,
+                              @NotNull List<String> fontAssetList) {
         StringBuilder fileStringBuilder = new StringBuilder();
         fileStringBuilder.append("/// Generated file. Do not edit.\n\n")
                 .append("// ignore_for_file: constant_identifier_names\n")
@@ -69,11 +71,11 @@ public class DartFontFileGenerator {
         }
         CollectionUtils.duplicateList(familyList);
         Collections.sort(familyList);
-
         for (String fontFamily : familyList) {
             String variantName = getFontVariant(fontFamily);
             fileStringBuilder.append("  static const String ")
-                    .append(variantName).append(" = '").append(fontFamily)
+                    .append(variantName).append(" = '")
+                    .append(resPrefix).append(fontFamily)
                     .append("';\n");
         }
         fileStringBuilder.append("}\n");

@@ -30,6 +30,7 @@ public class DartRFileGenerator {
     public void generate(@NotNull Project project,
                          @NotNull String projectName,
                          @NotNull String projectVersion,
+                         @NotNull String resPrefix,
                          @NotNull List<String> assetList) {
         if (assetList.equals(latestAssetList)) return;
         //create new res
@@ -55,6 +56,7 @@ public class DartRFileGenerator {
                 List<String> usefulFileNameList = new ArrayList<>();
                 for (Map.Entry<String, List<String>> entry : assetCategory.entrySet()) {
                     String fileName = generateFile(project, resVirtualDirectory,
+                            resPrefix,
                             entry.getKey(), entry.getValue(),
                             projectName, projectVersion);
                     usefulFileNameList.add(fileName);
@@ -87,6 +89,7 @@ public class DartRFileGenerator {
 
     @NotNull
     private String generateFile(@NotNull Project project, @NotNull VirtualFile rDirectory,
+                                @NotNull String resPrefix,
                                 @NotNull String assetDirName, @NotNull List<String> assetFileNames,
                                 @NotNull String projectName,
                                 @NotNull String projectVersion) {
@@ -103,7 +106,10 @@ public class DartRFileGenerator {
             for (String assetFileName : assetFileNames) {
                 if (needIgnoreAsset(project, assetFileName)) continue;
                 String variantName = getResName(assetFileName);
-                fileStringBuilder.append("  static const String ").append(variantName).append(" = '").append(assetFileName).append("';\n");
+                fileStringBuilder.append("  static const String ")
+                        .append(variantName).append(" = '")
+                        .append(resPrefix).append(assetFileName)
+                        .append("';\n");
             }
         }
         fileStringBuilder.append("}\n");

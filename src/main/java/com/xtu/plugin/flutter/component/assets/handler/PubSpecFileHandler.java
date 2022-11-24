@@ -3,6 +3,8 @@ package com.xtu.plugin.flutter.component.assets.handler;
 import com.intellij.openapi.project.Project;
 import com.xtu.plugin.flutter.component.assets.code.DartFontFileGenerator;
 import com.xtu.plugin.flutter.component.assets.code.DartRFileGenerator;
+import com.xtu.plugin.flutter.service.StorageEntity;
+import com.xtu.plugin.flutter.service.StorageService;
 import com.xtu.plugin.flutter.utils.FontUtils;
 import com.xtu.plugin.flutter.utils.LogUtils;
 import com.xtu.plugin.flutter.utils.PubspecUtils;
@@ -67,9 +69,19 @@ public class PubSpecFileHandler {
         //root package pubspec.yaml changed
         LogUtils.info("PubSpecFileHandler pubspec.yaml changed");
         PubspecUtils.readAsset(project, (name, version, assetList, fontList) -> {
-            DartRFileGenerator.getInstance().generate(project, name, version, assetList);
-            DartFontFileGenerator.getInstance().generate(project, fontList);
+            String resPrefix = getResPrefix(project, name);
+            DartRFileGenerator.getInstance().generate(project, name, version, resPrefix, assetList);
+            DartFontFileGenerator.getInstance().generate(project, resPrefix, fontList);
         });
+    }
+
+    @NotNull
+    private static String getResPrefix(@NotNull Project project, @NotNull String projectName) {
+        StorageService storageService = StorageService.getInstance(project);
+        StorageEntity state = storageService.getState();
+        boolean registerResWithPackage = state.registerResWithPackage;
+        if (registerResWithPackage) return "packages/" + projectName + "/";
+        return "";
     }
 
 }

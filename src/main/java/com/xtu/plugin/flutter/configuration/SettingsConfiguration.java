@@ -13,6 +13,7 @@ import com.xtu.plugin.flutter.service.StorageService;
 import com.xtu.plugin.flutter.utils.CollectionUtils;
 import icons.PluginIcons;
 import org.apache.commons.lang.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.text.AttributeSet;
@@ -47,11 +48,13 @@ public final class SettingsConfiguration implements SearchableConfigurable {
     private JLabel starLabel;
     private String mirrorRepoStr;
     private JButton mirrorRepoBtn;
+    private JCheckBox withPackageNameBox;
 
     public SettingsConfiguration(Project project) {
         this.project = project;
     }
 
+    @NotNull
     @Override
     public String getId() {
         return getClass().getName();
@@ -110,6 +113,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
                 || storageEntity.flutter2Enable != flutter2EnableBox.isSelected()
                 || storageEntity.resCheckEnable != resCheckEnableBox.isSelected()
                 || storageEntity.foldRegisterEnable != foldRegisterBox.isSelected()
+                || storageEntity.registerResWithPackage != withPackageNameBox.isSelected()
                 || !Objects.equals(storageEntity.mirrorRepoStr, mirrorRepoStr)
                 || !Objects.equals(storageEntity.apiKey, apiKeyField.getText().trim())
                 || !Objects.equals(storageEntity.apiSecret, apiSecretField.getText().trim())
@@ -129,6 +133,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
         flutter2EnableBox.setSelected(storageEntity.flutter2Enable);
         resCheckEnableBox.setSelected(storageEntity.resCheckEnable);
         foldRegisterBox.setSelected(storageEntity.foldRegisterEnable);
+        withPackageNameBox.setSelected(storageEntity.registerResWithPackage);
         apiKeyField.setText(storageEntity.apiKey);
         apiSecretField.setText(storageEntity.apiSecret);
         maxPicSizeField.setText(String.valueOf(storageEntity.maxPicSize));
@@ -148,6 +153,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
                 Collections.emptyList() : CollectionUtils.split(ignoreResExtensionStr, LIST_SPLIT_CHAR);
         storageEntity.flutter2Enable = flutter2EnableBox.isSelected();
         storageEntity.resCheckEnable = resCheckEnableBox.isSelected();
+        storageEntity.registerResWithPackage = withPackageNameBox.isSelected();
         storageEntity.apiKey = apiKeyField.getText().trim();
         storageEntity.apiSecret = apiSecretField.getText().trim();
         storageEntity.maxPicSize = Integer.parseInt(maxPicSizeField.getText().trim());

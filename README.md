@@ -25,7 +25,7 @@ iFlutter is an IDEA Plugin for Developer of Flutter
 - 详细文档: [点击跳转](https://iflutter.toolu.cn)
 - 功能说明: 
     - 1、资源文件管理
-    - 2、依赖树生成a
+    - 2、依赖树生成
     - 3、Dart代码生成
     - 4、Http接口Mock
     - 5、包检查更新

@@ -66,8 +66,13 @@ public class J2DGenerator {
                     fromJsonBodySb.append(String.format(Locale.ROOT, "%s: json['%s'],", typeEntity.displayName, typeEntity.key));
                 } else if (typeEntity.isList) {
                     if (typeEntity.subType != null && typeEntity.subType.isObject) {
-                        fromJsonBodySb.append(String.format(Locale.ROOT, "%s: json['%s'] == null? []: \nList<%s>.unmodifiable(\njson['%s'].map((x) => %s.fromJson(x))),",
-                                typeEntity.displayName, typeEntity.key, typeEntity.subType.type, typeEntity.key, typeEntity.subType.type));
+                        fromJsonBodySb.append(String.format(Locale.ROOT,
+                                "%s: json['%s'] == null? " +
+                                        "List<%s>.unmodifiable([]): " +
+                                        "\nList<%s>.unmodifiable(\njson['%s'].map((x) => %s.fromJson(x))),",
+                                typeEntity.displayName, typeEntity.key,
+                                typeEntity.subType.type,
+                                typeEntity.subType.type, typeEntity.key, typeEntity.subType.type));
                     } else {
                         fromJsonBodySb.append(String.format(Locale.ROOT, "%s: json['%s'],", typeEntity.displayName, typeEntity.key));
                     }
@@ -84,10 +89,16 @@ public class J2DGenerator {
             //添加toJson方法
             StringBuilder toJsonBodySb = new StringBuilder();
             for (TypeEntity typeEntity : typeEntityList) {
-                toJsonBodySb.append("'").append(typeEntity.displayName).append("'")
-                        .append(":")
-                        .append(typeEntity.displayName)
-                        .append(",");
+                toJsonBodySb.append("'").append(typeEntity.key).append("'").append(":");
+                if (typeEntity.isList && typeEntity.subType != null && typeEntity.subType.isObject) {
+                    String formatTemplate = enableFlutter2 ? "%s?.map((e) => e.toJson()).toList()" : "%s.map((e) => e.toJson()).toList()";
+                    toJsonBodySb.append(String.format(Locale.ROOT, formatTemplate, typeEntity.displayName)).append(",");
+                } else if (typeEntity.isObject) {
+                    String formatTemplate = enableFlutter2 ? "%s?.toJson()" : "%s.toJson()";
+                    toJsonBodySb.append(String.format(Locale.ROOT, formatTemplate, typeEntity.displayName)).append(",");
+                } else {
+                    toJsonBodySb.append(typeEntity.displayName).append(",");
+                }
             }
             classBuilder.append(String.format(
                     Locale.ROOT,

@@ -93,8 +93,12 @@ public class CreateFromJsonAndToJsonCodeFix extends BaseCreateMethodsFix<DartCom
                     DartFieldEntity argument = fieldEntity.argument;
                     if (argument != null && !argument.isBuiltInType) {
                         template.addTextSegment(String.format(Locale.US,
-                                "%s: json['%s'] == null ? [] : \nList<%s>.unmodifiable(\njson['%s'].map((x) => %s.fromJson(x))),",
-                                fieldEntity.name, fieldEntity.name, argument.type, fieldEntity.name, argument.type));
+                                "%s: json['%s'] == null ? " +
+                                        "List<%s>.unmodifiable([]) : " +
+                                        "\nList<%s>.unmodifiable(\njson['%s'].map((x) => %s.fromJson(x))),",
+                                fieldEntity.name, fieldEntity.name,
+                                argument.type,
+                                argument.type, fieldEntity.name, argument.type));
                     } else {
                         template.addTextSegment(String.format(Locale.US, "%s: json['%s'],", fieldEntity.name, fieldEntity.name));
                     }
@@ -114,7 +118,7 @@ public class CreateFromJsonAndToJsonCodeFix extends BaseCreateMethodsFix<DartCom
                     DartFieldEntity argument = fieldEntity.argument;
                     if (argument != null && !argument.isBuiltInType) {
                         template.addTextSegment(String.format(Locale.US,
-                                "'%s': %s%s.map((e) => e.toJson()).toString(),",
+                                "'%s': %s%s.map((e) => e.toJson()).toList(),",
                                 fieldEntity.name, fieldEntity.name, enableFlutter2 ? "?" : ""));
                     } else {
                         template.addTextSegment(String.format(Locale.US, "'%s': %s,", fieldEntity.name, fieldEntity.name));

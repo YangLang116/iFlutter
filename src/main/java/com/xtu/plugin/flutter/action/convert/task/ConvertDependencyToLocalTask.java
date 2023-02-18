@@ -17,9 +17,9 @@ import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.xtu.plugin.flutter.component.packages.update.PackageInfo;
 import com.xtu.plugin.flutter.service.StorageService;
-import com.xtu.plugin.flutter.utils.CloseUtils;
 import com.xtu.plugin.flutter.utils.LogUtils;
 import com.xtu.plugin.flutter.utils.PluginUtils;
+import com.xtu.plugin.flutter.utils.PubUtils;
 import com.xtu.plugin.flutter.utils.ToastUtil;
 import io.flutter.pub.PubRoot;
 import io.flutter.sdk.FlutterSdk;
@@ -30,10 +30,7 @@ import org.jetbrains.yaml.YAMLElementGenerator;
 import org.jetbrains.yaml.psi.YAMLFile;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.util.Map;
 
 public class ConvertDependencyToLocalTask extends Task.Backgroundable {
@@ -64,12 +61,12 @@ public class ConvertDependencyToLocalTask extends Task.Backgroundable {
         Project project = getProject();
         String projectPath = PluginUtils.getProjectPath(project);
         if (StringUtils.isEmpty(projectPath)) return;
-        File packageConfigFile = new File(projectPath, ".flutter-plugins");
-        if (!packageConfigFile.exists()) {
+        Map<String, String> pluginPathMap = PubUtils.getPluginPathMap(project);
+        if (pluginPathMap == null) {
             ToastUtil.make(project, MessageType.ERROR, "please run `flutter pub get` first!");
             return;
         }
-        String packageRootPath = getPackageRootPath(packageConfigFile, packageName);
+        String packageRootPath = pluginPathMap.get(packageName);
         if (StringUtils.isEmpty(packageRootPath)) {
             ToastUtil.make(project, MessageType.ERROR, "please run `flutter pub get` first!");
             return;
@@ -91,26 +88,6 @@ public class ConvertDependencyToLocalTask extends Task.Backgroundable {
         } catch (Exception e) {
             LogUtils.error("ConvertDependencyToLocalTask execute: " + e.getMessage());
             ToastUtil.make(project, MessageType.ERROR, e.getMessage());
-        }
-    }
-
-    private static String getPackageRootPath(@NotNull File configFile, String packageName) {
-        BufferedReader bufferedReader = null;
-        try {
-            FileInputStream fileInputStream = new FileInputStream(configFile);
-            bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                line = line.trim();
-                if (!line.startsWith(packageName + "=")) continue;
-                return line.split("=")[1];
-            }
-            return null;
-        } catch (Exception e) {
-            LogUtils.error("ConvertDependencyToLocalTask getPackageCachePath: " + e.getMessage());
-            return null;
-        } finally {
-            CloseUtils.close(bufferedReader);
         }
     }
 

@@ -10,7 +10,6 @@ import com.intellij.psi.PsiManager;
 import com.xtu.plugin.flutter.action.pub.speed.entity.AndroidMavenInfo;
 import com.xtu.plugin.flutter.action.pub.speed.entity.AndroidPluginInfo;
 import com.xtu.plugin.flutter.utils.*;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,9 +21,9 @@ import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.path.GrM
 import org.jetbrains.plugins.groovy.lang.psi.impl.statements.expressions.literals.GrLiteralImpl;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class AndroidGradleParser {
 
@@ -50,31 +49,23 @@ public class AndroidGradleParser {
             }
         }
         //添加Plugin项目
-        File pluginFile = new File(projectPath, ".flutter-plugins");
-        if (!pluginFile.exists() || pluginFile.isDirectory()) {
+        Map<String, String> pluginPathMap = PubUtils.getPluginPathMap(project);
+        if (pluginPathMap == null) {
             ToastUtil.make(project, MessageType.ERROR, "please run `flutter pub get` first!");
             return;
         }
-        try {
-            List<String> pluginLines = FileUtils.readLines(pluginFile, StandardCharsets.UTF_8);
-            for (String pluginLine : pluginLines) {
-                String[] pluginMeta = pluginLine.split("=");
-                if (pluginMeta.length != 2) continue;
-                String pluginName = pluginMeta[0];
-                String pluginRootPath = pluginMeta[1];
-                File androidDirectory = new File(pluginRootPath, "android");
-                if (!androidDirectory.exists() || !androidDirectory.isDirectory()) continue;
-                AndroidPluginInfo androidPlugin = new AndroidPluginInfo(pluginName, androidDirectory);
-                androidPluginList.add(androidPlugin);
-            }
-            //修改build.gradle文件
-            parseBuildGradleFile(project, androidPluginList);
-            //修改flutter.gradle文件
-            parseFlutterGradleFile(project);
-        } catch (Exception e) {
-            LogUtils.error("PubSpeedHelper parseAndroidPluginList: " + e.getMessage());
-            ToastUtil.make(project, MessageType.ERROR, e.getMessage());
+        for (Map.Entry<String, String> entry : pluginPathMap.entrySet()) {
+            String pluginName = entry.getKey();
+            String pluginRootPath = entry.getValue();
+            File androidDirectory = new File(pluginRootPath, "android");
+            if (!androidDirectory.exists() || !androidDirectory.isDirectory()) continue;
+            AndroidPluginInfo androidPlugin = new AndroidPluginInfo(pluginName, androidDirectory);
+            androidPluginList.add(androidPlugin);
         }
+        //修改build.gradle文件
+        parseBuildGradleFile(project, androidPluginList);
+        //修改flutter.gradle文件
+        parseFlutterGradleFile(project);
     }
 
     @Nullable

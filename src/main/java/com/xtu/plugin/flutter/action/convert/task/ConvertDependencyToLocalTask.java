@@ -64,18 +64,17 @@ public class ConvertDependencyToLocalTask extends Task.Backgroundable {
         Project project = getProject();
         String projectPath = PluginUtils.getProjectPath(project);
         if (StringUtils.isEmpty(projectPath)) return;
-        File packageConfigFile = new File(projectPath, ".packages");
+        File packageConfigFile = new File(projectPath, ".flutter-plugins");
         if (!packageConfigFile.exists()) {
             ToastUtil.make(project, MessageType.ERROR, "please run `flutter pub get` first!");
             return;
         }
-        String packageLibCacheUri = getPackageCacheUri(packageConfigFile, packageName);
-        if (StringUtils.isEmpty(packageLibCacheUri)) {
+        String packageRootPath = getPackageRootPath(packageConfigFile, packageName);
+        if (StringUtils.isEmpty(packageRootPath)) {
             ToastUtil.make(project, MessageType.ERROR, "please run `flutter pub get` first!");
             return;
         }
-        String packageLibCachePath = packageLibCacheUri.replace("file://", "");
-        File packageCacheRootDirectory = new File(packageLibCachePath).getParentFile();
+        File packageCacheRootDirectory = new File(packageRootPath);
         if (!packageCacheRootDirectory.exists()) {
             ToastUtil.make(project, MessageType.ERROR, "please run `flutter pub get` first!");
             return;
@@ -95,7 +94,7 @@ public class ConvertDependencyToLocalTask extends Task.Backgroundable {
         }
     }
 
-    private static String getPackageCacheUri(@NotNull File configFile, String packageName) {
+    private static String getPackageRootPath(@NotNull File configFile, String packageName) {
         BufferedReader bufferedReader = null;
         try {
             FileInputStream fileInputStream = new FileInputStream(configFile);
@@ -103,9 +102,8 @@ public class ConvertDependencyToLocalTask extends Task.Backgroundable {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 line = line.trim();
-                if (!line.startsWith(packageName)) continue;
-                int firstSemIndex = line.indexOf(":");
-                return line.substring(firstSemIndex + 1);
+                if (!line.startsWith(packageName + "=")) continue;
+                return line.split("=")[1];
             }
             return null;
         } catch (Exception e) {

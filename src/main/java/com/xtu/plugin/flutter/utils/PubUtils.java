@@ -46,7 +46,9 @@ public class PubUtils {
             for (int i = 0; i < packageArray.length(); i++) {
                 JSONObject packageJson = (JSONObject) packageArray.get(i);
                 String pluginName = packageJson.getString("name");
-                String pluginPath = packageJson.getString("rootUri").replace("file://", "");
+                String pluginUri = packageJson.getString("rootUri");
+                if (!pluginUri.startsWith("file://")) continue;
+                String pluginPath = pluginUri.replace("file://", "");
                 pluginPathMap.put(pluginName, pluginPath);
             }
             return pluginPathMap;
@@ -70,6 +72,7 @@ public class PubUtils {
                 int firstSemIndex = line.indexOf(":");
                 String pluginName = line.substring(0, firstSemIndex);
                 String pluginUri = line.substring(firstSemIndex + 1);
+                if (!pluginUri.startsWith("file://")) continue;
                 String pluginPath = pluginUri.replace("file://", "")
                         .replace("/lib/", "");
                 pluginPathMap.put(pluginName, pluginPath);

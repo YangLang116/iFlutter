@@ -51,7 +51,7 @@ public class AndroidGradleParser {
         //添加Plugin项目
         Map<String, String> pluginPathMap = PubUtils.getPluginPathMap(project);
         if (pluginPathMap == null) {
-            ToastUtil.make(project, MessageType.ERROR, "please run `flutter pub get` first!");
+            ToastUtil.make(project, MessageType.ERROR, "Please run `flutter pub get` first");
             return;
         }
         for (Map.Entry<String, String> entry : pluginPathMap.entrySet()) {

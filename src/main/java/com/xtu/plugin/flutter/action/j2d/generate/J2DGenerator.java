@@ -13,10 +13,12 @@ import java.util.Set;
 public class J2DGenerator {
 
     private final boolean enableFlutter2;
+    private final boolean isUnModifiableFromJson;
     private final List<ClassEntity> classList = new ArrayList<>();
 
-    public J2DGenerator(boolean enableFlutter2) {
+    public J2DGenerator(boolean enableFlutter2, boolean isUnModifiableFromJson) {
         this.enableFlutter2 = enableFlutter2;
+        this.isUnModifiableFromJson = isUnModifiableFromJson;
     }
 
     public String generate(String className, JSONObject json) {
@@ -66,13 +68,14 @@ public class J2DGenerator {
                     fromJsonBodySb.append(String.format(Locale.ROOT, "%s: json['%s'],", typeEntity.displayName, typeEntity.key));
                 } else if (typeEntity.isList) {
                     if (typeEntity.subType != null && typeEntity.subType.isObject) {
+                        String structWord = isUnModifiableFromJson ? "unmodifiable" : "from";
                         fromJsonBodySb.append(String.format(Locale.ROOT,
                                 "%s: json['%s'] == null? " +
-                                        "List<%s>.unmodifiable([]): " +
-                                        "\nList<%s>.unmodifiable(\njson['%s'].map((x) => %s.fromJson(x))),",
+                                        "List<%s>.%s([]): " +
+                                        "\nList<%s>.%s(\njson['%s'].map((x) => %s.fromJson(x))),",
                                 typeEntity.displayName, typeEntity.key,
-                                typeEntity.subType.type,
-                                typeEntity.subType.type, typeEntity.key, typeEntity.subType.type));
+                                typeEntity.subType.type, structWord,
+                                typeEntity.subType.type, structWord, typeEntity.key, typeEntity.subType.type));
                     } else {
                         fromJsonBodySb.append(String.format(Locale.ROOT, "%s: json['%s'],", typeEntity.displayName, typeEntity.key));
                     }
@@ -151,7 +154,7 @@ public class J2DGenerator {
     }
 
     public static void main(String[] args) {
-        J2DGenerator generator = new J2DGenerator(true);
+        J2DGenerator generator = new J2DGenerator(true, true);
         String result = generator.generate("Test", new JSONObject("{\"name\":\"YangLang\",\"age\":24,\"male\":true,\"school\":{\"name\":\"xtu\",\"address\":\"测试地点\"},\"likes\":[1,2],\"friend\":[{\"name\":\"friend1\",\"age\":25},{\"name\":\"friend1\",\"age\":26}]}"));
         System.out.println(result);
     }

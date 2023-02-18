@@ -22,10 +22,14 @@ public class CreateFromJsonAndToJsonCodeFix extends BaseCreateMethodsFix<DartCom
     private final boolean hasFromJson;
     private final boolean hasToJson;
     private final boolean enableFlutter2;
+    private final boolean isUnModifiableFromJson;
 
-    public CreateFromJsonAndToJsonCodeFix(@NotNull DartClass dartClass, boolean enableFlutter2, boolean hasFromJson, boolean hasToJson) {
+    public CreateFromJsonAndToJsonCodeFix(@NotNull DartClass dartClass,
+                                          boolean enableFlutter2, boolean isUnModifiableFromJson,
+                                          boolean hasFromJson, boolean hasToJson) {
         super(dartClass);
         this.enableFlutter2 = enableFlutter2;
+        this.isUnModifiableFromJson = isUnModifiableFromJson;
         this.hasFromJson = hasFromJson;
         this.hasToJson = hasToJson;
     }
@@ -92,13 +96,14 @@ public class CreateFromJsonAndToJsonCodeFix extends BaseCreateMethodsFix<DartCom
                 if (fieldEntity.isList()) {
                     DartFieldEntity argument = fieldEntity.argument;
                     if (argument != null && !argument.isBuiltInType) {
+                        String structWord = isUnModifiableFromJson ? "unmodifiable" : "from";
                         template.addTextSegment(String.format(Locale.US,
                                 "%s: json['%s'] == null ? " +
-                                        "List<%s>.unmodifiable([]) : " +
-                                        "\nList<%s>.unmodifiable(\njson['%s'].map((x) => %s.fromJson(x))),",
+                                        "List<%s>.%s([]) : " +
+                                        "\nList<%s>.%s(\njson['%s'].map((x) => %s.fromJson(x))),",
                                 fieldEntity.name, fieldEntity.name,
-                                argument.type,
-                                argument.type, fieldEntity.name, argument.type));
+                                argument.type, structWord,
+                                argument.type, structWord, fieldEntity.name, argument.type));
                     } else {
                         template.addTextSegment(String.format(Locale.US, "%s: json['%s'],", fieldEntity.name, fieldEntity.name));
                     }

@@ -44,6 +44,8 @@ public class StorageEntity {
     public String mirrorRepoStr = StringUtils.join(DEFAULT_MIRROR_REPO, AndroidGradleMaker.REPO_SPLIT);
     //是否带包名生成资源文件
     public boolean registerResWithPackage = false;
+    //是否生成数据不可修改的fromJson
+    public boolean isUnModifiableFromJson = false;
 
     public StorageEntity() {
     }
@@ -65,6 +67,7 @@ public class StorageEntity {
                 && maxPicWidth == that.maxPicWidth
                 && registerResWithPackage == that.registerResWithPackage
                 && maxPicHeight == that.maxPicHeight
+                && isUnModifiableFromJson == that.isUnModifiableFromJson
                 && Objects.equals(mirrorRepoStr, that.mirrorRepoStr);
     }
 
@@ -85,6 +88,7 @@ public class StorageEntity {
                 ", maxPicHeight=" + maxPicHeight +
                 ", mirrorRepoStr='" + mirrorRepoStr + '\'' +
                 ", registerResWithPackage=" + registerResWithPackage +
+                ", isUnModifiableFromJson=" + isUnModifiableFromJson +
                 '}';
     }
 }

@@ -11,6 +11,7 @@ import com.intellij.openapi.wm.WindowManager;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.util.ui.JBUI;
 import com.xtu.plugin.flutter.action.j2d.generate.J2DGenerator;
+import com.xtu.plugin.flutter.service.StorageEntity;
 import com.xtu.plugin.flutter.service.StorageService;
 import com.xtu.plugin.flutter.utils.DartUtils;
 import com.xtu.plugin.flutter.utils.LogUtils;
@@ -42,8 +43,8 @@ public class J2DDialog extends DialogWrapper {
     }
 
     @Override
-    protected @Nullable
-    String getDimensionServiceKey() {
+    @Nullable
+    protected String getDimensionServiceKey() {
         return getClass().getSimpleName();
     }
 
@@ -54,8 +55,8 @@ public class J2DDialog extends DialogWrapper {
     }
 
     @Override
-    protected @Nullable
-    JComponent createCenterPanel() {
+    @Nullable
+    protected JComponent createCenterPanel() {
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBorder(JBUI.Borders.empty(5));
         //编辑类名
@@ -106,10 +107,8 @@ public class J2DDialog extends DialogWrapper {
         okButton.addActionListener(e -> {
             String className = classNameFiled.getText();
             String jsonData = jsonArea.getText();
-            boolean enableFlutter2 = StorageService.getInstance(project)
-                    .getState()
-                    .flutter2Enable;
-            generateDart(enableFlutter2, className, jsonData);
+            StorageEntity storageEntity = StorageService.getInstance(project).getState();
+            generateDart(storageEntity.flutter2Enable, storageEntity.isUnModifiableFromJson, className, jsonData);
             close(OK_EXIT_CODE);
         });
         bottomContainer.add(okButton);
@@ -117,7 +116,7 @@ public class J2DDialog extends DialogWrapper {
         return mainPanel;
     }
 
-    private void generateDart(boolean enableFlutter2, String className, String jsonData) {
+    private void generateDart(boolean enableFlutter2, boolean isUnModifiableFromJson, String className, String jsonData) {
         if (StringUtils.isEmpty(className) || StringUtils.isEmpty(jsonData)) {
             ToastUtil.make(project, MessageType.WARNING, "ClassName or Json Data is Empty");
             return;
@@ -134,7 +133,7 @@ public class J2DDialog extends DialogWrapper {
         }
         try {
             JSONObject jsonObject = new JSONObject(jsonData);
-            J2DGenerator generator = new J2DGenerator(enableFlutter2);
+            J2DGenerator generator = new J2DGenerator(enableFlutter2, isUnModifiableFromJson);
             final String result = generator.generate(className, jsonObject);
             writeTask(project, selectDirectory, fileName, result);
         } catch (Exception e) {

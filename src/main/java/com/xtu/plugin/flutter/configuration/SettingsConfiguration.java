@@ -49,6 +49,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
     private String mirrorRepoStr;
     private JButton mirrorRepoBtn;
     private JCheckBox withPackageNameBox;
+    private JCheckBox isUnModifiableFromJson;
 
     public SettingsConfiguration(Project project) {
         this.project = project;
@@ -114,6 +115,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
                 || storageEntity.resCheckEnable != resCheckEnableBox.isSelected()
                 || storageEntity.foldRegisterEnable != foldRegisterBox.isSelected()
                 || storageEntity.registerResWithPackage != withPackageNameBox.isSelected()
+                || storageEntity.isUnModifiableFromJson != isUnModifiableFromJson.isSelected()
                 || !Objects.equals(storageEntity.mirrorRepoStr, mirrorRepoStr)
                 || !Objects.equals(storageEntity.apiKey, apiKeyField.getText().trim())
                 || !Objects.equals(storageEntity.apiSecret, apiSecretField.getText().trim())
@@ -134,6 +136,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
         resCheckEnableBox.setSelected(storageEntity.resCheckEnable);
         foldRegisterBox.setSelected(storageEntity.foldRegisterEnable);
         withPackageNameBox.setSelected(storageEntity.registerResWithPackage);
+        isUnModifiableFromJson.setSelected(storageEntity.isUnModifiableFromJson);
         apiKeyField.setText(storageEntity.apiKey);
         apiSecretField.setText(storageEntity.apiSecret);
         maxPicSizeField.setText(String.valueOf(storageEntity.maxPicSize));
@@ -154,6 +157,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
         storageEntity.flutter2Enable = flutter2EnableBox.isSelected();
         storageEntity.resCheckEnable = resCheckEnableBox.isSelected();
         storageEntity.registerResWithPackage = withPackageNameBox.isSelected();
+        storageEntity.isUnModifiableFromJson = isUnModifiableFromJson.isSelected();
         storageEntity.apiKey = apiKeyField.getText().trim();
         storageEntity.apiSecret = apiSecretField.getText().trim();
         storageEntity.maxPicSize = Integer.parseInt(maxPicSizeField.getText().trim());

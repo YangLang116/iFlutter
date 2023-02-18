@@ -3,6 +3,11 @@
 ## [Coming]
 ### Changed
 
+## [2.1.3] - 2023-02-18
+### Changed
+- optimize `fromJson`、`toJson`
+- fix `covert dependency to local` fail with flutter3.0
+
 ## [2.1.2] - 2022-11-24
 ### Changed
 - support register res for Flutter Plugin

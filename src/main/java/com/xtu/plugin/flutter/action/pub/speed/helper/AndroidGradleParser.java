@@ -66,6 +66,8 @@ public class AndroidGradleParser {
         parseBuildGradleFile(project, androidPluginList);
         //修改flutter.gradle文件
         parseFlutterGradleFile(project);
+        //完成通知
+        ToastUtil.make(project, MessageType.INFO, "Mirror Repo Inject Success");
     }
 
     @Nullable

@@ -2,9 +2,12 @@ package com.xtu.plugin.flutter.upgrader;
 
 import com.google.gson.Gson;
 import com.intellij.ide.BrowserUtil;
+import com.intellij.ide.plugins.PluginManagerConfigurable;
+import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.notification.*;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.options.ShowSettingsUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SystemInfo;
 import com.xtu.plugin.flutter.utils.PluginUtils;
@@ -31,7 +34,7 @@ public class UpgradeManager {
         return sInstance;
     }
 
-    public void checkPluginVersion(Project project) {
+    public void checkPluginVersion(@NotNull Project project) {
         final String currentVersion = PluginUtils.getPluginVersion();
         final String url = sUrl + "?version=" + currentVersion + "&os=" + SystemInfo.getOsNameAndVersion();
         NetworkManager.getInstance().get(url, new Callback() {
@@ -61,16 +64,28 @@ public class UpgradeManager {
         });
     }
 
-    private void pushNotification(Project project,
+    private void pushNotification(@NotNull Project project,
                                   String title, String subtitle, String content,
                                   String detailBtnText, String detailUrl) {
         NotificationGroupManager.getInstance()
                 .getNotificationGroup(sGroupId)
-                .createNotification(title, subtitle, content,
-                        NotificationType.INFORMATION,
+                .createNotification(title, subtitle, content, NotificationType.INFORMATION,
                         new NotificationListener.UrlOpeningListener(true))
-                .setImportant(true).addAction(createDetailAction(detailBtnText, detailUrl))
+                .setImportant(true)
+                .addAction(createUpgradeAction(project))  //引导升级
+                .addAction(createDetailAction(detailBtnText, detailUrl)) //查看升级信息
                 .notify(project);
+    }
+
+    private AnAction createUpgradeAction(@NotNull Project project) {
+        return new NotificationAction("Upgrade") {
+            @Override
+            public void actionPerformed(@NotNull AnActionEvent e, @NotNull Notification notification) {
+                PropertiesComponent propertiesComponent = PropertiesComponent.getInstance();
+                propertiesComponent.setValue(PluginManagerConfigurable.SELECTION_TAB_KEY, 1, 0);
+                ShowSettingsUtil.getInstance().showSettingsDialog(project, PluginManagerConfigurable.class);
+            }
+        };
     }
 
     private AnAction createDetailAction(String detailBtnText, String detailUrl) {

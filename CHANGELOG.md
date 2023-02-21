@@ -3,6 +3,10 @@
 ## [Coming]
 ### Changed
 
+## [2.1.4] - 2023-02-21
+### Changed
+-  optimize upgrade guide
+
 ## [2.1.3] - 2023-02-18
 ### Changed
 - optimize `fromJson`、`toJson`

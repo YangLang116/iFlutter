@@ -49,8 +49,8 @@ iFlutter is an IDEA Plugin for Developer of Flutter
 - [6、镜像仓库注入](https://iflutter.toolu.cn/content/chapter-6/part-1.html)
 
 ## 赞赏与支持
-  <img src="https://iflutter.toolu.cn/configs/wx_pay.jpg" width="120"  alt="wx pay"/>
   <img src="https://iflutter.toolu.cn/configs/iflutter_group.png" width="120"  alt="wx chat"/>
+  <img src="https://iflutter.toolu.cn/configs/wx_pay.jpg" width="120"  alt="wx pay"/>
 
 ## 版本更新
 ### v2.1.3

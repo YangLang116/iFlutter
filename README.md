@@ -18,8 +18,6 @@ iFlutter is an IDEA Plugin for Developer of Flutter
 插件安装：插件已上传官方Plugins仓库，可搜索 `GameCenter` 下载  
 使用文档：[点击跳转](https://iflutter.toolu.cn/content/chapter-8/part-1.html)
 
-- [Fit_system_screenshot](https://pub.dev/packages/fit_system_screenshot): 让Flutter应用适配Android系统长截屏
-
 - [Pub](https://pub.dev/publishers/iflutter.toolu.cn/packages): 更多Flutter Plugin插件 ~
 
 ## 插件安装

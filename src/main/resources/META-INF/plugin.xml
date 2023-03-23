@@ -80,5 +80,10 @@
                 class="com.xtu.plugin.flutter.action.generate.json.DartGenerateFromJsonAndToJsonAction">
             <add-to-group anchor="after" relative-to-action="Generate.EqualsAndHashcode.Dart" group-id="GenerateGroup"/>
         </action>
+        <action id="com.xtu.plugin.flutter.DartGenerateConstructorAction"
+                icon="PluginIcons.LOGO"
+                class="com.xtu.plugin.flutter.action.generate.constructor.DartGenerateConstructorAction">
+            <add-to-group anchor="after" relative-to-action="Generate.EqualsAndHashcode.Dart" group-id="GenerateGroup"/>
+        </action>
     </actions>
 </idea-plugin>

@@ -6,6 +6,7 @@
 ## [2.1.4] - 2023-02-21
 ### Changed
 -  optimize upgrade guide
+-  support for generating constructors
 
 ## [2.1.3] - 2023-02-18
 ### Changed

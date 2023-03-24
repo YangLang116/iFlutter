@@ -4,7 +4,7 @@ iFlutter is an IDEA Plugin for Developer of Flutter
 
 ## iFlutter是一款辅助Flutter开发的 IDEA 插件
 
-![platforms](https://img.shields.io/badge/platforms-macos%20%7C%20windows%20%7C%20linux-blue) ![tools](https://img.shields.io/badge/idea-intellij_IDEA%20%7C%20AndroidStudio-blue) ![licence](https://img.shields.io/badge/licence-MIT-blue) ![version](https://img.shields.io/badge/version-v2.1.3-blue)
+![platforms](https://img.shields.io/badge/platforms-macos%20%7C%20windows%20%7C%20linux-blue) ![tools](https://img.shields.io/badge/idea-intellij_IDEA%20%7C%20AndroidStudio-blue) ![licence](https://img.shields.io/badge/licence-MIT-blue) ![version](https://img.shields.io/badge/version-v2.1.4-blue)
 
 **插件改为最低兼容211版本，如遇到无法安装，请升级AndroidStudio**
 
@@ -54,6 +54,10 @@ iFlutter is an IDEA Plugin for Developer of Flutter
   <img src="https://iflutter.toolu.cn/configs/iflutter_wechat.png" width="120"  alt="wx chat"/>
 
 ## 版本更新
+### v2.1.4
+- 根据当前实体类，生成可选参数Constructor
+- 优化版本升级提醒
+
 ### v2.1.3
 - 调整生成的`fromJson`、`toJson`代码
 - 修复`flutter3.0`提取远程依赖失败问题

@@ -9,6 +9,7 @@ import com.jetbrains.lang.dart.ide.generation.BaseCreateMethodsFix;
 import com.jetbrains.lang.dart.psi.DartClass;
 import com.jetbrains.lang.dart.psi.DartComponent;
 import com.jetbrains.lang.dart.psi.DartComponentName;
+import com.xtu.plugin.flutter.utils.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -53,15 +54,19 @@ public class DartGenerateConstructorCodeFix extends BaseCreateMethodsFix<DartCom
         Template template = templateManager.createTemplate(this.getClass().getName(), "Dart");
         template.setToReformat(true);
         String className = myDartClass.getName();
-        template.addTextSegment(String.format("%s({", className));
-        for (DartComponent varAccessComponent : elementsToProcess) {
-            DartComponentName componentName = PsiTreeUtil.getChildOfType(varAccessComponent, DartComponentName.class);
-            if (componentName == null) continue;
-            String name = componentName.getText();
-            if (StringUtils.isEmpty(name)) continue;
-            template.addTextSegment(String.format("this.%s,", name));
+        template.addTextSegment(String.format("%s(", className));
+        if (!CollectionUtils.isEmpty(elementsToProcess)) {
+            template.addTextSegment("{");
+            for (DartComponent varAccessComponent : elementsToProcess) {
+                DartComponentName componentName = PsiTreeUtil.getChildOfType(varAccessComponent, DartComponentName.class);
+                if (componentName == null) continue;
+                String name = componentName.getText();
+                if (StringUtils.isEmpty(name)) continue;
+                template.addTextSegment(String.format("this.%s,", name));
+            }
+            template.addTextSegment("}");
         }
-        template.addTextSegment("});");
+        template.addTextSegment(");");
         return template;
     }
 

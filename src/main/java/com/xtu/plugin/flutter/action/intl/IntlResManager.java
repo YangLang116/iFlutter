@@ -77,7 +77,7 @@ public class IntlResManager {
         String command = executorFile.getAbsolutePath() + "  --no-color pub global run intl_utils:generate";
         CommandUtils.CommandResult commandResult = CommandUtils.executeSync(command, new File(projectPath), -1);
         if (commandResult.code == CommandUtils.CommandResult.SUCCESS) {
-            ToastUtil.make(project, MessageType.INFO, "添加成功");
+            ToastUtil.make(project, MessageType.INFO, "successfully added");
         } else {
             ToastUtil.make(project, MessageType.ERROR, commandResult.result);
         }

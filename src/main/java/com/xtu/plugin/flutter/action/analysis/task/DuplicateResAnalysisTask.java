@@ -60,7 +60,7 @@ public class DuplicateResAnalysisTask implements Runnable {
             }
         }
         if (pureMap.size() == 0) {
-            ToastUtil.make(project, MessageType.INFO, "暂未发现重复资源");
+            ToastUtil.make(project, MessageType.INFO, "no duplicate resources found");
             return;
         }
         //show data with JBTree

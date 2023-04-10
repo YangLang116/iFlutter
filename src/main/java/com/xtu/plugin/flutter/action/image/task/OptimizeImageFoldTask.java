@@ -37,7 +37,7 @@ public class OptimizeImageFoldTask implements Runnable {
             optimizeImage(project, imageDirectory);  //扫描图片，将图片进行分类
         } catch (Exception e) {
             LogUtils.error("OptimizeImageFoldTask run: " + e.getMessage());
-            ToastUtil.make(project, MessageType.ERROR, "图片目录优化失败");
+            ToastUtil.make(project, MessageType.ERROR, "failed to optimize image directory");
         } finally {
             storageEntity.resCheckEnable = oldStatus;
         }

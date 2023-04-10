@@ -95,7 +95,7 @@ public class MirrorRepoDialog extends DialogWrapper {
     private void showContextMenu(Component component, Point point) {
         JPopupMenu popupMenu = new JPopupMenu();
         //添加删除按钮
-        JMenuItem deleteItem = new JMenuItem("删除");
+        JMenuItem deleteItem = new JMenuItem("Delete");
         deleteItem.addActionListener(e -> {
             String repo = getRepoByPoint(point);
             if (repo != null) listModel.removeElement(repo);
@@ -134,7 +134,7 @@ public class MirrorRepoDialog extends DialogWrapper {
     private class AddRepoAction extends DialogWrapper.DialogWrapperAction {
 
         protected AddRepoAction() {
-            super("添加");
+            super("Add");
         }
 
         @Override
@@ -146,7 +146,7 @@ public class MirrorRepoDialog extends DialogWrapper {
     private class ConfirmAction extends DialogWrapper.DialogWrapperAction {
 
         protected ConfirmAction() {
-            super("确认");
+            super("OK");
         }
 
         @Override

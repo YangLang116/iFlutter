@@ -58,7 +58,7 @@ public class FErrorReporter extends ErrorReportSubmitter {
                 }
                 boolean isSuccess = postErrorMsg(additionalInfo, errorStackInfoBuilder.toString());
                 ApplicationManager.getApplication().invokeLater(() -> {
-                    ToastUtil.make(project, MessageType.INFO, "Thank you for submitting your report!");
+                    ToastUtil.make(project, MessageType.INFO, "thank you for submitting your report!");
                     SubmittedReportInfo.SubmissionStatus status =
                             isSuccess ? SubmittedReportInfo.SubmissionStatus.NEW_ISSUE
                                     : SubmittedReportInfo.SubmissionStatus.FAILED;

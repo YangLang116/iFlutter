@@ -170,7 +170,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
     private void reStartIDE() {
         Application application = ApplicationManager.getApplication();
         application.invokeLater(() -> {
-            Messages.showMessageDialog(project, "资源注册方式发生修改，IDEA需要重启", "iFlutter提示", null);
+            Messages.showMessageDialog(project, "Resource registration method has been modified, IDEA needs to be restarted", "iFlutter Tip", null);
             application.restart();
         }, ModalityState.NON_MODAL);
     }

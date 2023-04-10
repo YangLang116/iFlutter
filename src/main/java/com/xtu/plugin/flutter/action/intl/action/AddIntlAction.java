@@ -31,7 +31,7 @@ public class AddIntlAction extends BaseIntlAction {
         if (!isOk) return;
         String key = addIntlDialog.getKey();
         if (StringUtils.isEmpty(key)) {
-            ToastUtil.make(project, MessageType.ERROR, "key 不允许为空");
+            ToastUtil.make(project, MessageType.ERROR, "key cannot be empty");
             return;
         }
         Map<String, String> localeMap = addIntlDialog.getLocaleMap();
@@ -39,7 +39,7 @@ public class AddIntlAction extends BaseIntlAction {
             String locale = localeEntry.getKey();
             String value = localeEntry.getValue();
             if (StringUtils.isEmpty(locale) || StringUtils.isEmpty(value)) {
-                ToastUtil.make(project, MessageType.ERROR, "locale 不允许为空");
+                ToastUtil.make(project, MessageType.ERROR, "locale cannot be empty");
                 return;
             }
         }

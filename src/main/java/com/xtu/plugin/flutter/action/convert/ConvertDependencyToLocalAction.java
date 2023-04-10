@@ -30,23 +30,23 @@ public class ConvertDependencyToLocalAction extends BaseDependencyAction {
         if (packageInfo == null) return;
         FileChooserDescriptor chooserDescriptor = new FileChooserDescriptor(false, true,
                 false, false, false, false);
-        chooserDescriptor.setTitle("选择依赖存放位置");
+        chooserDescriptor.setTitle("Select dependent storage location");
         VirtualFile chooseDirectory = FileChooser.chooseFile(chooserDescriptor, project, ProjectUtil.guessProjectDir(project));
         if (chooseDirectory == null) return;
         String filePath = chooseDirectory.getPath();
         if (!filePath.startsWith(projectPath)) {
-            ToastUtil.make(project, MessageType.ERROR, "请选择当前项目下的文件目录存放依赖");
+            ToastUtil.make(project, MessageType.ERROR, "select a project directory to store dependency");
             return;
         }
         //disallow res dir or lib
         if (filePath.startsWith(projectPath + "/lib")) {
-            ToastUtil.make(project, MessageType.ERROR, "lib目录下不允许存放本地依赖");
+            ToastUtil.make(project, MessageType.ERROR, "dependency are not allowed to be stored in the lib directory");
             return;
         }
         List<String> assetFoldNameList = PluginUtils.supportAssetFoldName(project);
         for (String foldName : assetFoldNameList) {
             if (filePath.startsWith(projectPath + "/" + foldName)) {
-                ToastUtil.make(project, MessageType.ERROR, "资源目录下不允许存放本地依赖");
+                ToastUtil.make(project, MessageType.ERROR, "dependency are not allowed to be stored in the res directory");
                 return;
             }
         }

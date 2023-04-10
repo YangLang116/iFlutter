@@ -64,7 +64,7 @@ public class J2DDialog extends DialogWrapper {
         classNameContainer.add(new JLabel("ClassName:"));
         classNameContainer.add(Box.createHorizontalStrut(10));
         classNameFiled = new JTextField();
-        classNameFiled.setToolTipText("采用驼峰命名");
+        classNameFiled.setToolTipText("Using Camel-Case");
         classNameContainer.add(classNameFiled);
         mainPanel.add(classNameContainer, BorderLayout.NORTH);
         //添加json数据
@@ -118,17 +118,17 @@ public class J2DDialog extends DialogWrapper {
 
     private void generateDart(boolean enableFlutter2, boolean isUnModifiableFromJson, String className, String jsonData) {
         if (StringUtils.isEmpty(className) || StringUtils.isEmpty(jsonData)) {
-            ToastUtil.make(project, MessageType.WARNING, "ClassName or Json Data is Empty");
+            ToastUtil.make(project, MessageType.WARNING, "className or json data is empty");
             return;
         }
         if (jsonData.startsWith("[")) {
-            ToastUtil.make(project, MessageType.ERROR, "Can not Support jsonArray to Dart");
+            ToastUtil.make(project, MessageType.ERROR, "can not support jsonArray to dart");
             return;
         }
         String fileName = StringUtil.splashName(className) + ".dart";
         VirtualFile childFile = selectDirectory.findChild(fileName);
         if (childFile != null) {
-            ToastUtil.make(project, MessageType.ERROR, "Dart Bean is Exist");
+            ToastUtil.make(project, MessageType.ERROR, "dart bean is exist");
             return;
         }
         try {

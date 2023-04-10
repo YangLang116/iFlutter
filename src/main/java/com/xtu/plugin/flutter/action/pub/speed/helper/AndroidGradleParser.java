@@ -51,7 +51,7 @@ public class AndroidGradleParser {
         //添加Plugin项目
         Map<String, String> pluginPathMap = PubUtils.getPluginPathMap(project);
         if (pluginPathMap == null) {
-            ToastUtil.make(project, MessageType.ERROR, "Please run `flutter pub get` first");
+            ToastUtil.make(project, MessageType.ERROR, "please run `flutter pub get` first");
             return;
         }
         for (Map.Entry<String, String> entry : pluginPathMap.entrySet()) {
@@ -67,7 +67,7 @@ public class AndroidGradleParser {
         //修改flutter.gradle文件
         parseFlutterGradleFile(project);
         //完成通知
-        ToastUtil.make(project, MessageType.INFO, "Mirror Repo Inject Success");
+        ToastUtil.make(project, MessageType.INFO, "mirror repo inject success");
     }
 
     @Nullable

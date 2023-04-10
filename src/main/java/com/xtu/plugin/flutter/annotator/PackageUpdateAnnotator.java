@@ -142,7 +142,7 @@ public class PackageUpdateAnnotator implements Annotator {
         @Override
         @Nullable
         public String getTooltipText() {
-            return String.format(Locale.ROOT, "%s can update: %s -> %s\n\n 点击查看",
+            return String.format(Locale.ROOT, "%s can update: %s -> %s\n\n Click to view",
                     packageInfo.name,
                     packageInfo.currentVersion,
                     packageInfo.latestVersion);

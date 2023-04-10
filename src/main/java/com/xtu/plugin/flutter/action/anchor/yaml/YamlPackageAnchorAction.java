@@ -96,7 +96,7 @@ public class YamlPackageAnchorAction extends BaseDependencyAction {
             anchorPsiFile(project, dartPsiDirectory);
             return;
         }
-        ToastUtil.make(project, MessageType.ERROR, "锚点定位失败~");
+        ToastUtil.make(project, MessageType.ERROR, "anchor positioning failed");
     }
 
     @Nullable

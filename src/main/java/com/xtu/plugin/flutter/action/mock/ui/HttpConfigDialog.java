@@ -29,7 +29,7 @@ public class HttpConfigDialog extends DialogWrapper {
         super(project, false, IdeModalityType.PROJECT);
         this.project = project;
         this.inputEntity = httpEntity;
-        setTitle("Http Mock配置");
+        setTitle("Http Mock Config");
         setHorizontalStretch(2);
         setVerticalStretch(2);
         init();
@@ -89,7 +89,7 @@ public class HttpConfigDialog extends DialogWrapper {
     private class SaveAction extends DialogWrapper.DialogWrapperAction {
 
         protected SaveAction() {
-            super("保存");
+            super("Save");
         }
 
         @Override
@@ -101,7 +101,7 @@ public class HttpConfigDialog extends DialogWrapper {
     private class CancelAction extends DialogWrapper.DialogWrapperAction {
 
         protected CancelAction() {
-            super("取消");
+            super("Cancel");
         }
 
         @Override

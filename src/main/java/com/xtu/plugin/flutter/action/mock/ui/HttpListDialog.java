@@ -110,23 +110,23 @@ public class HttpListDialog extends DialogWrapper implements ListSelectionListen
     private void showContextMenu(Component component, Point point) {
         JPopupMenu popupMenu = new JPopupMenu();
         //添加Path复制按钮
-        JMenuItem copyPathMenu = new JMenuItem("复制Path");
+        JMenuItem copyPathMenu = new JMenuItem("Copy Path");
         copyPathMenu.addActionListener(e -> {
             HttpEntity httpEntity = getHttpEntityByPoint(point);
             if (httpEntity == null) return;
             HttpMockManager mockManager = HttpMockManager.getService(project);
             String url = mockManager.getUrl(httpEntity.path);
             if (StringUtils.isEmpty(url)) {
-                ToastUtil.make(project, MessageType.ERROR, "Mock Server Fail");
+                ToastUtil.make(project, MessageType.ERROR, "mock server fail");
             } else {
-                ToastUtil.make(project, MessageType.INFO, "Path Copy Success");
+                ToastUtil.make(project, MessageType.INFO, "path copy success");
                 CopyPasteManager.getInstance().setContents(new StringSelection(url));
                 close(DialogWrapper.OK_EXIT_CODE);
             }
         });
         popupMenu.add(copyPathMenu);
         //添加删除按钮
-        JMenuItem deleteItem = new JMenuItem("删除");
+        JMenuItem deleteItem = new JMenuItem("Delete");
         deleteItem.addActionListener(e -> {
             ignoreDataChanged = true;
             List<HttpEntity> httpConfigList = getHttpConfigList();
@@ -198,7 +198,7 @@ public class HttpListDialog extends DialogWrapper implements ListSelectionListen
     private class CreateConfigAction extends DialogWrapper.DialogWrapperAction {
 
         protected CreateConfigAction() {
-            super("创建");
+            super("Create");
         }
 
         @Override
@@ -210,7 +210,7 @@ public class HttpListDialog extends DialogWrapper implements ListSelectionListen
     private class ConfirmAction extends DialogWrapper.DialogWrapperAction {
 
         protected ConfirmAction() {
-            super("确认");
+            super("OK");
         }
 
         @Override

@@ -1,11 +1,13 @@
 package com.xtu.plugin.flutter.utils;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.io.Closeable;
 import java.io.IOException;
 
 public class CloseUtils {
 
-    public static void close(Closeable closeable) {
+    public static void close(@Nullable Closeable closeable) {
         if (closeable != null) {
             try {
                 closeable.close();

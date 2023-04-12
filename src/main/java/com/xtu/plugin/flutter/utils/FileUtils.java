@@ -9,6 +9,21 @@ import java.io.*;
 
 public class FileUtils {
 
+    @NotNull
+    public static String getFileName(@NotNull File file) {
+        String fileName = file.getName();
+        int dotIndex = fileName.lastIndexOf('.');
+        if (dotIndex < 0) return fileName;
+        return fileName.substring(0, dotIndex);
+    }
+
+    @Nullable
+    public static String getExtension(@NotNull File file) {
+        String fileName = file.getName();
+        int dotIndex = fileName.lastIndexOf('.');
+        return dotIndex >= 0 ? fileName.substring(dotIndex + 1) : null;
+    }
+
     public static String getMd5(@NotNull File file) {
         FileInputStream inputStream = null;
         try {

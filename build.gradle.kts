@@ -29,6 +29,8 @@ dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     implementation("com.squareup.okhttp3:mockwebserver:4.9.3")
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
+    implementation("com.twelvemonkeys.imageio", "imageio-webp", "3.9.4")
+    implementation("com.twelvemonkeys.imageio", "imageio-batik", "3.9.4")
 }
 
 // Configure Gradle IntelliJ Plugin - read more: https://github.com/JetBrains/gradle-intellij-plugin

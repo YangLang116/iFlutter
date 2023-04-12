@@ -30,8 +30,17 @@
         <postStartupActivity implementation="com.xtu.plugin.flutter.component.FStartupActivityImpl"/>
         <notificationGroup id="com.xtu.plugin.flutter.upgrade" displayType="BALLOON"
                            key="com.xtu.plugin.flutter.upgrade"/>
+        <toolWindow id="Flutter Resource"
+                    icon="PluginIcons.WINDOW_ICON"
+                    anchor="left"
+                    secondary="false"
+                    factoryClass="com.xtu.plugin.flutter.window.res.ResManagerToolWindowFactory"/>
         <errorHandler implementation="com.xtu.plugin.flutter.reporter.FErrorReporter"/>
     </extensions>
+    <projectListeners>
+        <listener topic="com.intellij.openapi.wm.ex.ToolWindowManagerListener"
+                  class="com.xtu.plugin.flutter.window.res.listener.ResManagerToolWindowListener"/>
+    </projectListeners>
     <actions resource-bundle="message.ActionsBundle">
         <group id="com.xtu.plugin.flutter.group"
                icon="PluginIcons.LOGO"

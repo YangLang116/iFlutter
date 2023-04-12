@@ -4,10 +4,10 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.xtu.plugin.flutter.component.analysis.utils.ImageAnalysisUtils;
 import com.xtu.plugin.flutter.service.StorageEntity;
 import com.xtu.plugin.flutter.service.StorageService;
 import com.xtu.plugin.flutter.utils.AssetUtils;
-import com.xtu.plugin.flutter.utils.ImageUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -22,7 +22,7 @@ public class ImageSizeAnalyzer {
 
     public void onPsiFileAdd(@NotNull Project project, @NotNull VirtualFile virtualFile) {
         if (!AssetUtils.isAssetFile(project, virtualFile)) return;
-        if (!ImageUtils.isImageFile(virtualFile)) return;
+        if (!ImageAnalysisUtils.isImageFile(virtualFile)) return;
         analysisImageSize(virtualFile);
     }
 
@@ -35,13 +35,15 @@ public class ImageSizeAnalyzer {
         final int maxPicHeight = storageEntity.maxPicHeight;
         ApplicationManager.getApplication().executeOnPooledThread(() -> {
             final File imageFile = new File(filePath);
-            int imageSize = ImageUtils.getImageSize(imageFile);
+            int imageSize = ImageAnalysisUtils.getImageSize(imageFile);
             if (imageSize > maxPicSize) {
-                showWarnDialog(String.format("%s Size limit:\n\nmax: %d k\ncurrent: %d k", imageFile.getName(), maxPicSize, imageSize));
+                showWarnDialog(String.format("%s Size limit:\n\nmax: %d k\ncurrent: %d k",
+                        imageFile.getName(), maxPicSize, imageSize));
                 return;
             }
-            ImageUtils.PicDimension imageDimension = ImageUtils.getImageDimension(imageFile);
-            if (imageDimension != null && (imageDimension.width > maxPicWidth || imageDimension.height > maxPicHeight)) {
+            ImageAnalysisUtils.PicDimension imageDimension = ImageAnalysisUtils.getImageDimension(imageFile);
+            if (imageDimension != null &&
+                    (imageDimension.width > maxPicWidth || imageDimension.height > maxPicHeight)) {
                 showWarnDialog(String.format("%s Dimension limit:\n\nmax: %d x %d\ncurrent: %d x %d",
                         imageFile.getName(),
                         maxPicWidth, maxPicHeight,

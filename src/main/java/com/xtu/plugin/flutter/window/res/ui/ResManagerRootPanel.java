@@ -15,18 +15,21 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File> {
 
     private JLabel fileCountLabel;
     private JLabel fileSizeLabel;
     private JBList<File> listComponent;
+
+    private SortType sortType;
+
     private final Map<String, ResRowComponent> componentCache = new HashMap<>();
 
-    public ResManagerRootPanel(@NotNull Project project) {
+    public ResManagerRootPanel(@NotNull Project project, @NotNull SortType sortType) {
+        this.sortType = sortType;
         setLayout(new BorderLayout());
         addTitleBar();
         addListView(project);
@@ -76,13 +79,11 @@ public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File
     }
 
     public void refreshResList(@NotNull List<File> resList) {
-        DefaultListModel<File> listModel = new DefaultListModel<>();
-        listModel.addAll(resList);
-        this.listComponent.setModel(listModel);
         this.fileCountLabel.setText(String.format("File Count: %d", resList.size()));
         Long totalSize = resList.stream().map((File::length)).reduce(0L, Long::sum);
         String totalSizeStr = StringUtil.formatFileSize(totalSize);
         this.fileSizeLabel.setText(String.format("Total Size: %s", totalSizeStr));
+        refreshList(resList, sortType);
     }
 
     public void cleanResList() {
@@ -100,5 +101,24 @@ public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File
             componentCache.put(path, new ResRowComponent(assetFile));
         }
         return componentCache.get(path);
+    }
+
+    public void sort(@NotNull SortType sort) {
+        this.sortType = sort;
+        ListModel<File> model = this.listComponent.getModel();
+        if (model == null || model.getSize() <= 0) return;
+        List<File> result = new ArrayList<>();
+        for (int i = 0; i < model.getSize(); i++) {
+            File file = model.getElementAt(i);
+            result.add(file);
+        }
+        refreshList(result, sort);
+    }
+
+    private void refreshList(@NotNull List<File> resList, @NotNull SortType sortType) {
+        resList.sort(sortType == SortType.SORT_AZ ? Comparator.comparing(File::getName) : (a, b) -> (int) (b.length() - a.length()));
+        DefaultListModel<File> listModel = new DefaultListModel<>();
+        listModel.addAll(resList);
+        this.listComponent.setModel(listModel);
     }
 }

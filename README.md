@@ -39,7 +39,8 @@ iFlutter is an IDEA Plugin for Developer of Flutter
   - [检查重复资源](https://iflutter.toolu.cn/content/chapter-1/part-5.html)
   - [归纳资源](https://iflutter.toolu.cn/content/chapter-1/part-6.html)
   - [无用资源检查](https://iflutter.toolu.cn/content/chapter-1/part-7.html)
-  - [图片资源监控](https://iflutter.toolu.cn/content/chapter-1/part-8.html)  
+  - [图片资源监控](https://iflutter.toolu.cn/content/chapter-1/part-8.html)
+  - [图片资源管理](https://iflutter.toolu.cn/content/chapter-1/part-9.html)
 - 2、代码生成
   - [Json 转 Dart Entity](https://iflutter.toolu.cn/content/chapter-2/part-1.html)
   - [fromJson、toJson](https://iflutter.toolu.cn/content/chapter-2/part-2.html)
@@ -58,6 +59,9 @@ iFlutter is an IDEA Plugin for Developer of Flutter
   <img src="https://iflutter.toolu.cn/configs/iflutter_wechat.png" width="120"  alt="wx chat"/>
 
 ## 版本更新
+### v2.2.0
+- 支持图片资源管理 [使用说明](https://iflutter.toolu.cn/content/chapter-1/part-9.html)
+
 ### v2.1.4
 - 根据当前实体类，生成可选参数Constructor
 - 优化版本升级提醒
@@ -67,10 +71,7 @@ iFlutter is an IDEA Plugin for Developer of Flutter
 - 修复`flutter3.0`提取远程依赖失败问题
 
 ### v2.1.2
-- R文件中的资源字段可配置是否携带包名前缀，[使用说明](https://iflutter.toolu.cn/content/chapter-1/part-1.html)
-
-### v2.1.1
-- 优化`fromJson`、`toJson`生成逻辑
+- R文件中的资源字段可配置是否携带包名前缀 [使用说明](https://iflutter.toolu.cn/content/chapter-1/part-1.html)
 
 ## 其他
 

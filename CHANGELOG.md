@@ -3,6 +3,10 @@
 ## [Coming]
 ### Changed
 
+## [2.2.0] - 2023-04-13
+### Changed
+- support image resource management
+
 ## [2.1.4] - 2023-02-21
 ### Changed
 -  optimize upgrade guide

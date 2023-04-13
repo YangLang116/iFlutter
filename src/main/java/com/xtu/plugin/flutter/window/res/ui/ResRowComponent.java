@@ -12,18 +12,22 @@ import java.io.File;
 
 public class ResRowComponent extends JPanel {
 
+    private JLabel sizeLabel;
     private ImageComponent imageComponent;
 
     ResRowComponent(@NotNull File imageFile) {
         setLayout(new BorderLayout());
         setBorder(JBUI.Borders.empty(2, 5));
-        loadThumbnail(imageFile);
         loadFileInfo(imageFile);
+        loadThumbnail(imageFile);
         add(new JSeparator(JSeparator.HORIZONTAL), BorderLayout.SOUTH);
     }
 
     private void loadThumbnail(@NotNull File assetFile) {
-        this.imageComponent = new ImageComponent(assetFile, 60, 50);
+        this.imageComponent = new ImageComponent(assetFile, 60, 50, dimension -> {
+            String originText = this.sizeLabel.getText();
+            this.sizeLabel.setText(String.format("%s | %d x %d", originText, dimension.width, dimension.height));
+        });
         add(this.imageComponent, BorderLayout.WEST);
     }
 
@@ -41,7 +45,7 @@ public class ResRowComponent extends JPanel {
         container.add(Box.createVerticalStrut(5));
 
         String imageSize = StringUtil.formatFileSize(assetFile.length());
-        JLabel sizeLabel = new JLabel(imageSize);
+        sizeLabel = new JLabel(imageSize);
         Font sizeFont = new Font(null, Font.PLAIN, JBUI.scaleFontSize(12f));
         sizeLabel.setForeground(JBColor.foreground());
         sizeLabel.setFont(sizeFont);

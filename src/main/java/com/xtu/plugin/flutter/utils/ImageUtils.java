@@ -45,7 +45,7 @@ public class ImageUtils {
     }
 
     @Nullable
-    public static Image loadThumbnail(@NotNull File imageFile, int maxWidth, int maxHeight) {
+    public static ImageInfo loadThumbnail(@NotNull File imageFile, int maxWidth, int maxHeight) {
         ImageReader imageReader = getImageReader(imageFile);
         if (imageReader == null) return null;
         ImageInputStream imageInputStream = null;
@@ -63,9 +63,10 @@ public class ImageUtils {
                 int displayWidth = (int) (imageWidth / radio);
                 int displayHeight = (int) (imageHeight / radio);
                 recycleImage = originImage;
-                return ImageUtil.scaleImage(originImage, displayWidth, displayHeight);
+                Image scaleImage = ImageUtil.scaleImage(originImage, displayWidth, displayHeight);
+                return new ImageInfo(imageWidth, imageHeight, scaleImage);
             } else {
-                return originImage;
+                return new ImageInfo(imageWidth, imageHeight, originImage);
             }
         } catch (Exception e) {
             LogUtils.error("ImageUtils loadThumbnail: " + e.getMessage());
@@ -74,6 +75,19 @@ public class ImageUtils {
             CloseUtils.close(imageInputStream);
             imageReader.dispose();
             if (recycleImage != null) recycleImage.flush();
+        }
+    }
+
+    public static class ImageInfo {
+
+        public final int width;
+        public final int height;
+        public final Image image;
+
+        public ImageInfo(int width, int height, Image image) {
+            this.width = width;
+            this.height = height;
+            this.image = image;
         }
     }
 }

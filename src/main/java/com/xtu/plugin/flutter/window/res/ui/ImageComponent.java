@@ -15,8 +15,10 @@ import java.io.File;
 public class ImageComponent extends JPanel {
 
     private Image displayImage;
+    private final OnLoadImageListener loadImageListener;
 
-    public ImageComponent(@NotNull File assetImage, int size, int imageSize) {
+    public ImageComponent(@NotNull File assetImage, int size, int imageSize, @NotNull OnLoadImageListener listener) {
+        this.loadImageListener = listener;
         setPreferredSize(new Dimension(size, size));
         setBorder(new RoundedLineBorder(JBColor.border(), JBUIScale.scale(4), JBUIScale.scale(2)));
         loadImage(assetImage, imageSize);
@@ -25,11 +27,12 @@ public class ImageComponent extends JPanel {
     private void loadImage(@NotNull File assetImage, int imageSize) {
         final Application application = ApplicationManager.getApplication();
         application.executeOnPooledThread(() -> {
-            Image image = ImageUtils.loadThumbnail(assetImage, imageSize, imageSize);
-            if (image == null) return;
+            ImageUtils.ImageInfo imageInfo = ImageUtils.loadThumbnail(assetImage, imageSize, imageSize);
+            if (imageInfo == null) return;
             application.invokeLater(() -> {
-                this.displayImage = image;
+                this.displayImage = imageInfo.image;
                 repaint();
+                this.loadImageListener.onSuccess(new Dimension(imageInfo.width, imageInfo.height));
             });
         });
     }
@@ -50,5 +53,10 @@ public class ImageComponent extends JPanel {
             this.displayImage.flush();
             this.displayImage = null;
         }
+    }
+
+    interface OnLoadImageListener {
+
+        void onSuccess(Dimension dimension);
     }
 }

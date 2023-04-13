@@ -34,6 +34,7 @@ public class ImageAnalysisUtils {
             Iterator<ImageReader> readers = ImageIO.getImageReaders(imageInputStream);
             if (!readers.hasNext()) return null;
             imageReader = readers.next();
+            imageReader.setInput(imageInputStream);
             int width = imageReader.getWidth(0);
             int height = imageReader.getHeight(0);
             return new PicDimension(width, height);

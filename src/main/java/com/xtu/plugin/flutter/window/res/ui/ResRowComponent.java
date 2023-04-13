@@ -38,7 +38,7 @@ public class ResRowComponent extends JPanel {
         container.add(Box.createVerticalGlue());
 
         JLabel nameLabel = new JLabel(FileUtils.getFileName(assetFile));
-        Font nameFont = new Font(null, Font.BOLD, JBUI.scaleFontSize(16f));
+        Font nameFont = new Font(null, Font.BOLD, JBUI.scaleFontSize(13f));
         nameLabel.setFont(nameFont);
         container.add(nameLabel);
 

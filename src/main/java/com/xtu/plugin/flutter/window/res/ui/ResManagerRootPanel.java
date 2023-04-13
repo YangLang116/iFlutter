@@ -41,9 +41,9 @@ public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File
 
         Box fileLabelContainer = Box.createVerticalBox();
         this.fileCountLabel = new JLabel();
-        this.fileCountLabel.setFont(new Font(null, Font.PLAIN, JBUI.scaleFontSize(14f)));
+        this.fileCountLabel.setFont(new Font(null, Font.PLAIN, JBUI.scaleFontSize(12f)));
         this.fileSizeLabel = new JLabel();
-        this.fileSizeLabel.setFont(new Font(null, Font.PLAIN, JBUI.scaleFontSize(14f)));
+        this.fileSizeLabel.setFont(new Font(null, Font.PLAIN, JBUI.scaleFontSize(12f)));
         fileLabelContainer.add(fileCountLabel);
         fileLabelContainer.add(Box.createVerticalStrut(3));
         fileLabelContainer.add(fileSizeLabel);

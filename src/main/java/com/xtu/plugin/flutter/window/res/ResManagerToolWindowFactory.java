@@ -50,10 +50,10 @@ public class ResManagerToolWindowFactory implements ToolWindowFactory, DumbAware
         public void actionPerformed(@NotNull AnActionEvent e) {
             Presentation presentation = e.getPresentation();
             if (this.sortType == SortType.SORT_AZ) {
-                this.rootPanel.sort(SortType.SORT_SIZE);
+                this.rootPanel.sort(this.sortType = SortType.SORT_SIZE);
                 presentation.setIcon(AllIcons.ObjectBrowser.SortByType);
-            } else {
-                this.rootPanel.sort(SortType.SORT_AZ);
+            } else if (this.sortType == SortType.SORT_SIZE) {
+                this.rootPanel.sort(this.sortType = SortType.SORT_AZ);
                 presentation.setIcon(AllIcons.ObjectBrowser.Sorted);
             }
         }

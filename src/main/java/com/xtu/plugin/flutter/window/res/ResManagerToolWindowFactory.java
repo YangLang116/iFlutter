@@ -16,7 +16,7 @@ import com.xtu.plugin.flutter.window.res.ui.ResManagerRootPanel;
 import com.xtu.plugin.flutter.window.res.ui.SortType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.util.Arrays;
 
 public class ResManagerToolWindowFactory implements ToolWindowFactory, DumbAware {
 
@@ -29,10 +29,29 @@ public class ResManagerToolWindowFactory implements ToolWindowFactory, DumbAware
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
         ContentManager contentManager = toolWindow.getContentManager();
         ContentFactory factory = contentManager.getFactory();
-        ResManagerRootPanel rootPanel = new ResManagerRootPanel(project, SortType.SORT_AZ);
+        boolean showSearchBar = false;
+        SortType defaultSortType = SortType.SORT_AZ;
+        ResManagerRootPanel rootPanel = new ResManagerRootPanel(project, showSearchBar, defaultSortType);
         Content content = factory.createContent(rootPanel, "", true);
         contentManager.addContent(content);
-        toolWindow.setTitleActions(List.of(new SortAction(SortType.SORT_AZ, rootPanel)));
+        toolWindow.setTitleActions(Arrays.asList(
+                new SearchAction(rootPanel),
+                new SortAction(defaultSortType, rootPanel)));
+    }
+
+    private static class SearchAction extends AnAction {
+
+        private final ResManagerRootPanel rootPanel;
+
+        SearchAction(@NotNull ResManagerRootPanel rootPanel) {
+            super(AllIcons.Actions.Search);
+            this.rootPanel = rootPanel;
+        }
+
+        @Override
+        public void actionPerformed(@NotNull AnActionEvent e) {
+            this.rootPanel.toggleTopBar();
+        }
     }
 
     private static class SortAction extends AnAction {

@@ -1,18 +1,18 @@
 package com.xtu.plugin.flutter.window.res.ui;
 
-import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.DocumentAdapter;
 import com.intellij.ui.components.JBList;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.util.ui.JBUI;
 import com.xtu.plugin.flutter.utils.CollectionUtils;
 import com.xtu.plugin.flutter.utils.FileUtils;
+import com.xtu.plugin.flutter.utils.PluginUtils;
+import com.xtu.plugin.flutter.window.res.helper.ResMenuHelper;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -44,10 +44,9 @@ public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File
     public ResManagerRootPanel(@NotNull Project project, boolean showSearchBar, @NotNull SortType sortType) {
         this.sortType = sortType;
         this.registerKeyboardAction(e -> {
-                    if (!this.showSearchBar) return;
-                    this.toggleTopBar();
-                }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
-                JComponent.WHEN_IN_FOCUSED_WINDOW);
+            if (!this.showSearchBar) return;
+            this.toggleTopBar();
+        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
         setLayout(new BorderLayout());
         switchTopBar(showSearchBar);
         addListView(project);
@@ -92,30 +91,34 @@ public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File
         return titleBar;
     }
 
+    @Nullable
+    private File getSelectImageFile(@NotNull Point point) {
+        int selectIndex = listComponent.locationToIndex(point);
+        if (selectIndex < 0) return null;
+        ListModel<File> model = listComponent.getModel();
+        if (model == null) return null;
+        if (selectIndex >= model.getSize()) return null;
+        return model.getElementAt(selectIndex);
+    }
+
     private void addListView(@NotNull Project project) {
         this.listComponent = new JBList<>();
         this.listComponent.setCellRenderer(this);
         this.listComponent.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                openImageFile(project, e.getPoint());
+                Point point = e.getPoint();
+                File imageFile = getSelectImageFile(point);
+                if (imageFile == null) return;
+                if (SwingUtilities.isLeftMouseButton(e)) {
+                    PluginUtils.openFile(project, imageFile);
+                } else if (SwingUtilities.isRightMouseButton(e)) {
+                    ResMenuHelper.createMenu(project, imageFile).show(listComponent, point.x, point.y);
+                }
             }
         });
         JBScrollPane scrollPane = new JBScrollPane(this.listComponent);
         add(scrollPane, BorderLayout.CENTER);
-    }
-
-    private void openImageFile(@NotNull Project project, @NotNull Point point) {
-        int selectIndex = this.listComponent.locationToIndex(point);
-        if (selectIndex < 0) return;
-        ListModel<File> model = this.listComponent.getModel();
-        if (model == null) return;
-        if (selectIndex >= model.getSize()) return;
-        File imageFile = model.getElementAt(selectIndex);
-        VirtualFile needOpenFile = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(imageFile);
-        if (needOpenFile == null) return;
-        FileEditorManager editorManager = FileEditorManager.getInstance(project);
-        editorManager.openFile(needOpenFile, true);
     }
 
     public void refreshResList(@NotNull List<File> resList) {
@@ -164,9 +167,7 @@ public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File
         if (CollectionUtils.isEmpty(this.resList)) return;
         List<File> resultList = new ArrayList<>(this.resList);
         //sort
-        resultList.sort(sortType == SortType.SORT_AZ ?
-                Comparator.comparing(File::getName) :
-                (a, b) -> (int) (b.length() - a.length()));
+        resultList.sort(sortType == SortType.SORT_AZ ? Comparator.comparing(File::getName) : (a, b) -> (int) (b.length() - a.length()));
         //filter with keyword
         if (StringUtil.isNotEmpty(this.keyword)) {
             resultList = resultList.stream().filter(file -> {

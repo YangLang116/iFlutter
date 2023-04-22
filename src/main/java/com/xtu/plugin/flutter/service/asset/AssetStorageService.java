@@ -40,7 +40,7 @@ public class AssetStorageService implements PersistentStateComponent<AssetStorag
     }
 
     private static boolean isNotFoldRegister(Project project) {
-        return !PluginUtils.isFoldRegister(project);
+        return !AssetUtils.isFoldRegister(project);
     }
 
     private static AssetStorageService getService(@NotNull Project project) {
@@ -58,7 +58,7 @@ public class AssetStorageService implements PersistentStateComponent<AssetStorag
     private void refreshAsset() {
         String projectPath = PluginUtils.getProjectPath(project);
         if (StringUtils.isEmpty(projectPath)) return;
-        List<File> allAssetFile = PluginUtils.getAllAssetFile(project);
+        List<File> allAssetFile = AssetUtils.getAllAssetFile(project);
         List<String> newAssetList = new ArrayList<>();
         for (File assetFile : allAssetFile) {
             String assetPath = AssetUtils.getAssetPath(projectPath, assetFile);

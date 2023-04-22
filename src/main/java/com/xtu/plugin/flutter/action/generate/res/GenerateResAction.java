@@ -31,7 +31,7 @@ public class GenerateResAction extends AnAction {
         Project project = e.getProject();
         String projectPath = PluginUtils.getProjectPath(project);
         if (StringUtils.isEmpty(projectPath)) return;
-        List<File> assetFileList = PluginUtils.getAllAssetFile(project);
+        List<File> assetFileList = AssetUtils.getAllAssetFile(project);
         List<String> newAssetList = new ArrayList<>();
         List<String> newFontList = new ArrayList<>();
         for (File assetFile : assetFileList) {

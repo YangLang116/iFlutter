@@ -8,6 +8,7 @@ import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.openapi.wm.ex.ToolWindowManagerListener;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentManager;
+import com.xtu.plugin.flutter.utils.AssetUtils;
 import com.xtu.plugin.flutter.utils.FileUtils;
 import com.xtu.plugin.flutter.utils.LogUtils;
 import com.xtu.plugin.flutter.utils.PluginUtils;
@@ -53,7 +54,7 @@ public class ResManagerToolWindowListener implements ToolWindowManagerListener {
     private void scanResList(@NotNull ToolWindow toolWindow) {
         final String projectPath = PluginUtils.getProjectPath(project);
         if (StringUtils.isEmpty(projectPath)) return;
-        final List<String> supportAssetFoldName = PluginUtils.supportAssetFoldName(project);
+        final List<String> supportAssetFoldName = AssetUtils.supportAssetFoldName(project);
         Application application = ApplicationManager.getApplication();
         application.executeOnPooledThread(() -> {
             final List<File> resList = new ArrayList<>();

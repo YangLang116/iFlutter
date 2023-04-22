@@ -126,7 +126,7 @@ public class PubspecUtils {
         ReadAction.run(() -> {
             //asset list
             List<String> assetList = new ArrayList<>();
-            if (PluginUtils.isFoldRegister(project)) {
+            if (AssetUtils.isFoldRegister(project)) {
                 assetList.addAll(AssetStorageService.getAssetList(project));
             } else {
                 YAMLSequence assetSequence = getAssetSequence(project);
@@ -216,7 +216,7 @@ public class PubspecUtils {
                                            @NotNull List<String> assetList,
                                            @Nullable YAMLSequence oldAssetSequence,
                                            @NotNull YAMLElementGenerator elementGenerator) {
-        if (PluginUtils.isFoldRegister(project)) {
+        if (AssetUtils.isFoldRegister(project)) {
             assetList = AssetStorageService.updateAsset(project, assetList);
         }
         if (oldAssetSequence != null) {

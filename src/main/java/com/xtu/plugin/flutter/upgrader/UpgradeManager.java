@@ -10,7 +10,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.options.ShowSettingsUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SystemInfo;
-import com.xtu.plugin.flutter.utils.PluginUtils;
+import com.xtu.plugin.flutter.utils.VersionUtils;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -35,7 +35,7 @@ public class UpgradeManager {
     }
 
     public void checkPluginVersion(@NotNull Project project) {
-        final String currentVersion = PluginUtils.getPluginVersion();
+        final String currentVersion = VersionUtils.getPluginVersion();
         final String url = sUrl + "?version=" + currentVersion + "&os=" + SystemInfo.getOsNameAndVersion();
         NetworkManager.getInstance().get(url, new Callback() {
             @Override
@@ -54,7 +54,7 @@ public class UpgradeManager {
                 VersionInfo versionInfo = gson.fromJson(responseContent, VersionInfo.class);
                 if (versionInfo != null && !TextUtils.isEmpty(versionInfo.version)) {
                     String serverVersion = versionInfo.version;
-                    if (PluginUtils.compareVersion(currentVersion, serverVersion) > 0) { //有新版更新
+                    if (VersionUtils.compareVersion(currentVersion, serverVersion) > 0) { //有新版更新
                         pushNotification(project,
                                 versionInfo.title, versionInfo.subtitle, versionInfo.content,
                                 versionInfo.detailBtnText, versionInfo.detailUrl);

@@ -2,6 +2,7 @@ package com.xtu.plugin.flutter.utils;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.xtu.plugin.flutter.service.StorageService;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -83,19 +84,9 @@ public class AssetUtils {
     }
 
     public static boolean isAssetFile(@NotNull Project project, @NotNull VirtualFile virtualFile) {
-        if (virtualFile.isDirectory()) return false;
-        if (virtualFile.getName().startsWith(".")) return false;
-        String filePath = virtualFile.getPath();
-        String projectPath = PluginUtils.getProjectPath(project);
-        if (StringUtils.isEmpty(projectPath)) return false;
-        List<String> supportAssetFoldName = PluginUtils.supportAssetFoldName(project);
-        for (String directoryName : supportAssetFoldName) {
-            String assetPrefixName = projectPath + "/" + directoryName;
-            if (filePath.startsWith(assetPrefixName)) {
-                return true;
-            }
-        }
-        return false;
+        String assetPath = virtualFile.getPath();
+        File assetFile = new File(assetPath);
+        return isAssetFile(project, assetFile);
     }
 
     public static boolean isAssetFile(@NotNull Project project, @NotNull File file) {
@@ -105,13 +96,40 @@ public class AssetUtils {
         String projectPath = PluginUtils.getProjectPath(project);
         if (StringUtils.isEmpty(projectPath)) return false;
         File projectDirectory = new File(projectPath);
-        List<String> supportAssetFoldName = PluginUtils.supportAssetFoldName(project);
+        List<String> supportAssetFoldName = AssetUtils.supportAssetFoldName(project);
         for (String directoryName : supportAssetFoldName) {
-            File tempFile = new File(projectDirectory, directoryName);
-            if (filePath.startsWith(tempFile.getAbsolutePath())) {
+            File assetDirectory = new File(projectDirectory, directoryName);
+            if (filePath.startsWith(assetDirectory.getAbsolutePath())) {
                 return true;
             }
         }
         return false;
+    }
+
+    public static List<String> supportAssetFoldName(@NotNull Project project) {
+        return StorageService.getInstance(project).getState().resDir;
+    }
+
+    public static boolean isFoldRegister(@NotNull Project project) {
+        return StorageService.getInstance(project).getState().foldRegisterEnable;
+    }
+
+    @NotNull
+    public static List<File> getAllAssetFile(@NotNull Project project) {
+        List<File> assetFileList = new ArrayList<>();
+        String projectPath = PluginUtils.getProjectPath(project);
+        if (StringUtils.isEmpty(projectPath)) return assetFileList;
+        List<String> assetFoldNameList = AssetUtils.supportAssetFoldName(project);
+        for (String assetFoldName : assetFoldNameList) {
+            File assetDirectory = new File(projectPath, assetFoldName);
+            FileUtils.scanDirectory(assetDirectory, (file -> {
+                String fileName = file.getName();
+                //修复隐藏文件导致，生成的res.dart文件异常，如mac下的.DS_Store文件
+                if (!fileName.startsWith(".")) {
+                    assetFileList.add(file);
+                }
+            }));
+        }
+        return assetFileList;
     }
 }

@@ -9,6 +9,7 @@ import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.xtu.plugin.flutter.action.BaseDependencyAction;
 import com.xtu.plugin.flutter.action.convert.task.ConvertDependencyToLocalTask;
+import com.xtu.plugin.flutter.utils.AssetUtils;
 import com.xtu.plugin.flutter.utils.PluginUtils;
 import com.xtu.plugin.flutter.utils.ToastUtil;
 import kotlin.Pair;
@@ -43,7 +44,7 @@ public class ConvertDependencyToLocalAction extends BaseDependencyAction {
             ToastUtil.make(project, MessageType.ERROR, "dependency are not allowed to be stored in the lib directory");
             return;
         }
-        List<String> assetFoldNameList = PluginUtils.supportAssetFoldName(project);
+        List<String> assetFoldNameList = AssetUtils.supportAssetFoldName(project);
         for (String foldName : assetFoldNameList) {
             if (filePath.startsWith(projectPath + "/" + foldName)) {
                 ToastUtil.make(project, MessageType.ERROR, "dependency are not allowed to be stored in the res directory");

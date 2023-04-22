@@ -80,7 +80,7 @@ public class UselessResAnalysisTask extends Task.Backgroundable {
 
     private Map<File, String> getAssetFileList() {
         final Map<File, String> assetFileList = new HashMap<>();
-        List<String> foldNameList = PluginUtils.supportAssetFoldName(project);
+        List<String> foldNameList = AssetUtils.supportAssetFoldName(project);
         for (String foldName : foldNameList) {
             File assetFold = new File(projectPath, foldName);
             FileUtils.scanDirectory(assetFold, file -> assetFileList.put(file, foldName));

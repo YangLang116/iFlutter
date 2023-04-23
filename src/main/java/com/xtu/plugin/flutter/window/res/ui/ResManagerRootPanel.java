@@ -1,6 +1,7 @@
 package com.xtu.plugin.flutter.window.res.ui;
 
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.DocumentAdapter;
 import com.intellij.ui.components.JBList;
@@ -18,6 +19,7 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.Document;
 import java.awt.*;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -47,6 +49,10 @@ public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File
             if (!this.showSearchBar) return;
             this.toggleTopBar();
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
+        this.registerKeyboardAction(e -> {
+            if (this.showSearchBar) return;
+            this.toggleTopBar();
+        }, KeyStroke.getKeyStroke(KeyEvent.VK_F, (SystemInfo.isMac ? InputEvent.META_DOWN_MASK : InputEvent.CTRL_DOWN_MASK)), JComponent.WHEN_IN_FOCUSED_WINDOW);
         setLayout(new BorderLayout());
         switchTopBar(showSearchBar);
         addListView(project);

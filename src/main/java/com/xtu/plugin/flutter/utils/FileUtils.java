@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
+import java.util.Locale;
 
 public class FileUtils {
 
@@ -21,7 +22,8 @@ public class FileUtils {
     public static String getExtension(@NotNull File file) {
         String fileName = file.getName();
         int dotIndex = fileName.lastIndexOf('.');
-        return dotIndex >= 0 ? fileName.substring(dotIndex + 1) : null;
+        if (dotIndex < 0) return null;
+        return fileName.substring(dotIndex + 1).toLowerCase(Locale.ROOT);
     }
 
     public static String getMd5(@NotNull File file) {

@@ -11,14 +11,20 @@ import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import com.intellij.ui.content.ContentManager;
+import com.xtu.plugin.flutter.utils.CollectionUtils;
 import com.xtu.plugin.flutter.utils.PluginUtils;
+import com.xtu.plugin.flutter.utils.TinyUtils;
 import com.xtu.plugin.flutter.window.res.ui.ResManagerRootPanel;
 import com.xtu.plugin.flutter.window.res.ui.SortType;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class ResManagerToolWindowFactory implements ToolWindowFactory, DumbAware {
+
 
     @Override
     public boolean isApplicable(@NotNull Project project) {
@@ -36,7 +42,32 @@ public class ResManagerToolWindowFactory implements ToolWindowFactory, DumbAware
         contentManager.addContent(content);
         toolWindow.setTitleActions(Arrays.asList(
                 new SearchAction(rootPanel),
+                new CompressAction(rootPanel),
                 new SortAction(defaultSortType, rootPanel)));
+    }
+
+    private static class CompressAction extends AnAction {
+
+        private final ResManagerRootPanel rootPanel;
+
+        CompressAction(@NotNull ResManagerRootPanel rootPanel) {
+            super(AllIcons.Actions.MenuCut);
+            this.rootPanel = rootPanel;
+        }
+
+        @Override
+        public void actionPerformed(@NotNull AnActionEvent e) {
+            Project project = e.getProject();
+            if (project == null) return;
+            List<File> resList = this.rootPanel.getResList();
+            if (CollectionUtils.isEmpty(resList)) return;
+            List<File> resultList = new ArrayList<>();
+            for (File file : resList) {
+                if (!TinyUtils.isSupport(file)) continue;
+                resultList.add(file);
+            }
+            TinyUtils.compressImage(project, resultList, this.rootPanel::reloadResList);
+        }
     }
 
     private static class SearchAction extends AnAction {

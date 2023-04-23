@@ -34,7 +34,7 @@ public class ImageUtils {
         if (!imageFile.canRead()) return null;
         String extension = FileUtils.getExtension(imageFile);
         if (StringUtils.isEmpty(extension)) return null;
-        Iterator<ImageReader> iterator = ImageIO.getImageReadersByFormatName(extension.toLowerCase(Locale.ROOT));
+        Iterator<ImageReader> iterator = ImageIO.getImageReadersByFormatName(extension);
         if (!iterator.hasNext()) return null;
         final List<ImageReader> readerList = new ArrayList<>();
         iterator.forEachRemaining(readerList::add);

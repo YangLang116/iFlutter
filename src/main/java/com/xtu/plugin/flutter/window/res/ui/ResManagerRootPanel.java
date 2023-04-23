@@ -58,6 +58,11 @@ public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File
         addListView(project);
     }
 
+    @Nullable
+    public List<File> getResList() {
+        return resList;
+    }
+
     private void switchTopBar(boolean showSearchBar) {
         this.showSearchBar = showSearchBar;
         if (this.titleBar == null) this.titleBar = createTitleBar();
@@ -119,7 +124,7 @@ public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File
                 if (SwingUtilities.isLeftMouseButton(e)) {
                     PluginUtils.openFile(project, imageFile);
                 } else if (SwingUtilities.isRightMouseButton(e)) {
-                    ResMenuHelper.createMenu(project, imageFile, ResManagerRootPanel.this::refreshFileItem)
+                    ResMenuHelper.createMenu(project, imageFile, ResManagerRootPanel.this::reloadResList)
                             .show(listComponent, point.x, point.y);
                 }
             }
@@ -128,10 +133,12 @@ public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File
         add(scrollPane, BorderLayout.CENTER);
     }
 
-    private void refreshFileItem(@NotNull File changeFile) {
-        String path = changeFile.getAbsolutePath();
-        ResRowComponent resRowComponent = this.componentCache.remove(path);
-        if (resRowComponent != null) resRowComponent.dispose();
+    public void reloadResList(@NotNull List<File> changeFileList) {
+        for (File imageFile : changeFileList) {
+            String path = imageFile.getAbsolutePath();
+            ResRowComponent resRowComponent = this.componentCache.remove(path);
+            if (resRowComponent != null) resRowComponent.dispose();
+        }
         refreshResList(this.resList);
     }
 

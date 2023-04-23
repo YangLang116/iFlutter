@@ -21,7 +21,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 public class ResManagerToolWindowListener implements ToolWindowManagerListener {
 
@@ -63,9 +62,7 @@ public class ResManagerToolWindowListener implements ToolWindowManagerListener {
                 FileUtils.scanDirectory(resDirectory, file -> {
                     String extension = FileUtils.getExtension(file);
                     if (StringUtils.isEmpty(extension)) return;
-                    boolean support = SUPPORT_IMAGE_FORMAT.contains(extension.toLowerCase(Locale.ROOT));
-                    if (!support) return;
-                    resList.add(file);
+                    if (SUPPORT_IMAGE_FORMAT.contains(extension)) resList.add(file);
                 });
             }
             application.invokeLater(() -> {

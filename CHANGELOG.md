@@ -3,6 +3,10 @@
 ## [Coming]
 ### Changed
 
+## [2.2.2] - 2023-04-23
+### Changed
+- optimize `Flutter Resource`, support copying resource references, etc
+
 ## [2.2.1] - 2023-04-15
 ### Changed
 - search in `Flutter Resource`

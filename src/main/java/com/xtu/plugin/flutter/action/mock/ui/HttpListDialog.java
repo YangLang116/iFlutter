@@ -119,7 +119,7 @@ public class HttpListDialog extends DialogWrapper implements ListSelectionListen
             if (StringUtils.isEmpty(url)) {
                 ToastUtil.make(project, MessageType.ERROR, "mock server fail");
             } else {
-                ToastUtil.make(project, MessageType.INFO, "path copy success");
+                ToastUtil.make(project, MessageType.INFO, "copy path success");
                 CopyPasteManager.getInstance().setContents(new StringSelection(url));
                 close(DialogWrapper.OK_EXIT_CODE);
             }

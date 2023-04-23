@@ -1,5 +1,6 @@
 package com.xtu.plugin.flutter.window.res.helper;
 
+import com.intellij.ide.actions.RevealFileAction;
 import com.intellij.openapi.ide.CopyPasteManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
@@ -21,6 +22,7 @@ public class ResMenuHelper {
         JPopupMenu menu = new JPopupMenu();
         menu.add(createAction("Copy Reference", e -> copyReference(project, imageFile)));
         menu.add(createAction("Compress Image", e -> compressImage()));
+        menu.add(createAction("Open In File Browser", e -> RevealFileAction.openFile(imageFile)));
         return menu;
     }
 

@@ -5,6 +5,8 @@ import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.ide.CopyPasteManager;
 import com.intellij.openapi.options.ShowSettingsUtil;
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
 import com.tinify.Tinify;
@@ -22,6 +24,7 @@ import javax.swing.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.Locale;
 
 public class ResMenuHelper {
 
@@ -44,19 +47,27 @@ public class ResMenuHelper {
             ShowSettingsUtil.getInstance().showSettingsDialog(project, SettingsConfiguration.class);
             return;
         }
-        final Application application = ApplicationManager.getApplication();
-        application.executeOnPooledThread(() -> {
-            try {
-                Tinify.setKey(tinyKey);
-                String imageFilePath = imageFile.getAbsolutePath();
-                Tinify.fromFile(imageFilePath).toFile(imageFilePath);
-                ToastUtil.make(project, MessageType.INFO, "compress image success");
-                application.invokeLater(() -> onReloadListener.reload(imageFile));
-            } catch (Exception e) {
-                LogUtils.error("ResMenuHelper compressImage: " + e.getMessage());
-                ToastUtil.make(project, MessageType.ERROR, "compress image fail: " + e.getMessage());
+        String message = String.format(Locale.ROOT, "compressing file [%s]", imageFile.getName());
+        new Task.Backgroundable(project, message) {
+            @Override
+            public void run(@NotNull ProgressIndicator indicator) {
+                indicator.setIndeterminate(true);
+                try {
+                    Tinify.setKey(tinyKey);
+                    String imageFilePath = imageFile.getAbsolutePath();
+                    Tinify.fromFile(imageFilePath).toFile(imageFilePath);
+                    ToastUtil.make(project, MessageType.INFO, "compress image success");
+                    Application application = ApplicationManager.getApplication();
+                    application.invokeLater(() -> onReloadListener.reload(imageFile));
+                } catch (Exception e) {
+                    LogUtils.error("ResMenuHelper compressImage: " + e.getMessage());
+                    ToastUtil.make(project, MessageType.ERROR, "compress image fail: " + e.getMessage());
+                } finally {
+                    indicator.setIndeterminate(false);
+                    indicator.setFraction(1);
+                }
             }
-        });
+        }.queue();
     }
 
     private static void copyReference(@NotNull Project project, @NotNull File imageFile) {

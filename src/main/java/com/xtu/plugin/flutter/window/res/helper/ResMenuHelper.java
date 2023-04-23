@@ -21,7 +21,6 @@ public class ResMenuHelper {
     public static JPopupMenu createMenu(@NotNull Project project, @NotNull File imageFile) {
         JPopupMenu menu = new JPopupMenu();
         menu.add(createAction("Copy Reference", e -> copyReference(project, imageFile)));
-        menu.add(createAction("Compress Image", e -> compressImage()));
         menu.add(createAction("Open In File Browser", e -> RevealFileAction.openFile(imageFile)));
         return menu;
     }
@@ -37,10 +36,6 @@ public class ResMenuHelper {
         StringSelection content = new StringSelection(reference);
         CopyPasteManager.getInstance().setContents(content);
         ToastUtil.make(project, MessageType.INFO, "copy reference success");
-    }
-
-    private static void compressImage() {
-
     }
 
     private static JMenuItem createAction(@NotNull String title, @NotNull ActionListener listener) {

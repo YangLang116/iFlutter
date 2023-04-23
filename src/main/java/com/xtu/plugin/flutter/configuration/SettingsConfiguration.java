@@ -98,7 +98,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
             mirrorRepoStr = mirrorRepoDialog.getRepoStr();
         });
         //tiny
-        tinyQuestion.setIcon(AllIcons.Debugger.Question_badge);
+        tinyQuestion.setText("<html><u>get your api key</u></html>");
         tinyQuestion.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {

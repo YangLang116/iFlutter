@@ -1,5 +1,6 @@
 package com.xtu.plugin.flutter.configuration;
 
+import com.intellij.icons.AllIcons;
 import com.intellij.ide.BrowserUtil;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
@@ -46,6 +47,8 @@ public final class SettingsConfiguration implements SearchableConfigurable {
     private JButton mirrorRepoBtn;
     private JCheckBox withPackageNameBox;
     private JCheckBox isUnModifiableFromJson;
+    private JTextField tinyApiKeyField;
+    private JLabel tinyQuestion;
 
     public SettingsConfiguration(Project project) {
         this.project = project;
@@ -94,6 +97,14 @@ public final class SettingsConfiguration implements SearchableConfigurable {
             if (!isOk) return;
             mirrorRepoStr = mirrorRepoDialog.getRepoStr();
         });
+        //tiny
+        tinyQuestion.setIcon(AllIcons.Debugger.Question_badge);
+        tinyQuestion.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                BrowserUtil.open("https://tinypng.com/developers");
+            }
+        });
         return rootPanel;
     }
 
@@ -117,7 +128,8 @@ public final class SettingsConfiguration implements SearchableConfigurable {
                 || !Objects.equals(storageEntity.apiSecret, apiSecretField.getText().trim())
                 || storageEntity.maxPicSize != Integer.parseInt(maxPicSizeField.getText().trim())
                 || storageEntity.maxPicWidth != Integer.parseInt(maxPicWidthField.getText().trim())
-                || storageEntity.maxPicHeight != Integer.parseInt(maxPicHeightField.getText().trim());
+                || storageEntity.maxPicHeight != Integer.parseInt(maxPicHeightField.getText().trim())
+                || !Objects.equals(storageEntity.tinyApiKey, tinyApiKeyField.getText().trim());
 
     }
 
@@ -139,6 +151,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
         maxPicWidthField.setText(String.valueOf(storageEntity.maxPicWidth));
         maxPicHeightField.setText(String.valueOf(storageEntity.maxPicHeight));
         mirrorRepoStr = storageEntity.mirrorRepoStr;
+        tinyApiKeyField.setText(storageEntity.tinyApiKey);
     }
 
     @Override
@@ -165,6 +178,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
             storageEntity.foldRegisterEnable = foldRegisterBox.isSelected();
             reStartIDE();
         }
+        storageEntity.tinyApiKey = tinyApiKeyField.getText().trim();
     }
 
     private void reStartIDE() {

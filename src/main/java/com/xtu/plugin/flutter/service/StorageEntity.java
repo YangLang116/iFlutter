@@ -46,6 +46,8 @@ public class StorageEntity {
     public boolean registerResWithPackage = false;
     //是否生成数据不可修改的fromJson
     public boolean isUnModifiableFromJson = false;
+    //tiny api key
+    public String tinyApiKey = "";
 
     public StorageEntity() {
     }
@@ -68,7 +70,8 @@ public class StorageEntity {
                 && registerResWithPackage == that.registerResWithPackage
                 && maxPicHeight == that.maxPicHeight
                 && isUnModifiableFromJson == that.isUnModifiableFromJson
-                && Objects.equals(mirrorRepoStr, that.mirrorRepoStr);
+                && Objects.equals(mirrorRepoStr, that.mirrorRepoStr)
+                && Objects.equals(tinyApiKey, that.tinyApiKey);
     }
 
     @Override
@@ -89,6 +92,7 @@ public class StorageEntity {
                 ", mirrorRepoStr='" + mirrorRepoStr + '\'' +
                 ", registerResWithPackage=" + registerResWithPackage +
                 ", isUnModifiableFromJson=" + isUnModifiableFromJson +
+                ", tinyApiKey=" + tinyApiKey +
                 '}';
     }
 }

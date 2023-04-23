@@ -119,12 +119,20 @@ public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File
                 if (SwingUtilities.isLeftMouseButton(e)) {
                     PluginUtils.openFile(project, imageFile);
                 } else if (SwingUtilities.isRightMouseButton(e)) {
-                    ResMenuHelper.createMenu(project, imageFile).show(listComponent, point.x, point.y);
+                    ResMenuHelper.createMenu(project, imageFile, ResManagerRootPanel.this::refreshFileItem)
+                            .show(listComponent, point.x, point.y);
                 }
             }
         });
         JBScrollPane scrollPane = new JBScrollPane(this.listComponent);
         add(scrollPane, BorderLayout.CENTER);
+    }
+
+    private void refreshFileItem(@NotNull File changeFile) {
+        String path = changeFile.getAbsolutePath();
+        ResRowComponent resRowComponent = this.componentCache.remove(path);
+        if (resRowComponent != null) resRowComponent.dispose();
+        refreshResList(this.resList);
     }
 
     public void refreshResList(@NotNull List<File> resList) {

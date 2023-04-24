@@ -3,6 +3,10 @@
 ## [Coming]
 ### Changed
 
+## [2.2.3] - 2023-04-24
+### Changed
+- support image compression in `Flutter Resource`
+
 ## [2.2.2] - 2023-04-23
 ### Changed
 - optimize `Flutter Resource`, support copying resource references, etc

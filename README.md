@@ -59,6 +59,9 @@ iFlutter is an IDEA Plugin for Developer of Flutter
   <img src="https://cdn.jsdelivr.net/gh/YangLang116/iFlutter-Document/configs/iflutter_wechat.png" width="120"  alt="wx chat"/>
 
 ## 版本更新
+### v2.2.3
+- 优化资源管理工具栏，支持图片压缩
+
 ### v2.2.2
 - 优化资源管理工具栏，支持复制资源引用等
 
@@ -67,10 +70,6 @@ iFlutter is an IDEA Plugin for Developer of Flutter
 
 ### v2.2.0
 - 支持图片资源管理 [使用说明](https://iflutter.toolu.cn/content/chapter-1/part-9.html)
-
-### v2.1.4
-- 根据当前实体类，生成可选参数Constructor
-- 优化版本升级提醒
 
 ## 其他
 

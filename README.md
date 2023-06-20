@@ -4,9 +4,9 @@ iFlutter is an IDEA Plugin for Developer of Flutter
 
 ## iFlutter是一款辅助Flutter开发的 IDEA 插件
 
-![platforms](https://img.shields.io/badge/platforms-macos%20%7C%20windows%20%7C%20linux-blue) 
-![tools](https://img.shields.io/badge/idea-intellij_IDEA%20%7C%20AndroidStudio-blue) 
-![licence](https://img.shields.io/badge/licence-MIT-blue) 
+![platforms](https://img.shields.io/badge/platforms-macos%20%7C%20windows%20%7C%20linux-blue)
+![tools](https://img.shields.io/badge/idea-intellij_IDEA%20%7C%20AndroidStudio-blue)
+![licence](https://img.shields.io/badge/licence-MIT-blue)
 ![downloads](https://img.shields.io/jetbrains/plugin/d/18457)
 ![version](https://img.shields.io/jetbrains/plugin/v/18457)
 
@@ -54,6 +54,7 @@ iFlutter is an IDEA Plugin for Developer of Flutter
 - [4、Http接口Mock](https://iflutter.toolu.cn/content/chapter-4/part-1.html)
 - [5、国际化支持](https://iflutter.toolu.cn/content/chapter-5/part-1.html)
 - [6、镜像仓库注入](https://iflutter.toolu.cn/content/chapter-6/part-1.html)
+- [7、意见与反馈](https://iflutter.toolu.cn/content/chapter-10/part-1.html)
 
 ## 问题反馈
   <img src="https://cdn.jsdelivr.net/gh/YangLang116/iFlutter-Document/configs/iflutter_wechat.png" width="120"  alt="wx chat"/>

@@ -55,10 +55,13 @@ iFlutter is an IDEA Plugin for Developer of Flutter
 - [5、国际化支持](https://iflutter.toolu.cn/content/chapter-5/part-1.html)
 - [6、镜像仓库注入](https://iflutter.toolu.cn/content/chapter-6/part-1.html)
 
-## 支持
+## 问题反馈
   <img src="https://cdn.jsdelivr.net/gh/YangLang116/iFlutter-Document/configs/iflutter_wechat.png" width="120"  alt="wx chat"/>
 
 ## 版本更新
+### v2.2.4
+- 建议与反馈 [使用说明](https://iflutter.toolu.cn/content/chapter-10/part-1.html)
+
 ### v2.2.3
 - 优化资源管理工具栏，支持图片压缩
 
@@ -67,9 +70,6 @@ iFlutter is an IDEA Plugin for Developer of Flutter
 
 ### v2.2.1
 - 图片资源管理工具栏支持搜索
-
-### v2.2.0
-- 支持图片资源管理 [使用说明](https://iflutter.toolu.cn/content/chapter-1/part-9.html)
 
 ## 其他
 

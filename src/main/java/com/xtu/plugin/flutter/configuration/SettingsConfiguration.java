@@ -1,6 +1,5 @@
 package com.xtu.plugin.flutter.configuration;
 
-import com.intellij.icons.AllIcons;
 import com.intellij.ide.BrowserUtil;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
@@ -9,6 +8,7 @@ import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.xtu.plugin.flutter.action.pub.speed.ui.MirrorRepoDialog;
+import com.xtu.plugin.flutter.advice.AdviceDialog;
 import com.xtu.plugin.flutter.service.StorageEntity;
 import com.xtu.plugin.flutter.service.StorageService;
 import com.xtu.plugin.flutter.utils.CollectionUtils;
@@ -49,6 +49,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
     private JCheckBox isUnModifiableFromJson;
     private JTextField tinyApiKeyField;
     private JLabel tinyQuestion;
+    private JLabel adviceLabel;
 
     public SettingsConfiguration(Project project) {
         this.project = project;
@@ -88,6 +89,14 @@ public final class SettingsConfiguration implements SearchableConfigurable {
             @Override
             public void mouseClicked(MouseEvent e) {
                 BrowserUtil.open(sPluginUrl);
+            }
+        });
+        //建议与反馈
+        adviceLabel.setText("<html><u>Suggestion & Feedback</u></html>");
+        adviceLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                AdviceDialog.show(project);
             }
         });
         //修改镜像仓库

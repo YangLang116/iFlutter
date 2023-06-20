@@ -32,6 +32,13 @@ public class NetworkManager {
         mOkHttpClient.newCall(request).enqueue(callback);
     }
 
+    public void post(String requestUrl, String json, Callback callback) {
+        RequestBody jsonBody = RequestBody.create(json, MediaType.parse("application/json"));
+        Request request = new Request.Builder().post(jsonBody).url(requestUrl)
+                .build();
+        mOkHttpClient.newCall(request).enqueue(callback);
+    }
+
     public Response postAsync(String url, Map<String, String> headers, String body) throws IOException {
         RequestBody requestBody = RequestBody.create(body, MediaType.parse("application/json"));
         Request.Builder requestBuilder = new Request.Builder();

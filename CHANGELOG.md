@@ -3,6 +3,10 @@
 ## [Coming]
 ### Changed
 
+## [2.2.4] - 2023-06-20
+### Changed
+- suggestion & feedback
+
 ## [2.2.3] - 2023-04-24
 ### Changed
 - support image compression in `Flutter Resource`

@@ -55,6 +55,7 @@ iFlutter is an IDEA Plugin for Developer of Flutter
 - [4、Http接口Mock](https://iflutter.toolu.cn/content/chapter-4/part-1.html)
 - [5、国际化支持](https://iflutter.toolu.cn/content/chapter-5/part-1.html)
 - [6、镜像仓库注入](https://iflutter.toolu.cn/content/chapter-6/part-1.html)
+- [7、意见与反馈](https://iflutter.toolu.cn/content/chapter-10/part-1.html)
 
 ## 问题反馈
 

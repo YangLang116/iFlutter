@@ -42,28 +42,35 @@ public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File
 
     private final Map<String, ResRowComponent> componentCache = new HashMap<>();
 
-
     public ResManagerRootPanel(@NotNull Project project, boolean showSearchBar, @NotNull SortType sortType) {
+        setLayout(new BorderLayout());
         this.sortType = sortType;
+        this.registerKeyboardListener();
+        this.showTopBar(showSearchBar);
+        this.addListView(project);
+    }
+
+    private void registerKeyboardListener() {
+        KeyStroke escKey = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
         this.registerKeyboardAction(e -> {
             if (!this.showSearchBar) return;
             this.toggleTopBar();
-        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_IN_FOCUSED_WINDOW);
+        }, escKey, JComponent.WHEN_IN_FOCUSED_WINDOW);
+        int modifiers = SystemInfo.isMac ? InputEvent.META_DOWN_MASK : InputEvent.CTRL_DOWN_MASK;
+        KeyStroke searchKey = KeyStroke.getKeyStroke(KeyEvent.VK_F, modifiers);
         this.registerKeyboardAction(e -> {
             if (this.showSearchBar) return;
             this.toggleTopBar();
-        }, KeyStroke.getKeyStroke(KeyEvent.VK_F, (SystemInfo.isMac ? InputEvent.META_DOWN_MASK : InputEvent.CTRL_DOWN_MASK)), JComponent.WHEN_IN_FOCUSED_WINDOW);
-        setLayout(new BorderLayout());
-        switchTopBar(showSearchBar);
-        addListView(project);
+        }, searchKey, JComponent.WHEN_IN_FOCUSED_WINDOW);
     }
 
-    @Nullable
-    public List<File> getResList() {
-        return resList;
+    public void toggleTopBar() {
+        showTopBar(!showSearchBar);
+        validate();
+        repaint();
     }
 
-    private void switchTopBar(boolean showSearchBar) {
+    private void showTopBar(boolean showSearchBar) {
         this.showSearchBar = showSearchBar;
         if (this.titleBar == null) this.titleBar = createTitleBar();
         if (this.searchBar == null) this.searchBar = createSearchBar();
@@ -102,16 +109,6 @@ public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File
         return titleBar;
     }
 
-    @Nullable
-    private File getSelectImageFile(@NotNull Point point) {
-        int selectIndex = listComponent.locationToIndex(point);
-        if (selectIndex < 0) return null;
-        ListModel<File> model = listComponent.getModel();
-        if (model == null) return null;
-        if (selectIndex >= model.getSize()) return null;
-        return model.getElementAt(selectIndex);
-    }
-
     private void addListView(@NotNull Project project) {
         this.listComponent = new JBList<>();
         this.listComponent.setCellRenderer(this);
@@ -133,6 +130,16 @@ public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File
         add(scrollPane, BorderLayout.CENTER);
     }
 
+    @Nullable
+    private File getSelectImageFile(@NotNull Point point) {
+        int selectIndex = listComponent.locationToIndex(point);
+        if (selectIndex < 0) return null;
+        ListModel<File> model = listComponent.getModel();
+        if (model == null) return null;
+        if (selectIndex >= model.getSize()) return null;
+        return model.getElementAt(selectIndex);
+    }
+
     public void reloadResList(@NotNull List<File> changeFileList) {
         for (File imageFile : changeFileList) {
             String path = imageFile.getAbsolutePath();
@@ -150,20 +157,6 @@ public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File
         this.refreshList();
     }
 
-    public void cleanResList() {
-        for (Map.Entry<String, ResRowComponent> entry : componentCache.entrySet()) {
-            ResRowComponent jComponent = entry.getValue();
-            jComponent.dispose();
-        }
-        componentCache.clear();
-    }
-
-    public void toggleTopBar() {
-        switchTopBar(!showSearchBar);
-        validate();
-        repaint();
-    }
-
     private void updateKeyword(String keyword) {
         if (StringUtils.equals(keyword, this.keyword)) return;
         this.keyword = keyword;
@@ -175,20 +168,11 @@ public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File
         this.refreshList();
     }
 
-    @Override
-    public Component getListCellRendererComponent(JList<? extends File> list, File assetFile, int index, boolean isSelected, boolean cellHasFocus) {
-        String path = assetFile.getAbsolutePath();
-        if (!componentCache.containsKey(path)) {
-            componentCache.put(path, new ResRowComponent(assetFile));
-        }
-        return componentCache.get(path);
-    }
-
     private void refreshList() {
         if (CollectionUtils.isEmpty(this.resList)) return;
         List<File> resultList = new ArrayList<>(this.resList);
         //sort
-        resultList.sort(sortType == SortType.SORT_AZ ? Comparator.comparing(File::getName) : (a, b) -> (int) (b.length() - a.length()));
+        resultList.sort(getComparator(this.sortType));
         //filter with keyword
         if (StringUtil.isNotEmpty(this.keyword)) {
             resultList = resultList.stream().filter(file -> {
@@ -199,5 +183,50 @@ public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File
         DefaultListModel<File> listModel = new DefaultListModel<>();
         listModel.addAll(resultList);
         this.listComponent.setModel(listModel);
+    }
+
+    private static Comparator<File> getComparator(@NotNull SortType sortType) {
+        switch (sortType) {
+            case SORT_AZ:
+                return Comparator.comparing(File::getName);
+            case SORT_SIZE:
+                return (a, b) -> (int) (b.length() - a.length());
+            default:
+                return (a, b) -> (int) (b.lastModified() - a.lastModified());
+        }
+    }
+
+    @Override
+    public Component getListCellRendererComponent(JList<? extends File> list, File assetFile, int index, boolean isSelected, boolean cellHasFocus) {
+        String path = assetFile.getAbsolutePath();
+        if (!componentCache.containsKey(path)) {
+            componentCache.put(path, new ResRowComponent(assetFile));
+        }
+        return componentCache.get(path);
+    }
+
+    public void cleanResList() {
+        for (Map.Entry<String, ResRowComponent> entry : componentCache.entrySet()) {
+            ResRowComponent jComponent = entry.getValue();
+            jComponent.dispose();
+        }
+        this.componentCache.clear();
+    }
+
+    public void localeRes(@NotNull String resName) {
+        ListModel<File> listModel = this.listComponent.getModel();
+        if (listModel == null) return;
+        for (int i = 0; i < listModel.getSize(); i++) {
+            File file = listModel.getElementAt(i);
+            if (StringUtils.equals(resName, file.getName())) {
+                this.listComponent.ensureIndexIsVisible(i);
+                break;
+            }
+        }
+    }
+
+    @Nullable
+    public List<File> getResList() {
+        return resList;
     }
 }

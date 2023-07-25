@@ -25,6 +25,7 @@ public class ResMenuHelper {
                                         @NotNull TinyUtils.OnReloadListener onReloadListener) {
         JPopupMenu menu = new JPopupMenu();
         menu.add(createAction("Copy Reference", e -> copyReference(project, imageFile)));
+        menu.add(createAction("Copy Path", e -> copyPath(project, imageFile)));
         if (TinyUtils.isSupport(imageFile)) {
             menu.add(createAction("Compress Image", e ->
                     TinyUtils.compressImage(project, List.of(imageFile), onReloadListener)));
@@ -44,6 +45,15 @@ public class ResMenuHelper {
         StringSelection content = new StringSelection(reference);
         CopyPasteManager.getInstance().setContents(content);
         ToastUtil.make(project, MessageType.INFO, "copy reference success");
+    }
+
+    private static void copyPath(@NotNull Project project, @NotNull File imageFile) {
+        String projectPath = PluginUtils.getProjectPath(project);
+        String assetPath = AssetUtils.getAssetPath(projectPath, imageFile);
+        if (StringUtils.isEmpty(assetPath)) return;
+        StringSelection content = new StringSelection(assetPath);
+        CopyPasteManager.getInstance().setContents(content);
+        ToastUtil.make(project, MessageType.INFO, "copy path success");
     }
 
     private static JMenuItem createAction(@NotNull String title, @NotNull ActionListener listener) {

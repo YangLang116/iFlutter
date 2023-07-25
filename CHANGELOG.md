@@ -3,6 +3,10 @@
 ## [Coming]
 ### Changed
 
+## [2.2.5] - 2023-07-25
+### Changed
+- optimize `Flutter Resource` 
+
 ## [2.2.4] - 2023-06-20
 ### Changed
 - suggestion & feedback

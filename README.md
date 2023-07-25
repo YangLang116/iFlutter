@@ -4,9 +4,9 @@ iFlutter is an IDEA Plugin for Developer of Flutter
 
 ## iFlutter是一款辅助Flutter开发的 IDEA 插件
 
-![platforms](https://img.shields.io/badge/platforms-macos%20%7C%20windows%20%7C%20linux-blue) 
-![tools](https://img.shields.io/badge/idea-intellij_IDEA%20%7C%20AndroidStudio-blue) 
-![licence](https://img.shields.io/badge/licence-MIT-blue) 
+![platforms](https://img.shields.io/badge/platforms-macos%20%7C%20windows%20%7C%20linux-blue)
+![tools](https://img.shields.io/badge/idea-intellij_IDEA%20%7C%20AndroidStudio-blue)
+![licence](https://img.shields.io/badge/licence-MIT-blue)
 ![downloads](https://img.shields.io/jetbrains/plugin/d/18457)
 ![version](https://img.shields.io/jetbrains/plugin/v/18457)
 
@@ -15,12 +15,12 @@ iFlutter is an IDEA Plugin for Developer of Flutter
 ## 最新公告
 
 - [MediaFilePreviewer](https://github.com/YangLang116/MediaFilePreviewer): 一款支持Lottie、SVGA预览的IDEA插件  
-插件安装：插件已上传官方Plugins仓库，可搜索 `MediaFilePreviewer` 下载  
-使用文档：[点击跳转](https://iflutter.toolu.cn/content/chapter-7/part-1.html)
+  插件安装：插件已上传官方Plugins仓库，可搜索 `MediaFilePreviewer` 下载  
+  使用文档：[点击跳转](https://iflutter.toolu.cn/content/chapter-7/part-1.html)
 
 - [GameCenter](https://github.com/YangLang116/GameCenter):支持IDEA中展示游戏菜单  
-插件安装：插件已上传官方Plugins仓库，可搜索 `GameCenter` 下载  
-使用文档：[点击跳转](https://iflutter.toolu.cn/content/chapter-8/part-1.html)
+  插件安装：插件已上传官方Plugins仓库，可搜索 `GameCenter` 下载  
+  使用文档：[点击跳转](https://iflutter.toolu.cn/content/chapter-8/part-1.html)
 
 - [Pub](https://pub.dev/publishers/iflutter.toolu.cn/packages): 更多Flutter Plugin插件 ~
 
@@ -31,45 +31,52 @@ iFlutter is an IDEA Plugin for Developer of Flutter
 - 详细文档: [点击跳转](https://iflutter.toolu.cn)
 
 ## 功能说明
+
 - 1、资源文件管理
-  - [注册资源](https://iflutter.toolu.cn/content/chapter-1/part-1.html)
-  - [注册资源(目录)](https://iflutter.toolu.cn/content/chapter-1/part-2.html)
-  - [注册字体](https://iflutter.toolu.cn/content/chapter-1/part-3.html)
-  - [资源重置](https://iflutter.toolu.cn/content/chapter-1/part-4.html)
-  - [检查重复资源](https://iflutter.toolu.cn/content/chapter-1/part-5.html)
-  - [归纳资源](https://iflutter.toolu.cn/content/chapter-1/part-6.html)
-  - [无用资源检查](https://iflutter.toolu.cn/content/chapter-1/part-7.html)
-  - [图片资源监控](https://iflutter.toolu.cn/content/chapter-1/part-8.html)
-  - [图片资源管理](https://iflutter.toolu.cn/content/chapter-1/part-9.html)
+    - [注册资源](https://iflutter.toolu.cn/content/chapter-1/part-1.html)
+    - [注册资源(目录)](https://iflutter.toolu.cn/content/chapter-1/part-2.html)
+    - [注册字体](https://iflutter.toolu.cn/content/chapter-1/part-3.html)
+    - [资源重置](https://iflutter.toolu.cn/content/chapter-1/part-4.html)
+    - [检查重复资源](https://iflutter.toolu.cn/content/chapter-1/part-5.html)
+    - [归纳资源](https://iflutter.toolu.cn/content/chapter-1/part-6.html)
+    - [无用资源检查](https://iflutter.toolu.cn/content/chapter-1/part-7.html)
+    - [图片资源监控](https://iflutter.toolu.cn/content/chapter-1/part-8.html)
+    - [图片资源管理](https://iflutter.toolu.cn/content/chapter-1/part-9.html)
 - 2、代码生成
-  - [Json 转 Dart Entity](https://iflutter.toolu.cn/content/chapter-2/part-1.html)
-  - [fromJson、toJson](https://iflutter.toolu.cn/content/chapter-2/part-2.html)
-  - [Live Template](https://iflutter.toolu.cn/content/chapter-2/part-3.html)
+    - [Json 转 Dart Entity](https://iflutter.toolu.cn/content/chapter-2/part-1.html)
+    - [fromJson、toJson](https://iflutter.toolu.cn/content/chapter-2/part-2.html)
+    - [Live Template](https://iflutter.toolu.cn/content/chapter-2/part-3.html)
 - 3、插件包管理
-  - [Pub快捷搜索](https://iflutter.toolu.cn/content/chapter-3/part-1.html)
-  - [依赖快速定位](https://iflutter.toolu.cn/content/chapter-3/part-2.html)
-  - [提取远程依赖](https://iflutter.toolu.cn/content/chapter-3/part-3.html)
-  - [包检查更新](https://iflutter.toolu.cn/content/chapter-3/part-4.html)
-  - [依赖树生成](https://iflutter.toolu.cn/content/chapter-3/part-5.html)
+    - [Pub快捷搜索](https://iflutter.toolu.cn/content/chapter-3/part-1.html)
+    - [依赖快速定位](https://iflutter.toolu.cn/content/chapter-3/part-2.html)
+    - [提取远程依赖](https://iflutter.toolu.cn/content/chapter-3/part-3.html)
+    - [包检查更新](https://iflutter.toolu.cn/content/chapter-3/part-4.html)
+    - [依赖树生成](https://iflutter.toolu.cn/content/chapter-3/part-5.html)
 - [4、Http接口Mock](https://iflutter.toolu.cn/content/chapter-4/part-1.html)
 - [5、国际化支持](https://iflutter.toolu.cn/content/chapter-5/part-1.html)
 - [6、镜像仓库注入](https://iflutter.toolu.cn/content/chapter-6/part-1.html)
 
 ## 问题反馈
+
   <img src="https://cdn.jsdelivr.net/gh/YangLang116/iFlutter-Document/configs/iflutter_wechat.png" width="120"  alt="wx chat"/>
 
 ## 版本更新
+
+### v2.2.5
+
+- 资源管理优化：支持添加时间排序、资源定位、复制资源路径
+
 ### v2.2.4
+
 - 建议与反馈 [使用说明](https://iflutter.toolu.cn/content/chapter-10/part-1.html)
 
 ### v2.2.3
+
 - 优化资源管理工具栏，支持图片压缩
 
 ### v2.2.2
-- 优化资源管理工具栏，支持复制资源引用等
 
-### v2.2.1
-- 图片资源管理工具栏支持搜索
+- 优化资源管理工具栏，支持复制资源引用等
 
 ## 其他
 

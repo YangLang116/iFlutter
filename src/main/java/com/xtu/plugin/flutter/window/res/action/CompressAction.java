@@ -18,7 +18,7 @@ public class CompressAction extends AnAction {
     private final ResManagerRootPanel rootPanel;
 
     public CompressAction(@NotNull ResManagerRootPanel rootPanel) {
-        super(AllIcons.Actions.MenuCut);
+        super(AllIcons.Actions.IntentionBulbGrey);
         this.rootPanel = rootPanel;
     }
 

@@ -11,7 +11,7 @@ public class SearchAction extends AnAction {
     private final ResManagerRootPanel rootPanel;
 
     public SearchAction(@NotNull ResManagerRootPanel rootPanel) {
-        super(AllIcons.Actions.Search);
+        super(AllIcons.Actions.Replace);
         this.rootPanel = rootPanel;
     }
 

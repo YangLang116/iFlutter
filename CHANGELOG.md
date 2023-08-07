@@ -3,9 +3,13 @@
 ## [Coming]
 ### Changed
 
+## [2.2.6] - 2023-08-07
+### Changed
+- update `toolwindow` icon
+
 ## [2.2.5] - 2023-07-25
 ### Changed
-- optimize `Flutter Resource` 
+- optimize `Flutter Resource`
 
 ## [2.2.4] - 2023-06-20
 ### Changed

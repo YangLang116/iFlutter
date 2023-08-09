@@ -3,6 +3,11 @@
 ## [Coming]
 ### Changed
 
+## [2.2.7] - 2023-08-09
+### Changed
+- fix `Flutter Resource` error
+- optimize `suggestion & feedback`
+
 ## [2.2.6] - 2023-08-07
 ### Changed
 - update `toolwindow` icon

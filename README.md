@@ -61,27 +61,11 @@ iFlutter is an IDEA Plugin for Developer of Flutter
 
   <img src="https://cdn.jsdelivr.net/gh/YangLang116/iFlutter-Document/configs/iflutter_wechat.png" width="120"  alt="wx chat"/>
 
-## 版本更新
+## 版本更新记录
 
-### v2.2.6
+### v2.2.7
 
-- 修改`资源管理`窗口UI
-
-### v2.2.5
-
-- 资源管理优化：支持添加时间排序、资源定位、复制资源路径
-
-### v2.2.4
-
-- 建议与反馈 [使用说明](https://iflutter.toolu.cn/content/chapter-10/part-1.html)
-
-### v2.2.3
-
-- 优化资源管理工具栏，支持图片压缩
-
-### v2.2.2
-
-- 优化资源管理工具栏，支持复制资源引用等
+- 修复`资源管理`窗口启动异常
 
 ## 其他
 

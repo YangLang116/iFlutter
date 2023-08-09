@@ -51,7 +51,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
     private JLabel tinyQuestion;
     private JLabel adviceLabel;
 
-    public SettingsConfiguration(Project project) {
+    public SettingsConfiguration(@NotNull Project project) {
         this.project = project;
     }
 

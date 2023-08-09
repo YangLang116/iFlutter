@@ -190,9 +190,9 @@ public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File
             case SORT_AZ:
                 return Comparator.comparing(File::getName);
             case SORT_SIZE:
-                return (a, b) -> (int) (b.length() - a.length());
+                return Comparator.comparingLong(File::length).reversed();
             default:
-                return (a, b) -> (int) (b.lastModified() - a.lastModified());
+                return Comparator.comparingLong(File::lastModified).reversed();
         }
     }
 

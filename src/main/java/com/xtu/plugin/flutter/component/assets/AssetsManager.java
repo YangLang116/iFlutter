@@ -44,9 +44,8 @@ public class AssetsManager implements BulkFileListener {
         LogUtils.info("AssetsManager detach");
     }
 
-    private boolean disableResCheck() {
-        return !StorageService.getInstance(project).getState()
-                .resCheckEnable;
+    private boolean enableResCheck() {
+        return StorageService.getInstance(project).getState().resCheckEnable;
     }
 
     @Override
@@ -87,34 +86,39 @@ public class AssetsManager implements BulkFileListener {
 
     private void onFileAdded(@NotNull Project project, @NotNull VirtualFile virtualFile) {
         this.imageSizeAnalyzer.onPsiFileAdd(project, virtualFile);
-        if (disableResCheck()) return;
-        this.assetFileHandler.onFileAdded(project, virtualFile);
+        if (enableResCheck()) {
+            this.assetFileHandler.onFileAdded(project, virtualFile);
+        }
     }
 
     private void onFileDeleted(@NotNull Project project, @NotNull VirtualFile virtualFile) {
-        if (disableResCheck()) return;
-        this.assetFileHandler.onFileDeleted(project, virtualFile);
+        if (enableResCheck()) {
+            this.assetFileHandler.onFileDeleted(project, virtualFile);
+        }
     }
 
     private void onFilePropertyChanged(@NotNull Project project,
                                        @NotNull VirtualFile virtualFile,
                                        @NotNull String oldName,
                                        @NotNull String newName) {
-        if (disableResCheck()) return;
-        this.assetFileHandler.onFileChanged(project, virtualFile, oldName, newName);
+        if (enableResCheck()) {
+            this.assetFileHandler.onFileChanged(project, virtualFile, oldName, newName);
+        }
     }
 
     private void onFileMove(@NotNull Project project,
                             @NotNull File oldFile,
                             @NotNull VirtualFile newFile) {
-        if (disableResCheck()) return;
-        this.assetFileHandler.onFileMoved(project, oldFile, newFile);
+        if (enableResCheck()) {
+            this.assetFileHandler.onFileMoved(project, oldFile, newFile);
+        }
     }
 
     private void onFileContentChanged(@NotNull Project project, @NotNull VirtualFile virtualFile) {
         if (PubspecUtils.isRootPubspecFile(project, virtualFile)) {
-            if (disableResCheck()) return;
-            this.specFileHandler.onPsiFileChanged(project);
+            if (enableResCheck()) {
+                this.specFileHandler.onPsiFileChanged(project);
+            }
         }
     }
 }

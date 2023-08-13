@@ -25,6 +25,7 @@ public class FlutterPackageUpdater {
 
     private final Project project;
     private final ScheduledExecutorService latestVersionChecker;
+    private volatile boolean isDetach = false;
 
     public FlutterPackageUpdater(@NotNull Project project) {
         this.project = project;
@@ -32,15 +33,17 @@ public class FlutterPackageUpdater {
     }
 
     public void attach() {
+        this.isDetach = false;
         LogUtils.info("FlutterPackageUpdater attach");
         //定时拉取最新版本，间隔5分钟
         this.latestVersionChecker.scheduleWithFixedDelay(this::pullLatestVersion, 0, 5, TimeUnit.MINUTES);
     }
 
     public void detach() {
+        this.isDetach = true;
         LogUtils.info("FlutterPackageUpdater detach");
         try {
-            this.latestVersionChecker.shutdownNow();
+            this.latestVersionChecker.shutdown();
         } catch (Exception e) {
             LogUtils.error("FlutterPackageUpdater detach: " + e.getMessage());
         }
@@ -48,7 +51,7 @@ public class FlutterPackageUpdater {
 
     private void pullLatestVersion() {
         try {
-            if (this.latestVersionChecker.isShutdown()) return;
+            if (this.isDetach) return;
             LogUtils.info("FlutterPackageUpdater pullLatestVersion");
             String projectPath = PluginUtils.getProjectPath(project);
             if (StringUtils.isEmpty(projectPath)) return;
@@ -92,7 +95,7 @@ public class FlutterPackageUpdater {
     }
 
     private void updatePackageInfo(List<PackageInfo> packageInfoList) {
-        if (this.latestVersionChecker.isShutdown()) return;
+        if (this.isDetach) return;
         LogUtils.info("FlutterPackageUpdater updatePackageInfo: " + packageInfoList);
         Map<String, PackageInfo> infoMap = StorageService.getInstance(project).getState().packageInfoMap;
         infoMap.clear();

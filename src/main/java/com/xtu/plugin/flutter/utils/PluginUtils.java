@@ -1,5 +1,8 @@
 package com.xtu.plugin.flutter.utils;
 
+import com.intellij.ide.plugins.IdeaPluginDescriptor;
+import com.intellij.ide.plugins.PluginManager;
+import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
@@ -36,5 +39,13 @@ public class PluginUtils {
         if (needOpenFile == null) return;
         FileEditorManager editorManager = FileEditorManager.getInstance(project);
         editorManager.openFile(needOpenFile, true);
+    }
+
+    public static String getVersion() {
+        PluginManager pluginManager = PluginManager.getInstance();
+        PluginId id = PluginId.getId("com.xtu.plugins.flutter");
+        IdeaPluginDescriptor pluginDescriptor = pluginManager.findEnabledPlugin(id);
+        assert pluginDescriptor != null;
+        return pluginDescriptor.getVersion();
     }
 }

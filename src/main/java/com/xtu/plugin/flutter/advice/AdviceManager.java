@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
 import com.xtu.plugin.flutter.upgrader.NetworkManager;
+import com.xtu.plugin.flutter.utils.PluginUtils;
 import com.xtu.plugin.flutter.utils.ToastUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -31,7 +32,7 @@ public class AdviceManager {
 
     public void submitAdvice(@NotNull Project project, @NotNull String title, @NotNull String content) {
         final Map<String, String> params = new HashMap<>();
-        params.put("app_key", APP_KEY);
+        params.put("app_key", APP_KEY + "_" + PluginUtils.getVersion());
         params.put("title", title);
         params.put("content", content);
         NetworkManager.getInstance().post(sURL, gson.toJson(params), new Callback() {

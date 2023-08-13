@@ -38,8 +38,8 @@ public class StorageEntity {
     //最大图片
     public int maxPicSize = 500;
     //最大图片宽高
-    public int maxPicWidth = 720;
-    public int maxPicHeight = 1080;
+    public int maxPicWidth = 1080;
+    public int maxPicHeight = 2400;
     //仓库镜像地址
     public String mirrorRepoStr = StringUtils.join(DEFAULT_MIRROR_REPO, AndroidGradleMaker.REPO_SPLIT);
     //是否带包名生成资源文件

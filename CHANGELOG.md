@@ -3,6 +3,11 @@
 ## [Coming]
 ### Changed
 
+## [3.0.0] - 2023-08-17
+### Changed
+- optimize plugin performance
+- optimize resource release
+
 ## [2.2.7] - 2023-08-09
 ### Changed
 - fix `Flutter Resource` error

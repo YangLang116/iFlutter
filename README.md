@@ -63,6 +63,11 @@ iFlutter is an IDEA Plugin for Developer of Flutter
 
 ## 版本更新记录
 
+### v3.0.0
+
+- 提升插件性能
+- 优化资源释放
+
 ### v2.2.7
 
 - 修复`资源管理`窗口启动异常

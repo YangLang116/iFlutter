@@ -21,7 +21,6 @@
         <projectService serviceImplementation="com.xtu.plugin.flutter.component.assets.AssetsManager"/>
         <projectService serviceImplementation="com.xtu.plugin.flutter.component.packages.update.FlutterPackageUpdater"/>
         <projectConfigurable parentId="tools" instance="com.xtu.plugin.flutter.configuration.SettingsConfiguration"/>
-        <postStartupActivity implementation="com.xtu.plugin.flutter.component.FStartupActivityImpl"/>
         <notificationGroup id="com.xtu.plugin.flutter.upgrade" displayType="BALLOON"
                            key="com.xtu.plugin.flutter.upgrade"/>
         <toolWindow id="Flutter Resource"
@@ -31,6 +30,10 @@
                     factoryClass="com.xtu.plugin.flutter.window.res.ResManagerToolWindowFactory"/>
         <errorHandler implementation="com.xtu.plugin.flutter.reporter.FErrorReporter"/>
     </extensions>
+    <applicationListeners>
+        <listener topic="com.intellij.openapi.project.ProjectManagerListener"
+                  class="com.xtu.plugin.flutter.component.FProjectManager"/>
+    </applicationListeners>
     <projectListeners>
         <listener topic="com.intellij.openapi.wm.ex.ToolWindowManagerListener"
                   class="com.xtu.plugin.flutter.window.res.listener.ResManagerToolWindowListener"/>

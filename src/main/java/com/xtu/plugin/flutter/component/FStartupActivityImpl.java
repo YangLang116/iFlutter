@@ -38,6 +38,5 @@ public class FStartupActivityImpl implements StartupActivity, Disposable {
         LogUtils.info("FStartupActivityImpl close Project");
         this.assetsManager.detach();
         this.packageUpdater.detach();
-        HttpMockManager.getService(project).releaseServer();
     }
 }

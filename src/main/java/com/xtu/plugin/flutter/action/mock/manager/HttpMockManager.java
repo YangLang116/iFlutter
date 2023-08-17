@@ -1,26 +1,22 @@
 package com.xtu.plugin.flutter.action.mock.manager;
 
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
-import com.xtu.plugin.flutter.service.HttpEntity;
-import com.xtu.plugin.flutter.service.StorageService;
+import com.xtu.plugin.flutter.action.mock.manager.dispatcher.HttpDispatcher;
 import com.xtu.plugin.flutter.utils.HttpUtils;
 import com.xtu.plugin.flutter.utils.LogUtils;
 import com.xtu.plugin.flutter.utils.ToastUtil;
-import okhttp3.mockwebserver.Dispatcher;
-import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
-import okhttp3.mockwebserver.RecordedRequest;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.InetAddress;
-import java.util.List;
 import java.util.Locale;
 
-public final class HttpMockManager {
+public final class HttpMockManager implements Disposable {
 
     private final Project project;
     private final MockWebServer webServer;
@@ -37,6 +33,7 @@ public final class HttpMockManager {
     }
 
     public void activeServer() {
+        LogUtils.info("HttpMockManager activeServer");
         try {
             InetAddress inetAddress = Inet4Address.getLocalHost();
             String localIp = HttpUtils.getLocalIP();
@@ -51,7 +48,8 @@ public final class HttpMockManager {
         }
     }
 
-    public void releaseServer() {
+    private void releaseServer() {
+        LogUtils.info("HttpMockManager releaseServer");
         try {
             webServer.shutdown();
         } catch (IOException e) {
@@ -67,35 +65,8 @@ public final class HttpMockManager {
         return getBaseUrl() + path;
     }
 
-    private static class HttpDispatcher extends Dispatcher {
-
-        private final Project project;
-
-        public HttpDispatcher(Project project) {
-            this.project = project;
-        }
-
-        @NotNull
-        @Override
-        public MockResponse dispatch(@NotNull RecordedRequest recordedRequest) throws InterruptedException {
-            String path = recordedRequest.getPath();
-            String method = recordedRequest.getMethod();
-            List<HttpEntity> httpEntityList = StorageService.getInstance(project).getState().httpEntityList;
-            for (HttpEntity httpEntity : httpEntityList) {
-                if (StringUtils.equals(httpEntity.path, path)) {
-                    if (StringUtils.equalsIgnoreCase(httpEntity.method, method)) {
-                        return new MockResponse()
-                                .setResponseCode(200)
-                                .setHeader("Content-Type","application/json; charset=utf-8")
-                                .setBody(httpEntity.response);
-                    } else {
-                        return new MockResponse()
-                                .setResponseCode(400)
-                                .setBody("Request Method not Support");
-                    }
-                }
-            }
-            return new MockResponse().setResponseCode(404);
-        }
+    @Override
+    public void dispose() {
+        releaseServer();
     }
 }

@@ -1,4 +1,4 @@
-package com.xtu.plugin.flutter.service;
+package com.xtu.plugin.flutter.store;
 
 import com.intellij.util.xmlb.annotations.Transient;
 import com.xtu.plugin.flutter.action.pub.speed.helper.AndroidGradleMaker;

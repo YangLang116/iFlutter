@@ -9,7 +9,7 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.options.ShowSettingsUtil;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.SystemInfo;
+import com.xtu.plugin.flutter.utils.LogUtils;
 import com.xtu.plugin.flutter.utils.VersionUtils;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -25,19 +25,9 @@ public class UpgradeManager {
     private static final String sGroupId = "com.xtu.plugin.flutter.upgrade";
     private static final String sUrl = "https://iflutter.toolu.cn/iflutter-version.json";
 
-    private UpgradeManager() {
-    }
-
-    private static final UpgradeManager sInstance = new UpgradeManager();
-
-    public static UpgradeManager getInstance() {
-        return sInstance;
-    }
-
-    public void checkPluginVersion(@NotNull Project project) {
-        final String currentVersion = VersionUtils.getPluginVersion();
-        final String url = sUrl + "?version=" + currentVersion + "&os=" + SystemInfo.getOsNameAndVersion();
-        NetworkManager.getInstance().get(url, new Callback() {
+    public static void checkPluginVersion(@NotNull Project project) {
+        LogUtils.info("UpgradeManager checkPluginVersion");
+        NetworkManager.getInstance().get(sUrl, new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 //ignore
@@ -54,6 +44,7 @@ public class UpgradeManager {
                 VersionInfo versionInfo = gson.fromJson(responseContent, VersionInfo.class);
                 if (versionInfo != null && !TextUtils.isEmpty(versionInfo.version)) {
                     String serverVersion = versionInfo.version;
+                    final String currentVersion = VersionUtils.getPluginVersion();
                     if (VersionUtils.compareVersion(currentVersion, serverVersion) > 0) { //有新版更新
                         pushNotification(project,
                                 versionInfo.title, versionInfo.subtitle, versionInfo.content,
@@ -64,9 +55,9 @@ public class UpgradeManager {
         });
     }
 
-    private void pushNotification(@NotNull Project project,
-                                  String title, String subtitle, String content,
-                                  String detailBtnText, String detailUrl) {
+    private static void pushNotification(@NotNull Project project,
+                                         String title, String subtitle, String content,
+                                         String detailBtnText, String detailUrl) {
         NotificationGroupManager.getInstance()
                 .getNotificationGroup(sGroupId)
                 .createNotification(title, subtitle, content, NotificationType.INFORMATION,
@@ -77,7 +68,7 @@ public class UpgradeManager {
                 .notify(project);
     }
 
-    private AnAction createUpgradeAction(@NotNull Project project) {
+    private static AnAction createUpgradeAction(@NotNull Project project) {
         return new NotificationAction("Upgrade") {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e, @NotNull Notification notification) {
@@ -88,7 +79,7 @@ public class UpgradeManager {
         };
     }
 
-    private AnAction createDetailAction(String detailBtnText, String detailUrl) {
+    private static AnAction createDetailAction(String detailBtnText, String detailUrl) {
         return new NotificationAction(detailBtnText) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e, @NotNull Notification notification) {

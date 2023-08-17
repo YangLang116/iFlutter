@@ -2,7 +2,7 @@ package com.xtu.plugin.flutter.action.mock.ui;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
-import com.xtu.plugin.flutter.service.HttpEntity;
+import com.xtu.plugin.flutter.store.HttpEntity;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;

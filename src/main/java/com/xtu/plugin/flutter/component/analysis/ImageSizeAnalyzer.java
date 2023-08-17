@@ -5,8 +5,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.xtu.plugin.flutter.component.analysis.utils.ImageAnalysisUtils;
-import com.xtu.plugin.flutter.service.StorageEntity;
-import com.xtu.plugin.flutter.service.StorageService;
+import com.xtu.plugin.flutter.store.StorageEntity;
+import com.xtu.plugin.flutter.store.StorageService;
 import com.xtu.plugin.flutter.utils.AssetUtils;
 import org.jetbrains.annotations.NotNull;
 

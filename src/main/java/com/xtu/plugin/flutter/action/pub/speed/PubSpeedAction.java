@@ -12,7 +12,7 @@ public class PubSpeedAction extends AnAction {
     @Override
     public void update(@NotNull AnActionEvent e) {
         final Project project = e.getProject();
-        boolean isFlutterProject = !PluginUtils.isNotFlutterProject(project);
+        boolean isFlutterProject = PluginUtils.isFlutterProject(project);
         e.getPresentation().setVisible(isFlutterProject);
     }
 

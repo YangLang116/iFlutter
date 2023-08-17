@@ -1,4 +1,4 @@
-package com.xtu.plugin.flutter.service;
+package com.xtu.plugin.flutter.store;
 
 import java.util.Objects;
 

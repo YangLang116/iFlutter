@@ -8,10 +8,9 @@ import org.jetbrains.annotations.NotNull;
 public class VersionUtils {
 
     public static String getPluginVersion() {
-        IdeaPluginDescriptor pluginDescriptor = PluginManagerCore.getPlugin(PluginId.getId("com.xtu.plugins.flutter"));
-        if (pluginDescriptor != null) {
-            return pluginDescriptor.getVersion();
-        }
+        PluginId pluginId = PluginId.getId("com.xtu.plugins.flutter");
+        IdeaPluginDescriptor pluginDescriptor = PluginManagerCore.getPlugin(pluginId);
+        if (pluginDescriptor != null) return pluginDescriptor.getVersion();
         return "0.0.0";
     }
 

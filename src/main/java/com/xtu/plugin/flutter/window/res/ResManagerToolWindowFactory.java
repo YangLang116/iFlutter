@@ -25,7 +25,7 @@ public class ResManagerToolWindowFactory implements ToolWindowFactory, DumbAware
 
     @Override
     public boolean isApplicable(@NotNull Project project) {
-        return !PluginUtils.isNotFlutterProject(project);
+        return PluginUtils.isFlutterProject(project);
     }
 
     @Override

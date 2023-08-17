@@ -7,6 +7,7 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.xtu.plugin.flutter.utils.PluginUtils;
 import com.xtu.plugin.flutter.utils.YamlPsiUtils;
 import kotlin.Pair;
 import org.jetbrains.annotations.NotNull;
@@ -20,6 +21,10 @@ public abstract class BaseDependencyAction extends AnAction {
     @Override
     public void update(@NotNull AnActionEvent e) {
         Project project = e.getProject();
+        if (!PluginUtils.isFlutterProject(project)) {
+            e.getPresentation().setVisible(false);
+            return;
+        }
         Editor editor = e.getData(CommonDataKeys.EDITOR);
         if (project == null || editor == null) {
             e.getPresentation().setVisible(false);

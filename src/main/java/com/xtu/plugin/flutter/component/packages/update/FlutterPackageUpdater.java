@@ -1,9 +1,10 @@
 package com.xtu.plugin.flutter.component.packages.update;
 
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SystemInfo;
-import com.xtu.plugin.flutter.service.StorageService;
+import com.xtu.plugin.flutter.store.StorageService;
 import com.xtu.plugin.flutter.utils.CommandUtils;
 import com.xtu.plugin.flutter.utils.DartUtils;
 import com.xtu.plugin.flutter.utils.LogUtils;
@@ -21,7 +22,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class FlutterPackageUpdater {
+public class FlutterPackageUpdater implements Disposable {
 
     private final Project project;
     private final ScheduledExecutorService latestVersionChecker;
@@ -32,16 +33,22 @@ public class FlutterPackageUpdater {
         this.latestVersionChecker = Executors.newScheduledThreadPool(1);
     }
 
+    public static FlutterPackageUpdater getService(@NotNull Project project) {
+        return project.getService(FlutterPackageUpdater.class);
+    }
+
     public void attach() {
-        this.isDetach = false;
         LogUtils.info("FlutterPackageUpdater attach");
+        this.isDetach = false;
         //定时拉取最新版本，间隔5分钟
+        if (!PluginUtils.isFlutterProject(project)) return;
         this.latestVersionChecker.scheduleWithFixedDelay(this::pullLatestVersion, 0, 5, TimeUnit.MINUTES);
     }
 
-    public void detach() {
-        this.isDetach = true;
+    private void detach() {
         LogUtils.info("FlutterPackageUpdater detach");
+        this.isDetach = true;
+        if (!PluginUtils.isFlutterProject(project)) return;
         try {
             this.latestVersionChecker.shutdown();
         } catch (Exception e) {
@@ -102,5 +109,11 @@ public class FlutterPackageUpdater {
         for (PackageInfo packageInfo : packageInfoList) {
             infoMap.put(packageInfo.name, packageInfo);
         }
+    }
+
+
+    @Override
+    public void dispose() {
+        detach();
     }
 }

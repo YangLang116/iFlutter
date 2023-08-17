@@ -1,14 +1,11 @@
-package com.xtu.plugin.flutter.service.asset;
+package com.xtu.plugin.flutter.store.asset;
 
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
-import com.xtu.plugin.flutter.utils.AssetUtils;
-import com.xtu.plugin.flutter.utils.CollectionUtils;
-import com.xtu.plugin.flutter.utils.FontUtils;
-import com.xtu.plugin.flutter.utils.PluginUtils;
+import com.xtu.plugin.flutter.utils.*;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -19,13 +16,17 @@ import java.util.Collections;
 import java.util.List;
 
 @State(name = "iFlutterAsset", storages = {@Storage("iFlutter_Asset.xml")})
-public class AssetStorageService implements PersistentStateComponent<AssetStorageEntity> {
+public class AssetRegisterStorageService implements PersistentStateComponent<AssetStorageEntity> {
 
     private final Project project;
     private AssetStorageEntity storageEntity = new AssetStorageEntity();
 
-    public AssetStorageService(@NotNull Project project) {
+    public AssetRegisterStorageService(@NotNull Project project) {
         this.project = project;
+    }
+
+    public static AssetRegisterStorageService getService(@NotNull Project project) {
+        return project.getService(AssetRegisterStorageService.class);
     }
 
     @Override
@@ -39,20 +40,12 @@ public class AssetStorageService implements PersistentStateComponent<AssetStorag
         this.storageEntity = state;
     }
 
-    private static boolean isNotFoldRegister(Project project) {
-        return !AssetUtils.isFoldRegister(project);
-    }
-
-    private static AssetStorageService getService(@NotNull Project project) {
-        return project.getService(AssetStorageService.class);
-    }
-
     //首次启动项目同步资源
-    public static void refreshAssetIfNeed(@NotNull Project project) {
-        if (isNotFoldRegister(project)) return;
-        AssetStorageService service = getService(project);
-        //同步最新资源列表
-        DumbService.getInstance(project).smartInvokeLater(service::refreshAsset);
+    public void refreshIfNeed() {
+        LogUtils.info("AssetRegisterStorageService refreshIfNeed");
+        if (!PluginUtils.isFlutterProject(project)) return;
+        if (!AssetUtils.isFoldRegister(project)) return;
+        DumbService.getInstance(project).smartInvokeLater(this::refreshAsset); //同步最新资源列表
     }
 
     private void refreshAsset() {
@@ -76,18 +69,18 @@ public class AssetStorageService implements PersistentStateComponent<AssetStorag
 
     ///获取储存资源列表
     public static List<String> getAssetList(@NotNull Project project) {
-        AssetStorageService service = getService(project);
+        AssetRegisterStorageService service = getService(project);
         return service.storageEntity.assetList;
     }
 
     //更新资源列表
     public static List<String> updateAsset(@NotNull Project project, @NotNull List<String> newAssetList) {
-        if (isNotFoldRegister(project)) return newAssetList;
+        if (!AssetUtils.isFoldRegister(project)) return newAssetList;
         //pure asset list
         CollectionUtils.duplicateList(newAssetList);
         Collections.sort(newAssetList);
         //update asset
-        AssetStorageService service = getService(project);
+        AssetRegisterStorageService service = getService(project);
         List<String> assetList = service.storageEntity.assetList;
         assetList.clear();
         assetList.addAll(newAssetList);

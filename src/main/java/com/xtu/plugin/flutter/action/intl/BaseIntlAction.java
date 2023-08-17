@@ -15,7 +15,7 @@ public abstract class BaseIntlAction extends AnAction {
     public void update(@NotNull AnActionEvent e) {
         Project project = e.getProject();
         List<String> localeList = IntlUtils.getLocaleList(project);
-        boolean noLocale = CollectionUtils.isEmpty(localeList);
-        e.getPresentation().setVisible(!noLocale);
+        boolean hasLocale = !CollectionUtils.isEmpty(localeList);
+        e.getPresentation().setVisible(hasLocale);
     }
 }

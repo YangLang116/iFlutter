@@ -6,6 +6,7 @@ import com.intellij.openapi.ui.MessageType;
 import com.xtu.plugin.flutter.action.mock.manager.dispatcher.HttpDispatcher;
 import com.xtu.plugin.flutter.utils.HttpUtils;
 import com.xtu.plugin.flutter.utils.LogUtils;
+import com.xtu.plugin.flutter.utils.PluginUtils;
 import com.xtu.plugin.flutter.utils.ToastUtil;
 import okhttp3.mockwebserver.MockWebServer;
 import org.apache.commons.lang.StringUtils;
@@ -34,6 +35,7 @@ public final class HttpMockManager implements Disposable {
 
     public void activeServer() {
         LogUtils.info("HttpMockManager activeServer");
+        if (!PluginUtils.isFlutterProject(project)) return;
         try {
             InetAddress inetAddress = Inet4Address.getLocalHost();
             String localIp = HttpUtils.getLocalIP();

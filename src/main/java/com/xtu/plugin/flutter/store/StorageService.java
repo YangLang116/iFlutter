@@ -1,4 +1,4 @@
-package com.xtu.plugin.flutter.service;
+package com.xtu.plugin.flutter.store;
 
 
 import com.intellij.openapi.components.PersistentStateComponent;

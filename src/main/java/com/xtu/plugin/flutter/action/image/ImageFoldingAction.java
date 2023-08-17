@@ -7,10 +7,18 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.xtu.plugin.flutter.action.BaseResourceAction;
 import com.xtu.plugin.flutter.action.image.task.OptimizeImageFoldTask;
+import com.xtu.plugin.flutter.utils.PluginUtils;
 import org.jetbrains.annotations.NotNull;
 
 //整理images目录下的图片
 public class ImageFoldingAction extends BaseResourceAction {
+
+    @Override
+    public void update(@NotNull AnActionEvent e) {
+        Project project = e.getProject();
+        boolean isFlutterProject = PluginUtils.isFlutterProject(project);
+        e.getPresentation().setVisible(isFlutterProject);
+    }
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {

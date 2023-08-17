@@ -1,5 +1,6 @@
 package com.xtu.plugin.flutter.component.assets;
 
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
@@ -8,8 +9,9 @@ import com.intellij.openapi.vfs.newvfs.events.*;
 import com.xtu.plugin.flutter.component.analysis.ImageSizeAnalyzer;
 import com.xtu.plugin.flutter.component.assets.handler.AssetFileHandler;
 import com.xtu.plugin.flutter.component.assets.handler.PubSpecFileHandler;
-import com.xtu.plugin.flutter.service.StorageService;
+import com.xtu.plugin.flutter.store.StorageService;
 import com.xtu.plugin.flutter.utils.LogUtils;
+import com.xtu.plugin.flutter.utils.PluginUtils;
 import com.xtu.plugin.flutter.utils.PubspecUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,7 +22,7 @@ import java.util.Objects;
 /**
  * 处理flutter项目中的资源文件
  */
-public class AssetsManager implements BulkFileListener {
+public class AssetsManager implements BulkFileListener, Disposable {
 
     private final Project project;
     private final AssetFileHandler assetFileHandler;
@@ -34,10 +36,14 @@ public class AssetsManager implements BulkFileListener {
         this.imageSizeAnalyzer = new ImageSizeAnalyzer(project);
     }
 
+    public static AssetsManager getService(@NotNull Project project) {
+        return project.getService(AssetsManager.class);
+    }
+
     public void attach() {
         LogUtils.info("AssetsManager attach");
-        project.getMessageBus().connect()
-                .subscribe(VirtualFileManager.VFS_CHANGES, this);
+        if (!PluginUtils.isFlutterProject(project)) return;
+        project.getMessageBus().connect().subscribe(VirtualFileManager.VFS_CHANGES, this);
     }
 
     public void detach() {
@@ -120,5 +126,10 @@ public class AssetsManager implements BulkFileListener {
                 this.specFileHandler.onPsiFileChanged(project);
             }
         }
+    }
+
+    @Override
+    public void dispose() {
+        detach();
     }
 }

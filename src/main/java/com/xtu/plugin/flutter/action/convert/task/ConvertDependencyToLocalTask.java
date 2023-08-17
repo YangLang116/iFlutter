@@ -16,7 +16,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.xtu.plugin.flutter.component.packages.update.PackageInfo;
-import com.xtu.plugin.flutter.service.StorageService;
+import com.xtu.plugin.flutter.store.StorageService;
 import com.xtu.plugin.flutter.utils.LogUtils;
 import com.xtu.plugin.flutter.utils.PluginUtils;
 import com.xtu.plugin.flutter.utils.PubUtils;

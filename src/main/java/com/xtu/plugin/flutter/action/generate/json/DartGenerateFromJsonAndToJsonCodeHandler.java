@@ -7,8 +7,8 @@ import com.jetbrains.lang.dart.ide.generation.BaseCreateMethodsFix;
 import com.jetbrains.lang.dart.ide.generation.BaseDartGenerateHandler;
 import com.jetbrains.lang.dart.psi.DartClass;
 import com.jetbrains.lang.dart.psi.DartComponent;
-import com.xtu.plugin.flutter.service.StorageEntity;
-import com.xtu.plugin.flutter.service.StorageService;
+import com.xtu.plugin.flutter.store.StorageEntity;
+import com.xtu.plugin.flutter.store.StorageService;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

@@ -19,11 +19,8 @@ public class GenerateResAction extends AnAction {
     @Override
     public void update(@NotNull AnActionEvent e) {
         Project project = e.getProject();
-        if (PluginUtils.isNotFlutterProject(project)) {
-            e.getPresentation().setVisible(false);
-            return;
-        }
-        e.getPresentation().setVisible(true);
+        boolean isFlutterProject = PluginUtils.isFlutterProject(project);
+        e.getPresentation().setVisible(isFlutterProject);
     }
 
     @Override

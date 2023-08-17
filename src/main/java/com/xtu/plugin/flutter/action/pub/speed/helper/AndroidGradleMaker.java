@@ -10,7 +10,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.xtu.plugin.flutter.action.pub.speed.entity.AndroidMavenInfo;
-import com.xtu.plugin.flutter.service.StorageService;
+import com.xtu.plugin.flutter.store.StorageService;
 import com.xtu.plugin.flutter.utils.ArrayUtils;
 import com.xtu.plugin.flutter.utils.CollectionUtils;
 import org.jetbrains.annotations.NotNull;

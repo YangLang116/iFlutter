@@ -3,9 +3,10 @@ package com.xtu.plugin.flutter.advice;
 import com.google.gson.Gson;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
+import com.intellij.openapi.util.SystemInfo;
 import com.xtu.plugin.flutter.upgrader.NetworkManager;
-import com.xtu.plugin.flutter.utils.PluginUtils;
 import com.xtu.plugin.flutter.utils.ToastUtil;
+import com.xtu.plugin.flutter.utils.VersionUtils;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -32,9 +33,11 @@ public class AdviceManager {
 
     public void submitAdvice(@NotNull Project project, @NotNull String title, @NotNull String content) {
         final Map<String, String> params = new HashMap<>();
-        params.put("app_key", APP_KEY + "_" + PluginUtils.getVersion());
         params.put("title", title);
         params.put("content", content);
+        params.put("app_key", APP_KEY);
+        params.put("version", VersionUtils.getPluginVersion());
+        params.put("os", SystemInfo.getOsNameAndVersion());
         NetworkManager.getInstance().post(sURL, gson.toJson(params), new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {

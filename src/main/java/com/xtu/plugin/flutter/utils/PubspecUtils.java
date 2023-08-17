@@ -14,7 +14,7 @@ import com.intellij.openapi.wm.WindowManager;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.xtu.plugin.flutter.service.asset.AssetStorageService;
+import com.xtu.plugin.flutter.store.asset.AssetRegisterStorageService;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -127,7 +127,7 @@ public class PubspecUtils {
             //asset list
             List<String> assetList = new ArrayList<>();
             if (AssetUtils.isFoldRegister(project)) {
-                assetList.addAll(AssetStorageService.getAssetList(project));
+                assetList.addAll(AssetRegisterStorageService.getAssetList(project));
             } else {
                 YAMLSequence assetSequence = getAssetSequence(project);
                 if (assetSequence != null) {
@@ -193,9 +193,9 @@ public class PubspecUtils {
         WriteAction.run(() -> WriteCommandAction.runWriteCommandAction(project, () -> {
             YAMLElementGenerator elementGenerator = YAMLElementGenerator.getInstance(project);
             //modify asset
-            if (modifyAssetFail(project, assetList, oldAssetSequence, elementGenerator)) return;
+            if (modifyAsset(project, assetList, oldAssetSequence, elementGenerator)) return;
             //modify font
-            if (modifyFontFail(project, fontList, oldFontSequence, elementGenerator)) return;
+            if (modifyFont(project, fontList, oldFontSequence, elementGenerator)) return;
             YAMLFile rootPubspecFile = getRootPubspecFile(project);
             assert rootPubspecFile != null;
             PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(project);
@@ -211,13 +211,12 @@ public class PubspecUtils {
         }));
     }
 
-    //修复font#asset节点
-    private static boolean modifyAssetFail(@NotNull Project project,
-                                           @NotNull List<String> assetList,
-                                           @Nullable YAMLSequence oldAssetSequence,
-                                           @NotNull YAMLElementGenerator elementGenerator) {
+    private static boolean modifyAsset(@NotNull Project project,
+                                       @NotNull List<String> assetList,
+                                       @Nullable YAMLSequence oldAssetSequence,
+                                       @NotNull YAMLElementGenerator elementGenerator) {
         if (AssetUtils.isFoldRegister(project)) {
-            assetList = AssetStorageService.updateAsset(project, assetList);
+            assetList = AssetRegisterStorageService.updateAsset(project, assetList);
         }
         if (oldAssetSequence != null) {
             if (CollectionUtils.isEmpty(assetList)) {
@@ -264,10 +263,10 @@ public class PubspecUtils {
     }
 
     //修复font#font节点
-    private static boolean modifyFontFail(@NotNull Project project,
-                                          @NotNull List<String> fontList,
-                                          @Nullable YAMLSequence oldFontSequence,
-                                          @NotNull YAMLElementGenerator elementGenerator) {
+    private static boolean modifyFont(@NotNull Project project,
+                                      @NotNull List<String> fontList,
+                                      @Nullable YAMLSequence oldFontSequence,
+                                      @NotNull YAMLElementGenerator elementGenerator) {
         if (oldFontSequence != null) {
             if (CollectionUtils.isEmpty(fontList)) {
                 oldFontSequence.getParent().delete();

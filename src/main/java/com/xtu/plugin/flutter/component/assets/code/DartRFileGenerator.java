@@ -36,7 +36,7 @@ public class DartRFileGenerator {
         //create new res
         Map<String, List<String>> assetCategory = new HashMap<>();
         for (String assetFileName : assetList) {
-            String assetDirName = assetFileName.substring(0, assetFileName.indexOf("/"));
+            String assetDirName = getAssetDirName(assetFileName);
             if (!assetCategory.containsKey(assetDirName))
                 assetCategory.put(assetDirName, new ArrayList<>());
             List<String> assets = assetCategory.get(assetDirName);
@@ -72,6 +72,13 @@ public class DartRFileGenerator {
             LogUtils.error("DartRFileGenerator generate: " + e.getMessage());
             ToastUtil.make(project, MessageType.ERROR, e.getMessage());
         }
+    }
+
+    @NotNull
+    private static String getAssetDirName(String assetFileName) {
+        int index = assetFileName.indexOf("/");
+        if (index <= 0) return "default";
+        return assetFileName.substring(0, index);
     }
 
     private void deleteUselessFile(@NotNull Project project,

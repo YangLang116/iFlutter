@@ -3,6 +3,11 @@
 ## [Coming]
 ### Changed
 
+## [3.0.1] - 2023-09-08
+### Changed
+- remove all comments for dart file or yaml file
+- fix bug
+
 ## [3.0.0] - 2023-08-17
 ### Changed
 - optimize plugin performance

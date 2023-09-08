@@ -14,5 +14,10 @@
                     class="com.xtu.plugin.flutter.action.anchor.yaml.YamlPackageAnchorAction">
             </action>
         </group>
+        <action id="com.xtu.plugin.flutter.remove.comment"
+                icon="PluginIcons.LOGO"
+                class="com.xtu.plugin.flutter.action.remove.CommentRemoveAction">
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+        </action>
     </actions>
 </idea-plugin>

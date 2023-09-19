@@ -79,17 +79,7 @@ public class DartFontFileGenerator {
                     .append("';\n");
         }
         fileStringBuilder.append("}\n");
-        DartUtils.createDartFile(project, rDirectory, FONT_FILE_NAME, fileStringBuilder.toString(), new DartUtils.OnCreateDartFileListener() {
-            @Override
-            public void onSuccess(@NotNull VirtualFile virtualFile) {
-                //ignore
-            }
-
-            @Override
-            public void onFail(String message) {
-                ToastUtil.make(project, MessageType.ERROR, message);
-            }
-        });
+        DartUtils.createDartFile(project, rDirectory, FONT_FILE_NAME, fileStringBuilder.toString(), null);
     }
 
     @NotNull

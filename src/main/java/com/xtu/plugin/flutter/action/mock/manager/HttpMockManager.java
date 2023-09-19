@@ -45,7 +45,7 @@ public final class HttpMockManager implements Disposable {
             }
             this.webServer.start(inetAddress, 0);
         } catch (Exception e) {
-            LogUtils.error("HttpMockManager activeServerIfNeed: " + e.getMessage());
+            LogUtils.error("HttpMockManager activeServerIfNeed", e);
             ToastUtil.make(project, MessageType.ERROR, e.getMessage());
         }
     }
@@ -55,7 +55,7 @@ public final class HttpMockManager implements Disposable {
         try {
             webServer.shutdown();
         } catch (IOException e) {
-            LogUtils.error("HttpMockManager releaseServer: " + e.getMessage());
+            LogUtils.error("HttpMockManager releaseServer", e);
         }
     }
 

@@ -15,7 +15,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 
 public class ImageUtils {
 
@@ -69,7 +68,7 @@ public class ImageUtils {
                 return new ImageInfo(imageWidth, imageHeight, originImage);
             }
         } catch (Exception e) {
-            LogUtils.error("ImageUtils loadThumbnail: " + e.getMessage());
+            LogUtils.error("ImageUtils loadThumbnail", e);
             return null;
         } finally {
             CloseUtils.close(imageInputStream);

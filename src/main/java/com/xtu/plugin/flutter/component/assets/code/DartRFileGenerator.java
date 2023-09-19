@@ -69,7 +69,7 @@ public class DartRFileGenerator {
             latestAssetList.clear();
             latestAssetList.addAll(assetList);
         } catch (Exception e) {
-            LogUtils.error("DartRFileGenerator generate: " + e.getMessage());
+            LogUtils.error("DartRFileGenerator generate", e);
             ToastUtil.make(project, MessageType.ERROR, e.getMessage());
         }
     }
@@ -121,17 +121,7 @@ public class DartRFileGenerator {
         }
         fileStringBuilder.append("}\n");
         String fileName = assetDirName.toLowerCase() + "_res.dart";
-        DartUtils.createDartFile(project, rDirectory, fileName, fileStringBuilder.toString(), new DartUtils.OnCreateDartFileListener() {
-            @Override
-            public void onSuccess(@NotNull VirtualFile virtualFile) {
-                //ignore
-            }
-
-            @Override
-            public void onFail(String message) {
-                ToastUtil.make(project, MessageType.ERROR, message);
-            }
-        });
+        DartUtils.createDartFile(project, rDirectory, fileName, fileStringBuilder.toString(), null);
         return fileName;
     }
 

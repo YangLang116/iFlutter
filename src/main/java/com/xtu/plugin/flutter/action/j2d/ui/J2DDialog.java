@@ -18,7 +18,6 @@ import com.xtu.plugin.flutter.utils.LogUtils;
 import com.xtu.plugin.flutter.utils.StringUtil;
 import com.xtu.plugin.flutter.utils.ToastUtil;
 import org.apache.commons.lang.StringUtils;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -97,7 +96,7 @@ public class J2DDialog extends DialogWrapper {
                 }
                 jsonArea.setText(formatData);
             } catch (JSONException ex) {
-                LogUtils.error("J2DDialog createCenterPanel: " + ex.getMessage());
+                LogUtils.error("J2DDialog createCenterPanel", ex);
                 ToastUtil.make(project, MessageType.ERROR, ex.getMessage());
             }
         });
@@ -142,22 +141,14 @@ public class J2DDialog extends DialogWrapper {
     }
 
     private void writeTask(Project project, VirtualFile selectDirectory, String childFileName, String content) {
-        DartUtils.createDartFile(project, selectDirectory, childFileName, content, new DartUtils.OnCreateDartFileListener() {
-            @Override
-            public void onSuccess(@NotNull VirtualFile virtualFile) {
-                //更新交互UI
-                StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);
-                if (statusBar != null) {
-                    statusBar.setInfo("Dart Entity Create Completed");
-                }
-                OpenFileDescriptor descriptor = new OpenFileDescriptor(project, virtualFile);
-                FileEditorManager.getInstance(project).openTextEditor(descriptor, true);
+        DartUtils.createDartFile(project, selectDirectory, childFileName, content, virtualFile -> {
+            //更新交互UI
+            StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);
+            if (statusBar != null) {
+                statusBar.setInfo("Dart Entity Create Completed");
             }
-
-            @Override
-            public void onFail(String message) {
-                ToastUtil.make(project, MessageType.ERROR, message);
-            }
+            OpenFileDescriptor descriptor = new OpenFileDescriptor(project, virtualFile);
+            FileEditorManager.getInstance(project).openTextEditor(descriptor, true);
         });
     }
 }

@@ -52,7 +52,7 @@ public class FlutterPackageUpdater implements Disposable {
         try {
             this.latestVersionChecker.shutdown();
         } catch (Exception e) {
-            LogUtils.error("FlutterPackageUpdater detach: " + e.getMessage());
+            LogUtils.error("FlutterPackageUpdater detach", e);
         }
     }
 

@@ -36,7 +36,7 @@ public class OptimizeImageFoldTask implements Runnable {
             storageEntity.resCheckEnable = false; // 归整资源时，为防止反复对pubspec.yaml读写，临时关闭资源监听
             optimizeImage(project, imageDirectory);  //扫描图片，将图片进行分类
         } catch (Exception e) {
-            LogUtils.error("OptimizeImageFoldTask run: " + e.getMessage());
+            LogUtils.error("OptimizeImageFoldTask run", e);
             ToastUtil.make(project, MessageType.ERROR, "failed to optimize image directory");
         } finally {
             storageEntity.resCheckEnable = oldStatus;

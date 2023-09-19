@@ -3,6 +3,11 @@
 ## [Coming]
 ### Changed
 
+## [3.0.2] - 2023-09-20
+### Changed
+- adjusting `Dart Code` generation mechanism
+- modify the plugin error handling strategy [(LogUtils)](https://github.com/YangLang116/iFlutter/blob/main/src/main/java/com/xtu/plugin/flutter/utils/LogUtils.java), change error printing to reporting, all reported data does not involve any project privacy [(AdviceManager)](https://github.com/YangLang116/iFlutter/blob/main/src/main/java/com/xtu/plugin/flutter/advice/AdviceManager.java), please rest assured to use it
+
 ## [3.0.1] - 2023-09-08
 ### Changed
 - remove all comments for dart file or yaml file

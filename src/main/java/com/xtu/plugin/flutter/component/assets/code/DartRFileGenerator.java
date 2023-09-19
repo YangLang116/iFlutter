@@ -69,7 +69,7 @@ public class DartRFileGenerator {
             latestAssetList.clear();
             latestAssetList.addAll(assetList);
         } catch (Exception e) {
-            LogUtils.error("DartRFileGenerator generate: " + e.getMessage());
+            LogUtils.error("DartRFileGenerator generate", e);
             ToastUtil.make(project, MessageType.ERROR, e.getMessage());
         }
     }

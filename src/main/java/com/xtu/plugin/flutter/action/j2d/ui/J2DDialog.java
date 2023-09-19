@@ -97,7 +97,7 @@ public class J2DDialog extends DialogWrapper {
                 }
                 jsonArea.setText(formatData);
             } catch (JSONException ex) {
-                LogUtils.error("J2DDialog createCenterPanel: " + ex.getMessage());
+                LogUtils.error("J2DDialog createCenterPanel", ex);
                 ToastUtil.make(project, MessageType.ERROR, ex.getMessage());
             }
         });

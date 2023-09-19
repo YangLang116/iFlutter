@@ -56,7 +56,7 @@ public class TinyUtils {
                     Application application = ApplicationManager.getApplication();
                     application.invokeLater(() -> onReloadListener.reload(imageFileList));
                 } catch (Exception e) {
-                    LogUtils.error("ResMenuHelper compressImage: " + e.getMessage());
+                    LogUtils.error("ResMenuHelper compressImage", e);
                     ToastUtil.make(project, MessageType.ERROR, "compress image fail: " + e.getMessage());
                 } finally {
                     indicator.setIndeterminate(false);

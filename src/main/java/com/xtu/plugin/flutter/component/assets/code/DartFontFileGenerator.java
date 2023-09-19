@@ -51,7 +51,7 @@ public class DartFontFileGenerator {
             latestFontList.clear();
             latestFontList.addAll(fontAssetList);
         } catch (Exception e) {
-            LogUtils.error("DartRFileGenerator generate: " + e.getMessage());
+            LogUtils.error("DartRFileGenerator generate", e);
             ToastUtil.make(project, MessageType.ERROR, e.getMessage());
         }
     }

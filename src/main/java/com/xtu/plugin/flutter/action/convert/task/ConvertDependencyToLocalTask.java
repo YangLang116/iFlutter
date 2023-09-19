@@ -86,7 +86,7 @@ public class ConvertDependencyToLocalTask extends Task.Backgroundable {
                             packageName,
                             dependencyElement, localDependencyFile)));
         } catch (Exception e) {
-            LogUtils.error("ConvertDependencyToLocalTask execute: " + e.getMessage());
+            LogUtils.error("ConvertDependencyToLocalTask execute", e);
             ToastUtil.make(project, MessageType.ERROR, e.getMessage());
         }
     }
@@ -132,7 +132,7 @@ public class ConvertDependencyToLocalTask extends Task.Backgroundable {
 
             runPubGet(packageName, project);
         } catch (Exception e) {
-            LogUtils.error("ConvertDependencyToLocalTask modifyDependency: " + e.getMessage());
+            LogUtils.error("ConvertDependencyToLocalTask modifyDependency", e);
             ToastUtil.make(project, MessageType.ERROR, e.getMessage());
         }
     }

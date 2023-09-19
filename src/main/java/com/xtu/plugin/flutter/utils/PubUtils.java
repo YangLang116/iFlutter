@@ -53,7 +53,7 @@ public class PubUtils {
             }
             return pluginPathMap;
         } catch (Exception e) {
-            LogUtils.error("PubUtils getPluginPathMapFromJsonFile: " + e.getMessage());
+            LogUtils.error("PubUtils getPluginPathMapFromJsonFile", e);
             return null;
         }
     }
@@ -79,7 +79,7 @@ public class PubUtils {
             }
             return pluginPathMap;
         } catch (Exception e) {
-            LogUtils.error("PubUtils getPluginPathMapFromPackageFile: " + e.getMessage());
+            LogUtils.error("PubUtils getPluginPathMapFromPackageFile", e);
             return null;
         } finally {
             CloseUtils.close(bufferedReader);
@@ -103,7 +103,7 @@ public class PubUtils {
             }
             return pluginPathMap;
         } catch (Exception e) {
-            LogUtils.error("PubUtils getPluginPathMapFromPluginFile: " + e.getMessage());
+            LogUtils.error("PubUtils getPluginPathMapFromPluginFile", e);
             return null;
         } finally {
             CloseUtils.close(bufferedReader);

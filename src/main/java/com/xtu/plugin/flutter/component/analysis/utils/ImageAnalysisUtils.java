@@ -39,7 +39,7 @@ public class ImageAnalysisUtils {
             int height = imageReader.getHeight(0);
             return new PicDimension(width, height);
         } catch (Exception e) {
-            LogUtils.error("ImageAnalysisUtils getImageDimension: " + e.getMessage());
+            LogUtils.error("ImageAnalysisUtils getImageDimension", e);
             return null;
         } finally {
             CloseUtils.close(imageInputStream);

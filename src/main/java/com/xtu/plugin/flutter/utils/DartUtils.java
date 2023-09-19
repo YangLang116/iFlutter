@@ -50,7 +50,7 @@ public class DartUtils {
             properties.load(inputStream);
             return flutterPath = properties.getProperty("flutter.sdk");
         } catch (Exception e) {
-            LogUtils.error("DartUtils getFlutterPath: " + e.getMessage());
+            LogUtils.error("DartUtils getFlutterPath", e);
             return null;
         } finally {
             CloseUtils.close(inputStream);
@@ -93,7 +93,7 @@ public class DartUtils {
                             }
                         });
                     } catch (Exception e) {
-                        LogUtils.error("DartUtils createDartFile: " + e.getMessage());
+                        LogUtils.error("DartUtils createDartFile", e);
                         if (listener != null) {
                             listener.onFail(e.getMessage());
                         }

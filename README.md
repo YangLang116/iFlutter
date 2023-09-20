@@ -55,13 +55,18 @@ iFlutter is an IDEA Plugin for Developer of Flutter
 - [4、Http接口Mock](https://iflutter.toolu.cn/content/chapter-4/part-1.html)
 - [5、国际化支持](https://iflutter.toolu.cn/content/chapter-5/part-1.html)
 - [6、镜像仓库注入](https://iflutter.toolu.cn/content/chapter-6/part-1.html)
-- [7、意见与反馈](https://iflutter.toolu.cn/content/chapter-10/part-1.html)
+- [7、清除注释](https://iflutter.toolu.cn/content/chapter-11/part-1.html)
+- [8、意见与反馈](https://iflutter.toolu.cn/content/chapter-10/part-1.html)
 
 ## 问题反馈
 
   <img src="https://cdn.jsdelivr.net/gh/YangLang116/iFlutter-Document/configs/iflutter_wechat.png" width="120"  alt="wx chat"/>
 
 ## 版本更新记录
+
+### v3.0.1
+
+- 支持快速清除`Dart`、`YAML`文件中所有注释 [详细内容](https://iflutter.toolu.cn/content/chapter-11/part-1.html)
 
 ### v3.0.0
 

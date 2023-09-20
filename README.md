@@ -64,6 +64,11 @@ iFlutter is an IDEA Plugin for Developer of Flutter
 
 ## 版本更新记录
 
+### v3.0.2
+
+- 调整Dart代码生成机制
+- 修改插件错误处理策略[(LogUtils)](https://github.com/YangLang116/iFlutter/blob/main/src/main/java/com/xtu/plugin/flutter/utils/LogUtils.java)，将错误打印改为上报，所有上报的数据[(AdviceManager)](https://github.com/YangLang116/iFlutter/blob/main/src/main/java/com/xtu/plugin/flutter/advice/AdviceManager.java)不涉及任何项目隐私，请放心使用
+
 ### v3.0.1
 
 - 支持快速清除`Dart`、`YAML`文件中所有注释 [详细内容](https://iflutter.toolu.cn/content/chapter-11/part-1.html)

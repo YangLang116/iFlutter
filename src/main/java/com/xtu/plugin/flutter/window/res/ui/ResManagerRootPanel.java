@@ -10,7 +10,7 @@ import com.intellij.util.ui.JBUI;
 import com.xtu.plugin.flutter.utils.CollectionUtils;
 import com.xtu.plugin.flutter.utils.FileUtils;
 import com.xtu.plugin.flutter.utils.PluginUtils;
-import com.xtu.plugin.flutter.window.res.helper.ResMenuHelper;
+import com.xtu.plugin.flutter.window.res.menu.ResMenu;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File> {
+public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File>, ResManagerListener {
 
     private JLabel titleBar;
     private JComponent searchBar;
@@ -102,6 +102,12 @@ public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File
         return searchBar;
     }
 
+    private void updateKeyword(String keyword) {
+        if (StringUtils.equals(keyword, this.keyword)) return;
+        this.keyword = keyword;
+        this.refreshList();
+    }
+
     private JLabel createTitleBar() {
         JLabel titleBar = new JLabel();
         titleBar.setBorder(JBUI.Borders.empty(10));
@@ -121,13 +127,14 @@ public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File
                 if (SwingUtilities.isLeftMouseButton(e)) {
                     PluginUtils.openFile(project, imageFile);
                 } else if (SwingUtilities.isRightMouseButton(e)) {
-                    ResMenuHelper.createMenu(project, imageFile, ResManagerRootPanel.this::reloadResList)
-                            .show(listComponent, point.x, point.y);
+                    ResMenu menu = new ResMenu(project, imageFile, ResManagerRootPanel.this);
+                    menu.show(listComponent, point.x, point.y);
                 }
             }
         });
         JBScrollPane scrollPane = new JBScrollPane(this.listComponent);
         add(scrollPane, BorderLayout.CENTER);
+        scrollPane.requestFocus();
     }
 
     @Nullable
@@ -140,6 +147,7 @@ public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File
         return model.getElementAt(selectIndex);
     }
 
+    @Override
     public void reloadResList(@NotNull List<File> changeFileList) {
         for (File imageFile : changeFileList) {
             String path = imageFile.getAbsolutePath();
@@ -149,17 +157,22 @@ public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File
         refreshResList(this.resList);
     }
 
+    @Override
+    public void deleteList(@NotNull List<File> deleteList) {
+        for (File imageFile : deleteList) {
+            String path = imageFile.getAbsolutePath();
+            ResRowComponent resRowComponent = this.componentCache.remove(path);
+            if (resRowComponent != null) resRowComponent.dispose();
+            this.resList.remove(imageFile);
+        }
+        refreshResList(this.resList);
+    }
+
     public void refreshResList(@NotNull List<File> resList) {
         Long totalSize = resList.stream().map((File::length)).reduce(0L, Long::sum);
         String totalSizeStr = StringUtil.formatFileSize(totalSize);
         this.titleBar.setText(String.format("File Count: %d / Total Size: %s", resList.size(), totalSizeStr));
         this.resList = resList;
-        this.refreshList();
-    }
-
-    private void updateKeyword(String keyword) {
-        if (StringUtils.equals(keyword, this.keyword)) return;
-        this.keyword = keyword;
         this.refreshList();
     }
 
@@ -197,7 +210,8 @@ public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File
     }
 
     @Override
-    public Component getListCellRendererComponent(JList<? extends File> list, File assetFile, int index, boolean isSelected, boolean cellHasFocus) {
+    public Component getListCellRendererComponent(JList<? extends File> list, File assetFile, int index,
+                                                  boolean isSelected, boolean cellHasFocus) {
         String path = assetFile.getAbsolutePath();
         if (!componentCache.containsKey(path)) {
             componentCache.put(path, new ResRowComponent(assetFile));

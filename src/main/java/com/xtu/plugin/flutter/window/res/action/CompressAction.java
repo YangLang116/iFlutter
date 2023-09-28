@@ -33,6 +33,6 @@ public class CompressAction extends AnAction {
             if (!TinyUtils.isSupport(file)) continue;
             resultList.add(file);
         }
-        TinyUtils.compressImage(project, resultList, this.rootPanel::reloadResList);
+        TinyUtils.compressImage(project, resultList, () -> this.rootPanel.reloadResList(resultList));
     }
 }

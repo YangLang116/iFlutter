@@ -30,7 +30,7 @@ public class TinyUtils {
 
     public static void compressImage(@NotNull Project project,
                                      @NotNull List<File> imageFileList,
-                                     @NotNull OnReloadListener onReloadListener) {
+                                     @NotNull OnResultListener onResultListener) {
         final String tinyKey = StorageService.getInstance(project).getState().tinyApiKey;
         if (StringUtils.isEmpty(tinyKey)) {
             ToastUtil.make(project, MessageType.INFO, "add api key for TinyPng");
@@ -53,22 +53,20 @@ public class TinyUtils {
                         Tinify.fromFile(imageFilePath).toFile(imageFilePath);
                     }
                     ToastUtil.make(project, MessageType.INFO, "compress image success");
-                    Application application = ApplicationManager.getApplication();
-                    application.invokeLater(() -> onReloadListener.reload(imageFileList));
                 } catch (Exception e) {
                     LogUtils.error("ResMenuHelper compressImage", e);
                     ToastUtil.make(project, MessageType.ERROR, "compress image fail: " + e.getMessage());
                 } finally {
                     indicator.setIndeterminate(false);
                     indicator.setFraction(1);
+                    Application application = ApplicationManager.getApplication();
+                    application.invokeLater(onResultListener::onFinish);
                 }
             }
         }.queue();
     }
 
-    public interface OnReloadListener {
-
-        void reload(@NotNull List<File> changeFileList);
-
+    public interface OnResultListener {
+        void onFinish();
     }
 }

@@ -12,6 +12,7 @@ import com.xtu.plugin.flutter.utils.AssetUtils;
 import com.xtu.plugin.flutter.utils.FileUtils;
 import com.xtu.plugin.flutter.utils.LogUtils;
 import com.xtu.plugin.flutter.utils.PluginUtils;
+import com.xtu.plugin.flutter.window.res.ResManagerToolWindowFactory;
 import com.xtu.plugin.flutter.window.res.ui.ResManagerRootPanel;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -24,24 +25,23 @@ import java.util.List;
 
 public class ResManagerToolWindowListener implements ToolWindowManagerListener {
 
-    private static final String ID = "Flutter Resource";
     private static final List<String> SUPPORT_IMAGE_FORMAT = Arrays.asList("jpg", "jpeg", "png", "webp", "svg");
 
-    private boolean isVisible;
     private final Project project;
+    private boolean lastVisibleState;
 
     public ResManagerToolWindowListener(@NotNull Project project) {
         this.project = project;
     }
 
     @Override
-    public void stateChanged(@NotNull ToolWindowManager toolWindowManager) {
-        ToolWindow toolWindow = toolWindowManager.getToolWindow(ID);
+    public void stateChanged(@NotNull ToolWindowManager wm) {
+        ToolWindow toolWindow = wm.getToolWindow(ResManagerToolWindowFactory.WindowID);
         if (toolWindow == null) return;
-        boolean visible = toolWindow.isVisible();
-        if (visible == this.isVisible) return;
-        this.isVisible = visible;
-        if (visible) {
+        boolean isVisible = toolWindow.isVisible();
+        if (isVisible == this.lastVisibleState) return;
+        this.lastVisibleState = isVisible;
+        if (isVisible) {
             LogUtils.info("ResManagerToolWindowListener scanResList");
             scanResList(toolWindow);
         } else {

@@ -34,10 +34,6 @@
         <listener topic="com.intellij.openapi.project.ProjectManagerListener"
                   class="com.xtu.plugin.flutter.component.FProjectManager"/>
     </applicationListeners>
-    <projectListeners>
-        <listener topic="com.intellij.openapi.wm.ex.ToolWindowManagerListener"
-                  class="com.xtu.plugin.flutter.window.res.listener.ResManagerToolWindowListener"/>
-    </projectListeners>
     <actions resource-bundle="message.ActionsBundle">
         <group id="com.xtu.plugin.flutter.group"
                icon="PluginIcons.LOGO"

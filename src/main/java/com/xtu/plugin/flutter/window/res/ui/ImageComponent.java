@@ -6,11 +6,13 @@ import com.intellij.ui.JBColor;
 import com.intellij.ui.RoundedLineBorder;
 import com.intellij.ui.scale.JBUIScale;
 import com.xtu.plugin.flutter.utils.ImageUtils;
+import icons.PluginIcons;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+
 
 public class ImageComponent extends JPanel {
 
@@ -27,13 +29,20 @@ public class ImageComponent extends JPanel {
     private void loadImage(@NotNull File assetImage, int imageSize) {
         final Application application = ApplicationManager.getApplication();
         application.executeOnPooledThread(() -> {
-            ImageUtils.ImageInfo imageInfo = ImageUtils.loadThumbnail(assetImage, imageSize, imageSize);
-            if (imageInfo == null) return;
-            application.invokeLater(() -> {
-                this.displayImage = imageInfo.image;
-                repaint();
-                this.loadImageListener.onSuccess(new Dimension(imageInfo.width, imageInfo.height));
-            });
+            final ImageUtils.ImageInfo imageInfo = ImageUtils.loadThumbnail(assetImage, imageSize, imageSize);
+            if (imageInfo == null) {
+                application.invokeLater(() -> {
+                    setLayout(new BorderLayout());
+                    JLabel iconLabel = new JLabel(ImageUtils.loadImageIcon(PluginIcons.FAIL_PIC, imageSize));
+                    add(iconLabel, BorderLayout.CENTER);
+                });
+            } else {
+                application.invokeLater(() -> {
+                    this.displayImage = imageInfo.image;
+                    repaint();
+                    this.loadImageListener.onSuccess(new Dimension(imageInfo.width, imageInfo.height));
+                });
+            }
         });
     }
 

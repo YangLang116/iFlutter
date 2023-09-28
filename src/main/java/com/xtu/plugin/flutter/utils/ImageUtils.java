@@ -9,14 +9,23 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.spi.ImageReaderSpi;
 import javax.imageio.stream.ImageInputStream;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public class ImageUtils {
+
+    public static ImageIcon loadImageIcon(@NotNull URL url, int imageSize) {
+        ImageIcon icon = new ImageIcon(url);
+        Image image = ImageUtil.scaleImage(icon.getImage(), imageSize, imageSize);
+        icon.setImage(image);
+        return icon;
+    }
 
     @SuppressWarnings("SpellCheckingInspection")
     private static boolean isTwelveMonkeysRead(@NotNull ImageReader reader) {

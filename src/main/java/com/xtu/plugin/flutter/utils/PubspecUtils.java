@@ -1,5 +1,6 @@
 package com.xtu.plugin.flutter.utils;
 
+import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.application.WriteAction;
@@ -115,15 +116,17 @@ public class PubspecUtils {
 
     // 读取资源列表
     public static void readAsset(@NotNull Project project, @NotNull YamlReadListener listener) {
-        ApplicationManager.getApplication()
-                .invokeLater(() -> WriteAction.run(() -> {
-                    PsiDocumentManager.getInstance(project).commitAllDocuments();
-                    readAssetInReadAction(project, listener);
-                }));
+        Application application = ApplicationManager.getApplication();
+        application.invokeLater(() -> WriteAction.run(() -> {
+            if (project.isDisposed()) return;
+            PsiDocumentManager.getInstance(project).commitAllDocuments();
+            readAssetInReadAction(project, listener);
+        }));
     }
 
     private static void readAssetInReadAction(@NotNull Project project, @NotNull YamlReadListener listener) {
-        ReadAction.run(() -> {
+        Application application = ApplicationManager.getApplication();
+        application.invokeLater(() -> ReadAction.run(() -> {
             //asset list
             List<String> assetList = new ArrayList<>();
             if (AssetUtils.isFoldRegister(project)) {
@@ -173,7 +176,7 @@ public class PubspecUtils {
             //project version
             String projectVersion = getProjectVersion(project);
             listener.onGet(projectName, projectVersion, assetList, fontAssetList);
-        });
+        }));
     }
 
     //更新资源列表

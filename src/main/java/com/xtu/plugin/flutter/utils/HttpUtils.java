@@ -32,7 +32,7 @@ public class HttpUtils {
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     public static String getLocalIP() {
         Set<String> localIpAddress = getLocalIpAddress();
-        if (CollectionUtils.isEmpty(localIpAddress)) return null;
+        if (CollectionUtils.isEmpty(localIpAddress)) return "localhost";
         for (String ipAddress : localIpAddress) {
             if (ipAddress.startsWith("192.168")) return ipAddress;
         }

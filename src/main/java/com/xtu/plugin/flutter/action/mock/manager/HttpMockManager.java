@@ -9,19 +9,17 @@ import com.xtu.plugin.flutter.utils.LogUtils;
 import com.xtu.plugin.flutter.utils.PluginUtils;
 import com.xtu.plugin.flutter.utils.ToastUtil;
 import okhttp3.mockwebserver.MockWebServer;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.util.Locale;
 
 public final class HttpMockManager implements Disposable {
 
+    private String hostIP;
     private final Project project;
     private final MockWebServer webServer;
-    private String hostIP = "localhost";
 
     public HttpMockManager(@NotNull Project project) {
         this.project = project;
@@ -36,13 +34,9 @@ public final class HttpMockManager implements Disposable {
     public void activeServer() {
         LogUtils.info("HttpMockManager activeServer");
         if (!PluginUtils.isFlutterProject(project)) return;
+        this.hostIP = HttpUtils.getLocalIP();
         try {
-            InetAddress inetAddress = Inet4Address.getLocalHost();
-            String localIp = HttpUtils.getLocalIP();
-            if (StringUtils.isNotEmpty(localIp)) {
-                hostIP = localIp;
-                inetAddress = InetAddress.getByName(localIp);
-            }
+            InetAddress inetAddress = InetAddress.getByName(this.hostIP);
             this.webServer.start(inetAddress, 0);
         } catch (Exception e) {
             LogUtils.error("HttpMockManager activeServerIfNeed", e);

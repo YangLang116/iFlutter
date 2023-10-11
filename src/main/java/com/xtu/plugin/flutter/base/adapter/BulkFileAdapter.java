@@ -46,7 +46,7 @@ public class BulkFileAdapter implements BulkFileListener {
                 if (Objects.equals(VirtualFile.PROP_NAME, propertyName)) {
                     String oldValue = (String) ((VFilePropertyChangeEvent) event).getOldValue();
                     String newValue = (String) ((VFilePropertyChangeEvent) event).getNewValue();
-                    onFilePropertyChanged(project, virtualFile, oldValue, newValue);
+                    onFileNameChanged(project, virtualFile, oldValue, newValue);
                 }
             } else if (event instanceof VFileContentChangeEvent) {
                 onFileContentChanged(project, virtualFile);
@@ -54,20 +54,20 @@ public class BulkFileAdapter implements BulkFileListener {
         }
     }
 
-    public void onFileAdded(@NotNull Project project, @NotNull VirtualFile virtualFile) {
+    public void onFileAdded(@NotNull Project project, @NotNull VirtualFile addFile) {
     }
 
     public void onFileMove(@NotNull Project project, @NotNull File oldFile, @NotNull VirtualFile newFile) {
     }
 
-    public void onFileDeleted(@NotNull Project project, @NotNull VirtualFile virtualFile) {
+    public void onFileDeleted(@NotNull Project project, @NotNull VirtualFile deleteFile) {
     }
 
-    public void onFileContentChanged(@NotNull Project project, @NotNull VirtualFile virtualFile) {
+    public void onFileContentChanged(@NotNull Project project, @NotNull VirtualFile file) {
     }
 
-    public void onFilePropertyChanged(@NotNull Project project, @NotNull VirtualFile virtualFile,
-                                      @NotNull String oldValue, @NotNull String newValue) {
+    public void onFileNameChanged(@NotNull Project project, @NotNull VirtualFile virtualFile,
+                                  @NotNull String oldName, @NotNull String newName) {
     }
 
 }

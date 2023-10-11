@@ -69,10 +69,10 @@ public class AssetsManager extends BulkFileAdapter implements Disposable {
     }
 
     @Override
-    public void onFilePropertyChanged(@NotNull Project project,
-                                      @NotNull VirtualFile virtualFile,
-                                      @NotNull String oldName,
-                                      @NotNull String newName) {
+    public void onFileNameChanged(@NotNull Project project,
+                                  @NotNull VirtualFile virtualFile,
+                                  @NotNull String oldName,
+                                  @NotNull String newName) {
         if (enableResCheck()) this.assetFileHandler.onFileChanged(project, virtualFile, oldName, newName);
     }
 

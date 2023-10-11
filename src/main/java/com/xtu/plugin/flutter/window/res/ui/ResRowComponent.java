@@ -24,11 +24,11 @@ public class ResRowComponent extends JPanel {
     }
 
     private void loadThumbnail(@NotNull File assetFile) {
-        this.imageComponent = new ImageComponent(assetFile, 60, 50, dimension -> {
+        add(this.imageComponent = new ImageComponent(60), BorderLayout.WEST);
+        this.imageComponent.loadImage(assetFile, 50, (width, height) -> {
             String originText = this.sizeLabel.getText();
-            this.sizeLabel.setText(String.format("%s | %d x %d", originText, dimension.width, dimension.height));
+            this.sizeLabel.setText(String.format("%s | %d x %d", originText, width, height));
         });
-        add(this.imageComponent, BorderLayout.WEST);
     }
 
     private void loadFileInfo(@NotNull File assetFile) {

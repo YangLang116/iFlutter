@@ -20,13 +20,6 @@ import java.util.List;
 
 public class ImageUtils {
 
-    public static ImageIcon loadImageIcon(@NotNull URL url, int imageSize) {
-        ImageIcon icon = new ImageIcon(url);
-        Image image = ImageUtil.scaleImage(icon.getImage(), imageSize, imageSize);
-        icon.setImage(image);
-        return icon;
-    }
-
     @SuppressWarnings("SpellCheckingInspection")
     private static boolean isTwelveMonkeysRead(@NotNull ImageReader reader) {
         ImageReaderSpi imageReaderSpi = reader.getOriginatingProvider();
@@ -52,10 +45,16 @@ public class ImageUtils {
         return readerList.get(0);
     }
 
-    @Nullable
-    public static ImageInfo loadThumbnail(@NotNull File imageFile, int maxWidth, int maxHeight) {
+    private static ImageInfo loadDefaultIcon(@NotNull URL url, int imageSize) {
+        ImageIcon icon = new ImageIcon(url);
+        Image image = ImageUtil.scaleImage(icon.getImage(), imageSize, imageSize);
+        return new ImageInfo(image, 0, 0, imageSize, imageSize);
+    }
+
+    @NotNull
+    public static ImageInfo loadThumbnail(@NotNull File imageFile, @NotNull URL defaultUrl, int size) {
         ImageReader imageReader = getImageReader(imageFile);
-        if (imageReader == null) return null;
+        if (imageReader == null) return loadDefaultIcon(defaultUrl, size);
         ImageInputStream imageInputStream = null;
         BufferedImage recycleImage = null;
         try {
@@ -64,21 +63,21 @@ public class ImageUtils {
             BufferedImage originImage = imageReader.read(0);
             int imageWidth = originImage.getWidth();
             int imageHeight = originImage.getHeight();
-            if (imageWidth > maxWidth || imageHeight > maxHeight) {
-                float widthScaleRadio = imageWidth * 1.0f / maxWidth;
-                float heightScaleRadio = imageHeight * 1.0f / maxHeight;
+            if (imageWidth > size || imageHeight > size) {
+                float widthScaleRadio = imageWidth * 1.0f / size;
+                float heightScaleRadio = imageHeight * 1.0f / size;
                 float radio = Math.max(widthScaleRadio, heightScaleRadio);
                 int displayWidth = (int) (imageWidth / radio);
                 int displayHeight = (int) (imageHeight / radio);
                 recycleImage = originImage;
                 Image scaleImage = ImageUtil.scaleImage(originImage, displayWidth, displayHeight);
-                return new ImageInfo(imageWidth, imageHeight, scaleImage);
+                return new ImageInfo(scaleImage, imageWidth, imageHeight, displayWidth, displayHeight);
             } else {
-                return new ImageInfo(imageWidth, imageHeight, originImage);
+                return new ImageInfo(originImage, imageWidth, imageHeight);
             }
         } catch (Exception e) {
             LogUtils.error("ImageUtils loadThumbnail", e);
-            return null;
+            return loadDefaultIcon(defaultUrl, size);
         } finally {
             CloseUtils.close(imageInputStream);
             imageReader.dispose();
@@ -90,12 +89,24 @@ public class ImageUtils {
 
         public final int width;
         public final int height;
+        public final int dWidth;
+        public final int dHeight;
         public final Image image;
 
-        public ImageInfo(int width, int height, Image image) {
+        public ImageInfo(@NotNull Image image, int width, int height, int dWidth, int dHeight) {
+            this.image = image;
             this.width = width;
             this.height = height;
+            this.dWidth = dWidth;
+            this.dHeight = dHeight;
+        }
+
+        public ImageInfo(@NotNull Image image, int width, int height) {
             this.image = image;
+            this.width = width;
+            this.height = height;
+            this.dWidth = width;
+            this.dHeight = height;
         }
     }
 }

@@ -25,6 +25,44 @@ public class AssetUtils {
         return matcher.matches();
     }
 
+    public static boolean isAssetFile(@NotNull Project project, @NotNull VirtualFile virtualFile) {
+        String assetPath = virtualFile.getPath();
+        File assetFile = new File(assetPath);
+        return isAssetFile(project, assetFile);
+    }
+
+    private static boolean isAssetFile(@NotNull Project project, @NotNull File file) {
+        if (file.isDirectory()) return false;
+        if (file.getName().startsWith(".")) return false;
+        String projectPath = PluginUtils.getProjectPath(project);
+        if (StringUtils.isEmpty(projectPath)) return false;
+        String filePath = file.getAbsolutePath();
+        File projectDirectory = new File(projectPath);
+        List<String> supportAssetFoldName = supportAssetFoldName(project);
+        for (String directoryName : supportAssetFoldName) {
+            File assetDirectory = new File(projectDirectory, directoryName);
+            if (filePath.startsWith(assetDirectory.getAbsolutePath())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Nullable
+    public static String getAssetFilePath(@NotNull Project project, @NotNull VirtualFile virtualFile) {
+        File assetFile = new File(virtualFile.getPath());
+        return getAssetFilePath(project, assetFile);
+    }
+
+    @Nullable
+    public static String getAssetFilePath(@NotNull Project project, @NotNull File file) {
+        if (isAssetFile(project, file)) {
+            String projectPath = PluginUtils.getProjectPath(project);
+            return getAssetPath(projectPath, file);
+        }
+        return null;
+    }
+
     //获取asset配置
     @Nullable
     public static String getAssetPath(String projectPath, File assetFile) {
@@ -83,29 +121,6 @@ public class AssetUtils {
         return false;
     }
 
-    public static boolean isAssetFile(@NotNull Project project, @NotNull VirtualFile virtualFile) {
-        String assetPath = virtualFile.getPath();
-        File assetFile = new File(assetPath);
-        return isAssetFile(project, assetFile);
-    }
-
-    public static boolean isAssetFile(@NotNull Project project, @NotNull File file) {
-        if (file.isDirectory()) return false;
-        if (file.getName().startsWith(".")) return false;
-        String projectPath = PluginUtils.getProjectPath(project);
-        if (StringUtils.isEmpty(projectPath)) return false;
-        String filePath = file.getAbsolutePath();
-        File projectDirectory = new File(projectPath);
-        List<String> supportAssetFoldName = AssetUtils.supportAssetFoldName(project);
-        for (String directoryName : supportAssetFoldName) {
-            File assetDirectory = new File(projectDirectory, directoryName);
-            if (filePath.startsWith(assetDirectory.getAbsolutePath())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public static List<String> supportAssetFoldName(@NotNull Project project) {
         return StorageService.getInstance(project).getState().resDir;
     }
@@ -119,7 +134,7 @@ public class AssetUtils {
         List<File> assetFileList = new ArrayList<>();
         String projectPath = PluginUtils.getProjectPath(project);
         if (StringUtils.isEmpty(projectPath)) return assetFileList;
-        List<String> assetFoldNameList = AssetUtils.supportAssetFoldName(project);
+        List<String> assetFoldNameList = supportAssetFoldName(project);
         for (String assetFoldName : assetFoldNameList) {
             File assetDirectory = new File(projectPath, assetFoldName);
             FileUtils.scanDirectory(assetDirectory, (file -> {

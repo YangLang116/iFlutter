@@ -3,6 +3,7 @@ package com.xtu.plugin.flutter.window.res;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.openapi.wm.ex.ToolWindowManagerListener;
@@ -41,7 +42,7 @@ public class ResManagerToolWindowFactory implements ToolWindowFactory, DumbAware
         ResManagerRootPanel rootPanel = new ResManagerRootPanel(project, showSearchBar, defaultSortType);
         Content content = factory.createContent(rootPanel, "", true);
         contentManager.addContent(content);
-        toolWindow.setAutoHide(true);
+        toolWindow.setAutoHide(false);
         toolWindow.setTitleActions(createActionList(defaultSortType, rootPanel));
         bindListeners(project);
     }
@@ -60,5 +61,6 @@ public class ResManagerToolWindowFactory implements ToolWindowFactory, DumbAware
         MessageBusConnection connection = project.getMessageBus().connect();
         ResManagerToolWindowListener listener = new ResManagerToolWindowListener(project);
         connection.subscribe(ToolWindowManagerListener.TOPIC, listener);
+        connection.subscribe(VirtualFileManager.VFS_CHANGES, listener);
     }
 }

@@ -15,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.util.List;
 
 public class DeleteItem extends AbstractItem {
 
@@ -36,8 +35,6 @@ public class DeleteItem extends AbstractItem {
         LocalHistoryAction a = LocalHistory.getInstance().startAction(IdeBundle.message("progress.deleting"));
         try {
             DeleteHandler.deletePsiElement(new PsiElement[]{psiFile}, project);
-            final List<File> deleteList = List.of(imageFile);
-            listener.deleteList(deleteList);
         } finally {
             a.finish();
         }

@@ -68,6 +68,7 @@ public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File
         showTopBar(!showSearchBar);
         validate();
         repaint();
+        updateFocus();
     }
 
     private void showTopBar(boolean showSearchBar) {
@@ -78,7 +79,6 @@ public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File
         this.remove(this.searchBar);
         if (showSearchBar) {
             this.add(this.searchBar, BorderLayout.NORTH);
-            this.searchField.requestFocus();
         } else {
             this.add(this.titleBar, BorderLayout.NORTH);
             this.searchField.setText(null);
@@ -134,7 +134,6 @@ public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File
         });
         JBScrollPane scrollPane = new JBScrollPane(this.listComponent);
         add(scrollPane, BorderLayout.CENTER);
-        scrollPane.requestFocus();
     }
 
     @Nullable
@@ -147,6 +146,14 @@ public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File
         return model.getElementAt(selectIndex);
     }
 
+    public void updateFocus() {
+        if (this.showSearchBar) {
+            this.searchField.requestFocus();
+        } else {
+            this.listComponent.requestFocus();
+        }
+    }
+
     @Override
     public void reloadResList(@NotNull List<File> changeFileList) {
         for (File imageFile : changeFileList) {
@@ -157,23 +164,13 @@ public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File
         refreshResList(this.resList);
     }
 
-    @Override
-    public void deleteList(@NotNull List<File> deleteList) {
-        for (File imageFile : deleteList) {
-            String path = imageFile.getAbsolutePath();
-            ResRowComponent resRowComponent = this.componentCache.remove(path);
-            if (resRowComponent != null) resRowComponent.dispose();
-            this.resList.remove(imageFile);
-        }
-        refreshResList(this.resList);
-    }
-
     public void refreshResList(@NotNull List<File> resList) {
         Long totalSize = resList.stream().map((File::length)).reduce(0L, Long::sum);
         String totalSizeStr = StringUtil.formatFileSize(totalSize);
         this.titleBar.setText(String.format("File Count: %d / Total Size: %s", resList.size(), totalSizeStr));
         this.resList = resList;
         this.refreshList();
+        this.updateFocus();
     }
 
     public void sort(@NotNull SortType sort) {

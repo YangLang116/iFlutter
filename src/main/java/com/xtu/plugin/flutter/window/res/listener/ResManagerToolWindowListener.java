@@ -11,7 +11,6 @@ import com.intellij.ui.content.ContentManager;
 import com.xtu.plugin.flutter.utils.AssetUtils;
 import com.xtu.plugin.flutter.utils.FileUtils;
 import com.xtu.plugin.flutter.utils.LogUtils;
-import com.xtu.plugin.flutter.utils.PluginUtils;
 import com.xtu.plugin.flutter.window.res.ResManagerToolWindowFactory;
 import com.xtu.plugin.flutter.window.res.ui.ResManagerRootPanel;
 import org.apache.commons.lang.StringUtils;
@@ -23,15 +22,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ResManagerToolWindowListener implements ToolWindowManagerListener {
+public class ResManagerToolWindowListener extends ResFileChangedAdapter implements ToolWindowManagerListener {
 
     private static final List<String> SUPPORT_IMAGE_FORMAT = Arrays.asList("jpg", "jpeg", "png", "webp", "svg");
 
-    private final Project project;
     private boolean lastVisibleState;
 
     public ResManagerToolWindowListener(@NotNull Project project) {
-        this.project = project;
+        super(project, SUPPORT_IMAGE_FORMAT);
     }
 
     @Override
@@ -50,20 +48,23 @@ public class ResManagerToolWindowListener implements ToolWindowManagerListener {
         }
     }
 
+    @Override
+    public void scanResList() {
+        ToolWindowManager wm = ToolWindowManager.getInstance(project);
+        ToolWindow toolWindow = wm.getToolWindow(ResManagerToolWindowFactory.WindowID);
+        if (toolWindow == null || !toolWindow.isVisible()) return;
+        scanResList(toolWindow);
+    }
+
     private void scanResList(@NotNull ToolWindow toolWindow) {
-        final String projectPath = PluginUtils.getProjectPath(project);
-        if (StringUtils.isEmpty(projectPath)) return;
-        final List<String> supportAssetFoldName = AssetUtils.supportAssetFoldName(project);
         Application application = ApplicationManager.getApplication();
         application.executeOnPooledThread(() -> {
             final List<File> resList = new ArrayList<>();
-            for (String foldName : supportAssetFoldName) {
-                File resDirectory = new File(projectPath, foldName);
-                FileUtils.scanDirectory(resDirectory, file -> {
-                    String extension = FileUtils.getExtension(file);
-                    if (StringUtils.isEmpty(extension)) return;
-                    if (SUPPORT_IMAGE_FORMAT.contains(extension)) resList.add(file);
-                });
+            List<File> allAssetFile = AssetUtils.getAllAssetFile(project);
+            for (File file : allAssetFile) {
+                String extension = FileUtils.getExtension(file);
+                if (StringUtils.isEmpty(extension)) continue;
+                if (SUPPORT_IMAGE_FORMAT.contains(extension)) resList.add(file);
             }
             application.invokeLater(() -> {
                 ResManagerRootPanel rootPanel = getResManagerRootPanel(toolWindow);

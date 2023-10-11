@@ -18,7 +18,7 @@ public class AssetFileHandler {
     }
 
     public void onFileAdded(@NotNull Project project, @NotNull VirtualFile virtualFile) {
-        String assetPath = getAssetFilePath(project, virtualFile);
+        String assetPath = AssetUtils.getAssetFilePath(project, virtualFile);
         if (assetPath == null) return;
         specFileHandler.addAsset(project, List.of(assetPath));
     }
@@ -29,7 +29,7 @@ public class AssetFileHandler {
     }
 
     private void onFileDeleted(@NotNull Project project, @NotNull File file) {
-        String assetPath = getAssetFilePath(project, file);
+        String assetPath = AssetUtils.getAssetFilePath(project, file);
         if (assetPath == null) return;
         String projectPath = PluginUtils.getProjectPath(project);
         //判断是否还存在其他dimension资源,兼容IDEA自动引用处理，需要强制保留assetPath
@@ -45,7 +45,7 @@ public class AssetFileHandler {
                               @NotNull VirtualFile virtualFile,
                               @NotNull String oldValue,
                               @NotNull String newValue) {
-        String newAssetPath = getAssetFilePath(project, virtualFile);
+        String newAssetPath = AssetUtils.getAssetFilePath(project, virtualFile);
         if (newAssetPath == null) return;
         String projectPath = PluginUtils.getProjectPath(project);
         File newAssetFile = new File(virtualFile.getPath());
@@ -62,8 +62,8 @@ public class AssetFileHandler {
     public void onFileMoved(@NotNull Project project,
                             @NotNull File oldFile,
                             @NotNull VirtualFile newFile) {
-        String oldAssetPath = getAssetFilePath(project, oldFile);
-        String newAssetPath = getAssetFilePath(project, newFile);
+        String oldAssetPath = AssetUtils.getAssetFilePath(project, oldFile);
+        String newAssetPath = AssetUtils.getAssetFilePath(project, newFile);
         if (oldAssetPath != null && newAssetPath == null) {
             onFileDeleted(project, oldFile);
             return;
@@ -80,22 +80,5 @@ public class AssetFileHandler {
         } else {
             specFileHandler.changeAsset(project, oldAssetPath, newAssetPath);
         }
-    }
-
-    private String getAssetFilePath(@NotNull Project project, @NotNull VirtualFile virtualFile) {
-        if (AssetUtils.isAssetFile(project, virtualFile)) {
-            String projectPath = PluginUtils.getProjectPath(project);
-            File assetFile = new File(virtualFile.getPath());
-            return AssetUtils.getAssetPath(projectPath, assetFile);
-        }
-        return null;
-    }
-
-    private String getAssetFilePath(@NotNull Project project, @NotNull File file) {
-        if (AssetUtils.isAssetFile(project, file)) {
-            String projectPath = PluginUtils.getProjectPath(project);
-            return AssetUtils.getAssetPath(projectPath, file);
-        }
-        return null;
     }
 }

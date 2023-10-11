@@ -3,6 +3,14 @@
 ## [Coming]
 ### Changed
 
+## [3.0.3] - 2023-10-09
+### Added
+- `Flutter Resource` support resource deletion
+### Changed
+- fix `Flutter Resource` image cannot be previewed
+- optimize `HttpMock`
+- fix some bugs
+
 ## [3.0.2] - 2023-09-20
 ### Changed
 - adjusting `Dart Code` generation mechanism

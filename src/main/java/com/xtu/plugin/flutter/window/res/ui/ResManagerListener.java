@@ -8,6 +8,4 @@ import java.util.List;
 public interface ResManagerListener {
 
     void reloadResList(@NotNull List<File> changeFileList);
-
-    void deleteList(@NotNull List<File> deleteList);
 }

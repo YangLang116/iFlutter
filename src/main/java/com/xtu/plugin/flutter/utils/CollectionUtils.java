@@ -1,6 +1,7 @@
 package com.xtu.plugin.flutter.utils;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -29,5 +30,13 @@ public class CollectionUtils {
     public static List<String> split(@NotNull String str, String split) {
         String[] result = str.split(split);
         return new ArrayList<>(Arrays.asList(result));
+    }
+
+    public static boolean endsWith(@Nullable String test, @NotNull List<String> ends) {
+        if (test == null) return false;
+        for (String end : ends) {
+            if (test.endsWith(end)) return true;
+        }
+        return false;
     }
 }

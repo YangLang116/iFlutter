@@ -115,7 +115,7 @@ public class PubspecUtils {
 
 
     // 读取资源列表
-    public static void readAsset(@NotNull Project project, @NotNull YamlReadListener listener) {
+    public static void readAssetSafe(@NotNull Project project, @NotNull YamlReadListener listener) {
         Application application = ApplicationManager.getApplication();
         application.invokeLater(() -> WriteAction.run(() -> {
             if (project.isDisposed()) return;
@@ -125,8 +125,7 @@ public class PubspecUtils {
     }
 
     private static void readAssetInReadAction(@NotNull Project project, @NotNull YamlReadListener listener) {
-        Application application = ApplicationManager.getApplication();
-        application.invokeLater(() -> ReadAction.run(() -> {
+        ReadAction.run(() -> {
             //asset list
             List<String> assetList = new ArrayList<>();
             if (AssetUtils.isFoldRegister(project)) {
@@ -176,14 +175,14 @@ public class PubspecUtils {
             //project version
             String projectVersion = getProjectVersion(project);
             listener.onGet(projectName, projectVersion, assetList, fontAssetList);
-        }));
+        });
     }
 
     //更新资源列表
     //该方法必须运行在EDT#ReadAction中
-    public static void writeAsset(@NotNull Project project,
-                                  @NotNull List<String> assetList,
-                                  @NotNull List<String> fontList) {
+    public static void writeAssetSafe(@NotNull Project project,
+                                      @NotNull List<String> assetList,
+                                      @NotNull List<String> fontList) {
         //pure asset list
         CollectionUtils.duplicateList(assetList);
         Collections.sort(assetList);
@@ -191,27 +190,30 @@ public class PubspecUtils {
         CollectionUtils.duplicateList(fontList);
         Collections.sort(fontList);
 
-        YAMLSequence oldAssetSequence = getAssetSequence(project);
-        YAMLSequence oldFontSequence = getFontSequence(project);
-        WriteAction.run(() -> WriteCommandAction.runWriteCommandAction(project, () -> {
-            YAMLElementGenerator elementGenerator = YAMLElementGenerator.getInstance(project);
-            //modify asset
-            if (modifyAsset(project, assetList, oldAssetSequence, elementGenerator)) return;
-            //modify font
-            if (modifyFont(project, fontList, oldFontSequence, elementGenerator)) return;
-            YAMLFile rootPubspecFile = getRootPubspecFile(project);
-            assert rootPubspecFile != null;
-            PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(project);
-            Document document = psiDocumentManager.getDocument(rootPubspecFile);
-            if (document != null) {
-                //sync psi - document
-                psiDocumentManager.doPostponedOperationsAndUnblockDocument(document);
-                //sync psi - vfs
-                FileDocumentManager.getInstance().saveDocument(document);
-            }
-            //refresh UI
-            notifyPubspecUpdate(project);
-        }));
+        Application application = ApplicationManager.getApplication();
+        application.invokeLater(() -> {
+            YAMLSequence oldAssetSequence = getAssetSequence(project);
+            YAMLSequence oldFontSequence = getFontSequence(project);
+            WriteCommandAction.runWriteCommandAction(project, () -> {
+                YAMLElementGenerator elementGenerator = YAMLElementGenerator.getInstance(project);
+                //modify asset
+                if (modifyAsset(project, assetList, oldAssetSequence, elementGenerator)) return;
+                //modify font
+                if (modifyFont(project, fontList, oldFontSequence, elementGenerator)) return;
+                YAMLFile rootPubspecFile = getRootPubspecFile(project);
+                assert rootPubspecFile != null;
+                PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(project);
+                Document document = psiDocumentManager.getDocument(rootPubspecFile);
+                if (document != null) {
+                    //sync psi - document
+                    psiDocumentManager.doPostponedOperationsAndUnblockDocument(document);
+                    //sync psi - vfs
+                    FileDocumentManager.getInstance().saveDocument(document);
+                }
+                //refresh UI
+                notifyPubspecUpdate(project);
+            });
+        });
     }
 
     private static boolean modifyAsset(@NotNull Project project,

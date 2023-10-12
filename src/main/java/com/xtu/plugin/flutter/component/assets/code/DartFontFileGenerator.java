@@ -1,5 +1,8 @@
 package com.xtu.plugin.flutter.component.assets.code;
 
+import com.intellij.openapi.application.Application;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.vfs.LocalFileSystem;
@@ -31,29 +34,35 @@ public class DartFontFileGenerator {
         return sInstance;
     }
 
-    public void generate(@NotNull Project project, @NotNull String resPrefix, @NotNull List<String> fontAssetList) {
-        if (fontAssetList.equals(latestFontList)) return;
-        try {
-            File libDirectory = new File(project.getBasePath(), "lib");
-            LocalFileSystem localFileSystem = LocalFileSystem.getInstance();
-            final VirtualFile libVirtualDirectory = localFileSystem.refreshAndFindFileByIoFile(libDirectory);
-            assert libVirtualDirectory != null;
-            VirtualFile resVirtualDirectory = libVirtualDirectory.findChild("res");
-            if (fontAssetList.size() > 0) {
-                if (resVirtualDirectory == null) {
-                    resVirtualDirectory = libVirtualDirectory.createChildDirectory(project, "res");
+    public void generateSafe(@NotNull Project project,
+                             @NotNull String resPrefix,
+                             @NotNull List<String> fontAssetList,
+                             boolean force) {
+        Application application = ApplicationManager.getApplication();
+        application.invokeLater(() -> WriteAction.run(() -> {
+            if (!force && fontAssetList.equals(latestFontList)) return;
+            try {
+                File libDirectory = new File(project.getBasePath(), "lib");
+                LocalFileSystem localFileSystem = LocalFileSystem.getInstance();
+                final VirtualFile libVirtualDirectory = localFileSystem.refreshAndFindFileByIoFile(libDirectory);
+                assert libVirtualDirectory != null;
+                VirtualFile resVirtualDirectory = libVirtualDirectory.findChild("res");
+                if (fontAssetList.size() > 0) {
+                    if (resVirtualDirectory == null) {
+                        resVirtualDirectory = libVirtualDirectory.createChildDirectory(project, "res");
+                    }
+                    generateFile(project, resVirtualDirectory, resPrefix, fontAssetList);
+                } else if (resVirtualDirectory != null) {
+                    VirtualFile fontVirtualFile = resVirtualDirectory.findChild(FONT_FILE_NAME);
+                    if (fontVirtualFile != null) fontVirtualFile.delete(project);
                 }
-                generateFile(project, resVirtualDirectory, resPrefix, fontAssetList);
-            } else if (resVirtualDirectory != null) {
-                VirtualFile fontVirtualFile = resVirtualDirectory.findChild(FONT_FILE_NAME);
-                if (fontVirtualFile != null) fontVirtualFile.delete(project);
+                latestFontList.clear();
+                latestFontList.addAll(fontAssetList);
+            } catch (Exception e) {
+                LogUtils.error("DartRFileGenerator generate", e);
+                ToastUtil.make(project, MessageType.ERROR, e.getMessage());
             }
-            latestFontList.clear();
-            latestFontList.addAll(fontAssetList);
-        } catch (Exception e) {
-            LogUtils.error("DartRFileGenerator generate", e);
-            ToastUtil.make(project, MessageType.ERROR, e.getMessage());
-        }
+        }));
     }
 
     private void generateFile(Project project, VirtualFile rDirectory,

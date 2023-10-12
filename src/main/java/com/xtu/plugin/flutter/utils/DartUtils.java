@@ -4,7 +4,6 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.fileTypes.FileTypeRegistry;
-import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
@@ -57,12 +56,10 @@ public class DartUtils {
     }
 
     //生成Dart类
-    public static void createDartFile(@NotNull Project project,
-                                      @NotNull VirtualFile parentDirectory,
-                                      @NotNull String fileName,
-                                      @NotNull String fileContent,
-                                      @Nullable OnDartFileCreateListener listener) {
-        DumbService.getInstance(project).smartInvokeLater(() -> WriteCommandAction.runWriteCommandAction(project, () -> {
+    //必须运行在EDT线程中
+    public static void createDartFile(@NotNull Project project, @NotNull VirtualFile parentDirectory, @NotNull String fileName, @NotNull String fileContent, @Nullable OnDartFileCreateListener listener) {
+        ApplicationManager.getApplication().assertIsDispatchThread();
+        WriteCommandAction.runWriteCommandAction(project, () -> {
             PsiManager psiManager = PsiManager.getInstance(project);
             PsiDirectory psiDirectory = psiManager.findDirectory(parentDirectory);
             assert psiDirectory != null;
@@ -75,7 +72,7 @@ public class DartUtils {
                 VirtualFile virtualFile = newFile.getVirtualFile();
                 ApplicationManager.getApplication().invokeLater(() -> listener.onFinish(virtualFile));
             }
-        }));
+        });
     }
 
     public interface OnDartFileCreateListener {

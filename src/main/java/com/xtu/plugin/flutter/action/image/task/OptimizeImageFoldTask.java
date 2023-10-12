@@ -130,7 +130,7 @@ public class OptimizeImageFoldTask implements Runnable {
             }
         }
         //更新pubspec.yaml中资源引用
-        PubspecUtils.readAsset(project, (name, version, assetList, fontList) -> {
+        PubspecUtils.readAssetSafe(project, (name, version, assetList, fontList) -> {
             List<String> newAssetList = new ArrayList<>();
             List<String> newFontList = new ArrayList<>();
             for (String asset : assetList) {
@@ -139,7 +139,7 @@ public class OptimizeImageFoldTask implements Runnable {
             for (String fontAsset : fontList) {
                 newFontList.add(pathMap.getOrDefault(fontAsset, fontAsset));
             }
-            PubspecUtils.writeAsset(project, newAssetList, newFontList);
+            PubspecUtils.writeAssetSafe(project, newAssetList, newFontList);
         });
     }
 

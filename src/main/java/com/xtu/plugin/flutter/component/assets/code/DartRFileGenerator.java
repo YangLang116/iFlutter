@@ -1,5 +1,8 @@
 package com.xtu.plugin.flutter.component.assets.code;
 
+import com.intellij.openapi.application.Application;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.vfs.LocalFileSystem;
@@ -27,51 +30,55 @@ public class DartRFileGenerator {
         return sInstance;
     }
 
-    public void generate(@NotNull Project project,
-                         @NotNull String projectName,
-                         @NotNull String projectVersion,
-                         @NotNull String resPrefix,
-                         @NotNull List<String> assetList) {
-        if (assetList.equals(latestAssetList)) return;
-        //create new res
-        Map<String, List<String>> assetCategory = new HashMap<>();
-        for (String assetFileName : assetList) {
-            String assetDirName = getAssetDirName(assetFileName);
-            if (!assetCategory.containsKey(assetDirName))
-                assetCategory.put(assetDirName, new ArrayList<>());
-            List<String> assets = assetCategory.get(assetDirName);
-            assets.add(assetFileName);
-        }
-        try {
-            //virtual file
-            File libDirectory = new File(project.getBasePath(), "lib");
-            LocalFileSystem localFileSystem = LocalFileSystem.getInstance();
-            final VirtualFile libVirtualDirectory = localFileSystem.refreshAndFindFileByIoFile(libDirectory);
-            assert libVirtualDirectory != null;
-            VirtualFile resVirtualDirectory = libVirtualDirectory.findChild("res");
-            if (assetCategory.size() > 0) {
-                if (resVirtualDirectory == null) {
-                    resVirtualDirectory = libVirtualDirectory.createChildDirectory(project, "res");
-                }
-                List<String> usefulFileNameList = new ArrayList<>();
-                for (Map.Entry<String, List<String>> entry : assetCategory.entrySet()) {
-                    String fileName = generateFile(project, resVirtualDirectory,
-                            resPrefix,
-                            entry.getKey(), entry.getValue(),
-                            projectName, projectVersion);
-                    usefulFileNameList.add(fileName);
-                }
-                //删除无用文件
-                deleteUselessFile(project, resVirtualDirectory, usefulFileNameList);
-            } else if (resVirtualDirectory != null) {
-                deleteUselessFile(project, resVirtualDirectory, Collections.emptyList());
+    public void generateSafe(@NotNull Project project,
+                             @NotNull String projectName,
+                             @NotNull String projectVersion,
+                             @NotNull String resPrefix,
+                             @NotNull List<String> assetList,
+                             boolean force) {
+        Application application = ApplicationManager.getApplication();
+        application.invokeLater(() -> WriteAction.run(() -> {
+            if (!force && assetList.equals(latestAssetList)) return;
+            //create new res
+            Map<String, List<String>> assetCategory = new HashMap<>();
+            for (String assetFileName : assetList) {
+                String assetDirName = getAssetDirName(assetFileName);
+                if (!assetCategory.containsKey(assetDirName))
+                    assetCategory.put(assetDirName, new ArrayList<>());
+                List<String> assets = assetCategory.get(assetDirName);
+                assets.add(assetFileName);
             }
-            latestAssetList.clear();
-            latestAssetList.addAll(assetList);
-        } catch (Exception e) {
-            LogUtils.error("DartRFileGenerator generate", e);
-            ToastUtil.make(project, MessageType.ERROR, e.getMessage());
-        }
+            try {
+                //virtual file
+                File libDirectory = new File(project.getBasePath(), "lib");
+                LocalFileSystem localFileSystem = LocalFileSystem.getInstance();
+                final VirtualFile libVirtualDirectory = localFileSystem.refreshAndFindFileByIoFile(libDirectory);
+                assert libVirtualDirectory != null;
+                VirtualFile resVirtualDirectory = libVirtualDirectory.findChild("res");
+                if (assetCategory.size() > 0) {
+                    if (resVirtualDirectory == null) {
+                        resVirtualDirectory = libVirtualDirectory.createChildDirectory(project, "res");
+                    }
+                    List<String> usefulFileNameList = new ArrayList<>();
+                    for (Map.Entry<String, List<String>> entry : assetCategory.entrySet()) {
+                        String fileName = generateFile(project, resVirtualDirectory,
+                                resPrefix,
+                                entry.getKey(), entry.getValue(),
+                                projectName, projectVersion);
+                        usefulFileNameList.add(fileName);
+                    }
+                    //删除无用文件
+                    deleteUselessFile(project, resVirtualDirectory, usefulFileNameList);
+                } else if (resVirtualDirectory != null) {
+                    deleteUselessFile(project, resVirtualDirectory, Collections.emptyList());
+                }
+                latestAssetList.clear();
+                latestAssetList.addAll(assetList);
+            } catch (Exception e) {
+                LogUtils.error("DartRFileGenerator generate", e);
+                ToastUtil.make(project, MessageType.ERROR, e.getMessage());
+            }
+        }));
     }
 
     @NotNull

@@ -1,0 +1,74 @@
+{
+    "title": "iFlutter Document",
+    "author": "MrYang",
+    "description": "Github: https://github.com/YangLang116/iFlutter",
+    "language": "zh-hans",
+    "gitbook": "3.2.3",
+    "styles": {
+        "website": "./styles/website.css"
+    },
+    "structure": {
+        "readme": "README.md"
+    },
+    "links": {
+        "sharing": {
+            "all": null,
+            "facebook": null,
+            "google": null,
+            "twitter": null,
+            "weibo": null
+        },
+        "sidebar": {
+            "Github": "https://github.com/YangLang116/iFlutter"
+        }
+    },
+    "plugins": [
+        "-sharing",
+        "splitter",
+        "expandable-chapters-small",
+        "anchors",
+        "donate",
+        "sharing-plus",
+        "anchor-navigation-ex",
+	"valine"
+    ],
+    "pluginsConfig": {
+	"valine": {
+            "appId": "7cC7Ya4UwLEF1M8nsu5Ts9MG-gzGzoHsz",
+            "appKey": "XxJlpLTOv4C7Vepup4bpMW81",
+	    "avatar": "retro"
+        },
+        "donate": {
+            "alipay": "",
+            "title": "",
+            "button": "赞赏",
+            "alipayText": " "
+        },
+        "sharing": {
+            "douban": false,
+            "facebook": false,
+            "google": false,
+            "hatenaBookmark": false,
+            "instapaper": false,
+            "line": false,
+            "linkedin": false,
+            "messenger": false,
+            "pocket": false,
+            "qq": false,
+            "qzone": false,
+            "stumbleupon": false,
+            "twitter": false,
+            "viber": false,
+            "vk": false,
+            "weibo": false,
+            "whatsapp": false,
+            "all": [
+                "google", "facebook", "weibo", "twitter",
+                "qq", "qzone", "linkedin", "pocket"
+            ]
+        },
+        "anchor-navigation-ex": {
+            "showLevel": false
+        }
+    }
+}

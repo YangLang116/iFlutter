@@ -1,6 +1,6 @@
 针对原生项目的开发，`android`插件为`IDEA`提供了方便的`Resource Manager`左侧工具栏，使开发者能够轻松地预览项目中的所有资源文件。但是，Flutter官方提供的`flutter`插件却缺少此功能。不过，`iFlutter`插件成功补充了这一功能。现在，您可以使用`iFlutter`插件来更好地管理和预览您的Flutter项目图片资源文件，具体效果如下(以实际为主):
 
-<img src="https://cdn.jsdelivr.net/gh/YangLang116/iFlutter/doc/configs/res_manager_list.png" width="360"  alt="图片资源管理"/>
+<img src="https://iflutter.toolu.cn/configs/res_manager_list.png" width="360"  alt="图片资源管理"/>
 
 ## `Flutter Resource` 可识别的图片资源:
 - .jpg
@@ -26,7 +26,7 @@
 
 ---
 
-<img src="https://cdn.jsdelivr.net/gh/YangLang116/iFlutter/doc/configs/res_manager_menu.png" width="360"  alt="图片资源管理-右键"/>
+<img src="https://iflutter.toolu.cn/configs/res_manager_menu.png" width="360"  alt="图片资源管理-右键"/>
 
 ## 右键菜单说明：
 ### 拷贝引用

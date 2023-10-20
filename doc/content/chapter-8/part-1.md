@@ -10,7 +10,7 @@ GameCenter is an IDEA Plugin for Developer to play Games
 
 ## 使用截图
 
-![plugin display](https://cdn.jsdelivr.net/gh/YangLang116/iFlutter/doc/configs/game_display.png)
+![plugin display](https://iflutter.toolu.cn/configs/game_display.png)
 
 ## 游戏列表
 

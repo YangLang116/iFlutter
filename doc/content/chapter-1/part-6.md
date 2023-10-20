@@ -30,8 +30,8 @@ images
 
 - 并非所有目录都支持资源归类，默认 `assets` 、`images` 目录，开发者可自行调整，具体如下:
 
-![Res Category 配置](https://cdn.jsdelivr.net/gh/YangLang116/iFlutter/doc/configs/config_gen_r.png)
+![Res Category 配置](https://iflutter.toolu.cn/configs/config_gen_r.png)
 
 具体效果如下：
 
-![Res Category 动效](https://cdn.jsdelivr.net/gh/YangLang116/iFlutter/doc/configs/cate_res.gif)
+![Res Category 动效](https://iflutter.toolu.cn/configs/cate_res.gif)

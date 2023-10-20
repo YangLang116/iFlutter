@@ -4,7 +4,7 @@
 - 鼠标点击右侧Icon，会跳转到包仓库；
 - 鼠标停留在Yaml配置处，按下 `Option(windows: Alt)` + `Enter`，在弹出的快速修复弹窗中，选择 `Update Package` 则自动修复；
 
-![检查更新](https://cdn.jsdelivr.net/gh/YangLang116/iFlutter/doc/configs/config_latest_version.png)
+![检查更新](https://iflutter.toolu.cn/configs/config_latest_version.png)
 
 
-![快速修复](https://cdn.jsdelivr.net/gh/YangLang116/iFlutter/doc/configs/version_quick_fix.png)
+![快速修复](https://iflutter.toolu.cn/configs/version_quick_fix.png)

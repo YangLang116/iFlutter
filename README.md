@@ -60,7 +60,7 @@ iFlutter is an IDEA Plugin for Developer of Flutter
 
 ## 问题反馈
 
-  <img src="https://cdn.jsdelivr.net/gh/YangLang116/iFlutter-Document/configs/iflutter_wechat.png" width="120"  alt="wx chat"/>
+  <img src="https://iflutter.toolu.cn/configs/iflutter_wechat.png" width="120"  alt="wx chat"/>
 
 ## 版本更新记录
 

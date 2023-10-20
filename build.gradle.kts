@@ -52,8 +52,8 @@ changelog {
     header.set(provider { "[${version.get()}] - ${date()}" })
     itemPrefix.set("-")
     keepUnreleasedSection.set(true)
-    unreleasedTerm.set("[Coming]")
-    groups.set(listOf("Changed"))
+    unreleasedTerm.set("[未完待续]")
+    groups.set(listOf(""))
 }
 
 // Configure Gradle Qodana Plugin - read more: https://github.com/JetBrains/gradle-qodana-plugin

@@ -46,7 +46,7 @@ buildscript {
 
 ## 使用入口
 
-![插件使用](https://cdn.jsdelivr.net/gh/YangLang116/iFlutter-Document/configs/mirror_repo_3.png)
+![插件使用](https://cdn.jsdelivr.net/gh/YangLang116/iFlutter/doc/configs/mirror_repo_3.png)
 
 **注意**: 引入新的`Android Flutter Plugin`，在执行`flutter pub get` 以后，需要重新注入，以保证新的插件会注入镜像仓库。
 
@@ -54,9 +54,9 @@ buildscript {
 
 `iFlutter` 镜像仓库手动配置，支持新增镜像仓库以及右键删除，具体配置如下：
 
-![插件配置入口](https://cdn.jsdelivr.net/gh/YangLang116/iFlutter-Document/configs/mirror_repo_1.png)
+![插件配置入口](https://cdn.jsdelivr.net/gh/YangLang116/iFlutter/doc/configs/mirror_repo_1.png)
 
-![插件配置](https://cdn.jsdelivr.net/gh/YangLang116/iFlutter-Document/configs/mirror_repo_2.png)
+![插件配置](https://cdn.jsdelivr.net/gh/YangLang116/iFlutter/doc/configs/mirror_repo_2.png)
 
 插件内置镜像仓库地址：
 - https://maven.aliyun.com/repository/gradle-plugin

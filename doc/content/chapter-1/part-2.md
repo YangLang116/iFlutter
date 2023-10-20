@@ -9,7 +9,7 @@ flutter:
 ```
 随着项目越来越大，以这种方式注册资源，`pubspec.yaml` 文件内容也会越来越长。为了兼容此情况，`iFlutter` 提供以目录的形式进行资源的注册，配置如下：
 
-![资源注册类型](https://cdn.jsdelivr.net/gh/YangLang116/iFlutter-Document/configs/fold_register.png)
+![资源注册类型](https://cdn.jsdelivr.net/gh/YangLang116/iFlutter/doc/configs/fold_register.png)
 
 调整资源注册方式，`iFlutter` 会提示重启IDEA，在下一次对资源文件的增、删、改后(或者`重置资源`)，`pubspec.yaml` 文件注册方式会自动调整，格式如下：
 

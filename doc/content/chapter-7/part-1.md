@@ -15,12 +15,12 @@
 
 - SVGA 文件预览
 
-<img src="https://cdn.jsdelivr.net/gh/YangLang116/iFlutter-Document/configs/svga-opt.gif" width="600"/>
+<img src="https://cdn.jsdelivr.net/gh/YangLang116/iFlutter/doc/configs/svga-opt.gif" width="600"/>
 
 
 - Lottie 文件预览
 
-<img src="https://cdn.jsdelivr.net/gh/YangLang116/iFlutter-Document/configs/lottie-opt.gif" width="600"/>
+<img src="https://cdn.jsdelivr.net/gh/YangLang116/iFlutter/doc/configs/lottie-opt.gif" width="600"/>
 
 ## 期望
 - [Github](https://github.com/YangLang116/MediaFilePreviewer): 希望有更多小伙伴参与，增强IDEA对各类文件的支持

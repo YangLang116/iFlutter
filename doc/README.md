@@ -60,22 +60,11 @@ iFlutter is an IDEA Plugin for Developer of Flutter
 
 ## 问题反馈
 
-  <img src="https://cdn.jsdelivr.net/gh/YangLang116/iFlutter-Document/configs/iflutter_wechat.png" width="120"  alt="wx chat"/>
+<img src="https://cdn.jsdelivr.net/gh/YangLang116/iFlutter/doc/configs/iflutter_wechat.png" width="120"  alt="wx chat"/>
 
 ## 版本更新记录
 
-### v3.0.1
-
-- 支持快速清除`Dart`、`YAML`文件中所有注释 [详细内容](https://iflutter.toolu.cn/content/chapter-11/part-1.html)
-
-### v3.0.0
-
-- 提升插件性能
-- 优化资源释放
-
-### v2.2.7
-
-- 修复`资源管理`窗口启动异常
+[点击查看](https://github.com/YangLang116/iFlutter/blob/main/CHANGELOG.md)
 
 ## 其他
 

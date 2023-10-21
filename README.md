@@ -70,7 +70,7 @@ iFlutter is an IDEA Plugin for Developer of Flutter
 - 修复`HttpMock`偶现启动失败问题
 - 处理Bug
 
-### v3.0.2
+### v3.0.2 
 
 - 调整Dart代码生成机制
 - 修改插件错误处理策略[(LogUtils)](https://github.com/YangLang116/iFlutter/blob/main/src/main/java/com/xtu/plugin/flutter/utils/LogUtils.java)，将错误打印改为上报，所有上报的数据[(AdviceManager)](https://github.com/YangLang116/iFlutter/blob/main/src/main/java/com/xtu/plugin/flutter/advice/AdviceManager.java)不涉及任何项目隐私，请放心使用

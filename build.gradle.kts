@@ -136,10 +136,3 @@ tasks {
         ideDir.set(file(properties("idePath")))
     }
 }
-
-tasks.findByName("buildPlugin")?.doLast {
-    copy {
-        from("build/distributions/iFlutter-${version}.zip")
-        into("plugin-version/")
-    }
-}

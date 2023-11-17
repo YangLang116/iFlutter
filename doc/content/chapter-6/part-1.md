@@ -40,9 +40,9 @@ buildscript {
 **但是**flutter项目会或多或少引入`Flutter Plugin`，那么就需要在每个`Plugin`的`build.gradle`中加入镜像仓库，工作量繁琐。好在`Gradle 7.0` 推出了新的依赖管理方式，能避免大量的CV操作，但是对于`Gradle7.0`之前的项目还是无能为力。而`iFlutter`提供了通用的处理方案，直接接管这一CV操作，自动给项目所有插件注入镜像仓库。
 
 ## 注入说明
-- 根项目的`build.gradle`注入
-- 所有`Android Flutter Plugin`的`build.gradle`注入
-- Flutter编译脚本注入 ($flutterRoot/packages/flutter_tools/gradle/`flutter.gradle`)
+- 为根项目的`build.gradle`注入
+- 为所有`Android Flutter Plugin`的`build.gradle`注入
+- 为Flutter编译脚本注入 ($flutterRoot/packages/flutter_tools/gradle/`flutter.gradle`)
 
 ## 使用入口
 

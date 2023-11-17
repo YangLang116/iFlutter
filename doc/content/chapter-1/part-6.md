@@ -26,7 +26,7 @@ images
   ...
 ```
 
-资源归类后，`iFlutter` 会重新注册资源到 `pubspec.yaml` 中，并修改受影响的 `*.dart` 文件。
+资源归类后，`iFlutter` 会重新注册资源到 `pubspec.yaml` 中，并重新生成 `*.dart` 文件。
 
 - 并非所有目录都支持资源归类，默认 `assets` 、`images` 目录，开发者可自行调整，具体如下:
 

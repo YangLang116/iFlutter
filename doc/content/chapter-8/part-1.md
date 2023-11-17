@@ -16,7 +16,7 @@ GameCenter is an IDEA Plugin for Developer to play Games
 
 - FlappyBird - 从项目 [FlappyBird](https://github.com/kingyuluk/FlappyBird) 进行移植
 
-- FC游戏 - [游戏清单](https://game.toolu.cn/conf.json) 按键说明如下：  
+- FC游戏 - [游戏清单](https://game.toolu.cn/conf.json) 按键说明如下：
 
 | 按键 | player1 | player2 |
 | :----: | :----: | :----: |  
@@ -32,8 +32,10 @@ GameCenter is an IDEA Plugin for Developer to play Games
 | Select | Ctrl |	Num-3 |
 
 ## 重点说明
+
 如果当前IDEA支持 [JCEF](https://plugins.jetbrains.com/docs/intellij/jcef.html) ，FC游戏会在IDEA中直接打开，否则只能借助系统浏览器运行。
-默认情况下，Intellij IDEA 支持JCEF的，而AndroidStudio 不支持，如果想要打开IDEA的JCEF功能，请参考文档 [如何打开JCEF?](https://www.jianshu.com/p/68056562d1c4) 
+默认情况下，Intellij IDEA 支持JCEF的，而AndroidStudio
+不支持，如果想要打开IDEA的JCEF功能，请参考文档 [如何打开JCEF?](https://iflutter.toolu.cn/content/chapter-9/part-1.html)
 
 ---
 

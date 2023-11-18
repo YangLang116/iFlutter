@@ -1,15 +1,22 @@
 # Changelog
 
 ## [未完待续]
+
 ###
 
+## [3.0.4] - 2023-11-18
+
+- `Dart Code`: 添加更多`LiveTemplate`片段
+
 ## [3.0.3] - 2023-10-09
+
 - `Flutter Resource`: 上下文菜单新增删除功能
 - `Flutter Resource`: 支持图片缺省展示
 - `HttpMock`: 修复启动失败问题
 - `Base`: 其他微小改动
 
 ## [3.0.2] - 2023-09-20
+
 - `Dart Code`: 调整代码生成机制
 - `Base`:
   修改插件错误处理策略[(LogUtils)](https://github.com/YangLang116/iFlutter/blob/main/src/main/java/com/xtu/plugin/flutter/utils/LogUtils.java)
@@ -17,42 +24,54 @@
   不涉及任何项目隐私，请放心使用
 
 ## [3.0.1] - 2023-09-08
+
 - `Base`: 支持快速清除`Dart`、`YAML`文件中所有注释
 - `Base`: Bug修复
 
 ## [3.0.0] - 2023-08-17
+
 - `Base`: 优化插件性能 & Bug修复
 
 ## [2.2.7] - 2023-08-09
+
 - `Flutter Resource`: 修复Bug
 - `Suggestion & Feedback`: 调整错误上报方式
 
 ## [2.2.6] - 2023-08-07
+
 - `Flutter Resource`: 更新窗口图标
 
 ## [2.2.5] - 2023-07-25
+
 - `Flutter Resource`: Bug修复
 
 ## [2.2.4] - 2023-06-20
+
 - `Suggestion & Feedback`: 新增错误与反馈渠道
 
 ## [2.2.3] - 2023-04-24
+
 - `Flutter Resource`: 上下文菜单新增图片压缩功能
 
 ## [2.2.2] - 2023-04-23
+
 - `Flutter Resource`: 上下文菜单新增图片路径拷贝功能
 - `Base`: 一些其他小改动
 
 ## [2.2.1] - 2023-04-15
+
 - `Flutter Resource`: 上下文菜单新增搜索功能
 
 ## [2.2.0] - 2023-04-13
+
 - `Flutter Resource`: 新增图片资源管理窗口
 
 ## [2.1.4] - 2023-02-21
+
 - `Upgrade`: 优化插件引导升级逻辑
 - `Code`: 支持生成类构造器代码
 
 ## [2.1.3] - 2023-02-18
+
 - `Code`: 优化 `fromJson`、`toJson` 代码生成逻辑
 - `Covert Dependency To Local`: 兼容 Flutter 3.0

@@ -19,50 +19,19 @@
     "plugins": [
         "-sharing",
         "splitter",
-        "expandable-chapters-small",
-        "anchors",
         "donate",
-        "sharing-plus",
-        "anchor-navigation-ex",
-	"valine"
+	"chapter-fold",
+        "expandable-chapters",
+	"pageview-count"
     ],
     "pluginsConfig": {
-	"valine": {
-            "appId": "7cC7Ya4UwLEF1M8nsu5Ts9MG-gzGzoHsz",
-            "appKey": "XxJlpLTOv4C7Vepup4bpMW81",
-	    "avatar": "retro"
-        },
-        "donate": {
-            "alipay": "",
-            "title": "",
-            "button": "赞赏",
-            "alipayText": " "
-        },
-        "sharing": {
-            "douban": false,
-            "facebook": false,
-            "google": false,
-            "hatenaBookmark": false,
-            "instapaper": false,
-            "line": false,
-            "linkedin": false,
-            "messenger": false,
-            "pocket": false,
-            "qq": false,
-            "qzone": false,
-            "stumbleupon": false,
-            "twitter": false,
-            "viber": false,
-            "vk": false,
-            "weibo": false,
-            "whatsapp": false,
-            "all": [
-                "google", "facebook", "weibo", "twitter",
-                "qq", "qzone", "linkedin", "pocket"
-            ]
-        },
-        "anchor-navigation-ex": {
-            "showLevel": false
-        }
+       "donate": {
+         "wechat": "https://iflutter.toolu.cn/configs/wx_pay.jpg",
+         "alipay": "https://iflutter.toolu.cn/configs/alipay.jpg",
+         "title": "鼓励一下",
+         "button": "赏",
+         "alipayText": "支付宝打赏",
+         "wechatText": "微信打赏"
+       }
     }
 }

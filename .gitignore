@@ -5,3 +5,8 @@ build
 profiles
 .DS_Store
 tinypng
+doc/_book/
+doc/index.html
+doc/node_modules/
+doc/nohup.out
+doc/README.md

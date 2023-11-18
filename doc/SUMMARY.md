@@ -1,4 +1,4 @@
-* [插件说明](../README.md)
+* [插件说明](README.md)
 
 * [1、管理资源](content/chapter-1/README.md)
     * [注册资源](content/chapter-1/part-1.md)

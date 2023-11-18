@@ -1,23 +1,17 @@
 {
     "title": "iFlutter Document",
-    "author": "MrYang",
-    "description": "Github: https://github.com/YangLang116/iFlutter",
+    "description": "iFlutter是一款辅助Flutter开发的 IDEA 插件",
+    "author": "YangLang",
     "language": "zh-hans",
+    "direction": "ltr",
     "gitbook": "3.2.3",
-    "styles": {
-        "website": "./styles/website.css"
-    },
     "structure": {
         "readme": "README.md"
     },
-    "links": {
-        "sharing": {
-            "all": null,
-            "facebook": null,
-            "google": null,
-            "twitter": null,
-            "weibo": null
+    "styles": {
+            "website": "./styles/website.css"
         },
+    "links": {
         "sidebar": {
             "Github": "https://github.com/YangLang116/iFlutter"
         }

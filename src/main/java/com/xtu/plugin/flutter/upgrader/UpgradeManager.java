@@ -60,8 +60,10 @@ public class UpgradeManager {
                                          String detailBtnText, String detailUrl) {
         NotificationGroupManager.getInstance()
                 .getNotificationGroup(sGroupId)
-                .createNotification(title, subtitle, content, NotificationType.INFORMATION,
-                        new NotificationListener.UrlOpeningListener(true))
+                .createNotification(content, NotificationType.INFORMATION)
+                .setTitle(title)
+                .setSubtitle(subtitle)
+                .setListener(new NotificationListener.UrlOpeningListener(true))
                 .setImportant(true)
                 .addAction(createUpgradeAction(project))  //引导升级
                 .addAction(createDetailAction(detailBtnText, detailUrl)) //查看升级信息

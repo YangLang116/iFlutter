@@ -1,5 +1,32 @@
 <!-- Plugin description -->
-iFlutter is an IDEA Plugin for Developer of Flutter
+## iFlutter is an IDEA Plugin for Developer of Flutter
+(iFlutter 是一款面向 Flutter 开发者的 IDEA 插件)
+
+### 1、资源文件管理
+  - [注册资源](https://iflutter.toolu.cn/content/chapter-1/part-1.html)
+  - [注册资源(目录)](https://iflutter.toolu.cn/content/chapter-1/part-2.html)
+  - [注册字体](https://iflutter.toolu.cn/content/chapter-1/part-3.html)
+  - [资源重置](https://iflutter.toolu.cn/content/chapter-1/part-4.html)
+  - [检查重复资源](https://iflutter.toolu.cn/content/chapter-1/part-5.html)
+  - [归纳资源](https://iflutter.toolu.cn/content/chapter-1/part-6.html)
+  - [无用资源检查](https://iflutter.toolu.cn/content/chapter-1/part-7.html)
+  - [图片资源监控](https://iflutter.toolu.cn/content/chapter-1/part-8.html)
+  - [图片资源管理](https://iflutter.toolu.cn/content/chapter-1/part-9.html)
+### 2、代码生成
+  - [Json 转 Dart Entity](https://iflutter.toolu.cn/content/chapter-2/part-1.html)
+  - [fromJson、toJson](https://iflutter.toolu.cn/content/chapter-2/part-2.html)
+  - [Live Template](https://iflutter.toolu.cn/content/chapter-2/part-3.html)
+### 3、插件包管理
+  - [Pub快捷搜索](https://iflutter.toolu.cn/content/chapter-3/part-1.html)
+  - [依赖快速定位](https://iflutter.toolu.cn/content/chapter-3/part-2.html)
+  - [提取远程依赖](https://iflutter.toolu.cn/content/chapter-3/part-3.html)
+  - [包检查更新](https://iflutter.toolu.cn/content/chapter-3/part-4.html)
+  - [依赖树生成](https://iflutter.toolu.cn/content/chapter-3/part-5.html)
+### [4、Http接口Mock](https://iflutter.toolu.cn/content/chapter-4/part-1.html)
+### [5、国际化支持](https://iflutter.toolu.cn/content/chapter-5/part-1.html)
+### [6、镜像仓库注入](https://iflutter.toolu.cn/content/chapter-6/part-1.html)
+### [7、清除注释](https://iflutter.toolu.cn/content/chapter-11/part-1.html)
+
 <!-- Plugin description end -->
 
 ## iFlutter是一款辅助Flutter开发的 IDEA 插件

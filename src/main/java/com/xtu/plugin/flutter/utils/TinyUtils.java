@@ -10,7 +10,6 @@ import com.intellij.openapi.ui.MessageType;
 import com.tinify.Tinify;
 import com.xtu.plugin.flutter.configuration.SettingsConfiguration;
 import com.xtu.plugin.flutter.store.StorageService;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;

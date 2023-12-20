@@ -11,7 +11,7 @@ import com.xtu.plugin.flutter.utils.CommandUtils;
 import com.xtu.plugin.flutter.utils.DartUtils;
 import com.xtu.plugin.flutter.utils.PluginUtils;
 import com.xtu.plugin.flutter.utils.ToastUtil;
-import org.apache.commons.lang.StringUtils;
+import com.xtu.plugin.flutter.utils.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;

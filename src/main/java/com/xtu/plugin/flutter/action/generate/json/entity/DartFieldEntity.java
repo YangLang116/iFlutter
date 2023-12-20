@@ -1,6 +1,6 @@
 package com.xtu.plugin.flutter.action.generate.json.entity;
 
-import org.apache.commons.lang.StringUtils;
+import com.xtu.plugin.flutter.utils.StringUtils;
 
 public class DartFieldEntity {
 

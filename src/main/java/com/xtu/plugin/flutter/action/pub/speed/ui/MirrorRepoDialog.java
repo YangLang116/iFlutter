@@ -7,7 +7,7 @@ import com.intellij.ui.components.JBList;
 import com.intellij.util.ui.JBUI;
 import com.xtu.plugin.flutter.action.pub.speed.helper.AndroidGradleMaker;
 import com.xtu.plugin.flutter.store.StorageService;
-import org.apache.commons.lang.StringUtils;
+import com.xtu.plugin.flutter.utils.StringUtils;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

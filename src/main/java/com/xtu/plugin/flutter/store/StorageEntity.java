@@ -3,7 +3,7 @@ package com.xtu.plugin.flutter.store;
 import com.intellij.util.xmlb.annotations.Transient;
 import com.xtu.plugin.flutter.action.pub.speed.helper.AndroidGradleMaker;
 import com.xtu.plugin.flutter.component.packages.update.PackageInfo;
-import org.apache.commons.lang.StringUtils;
+import com.xtu.plugin.flutter.utils.StringUtils;
 
 import java.util.*;
 

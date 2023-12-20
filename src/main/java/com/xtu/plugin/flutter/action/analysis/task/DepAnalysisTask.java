@@ -8,7 +8,7 @@ import com.intellij.openapi.util.SystemInfo;
 import com.xtu.plugin.flutter.action.analysis.ui.AnalysisResultDialog;
 import com.xtu.plugin.flutter.utils.CommandUtils;
 import com.xtu.plugin.flutter.utils.DartUtils;
-import org.apache.commons.lang.StringUtils;
+import com.xtu.plugin.flutter.utils.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;

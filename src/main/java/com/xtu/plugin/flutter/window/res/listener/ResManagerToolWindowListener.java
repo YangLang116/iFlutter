@@ -13,7 +13,7 @@ import com.xtu.plugin.flutter.utils.FileUtils;
 import com.xtu.plugin.flutter.utils.LogUtils;
 import com.xtu.plugin.flutter.window.res.ResManagerToolWindowFactory;
 import com.xtu.plugin.flutter.window.res.ui.ResManagerRootPanel;
-import org.apache.commons.lang.StringUtils;
+import com.xtu.plugin.flutter.utils.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

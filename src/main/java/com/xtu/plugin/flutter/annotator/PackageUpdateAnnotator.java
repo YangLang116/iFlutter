@@ -25,7 +25,7 @@ import com.xtu.plugin.flutter.utils.YamlPsiUtils;
 import icons.PluginIcons;
 import io.flutter.pub.PubRoot;
 import io.flutter.sdk.FlutterSdk;
-import org.apache.commons.lang.StringUtils;
+import com.xtu.plugin.flutter.utils.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.YAMLElementGenerator;

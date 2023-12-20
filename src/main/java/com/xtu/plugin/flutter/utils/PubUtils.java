@@ -1,7 +1,6 @@
 package com.xtu.plugin.flutter.utils;
 
 import com.intellij.openapi.project.Project;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;

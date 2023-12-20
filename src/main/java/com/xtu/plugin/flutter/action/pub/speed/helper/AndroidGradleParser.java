@@ -10,7 +10,7 @@ import com.intellij.psi.PsiManager;
 import com.xtu.plugin.flutter.action.pub.speed.entity.AndroidMavenInfo;
 import com.xtu.plugin.flutter.action.pub.speed.entity.AndroidPluginInfo;
 import com.xtu.plugin.flutter.utils.*;
-import org.apache.commons.lang.StringUtils;
+import com.xtu.plugin.flutter.utils.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;

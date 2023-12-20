@@ -21,7 +21,7 @@ import com.xtu.plugin.flutter.action.BaseDependencyAction;
 import com.xtu.plugin.flutter.utils.PubspecUtils;
 import com.xtu.plugin.flutter.utils.ToastUtil;
 import kotlin.Pair;
-import org.apache.commons.lang.StringUtils;
+import com.xtu.plugin.flutter.utils.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.psi.YAMLKeyValue;

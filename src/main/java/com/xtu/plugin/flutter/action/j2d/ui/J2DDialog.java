@@ -17,7 +17,7 @@ import com.xtu.plugin.flutter.utils.DartUtils;
 import com.xtu.plugin.flutter.utils.LogUtils;
 import com.xtu.plugin.flutter.utils.StringUtil;
 import com.xtu.plugin.flutter.utils.ToastUtil;
-import org.apache.commons.lang.StringUtils;
+import com.xtu.plugin.flutter.utils.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;

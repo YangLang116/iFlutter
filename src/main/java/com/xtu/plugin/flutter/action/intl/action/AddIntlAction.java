@@ -8,8 +8,8 @@ import com.xtu.plugin.flutter.action.intl.IntlResManager;
 import com.xtu.plugin.flutter.action.intl.ui.AddIntlDialog;
 import com.xtu.plugin.flutter.action.intl.utils.IntlUtils;
 import com.xtu.plugin.flutter.utils.CollectionUtils;
+import com.xtu.plugin.flutter.utils.StringUtils;
 import com.xtu.plugin.flutter.utils.ToastUtil;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

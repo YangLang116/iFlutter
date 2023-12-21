@@ -30,6 +30,7 @@
                     secondary="false"
                     factoryClass="com.xtu.plugin.flutter.window.res.ResManagerToolWindowFactory"/>
         <errorHandler implementation="com.xtu.plugin.flutter.reporter.FErrorReporter"/>
+        <projectViewNodeDecorator implementation="com.xtu.plugin.flutter.decorator.AssetNodeDecorator"/>
     </extensions>
     <applicationListeners>
         <listener topic="com.intellij.openapi.project.ProjectManagerListener"

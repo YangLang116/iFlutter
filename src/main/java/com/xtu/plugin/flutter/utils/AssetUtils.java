@@ -16,12 +16,25 @@ public class AssetUtils {
 
     private static final Pattern sPattern = Pattern.compile("\\d+\\.0x");
 
-    //当前目录名是否多尺寸适配
-    //2.0x、3.0x、4.0x
-    public static boolean isDimensionDir(String dirName) {
-        if (StringUtils.isEmpty(dirName)) return false;
-        Matcher matcher = sPattern.matcher(dirName);
-        return matcher.matches();
+    public static List<String> supportAssetFoldName(@NotNull Project project) {
+        return StorageService.getInstance(project).getState().resDir;
+    }
+
+    public static boolean enableResCheck(@NotNull Project project) {
+        return StorageService.getInstance(project).getState().resCheckEnable;
+    }
+
+    public static boolean isFoldRegister(@NotNull Project project) {
+        return StorageService.getInstance(project).getState().foldRegisterEnable;
+    }
+
+    public static boolean isAssetDir(@NotNull Project project, @NotNull VirtualFile virtualFile) {
+        if (!virtualFile.isDirectory()) return false;
+        String dirName = virtualFile.getName();
+        List<String> supportAssetFoldName = supportAssetFoldName(project);
+        if (!supportAssetFoldName.contains(dirName)) return false;
+        String projectPath = PluginUtils.getProjectPath(project);
+        return StringUtils.equals(projectPath, virtualFile.getParent().getPath());
     }
 
     public static boolean isAssetFile(@NotNull Project project, @NotNull VirtualFile virtualFile) {
@@ -64,7 +77,7 @@ public class AssetUtils {
 
     //获取asset配置
     @Nullable
-    public static String getAssetPath(String projectPath, File assetFile) {
+    public static String getAssetPath(@Nullable String projectPath, @Nullable File assetFile) {
         if (StringUtils.isEmpty(projectPath) || assetFile == null) return null;
         String relativePath = FileUtils.getRelativePath(projectPath, assetFile);
         if (StringUtils.isEmpty(relativePath)) return null;
@@ -74,6 +87,14 @@ public class AssetUtils {
         } else {
             return relativePath;
         }
+    }
+
+    //当前目录名是否多尺寸适配
+    //2.0x、3.0x、4.0x
+    public static boolean isDimensionDir(@Nullable String dirName) {
+        if (StringUtils.isEmpty(dirName)) return false;
+        Matcher matcher = sPattern.matcher(dirName);
+        return matcher.matches();
     }
 
     /**
@@ -90,7 +111,7 @@ public class AssetUtils {
      * - a.png
      * -a.png
      */
-    public static boolean hasOtherDimensionAsset(String projectPath, File assetFile) {
+    public static boolean hasOtherDimensionAsset(@Nullable String projectPath, @Nullable File assetFile) {
         if (StringUtils.isEmpty(projectPath) || assetFile == null) return false;
         File parentFile = assetFile.getParentFile();
         String parentName = parentFile.getName();
@@ -101,9 +122,7 @@ public class AssetUtils {
         }
     }
 
-    private static boolean hasOtherDimensionAsset(@NotNull String projectPath,
-                                                  @NotNull File rootFile,
-                                                  @NotNull File compareFile) {
+    private static boolean hasOtherDimensionAsset(@NotNull String projectPath, @NotNull File rootFile, @NotNull File compareFile) {
         String compareRelativePath = FileUtils.getRelativePath(projectPath, compareFile);
         String compareAssetPath = getAssetPath(projectPath, compareFile);
         List<File> fileList = new ArrayList<>();
@@ -112,20 +131,11 @@ public class AssetUtils {
             //资源路径一样，但是相对路径不一样
             String currentAssetPath = getAssetPath(projectPath, assetFile);
             String currentRelativePath = FileUtils.getRelativePath(projectPath, assetFile);
-            if (StringUtils.equals(currentAssetPath, compareAssetPath)
-                    && !StringUtils.equals(currentRelativePath, compareRelativePath)) {
+            if (StringUtils.equals(currentAssetPath, compareAssetPath) && !StringUtils.equals(currentRelativePath, compareRelativePath)) {
                 return true;
             }
         }
         return false;
-    }
-
-    public static List<String> supportAssetFoldName(@NotNull Project project) {
-        return StorageService.getInstance(project).getState().resDir;
-    }
-
-    public static boolean isFoldRegister(@NotNull Project project) {
-        return StorageService.getInstance(project).getState().foldRegisterEnable;
     }
 
     @NotNull

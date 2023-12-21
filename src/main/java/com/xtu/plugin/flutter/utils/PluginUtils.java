@@ -2,6 +2,7 @@ package com.xtu.plugin.flutter.utils;
 
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.xtu.plugin.flutter.store.StorageEntity;
@@ -13,19 +14,15 @@ import java.io.File;
 
 public class PluginUtils {
 
-
     @Nullable
-    public static String getProjectPath(Project project) {
+    public static String getProjectPath(@Nullable Project project) {
         if (project == null) return null;
-        String projectPath = project.getBasePath();
-        if (StringUtils.isEmpty(projectPath)) return null;
-        if (projectPath.endsWith("/")) {
-            projectPath = projectPath.substring(0, projectPath.length() - 1);
-        }
-        return projectPath;
+        VirtualFile projectDir = ProjectUtil.guessProjectDir(project);
+        if (projectDir == null) return null;
+        return projectDir.getPath();
     }
 
-    public static boolean isFlutterProject(Project project) {
+    public static boolean isFlutterProject(@Nullable Project project) {
         String projectPath = getProjectPath(project);
         if (StringUtils.isEmpty(projectPath)) return false;
         File file = new File(projectPath, PubspecUtils.getFileName());

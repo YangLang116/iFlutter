@@ -8,7 +8,7 @@ import com.xtu.plugin.flutter.base.adapter.BulkFileAdapter;
 import com.xtu.plugin.flutter.component.analysis.ImageSizeAnalyzer;
 import com.xtu.plugin.flutter.component.assets.handler.AssetFileHandler;
 import com.xtu.plugin.flutter.component.assets.handler.PubSpecFileHandler;
-import com.xtu.plugin.flutter.store.StorageService;
+import com.xtu.plugin.flutter.utils.AssetUtils;
 import com.xtu.plugin.flutter.utils.LogUtils;
 import com.xtu.plugin.flutter.utils.PluginUtils;
 import com.xtu.plugin.flutter.utils.PubspecUtils;
@@ -46,26 +46,28 @@ public class AssetsManager extends BulkFileAdapter implements Disposable {
         LogUtils.info("AssetsManager detach");
     }
 
-    private boolean enableResCheck() {
-        return StorageService.getInstance(project).getState().resCheckEnable;
-    }
-
     @Override
     public void onFileAdded(@NotNull Project project, @NotNull VirtualFile virtualFile) {
         this.imageSizeAnalyzer.onPsiFileAdd(project, virtualFile);
-        if (enableResCheck()) this.assetFileHandler.onFileAdded(project, virtualFile);
+        if (AssetUtils.enableResCheck(project)) {
+            this.assetFileHandler.onFileAdded(project, virtualFile);
+        }
     }
 
     @Override
     public void onFileMove(@NotNull Project project,
                            @NotNull File oldFile,
                            @NotNull VirtualFile newFile) {
-        if (enableResCheck()) this.assetFileHandler.onFileMoved(project, oldFile, newFile);
+        if (AssetUtils.enableResCheck(project)) {
+            this.assetFileHandler.onFileMoved(project, oldFile, newFile);
+        }
     }
 
     @Override
     public void onFileDeleted(@NotNull Project project, @NotNull VirtualFile virtualFile) {
-        if (enableResCheck()) this.assetFileHandler.onFileDeleted(project, virtualFile);
+        if (AssetUtils.enableResCheck(project)) {
+            this.assetFileHandler.onFileDeleted(project, virtualFile);
+        }
     }
 
     @Override
@@ -73,13 +75,17 @@ public class AssetsManager extends BulkFileAdapter implements Disposable {
                                   @NotNull VirtualFile virtualFile,
                                   @NotNull String oldName,
                                   @NotNull String newName) {
-        if (enableResCheck()) this.assetFileHandler.onFileChanged(project, virtualFile, oldName, newName);
+        if (AssetUtils.enableResCheck(project)) {
+            this.assetFileHandler.onFileChanged(project, virtualFile, oldName, newName);
+        }
     }
 
     @Override
     public void onFileContentChanged(@NotNull Project project, @NotNull VirtualFile virtualFile) {
         if (PubspecUtils.isRootPubspecFile(project, virtualFile)) {
-            if (enableResCheck()) this.specFileHandler.onPsiFileChanged(project);
+            if (AssetUtils.enableResCheck(project)) {
+                this.specFileHandler.onPsiFileChanged(project);
+            }
         }
     }
 

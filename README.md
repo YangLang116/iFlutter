@@ -65,7 +65,7 @@
 
 [点击查看](https://github.com/YangLang116/iFlutter/blob/main/CHANGELOG.md)
 
-## JetBrains 开源证书支持
+## JetBrains 支持
 
 `iFlutter` 使用 `intellij idea` 集成开发环境进行开发，感谢 `Jetbrains` 提供 **free JetBrains Open Source license(s)** 正版免费授权。
 

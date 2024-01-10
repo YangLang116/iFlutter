@@ -65,6 +65,14 @@
 
 [点击查看](https://github.com/YangLang116/iFlutter/blob/main/CHANGELOG.md)
 
+## JetBrains 开源证书支持
+
+`iFlutter` 使用 `intellij idea` 集成开发环境进行开发，感谢 `Jetbrains` 提供 **free JetBrains Open Source license(s)** 正版免费授权。
+
+<a href="https://www.jetbrains.com/?from=iFlutter" target="_blank">
+  <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg" width="120" align="middle"/>
+</a>
+
 ## 其他
 
 建议直接使用 [Intellij IDEA](https://www.jetbrains.com/idea/) 代替 `AndroidStudio` 开发Flutter项目：  

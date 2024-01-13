@@ -5,7 +5,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.MessageType;
 import com.intellij.ui.components.JBScrollPane;
-import com.xtu.plugin.flutter.utils.ToastUtil;
+import com.xtu.plugin.flutter.utils.ToastUtils;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -62,7 +62,7 @@ public class UselessResAnalysisDialog extends DialogWrapper {
         protected void doAction(ActionEvent e) {
             StringSelection stringSelection = new StringSelection(UselessResAnalysisDialog.this.result);
             CopyPasteManager.getInstance().setContents(stringSelection);
-            ToastUtil.make(UselessResAnalysisDialog.this.project, MessageType.INFO, "copy success");
+            ToastUtils.make(UselessResAnalysisDialog.this.project, MessageType.INFO, "copy success");
             UselessResAnalysisDialog.this.close(OK_EXIT_CODE);
         }
     }

@@ -13,11 +13,8 @@ import com.intellij.util.ui.JBUI;
 import com.xtu.plugin.flutter.action.j2d.generate.J2DGenerator;
 import com.xtu.plugin.flutter.store.StorageEntity;
 import com.xtu.plugin.flutter.store.StorageService;
-import com.xtu.plugin.flutter.utils.DartUtils;
-import com.xtu.plugin.flutter.utils.LogUtils;
-import com.xtu.plugin.flutter.utils.StringUtil;
-import com.xtu.plugin.flutter.utils.ToastUtil;
-import com.xtu.plugin.flutter.utils.StringUtils;
+import com.xtu.plugin.flutter.utils.*;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -81,6 +78,23 @@ public class J2DDialog extends DialogWrapper {
         //确认按钮
         Box bottomContainer = Box.createHorizontalBox();
         bottomContainer.add(Box.createHorizontalGlue());
+        bottomContainer.add(createFormatBtn(jsonArea));
+        bottomContainer.add(Box.createHorizontalStrut(10));
+        JButton okButton = new JButton("OK");
+        okButton.addActionListener(e -> {
+            String className = classNameFiled.getText();
+            String jsonData = jsonArea.getText();
+            StorageEntity storageEntity = StorageService.getInstance(project).getState();
+            generateDart(storageEntity.flutter2Enable, storageEntity.isUnModifiableFromJson, className, jsonData);
+            close(OK_EXIT_CODE);
+        });
+        bottomContainer.add(okButton);
+        mainPanel.add(bottomContainer, BorderLayout.SOUTH);
+        return mainPanel;
+    }
+
+    @NotNull
+    private JButton createFormatBtn(JTextPane jsonArea) {
         JButton formatButton = new JButton("Format");
         formatButton.addActionListener(e -> {
             String jsonData = jsonArea.getText();
@@ -97,37 +111,25 @@ public class J2DDialog extends DialogWrapper {
                 jsonArea.setText(formatData);
             } catch (JSONException ex) {
                 LogUtils.error("J2DDialog createCenterPanel", ex);
-                ToastUtil.make(project, MessageType.ERROR, ex.getMessage());
+                ToastUtils.make(project, MessageType.ERROR, ex.getMessage());
             }
         });
-        bottomContainer.add(formatButton);
-        bottomContainer.add(Box.createHorizontalStrut(10));
-        JButton okButton = new JButton("OK");
-        okButton.addActionListener(e -> {
-            String className = classNameFiled.getText();
-            String jsonData = jsonArea.getText();
-            StorageEntity storageEntity = StorageService.getInstance(project).getState();
-            generateDart(storageEntity.flutter2Enable, storageEntity.isUnModifiableFromJson, className, jsonData);
-            close(OK_EXIT_CODE);
-        });
-        bottomContainer.add(okButton);
-        mainPanel.add(bottomContainer, BorderLayout.SOUTH);
-        return mainPanel;
+        return formatButton;
     }
 
     private void generateDart(boolean enableFlutter2, boolean isUnModifiableFromJson, String className, String jsonData) {
         if (StringUtils.isEmpty(className) || StringUtils.isEmpty(jsonData)) {
-            ToastUtil.make(project, MessageType.WARNING, "className or json data is empty");
+            ToastUtils.make(project, MessageType.WARNING, "className or json data is empty");
             return;
         }
         if (jsonData.startsWith("[")) {
-            ToastUtil.make(project, MessageType.ERROR, "can not support jsonArray to dart");
+            ToastUtils.make(project, MessageType.ERROR, "can not support jsonArray to dart");
             return;
         }
-        String fileName = StringUtil.splashName(className) + ".dart";
+        String fileName = ClassUtils.splashName(className) + ".dart";
         VirtualFile childFile = selectDirectory.findChild(fileName);
         if (childFile != null) {
-            ToastUtil.make(project, MessageType.ERROR, "dart bean is exist");
+            ToastUtils.make(project, MessageType.ERROR, "dart bean is exist");
             return;
         }
         try {
@@ -136,7 +138,7 @@ public class J2DDialog extends DialogWrapper {
             final String result = generator.generate(className, jsonObject);
             writeTask(project, selectDirectory, fileName, result);
         } catch (Exception e) {
-            ToastUtil.make(project, MessageType.ERROR, e.getMessage());
+            ToastUtils.make(project, MessageType.ERROR, e.getMessage());
         }
     }
 

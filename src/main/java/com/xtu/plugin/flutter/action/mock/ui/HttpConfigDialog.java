@@ -19,7 +19,6 @@ public class HttpConfigDialog extends DialogWrapper {
     private JTextField descriptionView;
     private JTextPane responseView;
 
-    private final Project project;
     private HttpEntity outOutEntity;
     private final HttpEntity inputEntity;
     private final Action saveAction = new SaveAction();
@@ -27,7 +26,6 @@ public class HttpConfigDialog extends DialogWrapper {
 
     public HttpConfigDialog(@Nullable Project project, @Nullable HttpEntity httpEntity) {
         super(project, false, IdeModalityType.PROJECT);
-        this.project = project;
         this.inputEntity = httpEntity;
         setTitle("Http Mock Config");
         setHorizontalStretch(2);

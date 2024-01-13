@@ -12,7 +12,7 @@ public class CloseUtils {
             try {
                 closeable.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                //ignore
             }
         }
     }

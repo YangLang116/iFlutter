@@ -5,7 +5,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
 import com.xtu.plugin.flutter.utils.AssetUtils;
 import com.xtu.plugin.flutter.utils.PluginUtils;
-import com.xtu.plugin.flutter.utils.ToastUtil;
+import com.xtu.plugin.flutter.utils.ToastUtils;
 import com.xtu.plugin.flutter.window.res.ui.ResManagerListener;
 import com.xtu.plugin.flutter.utils.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -29,6 +29,6 @@ public class CopyPathItem extends AbstractItem {
         if (StringUtils.isEmpty(assetPath)) return;
         StringSelection content = new StringSelection(assetPath);
         CopyPasteManager.getInstance().setContents(content);
-        ToastUtil.make(project, MessageType.INFO, "copy path success");
+        ToastUtils.make(project, MessageType.INFO, "copy path success");
     }
 }

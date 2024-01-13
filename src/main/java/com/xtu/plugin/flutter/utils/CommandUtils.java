@@ -1,12 +1,27 @@
 package com.xtu.plugin.flutter.utils;
 
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.SystemInfo;
+import org.jetbrains.annotations.NotNull;
+
 import java.io.*;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class CommandUtils {
 
-    public static CommandResult executeSync(String command, File workDir) {
-        return executeSync(command, workDir, -1);
+    @NotNull
+    public static CommandResult executeSync(@NotNull Project project, @NotNull String commandArgs, int maxTimeOut) {
+        String projectPath = PluginUtils.getProjectPath(project);
+        if (StringUtils.isEmpty(projectPath)) return new CommandResult(CommandResult.FAIL, "project path is null");
+        String flutterPath = DartUtils.getFlutterPath(project);
+        if (StringUtils.isEmpty(flutterPath)) {
+            return new CommandResult(CommandResult.FAIL, "must set flutter.sdk in local.properties");
+        }
+        String executorName = SystemInfo.isWindows ? "flutter.bat" : "flutter";
+        File executorFile = new File(flutterPath, "bin" + File.separator + executorName);
+        String command = String.format(Locale.ROOT, "%s %s", executorFile.getAbsolutePath(), commandArgs);
+        return CommandUtils.executeSync(command, new File(projectPath), maxTimeOut);
     }
 
     public static CommandResult executeSync(String command, File workDir, int maxTimeOut) {

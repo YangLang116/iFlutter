@@ -7,7 +7,7 @@ import com.xtu.plugin.flutter.action.mock.manager.dispatcher.HttpDispatcher;
 import com.xtu.plugin.flutter.utils.HttpUtils;
 import com.xtu.plugin.flutter.utils.LogUtils;
 import com.xtu.plugin.flutter.utils.PluginUtils;
-import com.xtu.plugin.flutter.utils.ToastUtil;
+import com.xtu.plugin.flutter.utils.ToastUtils;
 import okhttp3.mockwebserver.MockWebServer;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,7 +40,7 @@ public final class HttpMockManager implements Disposable {
             this.webServer.start(inetAddress, 0);
         } catch (Exception e) {
             LogUtils.error("HttpMockManager activeServerIfNeed", e);
-            ToastUtil.make(project, MessageType.ERROR, e.getMessage());
+            ToastUtils.make(project, MessageType.ERROR, e.getMessage());
         }
     }
 
@@ -53,6 +53,7 @@ public final class HttpMockManager implements Disposable {
         }
     }
 
+    @SuppressWarnings("HttpUrlsUsage")
     public String getBaseUrl() {
         return String.format(Locale.US, "http://%s:%d", hostIP, webServer.getPort());
     }

@@ -9,11 +9,11 @@ import com.xtu.plugin.flutter.action.intl.translate.TransApi;
 import com.xtu.plugin.flutter.action.intl.utils.IntlUtils;
 import com.xtu.plugin.flutter.store.StorageEntity;
 import com.xtu.plugin.flutter.store.StorageService;
+import com.xtu.plugin.flutter.utils.StringUtils;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import com.xtu.plugin.flutter.utils.StringUtils;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,14 +31,14 @@ import java.util.List;
 import java.util.Map;
 
 public class AddIntlDialog extends DialogWrapper {
+    private final Project project;
+    private final TransApi transApi;
+    private final List<String> localeList;
+    private final Map<String, JTextField> localeFieldMap = new HashMap<>();
 
     private boolean hasTranslate;
     private JCheckBox replaceBox;
     private JTextField keyTextField;
-    private Project project;
-    private final TransApi transApi;
-    private final List<String> localeList;
-    private final Map<String, JTextField> localeFieldMap = new HashMap<>();
 
     public AddIntlDialog(@Nullable Project project, @NotNull List<String> localeList) {
         super(project, null, false, IdeModalityType.PROJECT, true);
@@ -89,17 +89,7 @@ public class AddIntlDialog extends DialogWrapper {
             localeLabel.setPreferredSize(new Dimension(30, 0));
             localeItemBox.add(localeLabel);
             localeItemBox.add(Box.createHorizontalStrut(10));
-            JTextField localeTextField = new JTextField();
-            localeTextField.addFocusListener(new FocusAdapter() {
-                @Override
-                public void focusLost(FocusEvent e) {
-                    if (hasTranslate) return;
-                    String inputStr = localeTextField.getText().trim();
-                    if (StringUtils.isEmpty(inputStr)) return;
-                    hasTranslate = true;
-                    translateLocaleList(locale, localeTextField);
-                }
-            });
+            JTextField localeTextField = getjTextField(locale);
             localeItemBox.add(localeTextField);
             localeFieldMap.put(locale, localeTextField);
             rootPanel.add(localeItemBox);
@@ -112,6 +102,22 @@ public class AddIntlDialog extends DialogWrapper {
         replaceBox.setAlignmentX(Component.LEFT_ALIGNMENT);
         rootPanel.add(replaceBox);
         return rootPanel;
+    }
+
+    @NotNull
+    private JTextField getjTextField(String locale) {
+        JTextField localeTextField = new JTextField();
+        localeTextField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (hasTranslate) return;
+                String inputStr = localeTextField.getText().trim();
+                if (StringUtils.isEmpty(inputStr)) return;
+                hasTranslate = true;
+                translateLocaleList(locale, localeTextField);
+            }
+        });
+        return localeTextField;
     }
 
     @Override
@@ -178,7 +184,6 @@ public class AddIntlDialog extends DialogWrapper {
     }
 
     private String parseResult(@NotNull String content) {
-        //{"from":"zh","to":"en","trans_result":[{"src":"\u6d4b\u8bd5","dst":"test"}]}
         try {
             JSONObject resultJson = new JSONObject(content);
             JSONArray transArray = resultJson.optJSONArray("trans_result");

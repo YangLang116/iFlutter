@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 public class TransApi {
 
-    private static final String TRANS_API_HOST = "http://api.fanyi.baidu.com/api/trans/vip/translate";
+    private static final String TRANS_API_HOST = "https://fanyi-api.baidu.com/api/trans/vip/translate";
 
     private final String appId;
     private final String appSecretKey;

@@ -1,12 +1,6 @@
 package com.xtu.plugin.flutter.utils;
 
-public class StringUtil {
-
-    public static String getClassName(String str) {
-        String name = toCamelCase(str);
-        if(name == null) return null;
-        return name.substring(0, 1).toUpperCase() + name.substring(1);
-    }
+public class ClassUtils {
 
     public static String splashName(String name) {
         if (name == null) return null;
@@ -19,6 +13,12 @@ public class StringUtil {
             resultSb.append(Character.toLowerCase(c));
         }
         return resultSb.toString();
+    }
+
+    public static String getClassName(String str) {
+        String name = toCamelCase(str);
+        if (name == null) return null;
+        return name.substring(0, 1).toUpperCase() + name.substring(1);
     }
 
     public static String toCamelCase(String name) {

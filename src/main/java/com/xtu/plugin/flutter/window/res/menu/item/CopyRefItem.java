@@ -6,7 +6,7 @@ import com.intellij.openapi.ui.MessageType;
 import com.xtu.plugin.flutter.component.assets.code.DartRFileGenerator;
 import com.xtu.plugin.flutter.utils.AssetUtils;
 import com.xtu.plugin.flutter.utils.PluginUtils;
-import com.xtu.plugin.flutter.utils.ToastUtil;
+import com.xtu.plugin.flutter.utils.ToastUtils;
 import com.xtu.plugin.flutter.window.res.ui.ResManagerListener;
 import com.xtu.plugin.flutter.utils.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -34,6 +34,6 @@ public class CopyRefItem extends AbstractItem {
         String reference = className + "." + variantName;
         StringSelection content = new StringSelection(reference);
         CopyPasteManager.getInstance().setContents(content);
-        ToastUtil.make(project, MessageType.INFO, "copy reference success");
+        ToastUtils.make(project, MessageType.INFO, "copy reference success");
     }
 }

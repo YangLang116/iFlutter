@@ -5,7 +5,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
 import com.xtu.plugin.flutter.action.analysis.ui.DuplicateResDisplayDialog;
 import com.xtu.plugin.flutter.utils.FileUtils;
-import com.xtu.plugin.flutter.utils.ToastUtil;
+import com.xtu.plugin.flutter.utils.ToastUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -59,8 +59,8 @@ public class DuplicateResAnalysisTask implements Runnable {
                 pureMap.put(fileMd5, fileList);
             }
         }
-        if (pureMap.size() == 0) {
-            ToastUtil.make(project, MessageType.INFO, "no duplicate resources found");
+        if (pureMap.isEmpty()) {
+            ToastUtils.make(project, MessageType.INFO, "no duplicate resources found");
             return;
         }
         //show data with JBTree

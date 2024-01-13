@@ -9,7 +9,7 @@ import com.xtu.plugin.flutter.action.intl.ui.AddIntlDialog;
 import com.xtu.plugin.flutter.action.intl.utils.IntlUtils;
 import com.xtu.plugin.flutter.utils.CollectionUtils;
 import com.xtu.plugin.flutter.utils.StringUtils;
-import com.xtu.plugin.flutter.utils.ToastUtil;
+import com.xtu.plugin.flutter.utils.ToastUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -31,7 +31,7 @@ public class AddIntlAction extends BaseIntlAction {
         if (!isOk) return;
         String key = addIntlDialog.getKey();
         if (StringUtils.isEmpty(key)) {
-            ToastUtil.make(project, MessageType.ERROR, "key cannot be empty");
+            ToastUtils.make(project, MessageType.ERROR, "key cannot be empty");
             return;
         }
         Map<String, String> localeMap = addIntlDialog.getLocaleMap();
@@ -39,7 +39,7 @@ public class AddIntlAction extends BaseIntlAction {
             String locale = localeEntry.getKey();
             String value = localeEntry.getValue();
             if (StringUtils.isEmpty(locale) || StringUtils.isEmpty(value)) {
-                ToastUtil.make(project, MessageType.ERROR, "locale cannot be empty");
+                ToastUtils.make(project, MessageType.ERROR, "locale cannot be empty");
                 return;
             }
         }

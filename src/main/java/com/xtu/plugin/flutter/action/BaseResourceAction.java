@@ -14,6 +14,7 @@ import java.util.List;
 //在资源目录下Action
 public abstract class BaseResourceAction extends AnAction {
 
+    @SuppressWarnings("DuplicatedCode")
     @Override
     public void update(@NotNull AnActionEvent e) {
         Project project = e.getProject();

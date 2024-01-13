@@ -1,10 +1,18 @@
 package com.xtu.plugin.flutter.utils;
 
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VfsUtil;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiManager;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
 public class FileUtils {
@@ -50,6 +58,15 @@ public class FileUtils {
         return relativePath.replace(File.separator, "/");
     }
 
+    //兼容windows
+    public static boolean isChildPath(@NotNull String parentPath, @NotNull String childPath) {
+        File parentFile = new File(parentPath);
+        String parentAbsPath = parentFile.getAbsolutePath();
+        File childFile = new File(childPath);
+        String childAbsPath = childFile.getAbsolutePath();
+        return childAbsPath.startsWith(parentAbsPath);
+    }
+
     public static boolean write2File(File file, String content) {
         if (file == null) return false;
         FileOutputStream fileOutputStream = null;
@@ -59,11 +76,10 @@ public class FileUtils {
             }
             if (!file.canWrite()) return false;
             fileOutputStream = new FileOutputStream(file);
-            fileOutputStream.write(content.getBytes("UTF-8"));
+            fileOutputStream.write(content.getBytes(StandardCharsets.UTF_8));
             fileOutputStream.flush();
             return true;
         } catch (IOException e) {
-            e.printStackTrace();
             return false;
         } finally {
             CloseUtils.close(fileOutputStream);
@@ -77,7 +93,7 @@ public class FileUtils {
         try {
             fileInputStream = new FileInputStream(file);
             outputStream = new ByteArrayOutputStream();
-            int len = -1;
+            int len;
             byte[] buffer = new byte[1024];
             while ((len = fileInputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, len);
@@ -100,6 +116,23 @@ public class FileUtils {
                 scanFileListener.onGetFile(file);
             }
         }
+    }
+
+    public static File fromUrl(String url) {
+        try {
+            URL fileUrl = new URL(url);
+            return new File(fileUrl.getFile());
+        } catch (MalformedURLException e) {
+            return null;
+        }
+    }
+
+    @Nullable
+    public static GroovyFile getGroovyFile(@NotNull Project project, @NotNull File gradleFile) {
+        if (!gradleFile.exists() || !gradleFile.isFile()) return null;
+        VirtualFile gradleVirtualFile = VfsUtil.findFileByIoFile(gradleFile, true);
+        if (gradleVirtualFile == null) return null;
+        return (GroovyFile) PsiManager.getInstance(project).findFile(gradleVirtualFile);
     }
 
     public interface OnScanFileListener {

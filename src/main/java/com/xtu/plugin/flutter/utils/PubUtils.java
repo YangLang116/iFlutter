@@ -15,12 +15,6 @@ import java.util.Map;
 
 public class PubUtils {
 
-    /**
-     * 获取当前项目所有Plugin的Name和Path
-     *
-     * @param project 项目对象
-     * @return
-     */
     @Nullable
     public static Map<String, String> getPluginPathMap(@NotNull Project project) {
         String projectPath = PluginUtils.getProjectPath(project);

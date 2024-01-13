@@ -20,7 +20,7 @@ import com.xtu.plugin.flutter.store.StorageService;
 import com.xtu.plugin.flutter.utils.LogUtils;
 import com.xtu.plugin.flutter.utils.PluginUtils;
 import com.xtu.plugin.flutter.utils.PubUtils;
-import com.xtu.plugin.flutter.utils.ToastUtil;
+import com.xtu.plugin.flutter.utils.ToastUtils;
 import io.flutter.pub.PubRoot;
 import io.flutter.sdk.FlutterSdk;
 import org.apache.commons.io.FileUtils;
@@ -63,17 +63,17 @@ public class ConvertDependencyToLocalTask extends Task.Backgroundable {
         if (StringUtils.isEmpty(projectPath)) return;
         Map<String, String> pluginPathMap = PubUtils.getPluginPathMap(project);
         if (pluginPathMap == null) {
-            ToastUtil.make(project, MessageType.ERROR, "please run `flutter pub get` first");
+            ToastUtils.make(project, MessageType.ERROR, "please run `flutter pub get` first");
             return;
         }
         String packageRootPath = pluginPathMap.get(packageName);
         if (StringUtils.isEmpty(packageRootPath)) {
-            ToastUtil.make(project, MessageType.ERROR, "failed to convert dependencies to local, try to run `flutter pub get` first");
+            ToastUtils.make(project, MessageType.ERROR, "failed to convert dependencies to local, try to run `flutter pub get` first");
             return;
         }
         File packageCacheRootDirectory = new File(packageRootPath);
         if (!packageCacheRootDirectory.exists()) {
-            ToastUtil.make(project, MessageType.ERROR, "failed to obtain local dependency cache, try to run `flutter pub get` first");
+            ToastUtils.make(project, MessageType.ERROR, "failed to obtain local dependency cache, try to run `flutter pub get` first");
             return;
         }
         try {
@@ -87,7 +87,7 @@ public class ConvertDependencyToLocalTask extends Task.Backgroundable {
                             dependencyElement, localDependencyFile)));
         } catch (Exception e) {
             LogUtils.error("ConvertDependencyToLocalTask execute", e);
-            ToastUtil.make(project, MessageType.ERROR, e.getMessage());
+            ToastUtils.make(project, MessageType.ERROR, e.getMessage());
         }
     }
 
@@ -133,7 +133,7 @@ public class ConvertDependencyToLocalTask extends Task.Backgroundable {
             runPubGet(packageName, project);
         } catch (Exception e) {
             LogUtils.error("ConvertDependencyToLocalTask modifyDependency", e);
-            ToastUtil.make(project, MessageType.ERROR, e.getMessage());
+            ToastUtils.make(project, MessageType.ERROR, e.getMessage());
         }
     }
 
@@ -148,7 +148,7 @@ public class ConvertDependencyToLocalTask extends Task.Backgroundable {
                             sdk.startPubGet(root, project);
                         }
                     }
-                    ToastUtil.make(project, MessageType.INFO, packageName + " convert success");
+                    ToastUtils.make(project, MessageType.INFO, packageName + " convert success");
                 });
     }
 

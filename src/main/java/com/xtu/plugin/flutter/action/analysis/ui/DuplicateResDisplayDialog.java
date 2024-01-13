@@ -8,7 +8,7 @@ import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.wm.WindowManager;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.treeStructure.Tree;
-import com.xtu.plugin.flutter.utils.ToastUtil;
+import com.xtu.plugin.flutter.utils.ToastUtils;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -102,7 +102,7 @@ public class DuplicateResDisplayDialog extends DialogWrapper {
         protected void doAction(ActionEvent e) {
             StringSelection stringSelection = new StringSelection(getDuplicateDateStr());
             CopyPasteManager.getInstance().setContents(stringSelection);
-            ToastUtil.make(project, MessageType.INFO, "copy success");
+            ToastUtils.make(project, MessageType.INFO, "copy success");
             close(DialogWrapper.OK_EXIT_CODE);
         }
 

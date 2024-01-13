@@ -11,7 +11,7 @@ import com.xtu.plugin.flutter.action.BaseDependencyAction;
 import com.xtu.plugin.flutter.action.convert.task.ConvertDependencyToLocalTask;
 import com.xtu.plugin.flutter.utils.AssetUtils;
 import com.xtu.plugin.flutter.utils.PluginUtils;
-import com.xtu.plugin.flutter.utils.ToastUtil;
+import com.xtu.plugin.flutter.utils.ToastUtils;
 import kotlin.Pair;
 import com.xtu.plugin.flutter.utils.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -36,18 +36,18 @@ public class ConvertDependencyToLocalAction extends BaseDependencyAction {
         if (chooseDirectory == null) return;
         String filePath = chooseDirectory.getPath();
         if (!filePath.startsWith(projectPath)) {
-            ToastUtil.make(project, MessageType.ERROR, "select a project directory to store dependency");
+            ToastUtils.make(project, MessageType.ERROR, "select a project directory to store dependency");
             return;
         }
         //disallow res dir or lib
         if (filePath.startsWith(projectPath + "/lib")) {
-            ToastUtil.make(project, MessageType.ERROR, "dependency are not allowed to be stored in the lib directory");
+            ToastUtils.make(project, MessageType.ERROR, "dependency are not allowed to be stored in the lib directory");
             return;
         }
         List<String> assetFoldNameList = AssetUtils.supportAssetFoldName(project);
         for (String foldName : assetFoldNameList) {
             if (filePath.startsWith(projectPath + "/" + foldName)) {
-                ToastUtil.make(project, MessageType.ERROR, "dependency are not allowed to be stored in the res directory");
+                ToastUtils.make(project, MessageType.ERROR, "dependency are not allowed to be stored in the res directory");
                 return;
             }
         }

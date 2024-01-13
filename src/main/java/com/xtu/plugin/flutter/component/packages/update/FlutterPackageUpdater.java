@@ -3,10 +3,8 @@ package com.xtu.plugin.flutter.component.packages.update;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.SystemInfo;
 import com.xtu.plugin.flutter.store.StorageService;
 import com.xtu.plugin.flutter.utils.CommandUtils;
-import com.xtu.plugin.flutter.utils.DartUtils;
 import com.xtu.plugin.flutter.utils.LogUtils;
 import com.xtu.plugin.flutter.utils.PluginUtils;
 import com.xtu.plugin.flutter.utils.StringUtils;
@@ -14,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -60,14 +57,9 @@ public class FlutterPackageUpdater implements Disposable {
         try {
             if (this.isDetach) return;
             LogUtils.info("FlutterPackageUpdater pullLatestVersion");
-            String projectPath = PluginUtils.getProjectPath(project);
-            if (StringUtils.isEmpty(projectPath)) return;
-            String flutterPath = DartUtils.getFlutterPath(project);
-            if (StringUtils.isEmpty(flutterPath)) return;
-            String executorName = SystemInfo.isWindows ? "flutter.bat" : "flutter";
-            File executorFile = new File(flutterPath, "bin" + File.separator + executorName);
-            String command = executorFile.getAbsolutePath() + " pub outdated --dependency-overrides --dev-dependencies --no-prereleases --json";
-            CommandUtils.CommandResult commandResult = CommandUtils.executeSync(command, new File(projectPath), 5);
+            CommandUtils.CommandResult commandResult = CommandUtils.executeSync(
+                    project,
+                    "pub outdated --dependency-overrides --dev-dependencies --no-prereleases --json", 5);
             LogUtils.info("FlutterPackageUpdater pullLatestVersion: " + commandResult.result);
             if (commandResult.code == CommandUtils.CommandResult.FAIL) return;
 

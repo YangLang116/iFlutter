@@ -16,7 +16,7 @@ import javax.swing.*;
 /**
  * Created by YangLang on 2017/11/25.
  */
-public class ToastUtil {
+public class ToastUtils {
 
     private static void make(JComponent jComponent, MessageType type, String text) {
         JBPopupFactory.getInstance()

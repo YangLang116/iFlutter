@@ -23,7 +23,7 @@ import org.jetbrains.yaml.psi.*;
 
 import java.util.*;
 
-public class PubspecUtils {
+public class PubSpecUtils {
 
     private static final String NODE_FLUTTER = "flutter";
     private static final String NODE_ASSET = "assets";
@@ -35,62 +35,53 @@ public class PubspecUtils {
     }
 
     //判断当前文件是否根目录pubspec.yaml文件
-    public static boolean isRootPubspecFile(@NotNull Project project, @NotNull VirtualFile virtualFile) {
+    public static boolean isRootPubSpecFile(@NotNull Project project, @NotNull VirtualFile virtualFile) {
         String projectPath = PluginUtils.getProjectPath(project);
         if (StringUtils.isEmpty(projectPath)) return false;
-        String rootPubspecPath = projectPath + "/" + getFileName();
-        return StringUtils.equals(rootPubspecPath, virtualFile.getPath());
+        String rootPubSpecPath = projectPath + "/" + getFileName();
+        return StringUtils.equals(rootPubSpecPath, virtualFile.getPath());
     }
 
     //获取根目录pubspec.yaml文件psi
     @Nullable
-    private static YAMLFile getRootPubspecFile(@NotNull Project project) {
+    private static YAMLFile getRootPubSpecFile(@NotNull Project project) {
         VirtualFile rootProjectDir = ProjectUtil.guessProjectDir(project);
         if (rootProjectDir == null) return null;
-        VirtualFile rootPubspecFile = rootProjectDir.findChild(getFileName());
-        if (rootPubspecFile == null) return null;
-        return (YAMLFile) PsiManager.getInstance(project).findFile(rootPubspecFile);
+        VirtualFile rootPubSpecFile = rootProjectDir.findChild(getFileName());
+        if (rootPubSpecFile == null) return null;
+        return (YAMLFile) PsiManager.getInstance(project).findFile(rootPubSpecFile);
     }
 
     //读取pubspec.yaml文件顶级YAMLValue内容
     @Nullable
     private static YAMLMapping getTopLevelMapping(@NotNull Project project) {
-        YAMLFile yamlFile = getRootPubspecFile(project);
+        YAMLFile yamlFile = getRootPubSpecFile(project);
         if (yamlFile == null) return null;
         YAMLDocument document = yamlFile.getDocuments().get(0);
         return (YAMLMapping) document.getTopLevelValue();
     }
 
-    //读取flutter#asset内容
-    @Nullable
-    private static YAMLSequence getAssetSequence(@NotNull Project project) {
+    //读取pubspec.yaml文件中flutter节点
+    private static YAMLMapping getFlutterMapping(@NotNull Project project) {
         YAMLMapping rootMapping = getTopLevelMapping(project);
         if (rootMapping == null) return null;
         YAMLKeyValue flutterKeyValue = rootMapping.getKeyValueByKey(NODE_FLUTTER);
         if (flutterKeyValue == null) return null;
         YAMLValue flutterValue = flutterKeyValue.getValue();
-        if (!(flutterValue instanceof YAMLMapping)) return null;
-        YAMLKeyValue assetKeyValue = ((YAMLMapping) flutterValue).getKeyValueByKey(NODE_ASSET);
-        if (assetKeyValue == null) return null;
-        YAMLValue assetValue = assetKeyValue.getValue();
-        if (!(assetValue instanceof YAMLSequence)) return null;
-        return (YAMLSequence) assetValue;
+        if (flutterValue == null) return null;
+        return ((YAMLMapping) flutterValue);
     }
 
-    //读取flutter#font内容
+    //读取flutter节点中sequence内容
     @Nullable
-    private static YAMLSequence getFontSequence(@NotNull Project project) {
-        YAMLMapping rootMapping = getTopLevelMapping(project);
-        if (rootMapping == null) return null;
-        YAMLKeyValue flutterKeyValue = rootMapping.getKeyValueByKey(NODE_FLUTTER);
-        if (flutterKeyValue == null) return null;
-        YAMLValue flutterValue = flutterKeyValue.getValue();
-        if (!(flutterValue instanceof YAMLMapping)) return null;
-        YAMLKeyValue assetKeyValue = ((YAMLMapping) flutterValue).getKeyValueByKey(NODE_FONT);
-        if (assetKeyValue == null) return null;
-        YAMLValue fontValue = assetKeyValue.getValue();
-        if (!(fontValue instanceof YAMLSequence)) return null;
-        return (YAMLSequence) fontValue;
+    private static YAMLSequence getFlutterSequence(@NotNull Project project, String key) {
+        YAMLMapping flutterMapping = getFlutterMapping(project);
+        if (flutterMapping == null) return null;
+        YAMLKeyValue keyValue = flutterMapping.getKeyValueByKey(key);
+        if (keyValue == null) return null;
+        YAMLValue value = keyValue.getValue();
+        if (value == null) return null;
+        return ((YAMLSequence) value);
     }
 
     @NotNull
@@ -130,7 +121,7 @@ public class PubspecUtils {
             if (AssetUtils.isFoldRegister(project)) {
                 assetList.addAll(AssetRegisterStorageService.getAssetList(project));
             } else {
-                YAMLSequence assetSequence = getAssetSequence(project);
+                YAMLSequence assetSequence = getFlutterSequence(project, NODE_ASSET);
                 if (assetSequence != null) {
                     List<YAMLSequenceItem> assetSequenceItems = assetSequence.getItems();
                     for (YAMLSequenceItem assetSequenceItem : assetSequenceItems) {
@@ -146,7 +137,7 @@ public class PubspecUtils {
             }
             //font family list
             List<String> fontAssetList = new ArrayList<>();
-            YAMLSequence fontSequence = getFontSequence(project);
+            YAMLSequence fontSequence = getFlutterSequence(project, NODE_FONT);
             if (fontSequence != null) {
                 List<YAMLSequenceItem> fontSequenceItems = fontSequence.getItems();
                 for (YAMLSequenceItem fontSequenceItem : fontSequenceItems) {
@@ -191,15 +182,15 @@ public class PubspecUtils {
 
         Application application = ApplicationManager.getApplication();
         application.invokeLater(() -> {
-            YAMLSequence oldAssetSequence = getAssetSequence(project);
-            YAMLSequence oldFontSequence = getFontSequence(project);
+            YAMLSequence oldAssetSequence = getFlutterSequence(project, NODE_ASSET);
+            YAMLSequence oldFontSequence = getFlutterSequence(project, NODE_FONT);
             WriteCommandAction.runWriteCommandAction(project, () -> {
                 YAMLElementGenerator elementGenerator = YAMLElementGenerator.getInstance(project);
                 //modify asset
                 if (modifyAsset(project, assetList, oldAssetSequence, elementGenerator)) return;
                 //modify font
                 if (modifyFont(project, fontList, oldFontSequence, elementGenerator)) return;
-                YAMLFile rootPubspecFile = getRootPubspecFile(project);
+                YAMLFile rootPubspecFile = getRootPubSpecFile(project);
                 assert rootPubspecFile != null;
                 PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(project);
                 Document document = psiDocumentManager.getDocument(rootPubspecFile);
@@ -210,7 +201,7 @@ public class PubspecUtils {
                     FileDocumentManager.getInstance().saveDocument(document);
                 }
                 //refresh UI
-                notifyPubspecUpdate(project);
+                notifyPubSpecUpdate(project);
             });
         });
     }
@@ -352,7 +343,7 @@ public class PubspecUtils {
         return false;
     }
 
-    private static void notifyPubspecUpdate(Project project) {
+    private static void notifyPubSpecUpdate(Project project) {
         StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);
         if (statusBar != null) {
             statusBar.setInfo(String.format(Locale.ROOT, "update %s success", getFileName()));

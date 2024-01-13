@@ -30,12 +30,12 @@ public class DartRFileGenerator {
         return sInstance;
     }
 
-    public void generateSafe(@NotNull Project project,
-                             @NotNull String projectName,
-                             @NotNull String projectVersion,
-                             @NotNull String resPrefix,
-                             @NotNull List<String> assetList,
-                             boolean force) {
+    public void generate(@NotNull Project project,
+                         @NotNull String projectName,
+                         @NotNull String projectVersion,
+                         @NotNull String resPrefix,
+                         @NotNull List<String> assetList,
+                         boolean force) {
         Application application = ApplicationManager.getApplication();
         application.invokeLater(() -> WriteAction.run(() -> {
             if (!force && assetList.equals(latestAssetList)) return;
@@ -55,7 +55,7 @@ public class DartRFileGenerator {
                 final VirtualFile libVirtualDirectory = localFileSystem.refreshAndFindFileByIoFile(libDirectory);
                 assert libVirtualDirectory != null;
                 VirtualFile resVirtualDirectory = libVirtualDirectory.findChild("res");
-                if (assetCategory.size() > 0) {
+                if (!assetCategory.isEmpty()) {
                     if (resVirtualDirectory == null) {
                         resVirtualDirectory = libVirtualDirectory.createChildDirectory(project, "res");
                     }
@@ -76,7 +76,7 @@ public class DartRFileGenerator {
                 latestAssetList.addAll(assetList);
             } catch (Exception e) {
                 LogUtils.error("DartRFileGenerator generate", e);
-                ToastUtil.make(project, MessageType.ERROR, e.getMessage());
+                ToastUtils.make(project, MessageType.ERROR, e.getMessage());
             }
         }));
     }
@@ -134,7 +134,7 @@ public class DartRFileGenerator {
 
     @NotNull
     public static String getClassName(String assetDirName) {
-        return StringUtil.getClassName(assetDirName) + "Res";
+        return ClassUtils.getClassName(assetDirName) + "Res";
     }
 
     public static String getResName(String assetFileName) {

@@ -4,7 +4,6 @@ import com.intellij.codeInsight.template.Template;
 import com.intellij.codeInsight.template.TemplateManager;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.NlsContexts.Command;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.jetbrains.lang.dart.ide.generation.BaseCreateMethodsFix;
 import com.jetbrains.lang.dart.psi.*;
@@ -35,7 +34,6 @@ public class CreateFromJsonAndToJsonCodeFix extends BaseCreateMethodsFix<DartCom
     }
 
     @NotNull
-    @Command
     protected String getCommandName() {
         return "IFlutter.FromJsonAndToJson";
     }

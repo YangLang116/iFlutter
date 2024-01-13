@@ -71,7 +71,6 @@ public class CommentRemoveAction extends AnAction {
         });
     }
 
-    @NotNull
     private void removeEmptyLines(@NotNull Project project, @NotNull PsiElement rootElement) {
         String originContent = rootElement.getText();
         String newContent = Arrays.stream(originContent.split("\n"))

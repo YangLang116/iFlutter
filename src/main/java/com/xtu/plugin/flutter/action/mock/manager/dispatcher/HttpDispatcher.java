@@ -3,10 +3,10 @@ package com.xtu.plugin.flutter.action.mock.manager.dispatcher;
 import com.intellij.openapi.project.Project;
 import com.xtu.plugin.flutter.store.HttpEntity;
 import com.xtu.plugin.flutter.store.StorageService;
+import com.xtu.plugin.flutter.utils.StringUtils;
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.RecordedRequest;
-import com.xtu.plugin.flutter.utils.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -21,7 +21,7 @@ public final class HttpDispatcher extends Dispatcher {
 
     @NotNull
     @Override
-    public MockResponse dispatch(@NotNull RecordedRequest recordedRequest) throws InterruptedException {
+    public MockResponse dispatch(@NotNull RecordedRequest recordedRequest) {
         String path = recordedRequest.getPath();
         String method = recordedRequest.getMethod();
         List<HttpEntity> httpEntityList = StorageService.getInstance(project).getState().httpEntityList;

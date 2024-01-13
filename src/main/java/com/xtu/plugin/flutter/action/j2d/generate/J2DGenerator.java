@@ -1,6 +1,6 @@
 package com.xtu.plugin.flutter.action.j2d.generate;
 
-import com.xtu.plugin.flutter.utils.StringUtil;
+import com.xtu.plugin.flutter.utils.ClassUtils;
 import com.xtu.plugin.flutter.utils.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -40,7 +40,7 @@ public class J2DGenerator {
         Set<String> keySet = jsonObject.keySet();
         for (String key : keySet) {
             //添加字段
-            TypeEntity typeEntity = makeType(key, jsonObject.get(key), name -> StringUtil.getClassName(name) + "Entity");
+            TypeEntity typeEntity = makeType(key, jsonObject.get(key), name -> ClassUtils.getClassName(name) + "Entity");
             if (typeEntity == null) continue;
             if (typeEntity.isList && typeEntity.subType != null) {
                 String formatTemplate = enableFlutter2 ? "final List<%s>? %s;" : "final List<%s> %s;";
@@ -51,7 +51,7 @@ public class J2DGenerator {
             }
             typeEntityList.add(typeEntity);
         }
-        if (typeEntityList.size() > 0) {
+        if (!typeEntityList.isEmpty()) {
             //添加构造函数
             StringBuilder constructorFieldsSb = new StringBuilder();
             for (TypeEntity typeEntity : typeEntityList) {
@@ -129,7 +129,7 @@ public class J2DGenerator {
             TypeEntity argumentTypeEntity = null;
             if (((JSONArray) value).length() > 0) {
                 Object item = ((JSONArray) value).get(0);
-                argumentTypeEntity = makeType(key, item, name -> StringUtil.getClassName(name) + "ItemEntity");
+                argumentTypeEntity = makeType(key, item, name -> ClassUtils.getClassName(name) + "ItemEntity");
             }
             return TypeEntity.list(key, argumentTypeEntity);
         }

@@ -2,6 +2,7 @@ package com.xtu.plugin.flutter.utils;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.xtu.plugin.flutter.store.StorageEntity;
 import com.xtu.plugin.flutter.store.StorageService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -155,5 +156,14 @@ public class AssetUtils {
             }));
         }
         return assetFileList;
+    }
+
+    @NotNull
+    public static String getResPrefix(@NotNull Project project, @NotNull String projectName) {
+        StorageService storageService = StorageService.getInstance(project);
+        StorageEntity state = storageService.getState();
+        boolean registerResWithPackage = state.registerResWithPackage;
+        if (registerResWithPackage) return "packages/" + projectName + "/";
+        return "";
     }
 }

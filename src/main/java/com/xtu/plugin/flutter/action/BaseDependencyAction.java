@@ -37,14 +37,10 @@ public abstract class BaseDependencyAction extends AnAction {
         }
         int offset = editor.getCaretModel().getOffset();
         PsiElement yamlPsiElement = psiFile.findElementAt(offset);
-        if (yamlPsiElement != null
+        //select packageName element
+        e.getPresentation().setVisible(yamlPsiElement != null
                 && yamlPsiElement.getParent() instanceof YAMLKeyValue
-                && YamlPsiUtils.isDependencyElement(((YAMLKeyValue) yamlPsiElement.getParent()))) {
-            //select packageName element
-            e.getPresentation().setVisible(true);
-        } else {
-            e.getPresentation().setVisible(false);
-        }
+                && YamlPsiUtils.isDependencyElement(((YAMLKeyValue) yamlPsiElement.getParent())));
     }
 
     @Nullable

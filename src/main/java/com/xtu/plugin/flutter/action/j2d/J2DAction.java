@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class J2DAction extends AnAction {
 
+    @SuppressWarnings("DuplicatedCode")
     @Override
     public void update(@NotNull AnActionEvent e) {
         Project project = e.getProject();

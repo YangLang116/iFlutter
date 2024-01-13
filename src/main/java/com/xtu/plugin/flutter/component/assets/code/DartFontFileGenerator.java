@@ -34,10 +34,10 @@ public class DartFontFileGenerator {
         return sInstance;
     }
 
-    public void generateSafe(@NotNull Project project,
-                             @NotNull String resPrefix,
-                             @NotNull List<String> fontAssetList,
-                             boolean force) {
+    public void generate(@NotNull Project project,
+                         @NotNull String resPrefix,
+                         @NotNull List<String> fontAssetList,
+                         boolean force) {
         Application application = ApplicationManager.getApplication();
         application.invokeLater(() -> WriteAction.run(() -> {
             if (!force && fontAssetList.equals(latestFontList)) return;
@@ -47,7 +47,7 @@ public class DartFontFileGenerator {
                 final VirtualFile libVirtualDirectory = localFileSystem.refreshAndFindFileByIoFile(libDirectory);
                 assert libVirtualDirectory != null;
                 VirtualFile resVirtualDirectory = libVirtualDirectory.findChild("res");
-                if (fontAssetList.size() > 0) {
+                if (!fontAssetList.isEmpty()) {
                     if (resVirtualDirectory == null) {
                         resVirtualDirectory = libVirtualDirectory.createChildDirectory(project, "res");
                     }
@@ -60,7 +60,7 @@ public class DartFontFileGenerator {
                 latestFontList.addAll(fontAssetList);
             } catch (Exception e) {
                 LogUtils.error("DartRFileGenerator generate", e);
-                ToastUtil.make(project, MessageType.ERROR, e.getMessage());
+                ToastUtils.make(project, MessageType.ERROR, e.getMessage());
             }
         }));
     }

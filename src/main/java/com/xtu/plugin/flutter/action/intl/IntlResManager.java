@@ -5,16 +5,11 @@ import com.intellij.ide.plugins.PluginManager;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
-import com.intellij.openapi.util.SystemInfo;
 import com.xtu.plugin.flutter.action.intl.utils.IntlUtils;
 import com.xtu.plugin.flutter.utils.CommandUtils;
-import com.xtu.plugin.flutter.utils.DartUtils;
-import com.xtu.plugin.flutter.utils.PluginUtils;
-import com.xtu.plugin.flutter.utils.ToastUtil;
-import com.xtu.plugin.flutter.utils.StringUtils;
+import com.xtu.plugin.flutter.utils.ToastUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +28,7 @@ public class IntlResManager {
             } catch (Throwable e) {
                 isSuccess = false;
                 String fileName = IntlUtils.getFileName(locale);
-                ToastUtil.make(project, MessageType.ERROR, fileName + ": " + e.getMessage());
+                ToastUtils.make(project, MessageType.ERROR, fileName + ": " + e.getMessage());
             }
         }
         if (isSuccess) {
@@ -51,7 +46,7 @@ public class IntlResManager {
             } catch (Throwable e) {
                 isSuccess = false;
                 String fileName = IntlUtils.getFileName(locale);
-                ToastUtil.make(project, MessageType.ERROR, fileName + ": " + e.getMessage());
+                ToastUtils.make(project, MessageType.ERROR, fileName + ": " + e.getMessage());
             }
         }
         if (isSuccess) {
@@ -68,18 +63,12 @@ public class IntlResManager {
 
     public static void generateIfNeed(@NotNull Project project) {
         if (hasFlutterIntlPlugin()) return;
-        String projectPath = PluginUtils.getProjectPath(project);
-        if (StringUtils.isEmpty(projectPath)) return;
-        String flutterPath = DartUtils.getFlutterPath(project);
-        if (StringUtils.isEmpty(flutterPath)) return;
-        String executorName = SystemInfo.isWindows ? "flutter.bat" : "flutter";
-        File executorFile = new File(flutterPath, "bin" + File.separator + executorName);
-        String command = executorFile.getAbsolutePath() + "  --no-color pub global run intl_utils:generate";
-        CommandUtils.CommandResult commandResult = CommandUtils.executeSync(command, new File(projectPath), -1);
+        CommandUtils.CommandResult commandResult = CommandUtils.executeSync(
+                project, "--no-color pub global run intl_utils:generate", -1);
         if (commandResult.code == CommandUtils.CommandResult.SUCCESS) {
-            ToastUtil.make(project, MessageType.INFO, "successfully added");
+            ToastUtils.make(project, MessageType.INFO, "successfully added");
         } else {
-            ToastUtil.make(project, MessageType.ERROR, commandResult.result);
+            ToastUtils.make(project, MessageType.ERROR, commandResult.result);
         }
     }
 }

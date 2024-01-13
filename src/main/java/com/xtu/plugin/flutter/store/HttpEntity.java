@@ -9,6 +9,7 @@ public class HttpEntity {
     public String description;
     public String response;
 
+    @SuppressWarnings("unused")
     public HttpEntity() {
     }
 

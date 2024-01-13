@@ -16,10 +16,8 @@ public class LogUtils {
 
     public static void error(String entryPoint, Exception exception) {
         LOG.error(entryPoint + " : " + exception.getMessage());
-        String content = new StringBuilder()
-                .append("message: ").append(exception.getMessage()).append("\n")
-                .append("stackTrace: ").append(getStackTrace(exception))
-                .toString();
+        String content = "message: " + exception.getMessage() + "\n" +
+                "stackTrace: " + getStackTrace(exception);
         AdviceManager.getInstance().submitAdvice(null, "error catch", content);
     }
 

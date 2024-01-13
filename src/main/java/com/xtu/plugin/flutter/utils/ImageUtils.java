@@ -19,12 +19,10 @@ import java.util.List;
 
 public class ImageUtils {
 
-    @SuppressWarnings("SpellCheckingInspection")
     private static boolean isTwelveMonkeysRead(@NotNull ImageReader reader) {
         ImageReaderSpi imageReaderSpi = reader.getOriginatingProvider();
         if (imageReaderSpi == null) return false;
         Class<? extends ImageReaderSpi> pClass = imageReaderSpi.getClass();
-        if (pClass == null) return false;
         String packageName = pClass.getPackageName();
         return packageName.startsWith("com.twelvemonkeys.imageio");
     }

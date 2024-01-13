@@ -7,7 +7,6 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.xtu.plugin.flutter.store.StorageEntity;
 import com.xtu.plugin.flutter.store.StorageService;
 import com.xtu.plugin.flutter.utils.*;
-import com.xtu.plugin.flutter.utils.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -36,7 +35,7 @@ public class OptimizeImageFoldTask implements Runnable {
             optimizeImage(project, imageDirectory);  //扫描图片，将图片进行分类
         } catch (Exception e) {
             LogUtils.error("OptimizeImageFoldTask run", e);
-            ToastUtil.make(project, MessageType.ERROR, "failed to optimize image directory");
+            ToastUtils.make(project, MessageType.ERROR, "failed to optimize image directory");
         } finally {
             storageEntity.resCheckEnable = oldStatus;
         }
@@ -78,7 +77,7 @@ public class OptimizeImageFoldTask implements Runnable {
     private void optimizeImage(@NotNull Project project, @NotNull File imageDirectory) throws Exception {
         List<File> imageFileList = new ArrayList<>();
         FileUtils.scanDirectory(imageDirectory, imageFileList::add);
-        if (imageFileList.size() == 0) return;
+        if (imageFileList.isEmpty()) return;
         //整理图片位置
         String projectPath = PluginUtils.getProjectPath(project);
         if (StringUtils.isEmpty(projectPath)) return;
@@ -95,7 +94,7 @@ public class OptimizeImageFoldTask implements Runnable {
             String newAssetPath = AssetUtils.getAssetPath(projectPath, new File(newImageDirectory, fileName));
             pathMap.put(oldAssetPath, newAssetPath);
         }
-        if (pathMap.size() == 0) return;
+        if (pathMap.isEmpty()) return;
         //删除空目录
         deleteEmptyDirectory(imageDirectory);
         //刷新images目录
@@ -104,7 +103,7 @@ public class OptimizeImageFoldTask implements Runnable {
         List<File> dartFileList = new ArrayList<>();
         File libDirectory = new File(projectPath, "lib");
         FileUtils.scanDirectory(libDirectory, dartFileList::add);
-        if (dartFileList.size() > 0) {
+        if (!dartFileList.isEmpty()) {
             boolean hasDartFileModify = false;
             for (File file : dartFileList) {
                 if (file.getName().endsWith("_res.dart")) continue;
@@ -129,7 +128,7 @@ public class OptimizeImageFoldTask implements Runnable {
             }
         }
         //更新pubspec.yaml中资源引用
-        PubspecUtils.readAssetSafe(project, (name, version, assetList, fontList) -> {
+        PubSpecUtils.readAssetSafe(project, (name, version, assetList, fontList) -> {
             List<String> newAssetList = new ArrayList<>();
             List<String> newFontList = new ArrayList<>();
             for (String asset : assetList) {
@@ -138,7 +137,7 @@ public class OptimizeImageFoldTask implements Runnable {
             for (String fontAsset : fontList) {
                 newFontList.add(pathMap.getOrDefault(fontAsset, fontAsset));
             }
-            PubspecUtils.writeAssetSafe(project, newAssetList, newFontList);
+            PubSpecUtils.writeAssetSafe(project, newAssetList, newFontList);
         });
     }
 

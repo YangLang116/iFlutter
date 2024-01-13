@@ -47,7 +47,7 @@ public class YamlPsiUtils {
         Project project = yamlFile.getProject();
         String projectPath = PluginUtils.getProjectPath(project);
         if (StringUtils.isEmpty(projectPath)) return false;
-        return StringUtils.equals(yamlVirtualFile.getPath(), projectPath + "/" + PubspecUtils.getFileName());
+        return StringUtils.equals(yamlVirtualFile.getPath(), projectPath + "/" + PubSpecUtils.getFileName());
     }
 
 }

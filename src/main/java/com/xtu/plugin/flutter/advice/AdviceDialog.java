@@ -4,7 +4,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.MessageType;
 import com.intellij.util.ui.JBUI;
-import com.xtu.plugin.flutter.utils.ToastUtil;
+import com.xtu.plugin.flutter.utils.ToastUtils;
 import com.xtu.plugin.flutter.utils.StringUtils;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
@@ -27,7 +27,7 @@ public class AdviceDialog extends DialogWrapper {
         String title = dialog.getAdviceTitle();
         String content = dialog.getAdviceContent();
         if (StringUtils.isEmpty(title) || StringUtils.isEmpty(content)) {
-            ToastUtil.make(project, MessageType.ERROR, "Title or Content is Empty ~");
+            ToastUtils.make(project, MessageType.ERROR, "Title or Content is Empty ~");
             return;
         }
         AdviceManager.getInstance().submitAdvice(project, title, content);

@@ -9,8 +9,8 @@ import com.intellij.util.ui.JBUI;
 import com.xtu.plugin.flutter.action.mock.manager.HttpMockManager;
 import com.xtu.plugin.flutter.store.HttpEntity;
 import com.xtu.plugin.flutter.store.StorageService;
-import com.xtu.plugin.flutter.utils.ToastUtil;
 import com.xtu.plugin.flutter.utils.StringUtils;
+import com.xtu.plugin.flutter.utils.ToastUtils;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -109,23 +109,13 @@ public class HttpListDialog extends DialogWrapper implements ListSelectionListen
 
     private void showContextMenu(Component component, Point point) {
         JPopupMenu popupMenu = new JPopupMenu();
-        //添加Path复制按钮
-        JMenuItem copyPathMenu = new JMenuItem("Copy Path");
-        copyPathMenu.addActionListener(e -> {
-            HttpEntity httpEntity = getHttpEntityByPoint(point);
-            if (httpEntity == null) return;
-            HttpMockManager mockManager = HttpMockManager.getService(project);
-            String url = mockManager.getUrl(httpEntity.path);
-            if (StringUtils.isEmpty(url)) {
-                ToastUtil.make(project, MessageType.ERROR, "mock server fail");
-            } else {
-                ToastUtil.make(project, MessageType.INFO, "copy path success");
-                CopyPasteManager.getInstance().setContents(new StringSelection(url));
-                close(DialogWrapper.OK_EXIT_CODE);
-            }
-        });
-        popupMenu.add(copyPathMenu);
-        //添加删除按钮
+        popupMenu.add(createCopyMenuItem(point));
+        popupMenu.add(createDeleteMenuItem(point));
+        popupMenu.show(component, (int) point.getX(), (int) point.getY());
+    }
+
+    @NotNull
+    private JMenuItem createDeleteMenuItem(Point point) {
         JMenuItem deleteItem = new JMenuItem("Delete");
         deleteItem.addActionListener(e -> {
             ignoreDataChanged = true;
@@ -137,8 +127,26 @@ public class HttpListDialog extends DialogWrapper implements ListSelectionListen
             }
             ignoreDataChanged = false;
         });
-        popupMenu.add(deleteItem);
-        popupMenu.show(component, (int) point.getX(), (int) point.getY());
+        return deleteItem;
+    }
+
+    @NotNull
+    private JMenuItem createCopyMenuItem(Point point) {
+        JMenuItem copyPathMenu = new JMenuItem("Copy Path");
+        copyPathMenu.addActionListener(e -> {
+            HttpEntity httpEntity = getHttpEntityByPoint(point);
+            if (httpEntity == null) return;
+            HttpMockManager mockManager = HttpMockManager.getService(project);
+            String url = mockManager.getUrl(httpEntity.path);
+            if (StringUtils.isEmpty(url)) {
+                ToastUtils.make(project, MessageType.ERROR, "mock server fail");
+            } else {
+                ToastUtils.make(project, MessageType.INFO, "copy path success");
+                CopyPasteManager.getInstance().setContents(new StringSelection(url));
+                close(DialogWrapper.OK_EXIT_CODE);
+            }
+        });
+        return copyPathMenu;
     }
 
     @Nullable

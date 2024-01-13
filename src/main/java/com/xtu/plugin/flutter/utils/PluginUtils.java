@@ -5,8 +5,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.xtu.plugin.flutter.store.StorageEntity;
-import com.xtu.plugin.flutter.store.StorageService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,7 +23,7 @@ public class PluginUtils {
     public static boolean isFlutterProject(@Nullable Project project) {
         String projectPath = getProjectPath(project);
         if (StringUtils.isEmpty(projectPath)) return false;
-        File file = new File(projectPath, PubspecUtils.getFileName());
+        File file = new File(projectPath, PubSpecUtils.getFileName());
         return file.exists();
     }
 
@@ -34,14 +32,5 @@ public class PluginUtils {
         if (needOpenFile == null) return;
         FileEditorManager editorManager = FileEditorManager.getInstance(project);
         editorManager.openFile(needOpenFile, true);
-    }
-
-    @NotNull
-    public static String getResPrefix(@NotNull Project project, @NotNull String projectName) {
-        StorageService storageService = StorageService.getInstance(project);
-        StorageEntity state = storageService.getState();
-        boolean registerResWithPackage = state.registerResWithPackage;
-        if (registerResWithPackage) return "packages/" + projectName + "/";
-        return "";
     }
 }

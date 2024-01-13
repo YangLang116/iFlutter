@@ -11,7 +11,7 @@ import com.xtu.plugin.flutter.component.assets.handler.PubSpecFileHandler;
 import com.xtu.plugin.flutter.utils.AssetUtils;
 import com.xtu.plugin.flutter.utils.LogUtils;
 import com.xtu.plugin.flutter.utils.PluginUtils;
-import com.xtu.plugin.flutter.utils.PubspecUtils;
+import com.xtu.plugin.flutter.utils.PubSpecUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -82,7 +82,7 @@ public class AssetsManager extends BulkFileAdapter implements Disposable {
 
     @Override
     public void onFileContentChanged(@NotNull Project project, @NotNull VirtualFile virtualFile) {
-        if (PubspecUtils.isRootPubspecFile(project, virtualFile)) {
+        if (PubSpecUtils.isRootPubSpecFile(project, virtualFile)) {
             if (AssetUtils.enableResCheck(project)) {
                 this.specFileHandler.onPsiFileChanged(project);
             }

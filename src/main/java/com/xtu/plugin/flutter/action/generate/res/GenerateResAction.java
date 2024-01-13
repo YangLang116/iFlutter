@@ -5,11 +5,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.xtu.plugin.flutter.component.assets.code.DartFontFileGenerator;
 import com.xtu.plugin.flutter.component.assets.code.DartRFileGenerator;
-import com.xtu.plugin.flutter.utils.AssetUtils;
-import com.xtu.plugin.flutter.utils.FontUtils;
-import com.xtu.plugin.flutter.utils.PluginUtils;
-import com.xtu.plugin.flutter.utils.PubspecUtils;
-import com.xtu.plugin.flutter.utils.StringUtils;
+import com.xtu.plugin.flutter.utils.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -41,12 +37,12 @@ public class GenerateResAction extends AnAction {
                 newAssetList.add(assetPath);
             }
         }
-        PubspecUtils.writeAssetSafe(project, newAssetList, newFontList);
+        PubSpecUtils.writeAssetSafe(project, newAssetList, newFontList);
         //force generate Res File
-        PubspecUtils.readAssetSafe(project, (name, version, assetList, fontList) -> {
-            String resPrefix = PluginUtils.getResPrefix(project, name);
-            DartRFileGenerator.getInstance().generateSafe(project, name, version, resPrefix, assetList, true);
-            DartFontFileGenerator.getInstance().generateSafe(project, resPrefix, fontList, true);
+        PubSpecUtils.readAssetSafe(project, (name, version, assetList, fontList) -> {
+            String resPrefix = AssetUtils.getResPrefix(project, name);
+            DartRFileGenerator.getInstance().generate(project, name, version, resPrefix, assetList, true);
+            DartFontFileGenerator.getInstance().generate(project, resPrefix, fontList, true);
         });
     }
 }

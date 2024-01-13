@@ -121,7 +121,7 @@ public class UselessResAnalysisTask extends Task.Backgroundable {
         ApplicationManager.getApplication()
                 .invokeLater(() -> {
                     if (StringUtils.isEmpty(result)) {
-                        ToastUtil.make(project, MessageType.INFO, "no useless resources found");
+                        ToastUtils.make(project, MessageType.INFO, "no useless resources found");
                     } else {
                         new UselessResAnalysisDialog(project, result).show();
                     }

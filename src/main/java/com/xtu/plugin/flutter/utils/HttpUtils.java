@@ -24,7 +24,7 @@ public class HttpUtils {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            //ignore
         }
         return ipList;
     }

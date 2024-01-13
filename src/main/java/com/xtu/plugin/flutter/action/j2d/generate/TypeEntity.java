@@ -1,6 +1,6 @@
 package com.xtu.plugin.flutter.action.j2d.generate;
 
-import com.xtu.plugin.flutter.utils.StringUtil;
+import com.xtu.plugin.flutter.utils.ClassUtils;
 
 public class TypeEntity {
 
@@ -16,7 +16,7 @@ public class TypeEntity {
     public static TypeEntity prime(String key, String type) {
         TypeEntity typeEntity = new TypeEntity();
         typeEntity.key = key;
-        typeEntity.displayName = StringUtil.toCamelCase(key);
+        typeEntity.displayName = ClassUtils.toCamelCase(key);
         typeEntity.type = type;
         typeEntity.isPrime = true;
         typeEntity.isObject = false;
@@ -27,7 +27,7 @@ public class TypeEntity {
     public static TypeEntity list(String key, TypeEntity subType) {
         TypeEntity typeEntity = new TypeEntity();
         typeEntity.key = key;
-        typeEntity.displayName = StringUtil.toCamelCase(key);
+        typeEntity.displayName = ClassUtils.toCamelCase(key);
         typeEntity.type = "List";
         typeEntity.subType = subType;
         typeEntity.isPrime = false;
@@ -39,7 +39,7 @@ public class TypeEntity {
     public static TypeEntity object(String key, String type) {
         TypeEntity typeEntity = new TypeEntity();
         typeEntity.key = key;
-        typeEntity.displayName = StringUtil.toCamelCase(key);
+        typeEntity.displayName = ClassUtils.toCamelCase(key);
         typeEntity.type = type;
         typeEntity.isPrime = false;
         typeEntity.isObject = true;

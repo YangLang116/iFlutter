@@ -18,17 +18,16 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.xtu.plugin.flutter.action.BaseDependencyAction;
-import com.xtu.plugin.flutter.utils.PubspecUtils;
-import com.xtu.plugin.flutter.utils.ToastUtil;
-import kotlin.Pair;
+import com.xtu.plugin.flutter.utils.FileUtils;
+import com.xtu.plugin.flutter.utils.PubSpecUtils;
 import com.xtu.plugin.flutter.utils.StringUtils;
+import com.xtu.plugin.flutter.utils.ToastUtils;
+import kotlin.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 public class YamlPackageAnchorAction extends BaseDependencyAction {
 
@@ -49,14 +48,8 @@ public class YamlPackageAnchorAction extends BaseDependencyAction {
     }
 
     private static PsiDirectory url2PsiFile(@NotNull Project project, @NotNull String libraryUrl) {
-        URL url = null;
-        try {
-            url = new URL(libraryUrl);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        if (url == null) return null;
-        File file = new File(url.getFile());
+        File file = FileUtils.fromUrl(libraryUrl);
+        if (file == null) return null;
         LocalFileSystem localFileSystem = LocalFileSystem.getInstance();
         VirtualFile virtualFile = localFileSystem.refreshAndFindFileByIoFile(file);
         if (virtualFile == null) return null;
@@ -96,12 +89,12 @@ public class YamlPackageAnchorAction extends BaseDependencyAction {
             anchorPsiFile(project, dartPsiDirectory);
             return;
         }
-        ToastUtil.make(project, MessageType.ERROR, "anchor positioning failed");
+        ToastUtils.make(project, MessageType.ERROR, "anchor positioning failed");
     }
 
     @Nullable
     private static PsiFile getSpecificFile(@NotNull PsiDirectory psiDirectory) {
-        PsiFile psiFile = psiDirectory.findFile(PubspecUtils.getFileName());
+        PsiFile psiFile = psiDirectory.findFile(PubSpecUtils.getFileName());
         if (psiFile != null) return psiFile;
         return PsiTreeUtil.getChildOfType(psiDirectory, PsiFile.class);
     }

@@ -30,7 +30,7 @@ public class DartUtils {
         if (filePsi == null) return false;
         VirtualFile dartFile = filePsi.getVirtualFile();
         if (dartFile == null) return false;
-        return PathUtils.isChildPath(flutterPath, dartFile.getPath());
+        return FileUtils.isChildPath(flutterPath, dartFile.getPath());
     }
 
     private static String flutterPath;

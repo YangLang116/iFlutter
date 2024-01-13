@@ -9,7 +9,7 @@ import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBScrollPane;
-import com.xtu.plugin.flutter.utils.ToastUtil;
+import com.xtu.plugin.flutter.utils.ToastUtils;
 import com.xtu.plugin.flutter.utils.StringUtils;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
@@ -93,7 +93,7 @@ public class AnalysisResultDialog extends DialogWrapper {
             keyPointList.add(new Pair<>(index, keyLen));
             fromIndex = index + keyLen;
         }
-        if (keyPointList.size() < 1) return;
+        if (keyPointList.isEmpty()) return;
         StyledDocument styledDocument = textPane.getStyledDocument();
         //清除高亮
         AttributeSet resetAttribute = getAttributeSet(false);
@@ -122,7 +122,7 @@ public class AnalysisResultDialog extends DialogWrapper {
         protected void doAction(ActionEvent e) {
             StringSelection stringSelection = new StringSelection(AnalysisResultDialog.this.message);
             CopyPasteManager.getInstance().setContents(stringSelection);
-            ToastUtil.make(AnalysisResultDialog.this.project, MessageType.INFO, "copy success");
+            ToastUtils.make(AnalysisResultDialog.this.project, MessageType.INFO, "copy success");
             AnalysisResultDialog.this.close(OK_EXIT_CODE);
         }
     }

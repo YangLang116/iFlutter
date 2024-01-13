@@ -32,7 +32,7 @@ public class TinyUtils {
                                      @NotNull OnResultListener onResultListener) {
         final String tinyKey = StorageService.getInstance(project).getState().tinyApiKey;
         if (StringUtils.isEmpty(tinyKey)) {
-            ToastUtil.make(project, MessageType.INFO, "add api key for TinyPng");
+            ToastUtils.make(project, MessageType.INFO, "add api key for TinyPng");
             ShowSettingsUtil.getInstance().showSettingsDialog(project, SettingsConfiguration.class);
             return;
         }
@@ -51,10 +51,10 @@ public class TinyUtils {
                         String imageFilePath = imageFile.getAbsolutePath();
                         Tinify.fromFile(imageFilePath).toFile(imageFilePath);
                     }
-                    ToastUtil.make(project, MessageType.INFO, "compress image success");
+                    ToastUtils.make(project, MessageType.INFO, "compress image success");
                 } catch (Exception e) {
                     LogUtils.error("ResMenuHelper compressImage", e);
-                    ToastUtil.make(project, MessageType.ERROR, "compress image fail: " + e.getMessage());
+                    ToastUtils.make(project, MessageType.ERROR, "compress image fail: " + e.getMessage());
                 } finally {
                     indicator.setIndeterminate(false);
                     indicator.setFraction(1);

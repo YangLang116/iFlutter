@@ -5,10 +5,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.xtu.plugin.flutter.action.analysis.task.DepAnalysisTask;
 import com.xtu.plugin.flutter.utils.PluginUtils;
-import com.xtu.plugin.flutter.utils.StringUtils;
 import org.jetbrains.annotations.NotNull;
-
-import java.io.File;
 
 public class DepAnalysisAction extends AnAction {
 
@@ -22,9 +19,6 @@ public class DepAnalysisAction extends AnAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
         final Project project = e.getProject();
-        String projectPath = PluginUtils.getProjectPath(project);
-        if (StringUtils.isEmpty(projectPath)) return;
-        File projectRootDir = new File(projectPath);
-        new DepAnalysisTask(e.getProject(), projectRootDir).queue();
+        new DepAnalysisTask(project).queue();
     }
 }

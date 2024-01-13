@@ -6,7 +6,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.util.SystemInfo;
 import com.xtu.plugin.flutter.upgrader.NetworkManager;
-import com.xtu.plugin.flutter.utils.ToastUtil;
+import com.xtu.plugin.flutter.utils.ToastUtils;
 import com.xtu.plugin.flutter.utils.VersionUtils;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -46,12 +46,12 @@ public class AdviceManager {
         NetworkManager.getInstance().post(sURL, gson.toJson(params), new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                if (project != null) ToastUtil.make(project, MessageType.ERROR, e.getMessage());
+                if (project != null) ToastUtils.make(project, MessageType.ERROR, e.getMessage());
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) {
-                if (project != null) ToastUtil.make(project, MessageType.INFO, "thank you for submitting ~");
+                if (project != null) ToastUtils.make(project, MessageType.INFO, "thank you for submitting ~");
             }
         });
     }

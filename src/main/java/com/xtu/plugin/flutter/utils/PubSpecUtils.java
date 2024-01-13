@@ -23,6 +23,7 @@ import org.jetbrains.yaml.psi.*;
 
 import java.util.*;
 
+@SuppressWarnings("SpellCheckingInspection")
 public class PubSpecUtils {
 
     private static final String NODE_FLUTTER = "flutter";
@@ -59,6 +60,13 @@ public class PubSpecUtils {
         if (yamlFile == null) return null;
         YAMLDocument document = yamlFile.getDocuments().get(0);
         return (YAMLMapping) document.getTopLevelValue();
+    }
+
+    public static boolean hasFlutterPubSpec(@NotNull Project project) {
+        YAMLMapping rootMapping = getTopLevelMapping(project);
+        if (rootMapping == null) return false;
+        YAMLKeyValue flutterNode = rootMapping.getKeyValueByKey(NODE_FLUTTER);
+        return flutterNode != null;
     }
 
     //读取pubspec.yaml文件中flutter节点

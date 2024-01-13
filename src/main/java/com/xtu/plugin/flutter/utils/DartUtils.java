@@ -10,6 +10,7 @@ import com.intellij.psi.*;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.jetbrains.lang.dart.psi.DartReferenceExpression;
+import io.flutter.sdk.FlutterSdk;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,6 +19,26 @@ import java.io.FileInputStream;
 import java.util.Properties;
 
 public class DartUtils {
+
+    public static String getFlutterPath(@NotNull Project project) {
+        FlutterSdk flutterSdk = FlutterSdk.getFlutterSdk(project);
+        if (flutterSdk != null) return flutterSdk.getHomePath();
+        String projectPath = project.getBasePath();
+        File configFile = new File(projectPath, "android" + File.separator + "local.properties");
+        if (!configFile.exists()) return null;
+        FileInputStream inputStream = null;
+        try {
+            inputStream = new FileInputStream(configFile);
+            Properties properties = new Properties();
+            properties.load(inputStream);
+            return properties.getProperty("flutter.sdk");
+        } catch (Exception e) {
+            LogUtils.error("DartUtils getFlutterPath", e);
+            return null;
+        } finally {
+            CloseUtils.close(inputStream);
+        }
+    }
 
     public static boolean isBuiltInType(@NotNull DartReferenceExpression referenceExpression) {
         Project project = referenceExpression.getProject();
@@ -31,27 +52,6 @@ public class DartUtils {
         VirtualFile dartFile = filePsi.getVirtualFile();
         if (dartFile == null) return false;
         return FileUtils.isChildPath(flutterPath, dartFile.getPath());
-    }
-
-    private static String flutterPath;
-
-    public static String getFlutterPath(@NotNull Project project) {
-        if (!StringUtils.isEmpty(flutterPath)) return flutterPath;
-        String projectPath = project.getBasePath();
-        File configFile = new File(projectPath, "android" + File.separator + "local.properties");
-        if (!configFile.exists()) return null;
-        FileInputStream inputStream = null;
-        try {
-            inputStream = new FileInputStream(configFile);
-            Properties properties = new Properties();
-            properties.load(inputStream);
-            return flutterPath = properties.getProperty("flutter.sdk");
-        } catch (Exception e) {
-            LogUtils.error("DartUtils getFlutterPath", e);
-            return null;
-        } finally {
-            CloseUtils.close(inputStream);
-        }
     }
 
     //生成Dart类

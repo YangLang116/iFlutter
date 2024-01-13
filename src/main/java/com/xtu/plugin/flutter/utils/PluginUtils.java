@@ -21,10 +21,8 @@ public class PluginUtils {
     }
 
     public static boolean isFlutterProject(@Nullable Project project) {
-        String projectPath = getProjectPath(project);
-        if (StringUtils.isEmpty(projectPath)) return false;
-        File file = new File(projectPath, PubSpecUtils.getFileName());
-        return file.exists();
+        if (project == null) return false;
+        return PubSpecUtils.hasFlutterPubSpec(project);
     }
 
     public static void openFile(@NotNull Project project, @NotNull File file) {

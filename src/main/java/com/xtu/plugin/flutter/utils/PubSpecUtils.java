@@ -13,6 +13,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.StatusBar;
 import com.intellij.openapi.wm.WindowManager;
 import com.intellij.psi.PsiDocumentManager;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.xtu.plugin.flutter.store.asset.AssetRegisterStorageService;
@@ -31,8 +32,41 @@ public class PubSpecUtils {
     private static final String NODE_FONT = "fonts";
     private static final String NODE_FONT_ASSET = "asset";
 
+    private static final List<String> dependencyList = List.of(
+            "dependencies",
+            "dev_dependencies",
+            "dependency_overrides");
+
+    private static boolean isDependencyParentPsi(YAMLKeyValue psiElement) {
+        PsiElement key = psiElement.getKey();
+        if (key == null) return false;
+        return dependencyList.contains(key.getText());
+    }
+
+    //判断当前Element是否是包依赖
+    public static boolean isDependencyElement(YAMLKeyValue element) {
+        if (element == null) return false;
+        YAMLMapping parentMappingPsi = (YAMLMapping) element.getParent();
+        if (parentMappingPsi == null || !(parentMappingPsi.getParent() instanceof YAMLKeyValue)) return false;
+        YAMLKeyValue dependencePsi = (YAMLKeyValue) parentMappingPsi.getParent();
+        return isDependencyParentPsi(dependencePsi);
+    }
+
     public static String getFileName() {
         return "pubspec.yaml";
+    }
+
+    //判断当前YAML文件是否根pubspec.yaml文件
+    public static boolean isRootPubSpecFile(@NotNull YAMLPsiElement element) {
+        YAMLFile yamlFile = PsiTreeUtil.getParentOfType(element, YAMLFile.class);
+        return isRootPubSpecFile(yamlFile);
+    }
+
+    public static boolean isRootPubSpecFile(@Nullable YAMLFile yamlFile) {
+        if (yamlFile == null) return false;
+        VirtualFile yamlVirtualFile = yamlFile.getVirtualFile();
+        if (yamlVirtualFile == null) return false;
+        return isRootPubSpecFile(yamlFile.getProject(), yamlVirtualFile);
     }
 
     //判断当前文件是否根目录pubspec.yaml文件
@@ -43,12 +77,17 @@ public class PubSpecUtils {
         return StringUtils.equals(rootPubSpecPath, virtualFile.getPath());
     }
 
-    //获取根目录pubspec.yaml文件psi
     @Nullable
-    private static YAMLFile getRootPubSpecFile(@NotNull Project project) {
+    public static VirtualFile getRootPubSpecFile(@NotNull Project project) {
         VirtualFile rootProjectDir = ProjectUtil.guessProjectDir(project);
         if (rootProjectDir == null) return null;
-        VirtualFile rootPubSpecFile = rootProjectDir.findChild(getFileName());
+        return rootProjectDir.findChild(getFileName());
+    }
+
+    //获取根目录pubspec.yaml文件psi
+    @Nullable
+    private static YAMLFile getRootPubSpecPsiFile(@NotNull Project project) {
+        VirtualFile rootPubSpecFile = getRootPubSpecFile(project);
         if (rootPubSpecFile == null) return null;
         return (YAMLFile) PsiManager.getInstance(project).findFile(rootPubSpecFile);
     }
@@ -56,17 +95,10 @@ public class PubSpecUtils {
     //读取pubspec.yaml文件顶级YAMLValue内容
     @Nullable
     private static YAMLMapping getTopLevelMapping(@NotNull Project project) {
-        YAMLFile yamlFile = getRootPubSpecFile(project);
+        YAMLFile yamlFile = getRootPubSpecPsiFile(project);
         if (yamlFile == null) return null;
         YAMLDocument document = yamlFile.getDocuments().get(0);
         return (YAMLMapping) document.getTopLevelValue();
-    }
-
-    public static boolean hasFlutterPubSpec(@NotNull Project project) {
-        YAMLMapping rootMapping = getTopLevelMapping(project);
-        if (rootMapping == null) return false;
-        YAMLKeyValue flutterNode = rootMapping.getKeyValueByKey(NODE_FLUTTER);
-        return flutterNode != null;
     }
 
     //读取pubspec.yaml文件中flutter节点
@@ -198,7 +230,7 @@ public class PubSpecUtils {
                 if (modifyAsset(project, assetList, oldAssetSequence, elementGenerator)) return;
                 //modify font
                 if (modifyFont(project, fontList, oldFontSequence, elementGenerator)) return;
-                YAMLFile rootPubspecFile = getRootPubSpecFile(project);
+                YAMLFile rootPubspecFile = getRootPubSpecPsiFile(project);
                 assert rootPubspecFile != null;
                 PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(project);
                 Document document = psiDocumentManager.getDocument(rootPubspecFile);

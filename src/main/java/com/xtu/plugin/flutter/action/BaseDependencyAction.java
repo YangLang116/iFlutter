@@ -8,7 +8,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.xtu.plugin.flutter.utils.PluginUtils;
-import com.xtu.plugin.flutter.utils.YamlPsiUtils;
+import com.xtu.plugin.flutter.utils.PubSpecUtils;
 import kotlin.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,12 +26,12 @@ public abstract class BaseDependencyAction extends AnAction {
             return;
         }
         Editor editor = e.getData(CommonDataKeys.EDITOR);
-        if (project == null || editor == null) {
+        if (editor == null) {
             e.getPresentation().setVisible(false);
             return;
         }
         PsiFile psiFile = e.getData(CommonDataKeys.PSI_FILE);
-        if (!(psiFile instanceof YAMLFile && YamlPsiUtils.isRootPubspec(((YAMLFile) psiFile)))) {
+        if (!(psiFile instanceof YAMLFile && PubSpecUtils.isRootPubSpecFile(((YAMLFile) psiFile)))) {
             e.getPresentation().setVisible(false);
             return;
         }
@@ -40,7 +40,7 @@ public abstract class BaseDependencyAction extends AnAction {
         //select packageName element
         e.getPresentation().setVisible(yamlPsiElement != null
                 && yamlPsiElement.getParent() instanceof YAMLKeyValue
-                && YamlPsiUtils.isDependencyElement(((YAMLKeyValue) yamlPsiElement.getParent())));
+                && PubSpecUtils.isDependencyElement(((YAMLKeyValue) yamlPsiElement.getParent())));
     }
 
     @Nullable

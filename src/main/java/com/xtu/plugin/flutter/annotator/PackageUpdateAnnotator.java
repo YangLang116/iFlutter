@@ -21,11 +21,11 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import com.xtu.plugin.flutter.component.packages.update.PackageInfo;
 import com.xtu.plugin.flutter.store.StorageService;
-import com.xtu.plugin.flutter.utils.YamlPsiUtils;
+import com.xtu.plugin.flutter.utils.PubSpecUtils;
+import com.xtu.plugin.flutter.utils.StringUtils;
 import icons.PluginIcons;
 import io.flutter.pub.PubRoot;
 import io.flutter.sdk.FlutterSdk;
-import com.xtu.plugin.flutter.utils.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.YAMLElementGenerator;
@@ -87,8 +87,8 @@ public class PackageUpdateAnnotator implements Annotator {
     @Override
     public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
         if (element instanceof YAMLKeyValue
-                && YamlPsiUtils.isRootPubspec(((YAMLKeyValue) element))
-                && YamlPsiUtils.isDependencyElement(((YAMLKeyValue) element))) {
+                && PubSpecUtils.isRootPubSpecFile(((YAMLKeyValue) element))
+                && PubSpecUtils.isDependencyElement(((YAMLKeyValue) element))) {
             //element is package dependency psi
             String packageName = ((YAMLKeyValue) element).getKeyText();
             if (StringUtils.isEmpty(packageName)) return;

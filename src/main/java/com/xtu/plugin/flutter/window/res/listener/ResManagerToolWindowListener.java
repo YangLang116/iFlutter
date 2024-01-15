@@ -3,6 +3,7 @@ package com.xtu.plugin.flutter.window.res.listener;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vcs.BranchChangeListener;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.openapi.wm.ex.ToolWindowManagerListener;
@@ -11,9 +12,9 @@ import com.intellij.ui.content.ContentManager;
 import com.xtu.plugin.flutter.utils.AssetUtils;
 import com.xtu.plugin.flutter.utils.FileUtils;
 import com.xtu.plugin.flutter.utils.LogUtils;
+import com.xtu.plugin.flutter.utils.StringUtils;
 import com.xtu.plugin.flutter.window.res.ResManagerToolWindowFactory;
 import com.xtu.plugin.flutter.window.res.ui.ResManagerRootPanel;
-import com.xtu.plugin.flutter.utils.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ResManagerToolWindowListener extends ResFileChangedAdapter implements ToolWindowManagerListener {
+public class ResManagerToolWindowListener extends ResFileChangedAdapter implements ToolWindowManagerListener, BranchChangeListener {
 
     private static final List<String> SUPPORT_IMAGE_FORMAT = Arrays.asList("jpg", "jpeg", "png", "webp", "svg");
 
@@ -89,5 +90,16 @@ public class ResManagerToolWindowListener extends ResFileChangedAdapter implemen
         Content content = contentManager.getContent(0);
         if (content == null) return null;
         return ((ResManagerRootPanel) content.getComponent());
+    }
+
+    @Override
+    public void branchWillChange(@NotNull String s) {
+        setBulkFileEnable(false);
+    }
+
+    @Override
+    public void branchHasChanged(@NotNull String s) {
+        setBulkFileEnable(true);
+        scanResList();
     }
 }

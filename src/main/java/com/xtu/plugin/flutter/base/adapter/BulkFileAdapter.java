@@ -13,13 +13,20 @@ import java.util.Objects;
 public class BulkFileAdapter implements BulkFileListener {
 
     public final Project project;
+    private boolean enable = true;
 
     public BulkFileAdapter(@NotNull Project project) {
         this.project = project;
     }
 
+
+    public void setBulkFileEnable(boolean enable) {
+        this.enable = enable;
+    }
+
     @Override
     public void after(@NotNull List<? extends VFileEvent> events) {
+        if (!enable) return;
         for (VFileEvent event : events) {
             if (event instanceof VFileCopyEvent) {
                 VirtualFile virtualFile = ((VFileCopyEvent) event).findCreatedFile();

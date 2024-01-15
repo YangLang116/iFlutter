@@ -2,8 +2,10 @@ package com.xtu.plugin.flutter.component.assets;
 
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vcs.BranchChangeListener;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
+import com.intellij.util.messages.MessageBusConnection;
 import com.xtu.plugin.flutter.base.adapter.BulkFileAdapter;
 import com.xtu.plugin.flutter.component.analysis.ImageSizeAnalyzer;
 import com.xtu.plugin.flutter.component.assets.handler.AssetFileHandler;
@@ -19,7 +21,7 @@ import java.io.File;
 /**
  * 处理flutter项目中的资源文件
  */
-public class AssetsManager extends BulkFileAdapter implements Disposable {
+public class AssetsManager extends BulkFileAdapter implements BranchChangeListener, Disposable {
 
     private final AssetFileHandler assetFileHandler;
     private final PubSpecFileHandler specFileHandler;
@@ -39,7 +41,9 @@ public class AssetsManager extends BulkFileAdapter implements Disposable {
     public void attach() {
         LogUtils.info("AssetsManager attach");
         if (!PluginUtils.isFlutterProject(project)) return;
-        project.getMessageBus().connect().subscribe(VirtualFileManager.VFS_CHANGES, this);
+        MessageBusConnection connect = project.getMessageBus().connect();
+        connect.subscribe(VirtualFileManager.VFS_CHANGES, this);
+        connect.subscribe(BranchChangeListener.VCS_BRANCH_CHANGED, this);
     }
 
     public void detach() {
@@ -87,6 +91,16 @@ public class AssetsManager extends BulkFileAdapter implements Disposable {
                 this.specFileHandler.onPsiFileChanged(project);
             }
         }
+    }
+
+    @Override
+    public void branchWillChange(@NotNull String s) {
+        setBulkFileEnable(false);
+    }
+
+    @Override
+    public void branchHasChanged(@NotNull String s) {
+        setBulkFileEnable(true);
     }
 
     @Override

@@ -82,11 +82,13 @@ public class TinyUtils {
     }
 
     public static void showTinyDialog(@NotNull Project project, @NotNull VirtualFile virtualFile) {
-        String content = String.format(Locale.ROOT, "do you need to compress %s ?", virtualFile.getName());
-        int result = Messages.showYesNoDialog(project, content, "Tiny Image", null);
-        if (result != 0) return;
-        List<File> fileList = Collections.singletonList(new File(virtualFile.getPath()));
-        compressImage(project, fileList, null);
+        ApplicationManager.getApplication().invokeLater(() -> {
+            String content = String.format(Locale.ROOT, "do you need to compress %s ?", virtualFile.getName());
+            int result = Messages.showYesNoDialog(project, content, "Tiny Image", null);
+            if (result != 0) return;
+            List<File> fileList = Collections.singletonList(new File(virtualFile.getPath()));
+            compressImage(project, fileList, null);
+        });
     }
 
     public interface OnResultListener {

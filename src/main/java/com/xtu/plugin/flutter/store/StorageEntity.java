@@ -38,8 +38,9 @@ public class StorageEntity {
     //最大图片
     public int maxPicSize = 500;
     //最大图片宽高
-    public int maxPicWidth = 1080;
+    public int maxPicWidth = 1280;
     public int maxPicHeight = 2400;
+    public boolean enableSizeMonitor = true;
     //仓库镜像地址
     public String mirrorRepoStr = StringUtils.join(DEFAULT_MIRROR_REPO, AndroidGradleMaker.REPO_SPLIT);
     //是否带包名生成资源文件
@@ -47,7 +48,8 @@ public class StorageEntity {
     //是否生成数据不可修改的fromJson
     public boolean isUnModifiableFromJson = false;
     //tiny api key
-    public String tinyApiKey = "";
+    public boolean autoTinyImage = true;
+    public String tinyApiKey = "33w0Q37jD8McmXQYYMH0sPqwdG2vxm70";
 
     public StorageEntity() {
     }
@@ -65,13 +67,15 @@ public class StorageEntity {
                 && foldRegisterEnable == that.foldRegisterEnable
                 && Objects.equals(apiKey, that.apiKey)
                 && Objects.equals(apiSecret, that.apiSecret)
+                && enableSizeMonitor == that.enableSizeMonitor
                 && maxPicSize == that.maxPicSize
                 && maxPicWidth == that.maxPicWidth
                 && registerResWithPackage == that.registerResWithPackage
                 && maxPicHeight == that.maxPicHeight
                 && isUnModifiableFromJson == that.isUnModifiableFromJson
                 && Objects.equals(mirrorRepoStr, that.mirrorRepoStr)
-                && Objects.equals(tinyApiKey, that.tinyApiKey);
+                && Objects.equals(tinyApiKey, that.tinyApiKey)
+                && autoTinyImage == that.autoTinyImage;
     }
 
     @Override
@@ -84,15 +88,17 @@ public class StorageEntity {
                 ", httpEntityList=" + httpEntityList +
                 ", foldRegisterEnable=" + foldRegisterEnable +
                 ", packageInfoMap=" + packageInfoMap +
-                ", apiKey='" + apiKey + '\'' +
-                ", apiSecret='" + apiSecret + '\'' +
+                ", apiKey=" + apiKey +
+                ", apiSecret=" + apiSecret +
+                ", enableSizeMonitor=" + enableSizeMonitor +
                 ", maxPicSize=" + maxPicSize +
                 ", maxPicWidth=" + maxPicWidth +
                 ", maxPicHeight=" + maxPicHeight +
-                ", mirrorRepoStr='" + mirrorRepoStr + '\'' +
+                ", mirrorRepoStr=" + mirrorRepoStr +
                 ", registerResWithPackage=" + registerResWithPackage +
                 ", isUnModifiableFromJson=" + isUnModifiableFromJson +
                 ", tinyApiKey=" + tinyApiKey +
+                ", autoTinyImage=" + autoTinyImage +
                 '}';
     }
 }

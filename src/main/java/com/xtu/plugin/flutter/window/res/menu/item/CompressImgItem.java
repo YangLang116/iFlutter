@@ -20,6 +20,8 @@ public class CompressImgItem extends AbstractItem {
     @Override
     public void actionPerformed(ActionEvent e) {
         final List<File> imageFileList = List.of(imageFile);
-        TinyUtils.compressImage(project, imageFileList, () -> listener.reloadResList(imageFileList));
+        TinyUtils.compressImage(project, imageFileList, (success) -> {
+            if (success) listener.reloadResList(imageFileList);
+        });
     }
 }

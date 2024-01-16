@@ -10,10 +10,9 @@ import com.xtu.plugin.flutter.base.adapter.BulkFileAdapter;
 import com.xtu.plugin.flutter.component.analysis.ImageSizeAnalyzer;
 import com.xtu.plugin.flutter.component.assets.handler.AssetFileHandler;
 import com.xtu.plugin.flutter.component.assets.handler.PubSpecFileHandler;
-import com.xtu.plugin.flutter.utils.AssetUtils;
-import com.xtu.plugin.flutter.utils.LogUtils;
-import com.xtu.plugin.flutter.utils.PluginUtils;
-import com.xtu.plugin.flutter.utils.PubSpecUtils;
+import com.xtu.plugin.flutter.store.StorageEntity;
+import com.xtu.plugin.flutter.store.StorageService;
+import com.xtu.plugin.flutter.utils.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -52,9 +51,14 @@ public class AssetsManager extends BulkFileAdapter implements BranchChangeListen
 
     @Override
     public void onFileAdded(@NotNull Project project, @NotNull VirtualFile virtualFile) {
-        this.imageSizeAnalyzer.analysis(virtualFile);
-        if (AssetUtils.enableResCheck(project)) {
+        if (enableResCheck(project)) {
             this.assetFileHandler.onFileAdded(project, virtualFile);
+        }
+        if (enableSizeCheck(project)) {
+            this.imageSizeAnalyzer.analysis(virtualFile);
+        }
+        if (canTinyImage(project, virtualFile)) {
+            TinyUtils.showTinyDialog(project, virtualFile);
         }
     }
 
@@ -62,14 +66,14 @@ public class AssetsManager extends BulkFileAdapter implements BranchChangeListen
     public void onFileMove(@NotNull Project project,
                            @NotNull File oldFile,
                            @NotNull VirtualFile newFile) {
-        if (AssetUtils.enableResCheck(project)) {
+        if (enableResCheck(project)) {
             this.assetFileHandler.onFileMoved(project, oldFile, newFile);
         }
     }
 
     @Override
     public void onFileDeleted(@NotNull Project project, @NotNull VirtualFile virtualFile) {
-        if (AssetUtils.enableResCheck(project)) {
+        if (enableResCheck(project)) {
             this.assetFileHandler.onFileDeleted(project, virtualFile);
         }
     }
@@ -79,7 +83,7 @@ public class AssetsManager extends BulkFileAdapter implements BranchChangeListen
                                   @NotNull VirtualFile virtualFile,
                                   @NotNull String oldName,
                                   @NotNull String newName) {
-        if (AssetUtils.enableResCheck(project)) {
+        if (enableResCheck(project)) {
             this.assetFileHandler.onFileChanged(project, virtualFile, oldName, newName);
         }
     }
@@ -87,7 +91,7 @@ public class AssetsManager extends BulkFileAdapter implements BranchChangeListen
     @Override
     public void onFileContentChanged(@NotNull Project project, @NotNull VirtualFile virtualFile) {
         if (PubSpecUtils.isRootPubSpecFile(project, virtualFile)) {
-            if (AssetUtils.enableResCheck(project)) {
+            if (enableResCheck(project)) {
                 this.specFileHandler.onPsiFileChanged(project);
             }
         }
@@ -106,5 +110,20 @@ public class AssetsManager extends BulkFileAdapter implements BranchChangeListen
     @Override
     public void dispose() {
         detach();
+    }
+
+    public static boolean canTinyImage(@NotNull Project project, @NotNull VirtualFile virtualFile) {
+        StorageEntity state = StorageService.getInstance(project).getState();
+        if (!state.autoTinyImage) return false;
+        if (StringUtils.isEmpty(state.tinyApiKey)) return false;
+        return TinyUtils.isSupport(virtualFile);
+    }
+
+    public static boolean enableSizeCheck(@NotNull Project project) {
+        return StorageService.getInstance(project).getState().enableSizeMonitor;
+    }
+
+    public static boolean enableResCheck(@NotNull Project project) {
+        return StorageService.getInstance(project).getState().resCheckEnable;
     }
 }

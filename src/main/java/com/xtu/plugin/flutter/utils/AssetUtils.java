@@ -21,10 +21,6 @@ public class AssetUtils {
         return StorageService.getInstance(project).getState().resDir;
     }
 
-    public static boolean enableResCheck(@NotNull Project project) {
-        return StorageService.getInstance(project).getState().resCheckEnable;
-    }
-
     public static boolean isFoldRegister(@NotNull Project project) {
         return StorageService.getInstance(project).getState().foldRegisterEnable;
     }

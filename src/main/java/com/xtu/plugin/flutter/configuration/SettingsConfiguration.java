@@ -12,8 +12,8 @@ import com.xtu.plugin.flutter.advice.AdviceDialog;
 import com.xtu.plugin.flutter.store.StorageEntity;
 import com.xtu.plugin.flutter.store.StorageService;
 import com.xtu.plugin.flutter.utils.CollectionUtils;
-import icons.PluginIcons;
 import com.xtu.plugin.flutter.utils.StringUtils;
+import icons.PluginIcons;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -50,6 +50,8 @@ public final class SettingsConfiguration implements SearchableConfigurable {
     private JTextField tinyApiKeyField;
     private JLabel tinyQuestion;
     private JLabel adviceLabel;
+    private JCheckBox autoTinyImage;
+    private JCheckBox enableSizeMonitor;
 
     public SettingsConfiguration(@NotNull Project project) {
         this.project = project;
@@ -106,6 +108,14 @@ public final class SettingsConfiguration implements SearchableConfigurable {
             if (!isOk) return;
             mirrorRepoStr = mirrorRepoDialog.getRepoStr();
         });
+        //图片尺寸开关
+        enableSizeMonitor.addActionListener(e -> {
+            boolean isSelected = enableSizeMonitor.isSelected();
+            JTextField[] fieldList = new JTextField[]{maxPicSizeField, maxPicWidthField, maxPicHeightField};
+            for (JTextField field : fieldList) {
+                field.setEnabled(isSelected);
+            }
+        });
         //tiny
         tinyQuestion.setText("<html><u>get your api key</u></html>");
         tinyQuestion.addMouseListener(new MouseAdapter() {
@@ -135,10 +145,12 @@ public final class SettingsConfiguration implements SearchableConfigurable {
                 || !Objects.equals(storageEntity.mirrorRepoStr, mirrorRepoStr)
                 || !Objects.equals(storageEntity.apiKey, apiKeyField.getText().trim())
                 || !Objects.equals(storageEntity.apiSecret, apiSecretField.getText().trim())
+                || storageEntity.enableSizeMonitor != enableSizeMonitor.isSelected()
                 || storageEntity.maxPicSize != Integer.parseInt(maxPicSizeField.getText().trim())
                 || storageEntity.maxPicWidth != Integer.parseInt(maxPicWidthField.getText().trim())
                 || storageEntity.maxPicHeight != Integer.parseInt(maxPicHeightField.getText().trim())
-                || !Objects.equals(storageEntity.tinyApiKey, tinyApiKeyField.getText().trim());
+                || !Objects.equals(storageEntity.tinyApiKey, tinyApiKeyField.getText().trim())
+                || storageEntity.autoTinyImage != autoTinyImage.isSelected();
 
     }
 
@@ -156,11 +168,13 @@ public final class SettingsConfiguration implements SearchableConfigurable {
         isUnModifiableFromJson.setSelected(storageEntity.isUnModifiableFromJson);
         apiKeyField.setText(storageEntity.apiKey);
         apiSecretField.setText(storageEntity.apiSecret);
+        enableSizeMonitor.setSelected(storageEntity.enableSizeMonitor);
         maxPicSizeField.setText(String.valueOf(storageEntity.maxPicSize));
         maxPicWidthField.setText(String.valueOf(storageEntity.maxPicWidth));
         maxPicHeightField.setText(String.valueOf(storageEntity.maxPicHeight));
         mirrorRepoStr = storageEntity.mirrorRepoStr;
         tinyApiKeyField.setText(storageEntity.tinyApiKey);
+        autoTinyImage.setSelected(storageEntity.autoTinyImage);
     }
 
     @Override
@@ -178,6 +192,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
         storageEntity.isUnModifiableFromJson = isUnModifiableFromJson.isSelected();
         storageEntity.apiKey = apiKeyField.getText().trim();
         storageEntity.apiSecret = apiSecretField.getText().trim();
+        storageEntity.enableSizeMonitor = enableSizeMonitor.isSelected();
         storageEntity.maxPicSize = Integer.parseInt(maxPicSizeField.getText().trim());
         storageEntity.maxPicWidth = Integer.parseInt(maxPicWidthField.getText().trim());
         storageEntity.maxPicHeight = Integer.parseInt(maxPicHeightField.getText().trim());
@@ -188,6 +203,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
             reStartIDE();
         }
         storageEntity.tinyApiKey = tinyApiKeyField.getText().trim();
+        storageEntity.autoTinyImage = autoTinyImage.isSelected();
     }
 
     private void reStartIDE() {

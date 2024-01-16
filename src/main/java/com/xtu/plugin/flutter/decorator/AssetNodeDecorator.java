@@ -15,7 +15,6 @@ public class AssetNodeDecorator implements ProjectViewNodeDecorator {
     public void decorate(ProjectViewNode<?> node, PresentationData data) {
         Project project = node.getProject();
         if (project == null) return;
-        if (!AssetUtils.enableResCheck(project)) return;
         VirtualFile virtualFile = node.getVirtualFile();
         if (virtualFile == null) return;
         boolean isAssetDir = AssetUtils.isAssetDir(project, virtualFile);

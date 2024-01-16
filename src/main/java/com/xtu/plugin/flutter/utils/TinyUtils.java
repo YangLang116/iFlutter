@@ -63,7 +63,7 @@ public class TinyUtils {
                     ToastUtils.make(project, MessageType.INFO, "compress image success");
                     postCallBack(true);
                 } catch (Exception e) {
-                    LogUtils.error("ResMenuHelper compressImage", e);
+                    LogUtils.error("TinyUtils compressImage", e);
                     ToastUtils.make(project, MessageType.ERROR, "compress image fail: " + e.getMessage());
                     postCallBack(false);
                 } finally {

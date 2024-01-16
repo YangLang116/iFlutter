@@ -251,7 +251,9 @@ public class PubSpecUtils {
                                        @Nullable YAMLSequence oldAssetSequence,
                                        @NotNull YAMLElementGenerator elementGenerator) {
         if (AssetUtils.isFoldRegister(project)) {
-            assetList = AssetRegisterStorageService.updateAsset(project, assetList);
+            String projectName = getProjectName(project);
+            String projectVersion = getProjectVersion(project);
+            assetList = AssetRegisterStorageService.updateAsset(project, projectName, projectVersion, assetList);
         }
         if (oldAssetSequence != null) {
             if (CollectionUtils.isEmpty(assetList)) {

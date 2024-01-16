@@ -41,8 +41,8 @@ public class GenerateResAction extends AnAction {
         //force generate Res File
         PubSpecUtils.readAssetSafe(project, (name, version, assetList, fontList) -> {
             String resPrefix = AssetUtils.getResPrefix(project, name);
-            DartRFileGenerator.getInstance().generate(project, name, version, resPrefix, assetList, true);
-            DartFontFileGenerator.getInstance().generate(project, resPrefix, fontList, true);
+            DartRFileGenerator.getInstance().generate(project, name, version, resPrefix, assetList);
+            DartFontFileGenerator.getInstance().generate(project, resPrefix, fontList);
         });
     }
 }

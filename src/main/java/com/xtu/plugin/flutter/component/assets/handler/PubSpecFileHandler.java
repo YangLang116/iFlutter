@@ -69,8 +69,8 @@ public class PubSpecFileHandler {
         LogUtils.info("PubSpecFileHandler pubspec.yaml changed");
         PubSpecUtils.readAssetSafe(project, (name, version, assetList, fontList) -> {
             String resPrefix = AssetUtils.getResPrefix(project, name);
-            DartRFileGenerator.getInstance().generate(project, name, version, resPrefix, assetList, false);
-            DartFontFileGenerator.getInstance().generate(project, resPrefix, fontList, false);
+            DartRFileGenerator.getInstance().generate(project, name, version, resPrefix, assetList);
+            DartFontFileGenerator.getInstance().generate(project, resPrefix, fontList);
         });
     }
 }

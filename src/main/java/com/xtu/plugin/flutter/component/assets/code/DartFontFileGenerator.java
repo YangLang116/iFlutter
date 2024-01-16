@@ -34,13 +34,10 @@ public class DartFontFileGenerator {
         return sInstance;
     }
 
-    public void generate(@NotNull Project project,
-                         @NotNull String resPrefix,
-                         @NotNull List<String> fontAssetList,
-                         boolean force) {
+    public void generate(@NotNull Project project, @NotNull String resPrefix, @NotNull List<String> fontAssetList) {
         Application application = ApplicationManager.getApplication();
         application.invokeLater(() -> WriteAction.run(() -> {
-            if (!force && fontAssetList.equals(latestFontList)) return;
+            if (fontAssetList.equals(latestFontList)) return;
             try {
                 File libDirectory = new File(project.getBasePath(), "lib");
                 LocalFileSystem localFileSystem = LocalFileSystem.getInstance();

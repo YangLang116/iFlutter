@@ -12,6 +12,7 @@ import com.xtu.plugin.flutter.component.assets.handler.AssetFileHandler;
 import com.xtu.plugin.flutter.component.assets.handler.PubSpecFileHandler;
 import com.xtu.plugin.flutter.store.StorageEntity;
 import com.xtu.plugin.flutter.store.StorageService;
+import com.xtu.plugin.flutter.store.asset.AssetRegisterStorageService;
 import com.xtu.plugin.flutter.utils.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -105,6 +106,7 @@ public class AssetsManager extends BulkFileAdapter implements BranchChangeListen
     @Override
     public void branchHasChanged(@NotNull String s) {
         setBulkFileEnable(true);
+        AssetRegisterStorageService.getService(project).refreshIfNeed();
     }
 
     @Override

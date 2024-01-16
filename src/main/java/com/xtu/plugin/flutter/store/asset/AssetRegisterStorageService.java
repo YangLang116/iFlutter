@@ -5,8 +5,8 @@ import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
+import com.xtu.plugin.flutter.component.assets.code.DartRFileGenerator;
 import com.xtu.plugin.flutter.utils.*;
-import com.xtu.plugin.flutter.utils.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -74,11 +74,17 @@ public class AssetRegisterStorageService implements PersistentStateComponent<Ass
     }
 
     //更新资源列表
-    public static List<String> updateAsset(@NotNull Project project, @NotNull List<String> newAssetList) {
+    public static List<String> updateAsset(@NotNull Project project,
+                                           @NotNull String projectName,
+                                           @NotNull String projectVersion,
+                                           @NotNull List<String> newAssetList) {
         if (!AssetUtils.isFoldRegister(project)) return newAssetList;
         //pure asset list
         CollectionUtils.duplicateList(newAssetList);
         Collections.sort(newAssetList);
+        //generate R
+        String resPrefix = AssetUtils.getResPrefix(project, projectName);
+        DartRFileGenerator.getInstance().generate(project, projectName, projectVersion, resPrefix, newAssetList);
         //update asset
         AssetRegisterStorageService service = getService(project);
         List<String> assetList = service.storageEntity.assetList;

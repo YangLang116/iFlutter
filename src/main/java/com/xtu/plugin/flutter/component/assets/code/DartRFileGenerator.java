@@ -33,10 +33,11 @@ public class DartRFileGenerator {
                          @NotNull String projectName,
                          @NotNull String projectVersion,
                          @NotNull String resPrefix,
-                         @NotNull List<String> assetList) {
+                         @NotNull List<String> assetList,
+                         boolean force) {
         Application application = ApplicationManager.getApplication();
         application.invokeLater(() -> WriteAction.run(() -> {
-            if (assetList.equals(latestAssetList)) return;
+            if (!force && assetList.equals(latestAssetList)) return;
             //create new res
             Map<String, List<String>> assetCategory = new HashMap<>();
             for (String assetFileName : assetList) {

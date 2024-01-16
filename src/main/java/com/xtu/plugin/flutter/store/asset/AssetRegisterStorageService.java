@@ -84,7 +84,7 @@ public class AssetRegisterStorageService implements PersistentStateComponent<Ass
         Collections.sort(newAssetList);
         //generate R
         String resPrefix = AssetUtils.getResPrefix(project, projectName);
-        DartRFileGenerator.getInstance().generate(project, projectName, projectVersion, resPrefix, newAssetList);
+        DartRFileGenerator.getInstance().generate(project, projectName, projectVersion, resPrefix, newAssetList, false);
         //update asset
         AssetRegisterStorageService service = getService(project);
         List<String> assetList = service.storageEntity.assetList;

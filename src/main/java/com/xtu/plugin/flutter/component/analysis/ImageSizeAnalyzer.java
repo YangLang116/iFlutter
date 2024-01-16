@@ -9,8 +9,10 @@ import com.xtu.plugin.flutter.store.StorageEntity;
 import com.xtu.plugin.flutter.store.StorageService;
 import com.xtu.plugin.flutter.utils.AssetUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.util.Locale;
 
 public class ImageSizeAnalyzer {
 
@@ -20,39 +22,50 @@ public class ImageSizeAnalyzer {
         this.project = project;
     }
 
-    public void onPsiFileAdd(@NotNull Project project, @NotNull VirtualFile virtualFile) {
+    public void analysis(@NotNull VirtualFile virtualFile) {
         if (!AssetUtils.isAssetFile(project, virtualFile)) return;
-        if (!ImageAnalysisUtils.isImageFile(virtualFile)) return;
-        analysisImageSize(virtualFile);
+        if (!ImageAnalysisUtils.canAnalysis(virtualFile)) return;
+        doAnalysis(virtualFile);
     }
 
-    private void analysisImageSize(@NotNull VirtualFile imageVirtualFile) {
-        final String filePath = imageVirtualFile.getPath();
+    private void doAnalysis(@NotNull VirtualFile file) {
+        final String filePath = file.getPath();
         StorageService storageService = StorageService.getInstance(project);
-        StorageEntity storageEntity = storageService.getState();
-        final int maxPicSize = storageEntity.maxPicSize;
-        final int maxPicWidth = storageEntity.maxPicWidth;
-        final int maxPicHeight = storageEntity.maxPicHeight;
+        final StorageEntity storageEntity = storageService.getState();
         ApplicationManager.getApplication().executeOnPooledThread(() -> {
             final File imageFile = new File(filePath);
-            int imageSize = ImageAnalysisUtils.getImageSize(imageFile);
-            if (imageSize > maxPicSize) {
-                showWarnDialog(String.format("%s Size limit:\n\nmax: %d k\ncurrent: %d k",
-                        imageFile.getName(), maxPicSize, imageSize));
-                return;
-            }
-            ImageAnalysisUtils.PicDimension imageDimension = ImageAnalysisUtils.getImageDimension(imageFile);
-            if (imageDimension != null &&
-                    (imageDimension.width > maxPicWidth || imageDimension.height > maxPicHeight)) {
-                showWarnDialog(String.format("%s Dimension limit:\n\nmax: %d x %d\ncurrent: %d x %d",
-                        imageFile.getName(),
-                        maxPicWidth, maxPicHeight,
-                        imageDimension.width, imageDimension.height));
-            }
+            String sizeTip = getIllegalSizeTip(imageFile, storageEntity.maxPicSize);
+            String dimensionTip = getIllegalDimensionTip(imageFile, storageEntity.maxPicWidth, storageEntity.maxPicHeight);
+            if (sizeTip == null && dimensionTip == null) return;
+            showWarnDialog(imageFile, sizeTip, dimensionTip);
         });
     }
 
-    private void showWarnDialog(@NotNull String tip) {
+    private String getIllegalSizeTip(@NotNull File imageFile, int maxPicSize) {
+        int imageSize = ImageAnalysisUtils.getImageSize(imageFile);
+        if (imageSize < maxPicSize) return null;
+        return String.format(Locale.ROOT, "Size limit: %dk，current: %dk", maxPicSize, imageSize);
+    }
+
+    private String getIllegalDimensionTip(@NotNull File imageFile, int maxPicWidth, int maxPicHeight) {
+        ImageAnalysisUtils.PicDimension dimension = ImageAnalysisUtils.getImageDimension(imageFile);
+        if (dimension == null) return null;
+        int cWidth = dimension.width;
+        int cHeight = dimension.height;
+        if (cWidth < maxPicWidth && cHeight < maxPicHeight) return null;
+        return String.format("Dimension limit: %dx%d，current: %dx%d", maxPicWidth, maxPicHeight, cWidth, cHeight);
+    }
+
+    private void showWarnDialog(@NotNull File imageFile, @Nullable String sizeTip, @Nullable String dimensionTip) {
+        final StringBuilder tipBuilder = new StringBuilder()
+                .append("FileName: ").append(imageFile.getName()).append("\n\n");
+        if (sizeTip != null) {
+            tipBuilder.append(sizeTip).append("\n");
+        }
+        if (dimensionTip != null) {
+            tipBuilder.append(dimensionTip).append("\n");
+        }
+        final String tip = tipBuilder.toString();
         ApplicationManager.getApplication().invokeLater(() ->
                 Messages.showWarningDialog(project, tip, "Add non-standard images"));
     }

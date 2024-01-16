@@ -15,7 +15,7 @@ import java.util.Locale;
 
 public class ImageAnalysisUtils {
 
-    public static boolean isImageFile(@NotNull VirtualFile file) {
+    public static boolean canAnalysis(@NotNull VirtualFile file) {
         String fileName = file.getName().toLowerCase(Locale.ROOT);
         return fileName.endsWith(".png") || fileName.endsWith(".jpg") || fileName.endsWith(".jpeg");
     }

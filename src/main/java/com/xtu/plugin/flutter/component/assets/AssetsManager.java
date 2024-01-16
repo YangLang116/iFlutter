@@ -52,7 +52,7 @@ public class AssetsManager extends BulkFileAdapter implements BranchChangeListen
 
     @Override
     public void onFileAdded(@NotNull Project project, @NotNull VirtualFile virtualFile) {
-        this.imageSizeAnalyzer.onPsiFileAdd(project, virtualFile);
+        this.imageSizeAnalyzer.analysis(virtualFile);
         if (AssetUtils.enableResCheck(project)) {
             this.assetFileHandler.onFileAdded(project, virtualFile);
         }

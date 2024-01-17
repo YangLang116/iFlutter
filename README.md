@@ -2,6 +2,12 @@
 ## iFlutter is an IDEA Plugin for Developer of Flutter
 (iFlutter 是一款面向 Flutter 开发者的 IDEA 插件)
 
+![platforms](https://img.shields.io/badge/platforms-macos%20%7C%20windows%20%7C%20linux-blue)
+![tools](https://img.shields.io/badge/idea-intellij_IDEA%20%7C%20AndroidStudio-blue)
+![licence](https://img.shields.io/badge/licence-MIT-blue)
+![downloads](https://img.shields.io/jetbrains/plugin/d/18457)
+![version](https://img.shields.io/jetbrains/plugin/v/18457)
+
 ### 1、资源文件管理
   - [注册资源](https://iflutter.toolu.cn/content/chapter-1/part-1.html)
   - [注册资源(目录)](https://iflutter.toolu.cn/content/chapter-1/part-2.html)
@@ -29,33 +35,24 @@
 
 <!-- Plugin description end -->
 
-## iFlutter是一款辅助Flutter开发的 IDEA 插件
-
-![platforms](https://img.shields.io/badge/platforms-macos%20%7C%20windows%20%7C%20linux-blue)
-![tools](https://img.shields.io/badge/idea-intellij_IDEA%20%7C%20AndroidStudio-blue)
-![licence](https://img.shields.io/badge/licence-MIT-blue)
-![downloads](https://img.shields.io/jetbrains/plugin/d/18457)
-![version](https://img.shields.io/jetbrains/plugin/v/18457)
-
-**插件改为最低兼容211版本，如遇到无法安装，请升级AndroidStudio**
-
 ## 最新公告
 
 - [MediaFilePreviewer](https://github.com/YangLang116/MediaFilePreviewer): 一款支持Lottie、SVGA预览的IDEA插件  
-  插件安装：插件已上传官方Plugins仓库，可搜索 `MediaFilePreviewer` 下载  
-  使用文档：[点击跳转](https://iflutter.toolu.cn/content/chapter-7/part-1.html)
+  插件安装: 插件已上传官方Plugins仓库，可搜索 `MediaFilePreviewer` 下载  
+  使用文档: [点击跳转](https://iflutter.toolu.cn/content/chapter-7/part-1.html)
 
-- [GameCenter](https://github.com/YangLang116/GameCenter):支持IDEA中展示游戏菜单  
-  插件安装：插件已上传官方Plugins仓库，可搜索 `GameCenter` 下载  
-  使用文档：[点击跳转](https://iflutter.toolu.cn/content/chapter-8/part-1.html)
+- [GameCenter](https://github.com/YangLang116/GameCenter): 支持IDEA中激战小霸王游戏 
+  插件安装: 插件已上传官方Plugins仓库，可搜索 `GameCenter` 下载  
+  使用文档: [点击跳转](https://iflutter.toolu.cn/content/chapter-8/part-1.html)
 
 - [Pub](https://pub.dev/publishers/iflutter.toolu.cn/packages): 更多Flutter Plugin插件 ~
 
 ## 插件安装
 
-- 插件安装：插件已上传官方Plugins仓库，可搜索 `iFlutter` 下载
-- Github: [点击跳转](https://github.com/YangLang116/iFlutter)
+- 插件安装: 插件已上传官方Plugins仓库，可搜索 `iFlutter` 下载
+- Github: [点击跳转](https://github.com/YangLang116/iFlutter)              Gitee: [点击跳转](https://gitee.com/YangLang116/iFlutter)
 - 详细文档: [点击跳转](https://iflutter.toolu.cn)
+- 插件改为最低兼容211版本，如遇到无法安装，请升级AndroidStudio
 
 ## 问题反馈
 

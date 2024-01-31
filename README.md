@@ -72,7 +72,7 @@
 
 ## 其他
 
-建议直接使用 [Intellij IDEA](https://www.jetbrains.com/idea/) 代替 `AndroidStudio` 开发Flutter项目：  
-1、`iFlutter` 在 `Intellij IDEA` 也适用;  
-2、`Intellij IDEA`
-支持更多的[快捷功能](https://medium.com/flutter-community/flutter-ide-shortcuts-for-faster-development-2ef45c51085b);
+出现如下错误，请自行申请TinyPng Key，具体参考 [资源管理](https://iflutter.toolu.cn/content/chapter-1/part-9.html)
+```
+Your monthly limit has been exceeded. (HTTP 429/TooManyRequests)
+```

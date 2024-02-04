@@ -23,7 +23,8 @@ import java.io.IOException;
 public class UpgradeManager {
 
     private static final String sGroupId = "com.xtu.plugin.flutter.upgrade";
-    private static final String sUrl = "https://iflutter.toolu.cn/iflutter-version.json";
+    @SuppressWarnings("HttpUrlsUsage")
+    private static final String sUrl = "http://iflutter.toolu.cn/iflutter-version.json";
 
     public static void checkPluginVersion(@NotNull Project project) {
         LogUtils.info("UpgradeManager checkPluginVersion");

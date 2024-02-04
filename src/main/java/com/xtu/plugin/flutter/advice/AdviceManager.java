@@ -21,7 +21,8 @@ import java.util.Map;
 public class AdviceManager {
 
     private static final String APP_KEY = "iFlutter";
-    private static final String sURL = "https://iflutter.toolu.cn/api/advice";
+    @SuppressWarnings("HttpUrlsUsage")
+    private static final String sURL = "http://iflutter.toolu.cn/api/advice";
     private final Gson gson = new Gson();
 
     private AdviceManager() {

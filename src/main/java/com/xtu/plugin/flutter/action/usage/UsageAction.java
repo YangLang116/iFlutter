@@ -9,7 +9,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class UsageAction extends AnAction {
 
-    private static final String URL_DOCUMENT = "https://iflutter.toolu.cn";
+    @SuppressWarnings("HttpUrlsUsage")
+    private static final String URL_DOCUMENT = "http://iflutter.toolu.cn";
 
     @Override
     public void update(@NotNull AnActionEvent e) {

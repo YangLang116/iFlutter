@@ -1,4 +1,4 @@
-package com.xtu.plugin.flutter.upgrader;
+package com.xtu.plugin.flutter.base.net;
 
 import okhttp3.*;
 

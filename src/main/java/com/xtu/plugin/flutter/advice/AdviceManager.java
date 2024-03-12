@@ -5,7 +5,8 @@ import com.intellij.openapi.application.ex.ApplicationInfoEx;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.util.SystemInfo;
-import com.xtu.plugin.flutter.upgrader.NetworkManager;
+import com.xtu.plugin.flutter.base.net.NetworkManager;
+import com.xtu.plugin.flutter.utils.CloseUtils;
 import com.xtu.plugin.flutter.utils.ToastUtils;
 import com.xtu.plugin.flutter.utils.VersionUtils;
 import okhttp3.Call;
@@ -52,6 +53,7 @@ public class AdviceManager {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) {
+                CloseUtils.close(response);
                 if (project != null) ToastUtils.make(project, MessageType.INFO, "thank you for submitting ~");
             }
         });

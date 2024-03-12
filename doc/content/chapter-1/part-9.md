@@ -3,7 +3,7 @@
 插件成功补充了这一功能。现在，您可以使用`iFlutter`插件来更好地管理和预览您的Flutter项目图片资源文件，具体效果如下(
 以实际为主):
 
-<img src="https://iflutter.toolu.cn/configs/res_manager_list.png" width="360"  alt="图片资源管理"/>
+<img src="http://iflutter.toolu.cn/configs/res_manager_list.png" width="360"  alt="图片资源管理"/>
 
 ## `Flutter Resource` 可识别的图片资源:
 
@@ -38,7 +38,7 @@ Key。由于[Tinypng](https://tinypng.com/)每个月可免费压缩的图片数�
 
 ---
 
-<img src="https://iflutter.toolu.cn/configs/res_manager_menu.png" width="360"  alt="图片资源管理-右键"/>
+<img src="http://iflutter.toolu.cn/configs/res_manager_menu.png" width="360"  alt="图片资源管理-右键"/>
 
 ## 右键菜单说明：
 

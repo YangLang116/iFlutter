@@ -7,8 +7,12 @@ import java.util.*;
 
 public class CollectionUtils {
 
-    public static boolean isEmpty(Collection<?> collection) {
+    public static boolean isEmpty(@Nullable Collection<?> collection) {
         return collection == null || collection.isEmpty();
+    }
+
+    public static <T> void addIfNotEmpty(@NotNull Collection<T> collection, @Nullable T obj) {
+        if (obj != null) collection.add(obj);
     }
 
     public static <T> void duplicateList(List<T> list) {

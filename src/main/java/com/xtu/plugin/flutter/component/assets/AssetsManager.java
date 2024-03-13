@@ -117,7 +117,6 @@ public class AssetsManager extends BulkFileAdapter implements BranchChangeListen
     public static boolean canTinyImage(@NotNull Project project, @NotNull VirtualFile virtualFile) {
         StorageEntity state = StorageService.getInstance(project).getState();
         if (!state.autoTinyImage) return false;
-        if (StringUtils.isEmpty(state.tinyApiKey)) return false;
         return TinyUtils.isSupport(virtualFile);
     }
 

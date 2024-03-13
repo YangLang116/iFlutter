@@ -103,7 +103,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
         });
         //修改镜像仓库
         mirrorRepoBtn.addActionListener(e -> {
-            MirrorRepoDialog mirrorRepoDialog = new MirrorRepoDialog(project);
+            MirrorRepoDialog mirrorRepoDialog = new MirrorRepoDialog(project, rootPanel);
             boolean isOk = mirrorRepoDialog.showAndGet();
             if (!isOk) return;
             mirrorRepoStr = mirrorRepoDialog.getRepoStr();

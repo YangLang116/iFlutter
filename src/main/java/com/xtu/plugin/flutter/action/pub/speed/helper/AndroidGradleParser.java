@@ -23,74 +23,94 @@ import java.util.Map;
 
 public class AndroidGradleParser {
 
-    public static void start(@NotNull Project project) {
-        ReadAction.run(() -> parseAndroidPluginList(project));
+    public static void start(@NotNull Project project,
+                             boolean injectProject,
+                             boolean injectPlugin,
+                             boolean injectFlutterGradle) {
+        List<String> mavenMirrorRepo = AndroidRepoHelper.getRepoList(project);
+        if (CollectionUtils.isEmpty(mavenMirrorRepo)) return;
+        ReadAction.run(() -> {
+            String projectPath = PluginUtils.getProjectPath(project);
+            if (StringUtils.isEmpty(projectPath)) return;
+            if (injectPlugin) {
+                boolean result = parsePluginGradle(project, mavenMirrorRepo);
+                if (!result) return;
+            }
+            if (injectProject) {
+                parseProjectGradle(project, projectPath, mavenMirrorRepo);
+            }
+            if (injectFlutterGradle) {
+                parseFlutterGradleFile(project, mavenMirrorRepo);
+            }
+            //完成通知
+            ToastUtils.make(project, MessageType.INFO, "mirror repo inject success");
+        });
     }
 
-    ///获取带android平台的flutter插件
-    private static void parseAndroidPluginList(@NotNull Project project) {
-        String projectPath = PluginUtils.getProjectPath(project);
-        if (StringUtils.isEmpty(projectPath)) return;
-        List<AndroidPluginInfo> androidPluginList = new ArrayList<>();
-        File rootAndroidDirectory = new File(projectPath, "android");
-        if (rootAndroidDirectory.exists() && rootAndroidDirectory.isDirectory()) {
-            //添加根项目
-            AndroidPluginInfo rootAndroid = new AndroidPluginInfo("Root", rootAndroidDirectory);
-            androidPluginList.add(rootAndroid);
-            //添加App项目
-            File appDirectory = new File(rootAndroidDirectory, "app");
-            if (appDirectory.exists() && appDirectory.isDirectory()) {
-                AndroidPluginInfo appAndroid = new AndroidPluginInfo("App", appDirectory);
-                androidPluginList.add(appAndroid);
-            }
-        }
-        //添加Plugin项目
+    //解析插件Gradle
+    private static boolean parsePluginGradle(@NotNull Project project, @NotNull List<String> mavenMirrorRepo) {
         Map<String, String> pluginPathMap = PubUtils.getPluginPathMap(project);
         if (pluginPathMap == null) {
             ToastUtils.make(project, MessageType.ERROR, "please run `flutter pub get` first");
-            return;
+            return false;
         }
+        final List<AndroidPluginInfo> pluginList = new ArrayList<>();
         for (Map.Entry<String, String> entry : pluginPathMap.entrySet()) {
             String pluginName = entry.getKey();
             String pluginRootPath = entry.getValue();
             File androidDirectory = new File(pluginRootPath, "android");
             if (!androidDirectory.exists() || !androidDirectory.isDirectory()) continue;
             AndroidPluginInfo androidPlugin = new AndroidPluginInfo(pluginName, androidDirectory);
-            androidPluginList.add(androidPlugin);
+            pluginList.add(androidPlugin);
         }
-        //修改build.gradle文件
-        parseBuildGradleFile(project, androidPluginList);
-        //修改flutter.gradle文件
-        parseFlutterGradleFile(project);
-        //完成通知
-        ToastUtils.make(project, MessageType.INFO, "mirror repo inject success");
+        parseBuildGradleFile(project, pluginList, mavenMirrorRepo);
+        return true;
     }
 
+    //解析主工程Gradle
+    private static void parseProjectGradle(@NotNull Project project,
+                                           @NotNull String projectPath,
+                                           @NotNull List<String> mavenMirrorRepo) {
+        final List<AndroidPluginInfo> projectPluginList = new ArrayList<>();
+        File rootAndroidDirectory = new File(projectPath, "android");
+        if (rootAndroidDirectory.exists() && rootAndroidDirectory.isDirectory()) {
+            AndroidPluginInfo rootAndroid = new AndroidPluginInfo("Root", rootAndroidDirectory);
+            projectPluginList.add(rootAndroid); //添加根项目
+            File appDirectory = new File(rootAndroidDirectory, "app");  //添加App项目
+            if (appDirectory.exists() && appDirectory.isDirectory()) {
+                AndroidPluginInfo appAndroid = new AndroidPluginInfo("App", appDirectory);
+                projectPluginList.add(appAndroid);
+            }
+        }
+        parseBuildGradleFile(project, projectPluginList, mavenMirrorRepo);
+    }
 
-    private static void parseBuildGradleFile(@NotNull Project project, List<AndroidPluginInfo> androidPluginList) {
+    private static void parseBuildGradleFile(@NotNull Project project,
+                                             @NotNull List<AndroidPluginInfo> androidPluginList,
+                                             @NotNull List<String> mavenMirrorRepo) {
         for (AndroidPluginInfo pluginInfo : androidPluginList) {
             File gradleFile = new File(pluginInfo.androidDirectory, "build.gradle");
-            parseGradleFile(project, gradleFile);
+            parseGradleFile(project, gradleFile, mavenMirrorRepo);
         }
     }
 
-    private static void parseFlutterGradleFile(@NotNull Project project) {
+    private static void parseFlutterGradleFile(@NotNull Project project, @NotNull List<String> mavenMirrorRepo) {
         String flutterPath = DartUtils.getFlutterPath(project);
         if (StringUtils.isEmpty(flutterPath)) return;
         String relativePath = "packages/flutter_tools/gradle/flutter.gradle".replace("/", File.separator);
         File gradleFile = new File(flutterPath, relativePath);
-        parseGradleFile(project, gradleFile);
+        parseGradleFile(project, gradleFile, mavenMirrorRepo);
     }
 
-    private static void parseGradleFile(@NotNull Project project, @NotNull File gradleFile) {
+    private static void parseGradleFile(@NotNull Project project, @NotNull File gradleFile, @NotNull List<String> mavenMirrorRepo) {
         GroovyFile gradlePsiFile = FileUtils.getGroovyFile(project, gradleFile);
         if (gradlePsiFile == null) return;
-        AndroidMavenInfo projectRepository = findRepositoriesPsi(gradlePsiFile);
-        AndroidMavenInfo buildScriptRepository = findRepositoriesPsiFromMethod(gradlePsiFile, "buildscript");
-        AndroidMavenInfo rootProjectRepository = parseRootProjectRepository(gradlePsiFile);
-        if (projectRepository == null && buildScriptRepository == null && rootProjectRepository == null) return;
-        AndroidGradleMaker.start(project, gradlePsiFile,
-                buildScriptRepository, rootProjectRepository, projectRepository);
+        List<AndroidMavenInfo> repositoryList = new ArrayList<>();
+        CollectionUtils.addIfNotEmpty(repositoryList, findRepositoriesPsi(gradlePsiFile));
+        CollectionUtils.addIfNotEmpty(repositoryList, findRepositoriesPsiFromMethod(gradlePsiFile, "buildscript"));
+        CollectionUtils.addIfNotEmpty(repositoryList, parseRootProjectRepository(gradlePsiFile));
+        if (repositoryList.isEmpty()) return;
+        AndroidGradleMaker.start(project, gradlePsiFile, mavenMirrorRepo, repositoryList);
     }
 
     @SuppressWarnings("SpellCheckingInspection")

@@ -10,7 +10,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.xtu.plugin.flutter.action.pub.speed.entity.AndroidMavenInfo;
-import com.xtu.plugin.flutter.store.StorageService;
 import com.xtu.plugin.flutter.utils.ArrayUtils;
 import com.xtu.plugin.flutter.utils.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
@@ -19,36 +18,28 @@ import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyPsiElementFactory;
 import org.jetbrains.plugins.groovy.lang.psi.api.statements.expressions.GrExpression;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class AndroidGradleMaker {
 
-    public static final String REPO_SPLIT = ",";
-
     public static void start(@NotNull Project project,
                              @NotNull GroovyFile gradlePsiFile,
-                             @Nullable AndroidMavenInfo buildScriptRepoInfo,
-                             @Nullable AndroidMavenInfo rootProjectRepoInfo,
-                             @Nullable AndroidMavenInfo repoInfo) {
+                             @NotNull List<String> mavenMirrorRepo,
+                             @NotNull List<AndroidMavenInfo> mavenInfoList) {
         Application application = ApplicationManager.getApplication();
         application.invokeLater(() ->
                 WriteAction.run(() ->
                         WriteCommandAction.runWriteCommandAction(project,
-                                () -> make(project, gradlePsiFile, buildScriptRepoInfo, rootProjectRepoInfo, repoInfo))));
+                                () -> make(project, gradlePsiFile, mavenMirrorRepo, mavenInfoList))));
     }
 
     public static void make(@NotNull Project project,
                             @NotNull GroovyFile gradlePsiFile,
-                            @Nullable AndroidMavenInfo buildScriptRepoInfo,
-                            @Nullable AndroidMavenInfo rootProjectRepoInfo,
-                            @Nullable AndroidMavenInfo repoInfo) {
-        StorageService storageService = StorageService.getInstance(project);
-        String mirrorRepoStr = storageService.getState().mirrorRepoStr;
-        List<String> mavenMirrorRepo = Arrays.asList(mirrorRepoStr.split(REPO_SPLIT));
-        modifyRepositoryPsi(project, mavenMirrorRepo, buildScriptRepoInfo);
-        modifyRepositoryPsi(project, mavenMirrorRepo, rootProjectRepoInfo);
-        modifyRepositoryPsi(project, mavenMirrorRepo, repoInfo);
+                            @NotNull List<String> mavenMirrorRepo,
+                            @NotNull List<AndroidMavenInfo> mavenInfoList) {
+        for (AndroidMavenInfo androidMavenInfo : mavenInfoList) {
+            modifyRepositoryPsi(project, mavenMirrorRepo, androidMavenInfo);
+        }
         //刷新文件
         PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(project);
         Document document = psiDocumentManager.getDocument(gradlePsiFile);
@@ -69,7 +60,8 @@ public class AndroidGradleMaker {
         //添加节点：maven { url 'https://maven.aliyun.com/repository/public' }
         PsiElement repositories = repoInfo.repositories;
         GroovyPsiElementFactory elementFactory = GroovyPsiElementFactory.getInstance(project);
-        for (String maven : addMavenList) {
+        for (int i = addMavenList.size() - 1; i >= 0; i--) {
+            String maven = addMavenList.get(i);
             GrExpression expression = elementFactory.createExpressionFromText("maven { url '" + maven + "' }");
             repositories.addAfter(expression, repositories.getFirstChild());
         }

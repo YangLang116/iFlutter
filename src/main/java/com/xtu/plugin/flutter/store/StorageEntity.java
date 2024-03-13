@@ -1,20 +1,12 @@
 package com.xtu.plugin.flutter.store;
 
 import com.intellij.util.xmlb.annotations.Transient;
-import com.xtu.plugin.flutter.action.pub.speed.helper.AndroidGradleMaker;
+import com.xtu.plugin.flutter.action.pub.speed.helper.AndroidRepoHelper;
 import com.xtu.plugin.flutter.component.packages.update.PackageInfo;
-import com.xtu.plugin.flutter.utils.StringUtils;
 
 import java.util.*;
 
 public class StorageEntity {
-
-    //默认镜像仓库地址
-    private static final List<String> DEFAULT_MIRROR_REPO = Arrays.asList("https://maven.aliyun.com/repository/gradle-plugin",
-            "https://maven.aliyun.com/repository/public",
-            "https://maven.aliyun.com/repository/google",
-            "https://maven.aliyun.com/repository/central",
-            "https://maven.aliyun.com/repository/jcenter");
 
     //资源变化检测目录，用于实时生成R文件
     public List<String> resDir = Arrays.asList("assets", "images");
@@ -42,14 +34,14 @@ public class StorageEntity {
     public int maxPicHeight = 2400;
     public boolean enableSizeMonitor = true;
     //仓库镜像地址
-    public String mirrorRepoStr = StringUtils.join(DEFAULT_MIRROR_REPO, AndroidGradleMaker.REPO_SPLIT);
+    public String mirrorRepoStr = AndroidRepoHelper.getDefaultRepoStr();
     //是否带包名生成资源文件
     public boolean registerResWithPackage = false;
     //是否生成数据不可修改的fromJson
     public boolean isUnModifiableFromJson = false;
     //tiny api key
     public boolean autoTinyImage = true;
-    public String tinyApiKey = "33w0Q37jD8McmXQYYMH0sPqwdG2vxm70";
+    public String tinyApiKey = "";
 
     public StorageEntity() {
     }

@@ -4,6 +4,10 @@
 
 ###
 
+## [4.0.3] - 2024-04-15
+- `Code`: 生成的R资源类构造函数私有化
+- `Dart Code`: 优化`LiveTemplate`配置
+
 ## [4.0.2] - 2024-04-2
 - `Flutter Resource`: 优化图片压缩引导弹窗逻辑
 - `Repo Mirror`: 调整镜像配置UI && 拆分镜像注册方式(项目注入、插件注入、Flutter Gradle脚本注入)

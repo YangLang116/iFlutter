@@ -72,6 +72,8 @@ public class DartFontFileGenerator {
                 .append("// ignore_for_file: constant_identifier_names\n")
                 .append("// ignore_for_file: lines_longer_than_80_chars\n")
                 .append("class ").append(FONT_CLASS_NAME).append(" {\n");
+        //private constructor
+        fileStringBuilder.append(FONT_CLASS_NAME).append("._();");
         List<String> familyList = new ArrayList<>();
         for (String fontAsset : fontAssetList) {
             String fontFamily = FontUtils.getFontFamilyName(fontAsset);

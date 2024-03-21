@@ -114,6 +114,8 @@ public class DartRFileGenerator {
                 .append("// ignore_for_file: constant_identifier_names\n")
                 .append("// ignore_for_file: lines_longer_than_80_chars\n")
                 .append("class ").append(className).append(" {\n");
+        //private constructor
+        fileStringBuilder.append(className).append("._();");
         //create name and version
         fileStringBuilder.append("  static const String PLUGIN_NAME = '").append(projectName).append("';\n");
         fileStringBuilder.append("  static const String PLUGIN_VERSION = '").append(projectVersion).append("';\n");

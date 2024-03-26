@@ -40,9 +40,14 @@
 - 插件文档: [点击跳转](http://iflutter.toolu.cn)
 - 插件改为最低兼容211版本，如遇到无法安装，请升级AndroidStudio
 
-## 问题反馈
-
-<img src="http://iflutter.toolu.cn/configs/iflutter_wechat.png" width="120"  alt="wx chat"/>
+## 最新公告
+- 更多 `IDEA Plugin` [plugin market](https://plugins.jetbrains.com/vendor/7b7d4de7-b78a-4773-9256-7fed831fd6bd)
+- 更多 `Flutter Plugin` [pub.dev](https://pub.dev/publishers/iflutter.toolu.cn/packages)
+- 基于蓝湖设计稿生成 `Flutter` 代码的 `Chrome` 扩展  [FLanHu](https://github.com/YangLang116/lanhu-flutter) 
+- 出现如下错误，请自行申请TinyPng Key，具体参考 [资源管理](http://iflutter.toolu.cn/content/chapter-1/part-9.html)
+  ```
+  Your monthly limit has been exceeded.
+  ```
 
 ## 版本更新记录
 
@@ -55,11 +60,3 @@
 <a href="https://www.jetbrains.com/?from=iFlutter" target="_blank">
   <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg" width="120" align="middle"/>
 </a>
-
-## 其他
-- 更多 `IDEA Plugin` 插件: [plugin market](https://plugins.jetbrains.com/vendor/7b7d4de7-b78a-4773-9256-7fed831fd6bd)
-- 更多 `Flutter Plugin` 插件: [pub.dev](https://pub.dev/publishers/iflutter.toolu.cn/packages)
-- 出现如下错误，请自行申请TinyPng Key，具体参考 [资源管理](http://iflutter.toolu.cn/content/chapter-1/part-9.html)
-```
-Your monthly limit has been exceeded.
-```

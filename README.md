@@ -43,7 +43,7 @@
 ## 最新公告
 - 更多 `IDEA Plugin` [plugin market](https://plugins.jetbrains.com/vendor/7b7d4de7-b78a-4773-9256-7fed831fd6bd)
 - 更多 `Flutter Plugin` [pub.dev](https://pub.dev/publishers/iflutter.toolu.cn/packages)
-- 基于蓝湖设计稿生成 `Flutter` 代码的 `Chrome` 扩展  [FLanHu](https://github.com/YangLang116/lanhu-flutter) 
+- 基于蓝湖设计稿生成 `Flutter` & `RN` 代码的 `Chrome` 扩展  [FLanHu](https://github.com/YangLang116/FLanHu) 
 - 出现如下错误，请自行申请TinyPng Key，具体参考 [资源管理](http://iflutter.toolu.cn/content/chapter-1/part-9.html)
   ```
   Your monthly limit has been exceeded.

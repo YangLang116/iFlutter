@@ -15,6 +15,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <defaultLiveTemplates file="/template/Flutter.xml"/>
+        <postStartupActivity implementation="com.xtu.plugin.flutter.component.FProjectManager"/>
         <liveTemplateContext implementation="com.xtu.plugin.flutter.template.FlutterContext"/>
         <projectService serviceImplementation="com.xtu.plugin.flutter.store.StorageService"/>
         <projectService serviceImplementation="com.xtu.plugin.flutter.action.mock.manager.HttpMockManager"/>
@@ -32,10 +33,6 @@
         <errorHandler implementation="com.xtu.plugin.flutter.reporter.FErrorReporter"/>
         <projectViewNodeDecorator implementation="com.xtu.plugin.flutter.decorator.AssetNodeDecorator"/>
     </extensions>
-    <applicationListeners>
-        <listener topic="com.intellij.openapi.project.ProjectManagerListener"
-                  class="com.xtu.plugin.flutter.component.FProjectManager"/>
-    </applicationListeners>
     <actions resource-bundle="message.ActionsBundle">
         <group id="com.xtu.plugin.flutter.group"
                icon="PluginIcons.LOGO"

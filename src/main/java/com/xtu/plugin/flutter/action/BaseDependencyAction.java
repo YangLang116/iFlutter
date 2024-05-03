@@ -1,5 +1,6 @@
 package com.xtu.plugin.flutter.action;
 
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -41,6 +42,11 @@ public abstract class BaseDependencyAction extends AnAction {
         e.getPresentation().setVisible(yamlPsiElement != null
                 && yamlPsiElement.getParent() instanceof YAMLKeyValue
                 && PubSpecUtils.isDependencyElement(((YAMLKeyValue) yamlPsiElement.getParent())));
+    }
+
+    @Override
+    public @NotNull ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.BGT;
     }
 
     @Nullable

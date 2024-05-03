@@ -4,6 +4,9 @@
 
 ###
 
+## [4.0.4] - 2024-05-03
+- `Code`: 兼容223以后版本(ActionUpdateThread) 
+
 ## [4.0.3] - 2024-04-15
 - `Code`: 生成的R资源类构造函数私有化
 - `Dart Code`: 优化`LiveTemplate`配置

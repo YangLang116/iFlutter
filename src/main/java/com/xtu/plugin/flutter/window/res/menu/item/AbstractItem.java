@@ -2,12 +2,14 @@ package com.xtu.plugin.flutter.window.res.menu.item;
 
 import com.intellij.openapi.project.Project;
 import com.xtu.plugin.flutter.window.res.ui.ResManagerListener;
+
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+
+import javax.swing.JMenuItem;
 
 public abstract class AbstractItem extends JMenuItem implements ActionListener {
 

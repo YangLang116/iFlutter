@@ -3,6 +3,7 @@ package com.xtu.plugin.flutter.utils;
 import com.intellij.ide.plugins.IdeaPluginDescriptor;
 import com.intellij.ide.plugins.PluginManagerCore;
 import com.intellij.openapi.extensions.PluginId;
+
 import org.jetbrains.annotations.NotNull;
 
 public class VersionUtils {

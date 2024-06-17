@@ -7,6 +7,7 @@ import com.intellij.openapi.project.Project;
 import com.xtu.plugin.flutter.utils.CollectionUtils;
 import com.xtu.plugin.flutter.utils.TinyUtils;
 import com.xtu.plugin.flutter.window.res.ui.ResManagerRootPanel;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;

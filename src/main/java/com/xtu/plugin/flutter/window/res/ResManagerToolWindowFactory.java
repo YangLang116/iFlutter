@@ -20,6 +20,7 @@ import com.xtu.plugin.flutter.window.res.action.SortAction;
 import com.xtu.plugin.flutter.window.res.listener.ResManagerToolWindowListener;
 import com.xtu.plugin.flutter.window.res.ui.ResManagerRootPanel;
 import com.xtu.plugin.flutter.window.res.ui.SortType;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;

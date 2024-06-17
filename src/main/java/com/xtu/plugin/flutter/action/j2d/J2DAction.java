@@ -1,5 +1,6 @@
 package com.xtu.plugin.flutter.action.j2d;
 
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
@@ -7,9 +8,15 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.xtu.plugin.flutter.action.j2d.ui.J2DDialog;
 import com.xtu.plugin.flutter.utils.PluginUtils;
+
 import org.jetbrains.annotations.NotNull;
 
 public class J2DAction extends AnAction {
+
+    @Override
+    public @NotNull ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.BGT;
+    }
 
     @SuppressWarnings("DuplicatedCode")
     @Override

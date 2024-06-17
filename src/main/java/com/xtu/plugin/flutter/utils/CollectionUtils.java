@@ -3,7 +3,13 @@ package com.xtu.plugin.flutter.utils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class CollectionUtils {
 
@@ -15,11 +21,12 @@ public class CollectionUtils {
         if (obj != null) collection.add(obj);
     }
 
-    public static <T> void duplicateList(List<T> list) {
+    public static void standardList(List<String> list) {
         if (isEmpty(list)) return;
-        Set<T> set = new HashSet<>(list);
+        Set<String> set = new HashSet<>(list);
         list.clear();
         list.addAll(set);
+        Collections.sort(list);
     }
 
     public static String join(@NotNull List<String> list, @NotNull String joinStr) {

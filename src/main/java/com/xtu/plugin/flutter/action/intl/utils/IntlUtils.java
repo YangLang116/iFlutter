@@ -7,11 +7,17 @@ import com.intellij.openapi.project.ProjectUtil;
 import com.intellij.openapi.util.ThrowableComputable;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.xtu.plugin.flutter.utils.StringUtils;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
-import java.util.*;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public class IntlUtils {
 
@@ -83,7 +89,7 @@ public class IntlUtils {
         ReadAction.run(() -> {
             VirtualFile localeFile = getLocalFile(project, locale);
             if (localeFile == null) return;
-            String content = new String(localeFile.contentsToByteArray());
+            String content = new String(localeFile.contentsToByteArray(), StandardCharsets.UTF_8);
             JSONObject resultJson = new JSONObject(content);
             if (!canReplaceKey && resultJson.keySet().contains(key)) {
                 throw new IllegalStateException(key + " 已经存在");
@@ -103,7 +109,7 @@ public class IntlUtils {
         ReadAction.run(() -> {
             VirtualFile localeFile = getLocalFile(project, locale);
             if (localeFile == null) return;
-            String content = new String(localeFile.contentsToByteArray());
+            String content = new String(localeFile.contentsToByteArray(), StandardCharsets.UTF_8);
             JSONObject resultJson = new JSONObject(content);
             if (!resultJson.keySet().contains(key)) return;
             resultJson.remove(key);

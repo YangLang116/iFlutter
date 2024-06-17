@@ -4,6 +4,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.xtu.plugin.flutter.store.StorageEntity;
 import com.xtu.plugin.flutter.store.StorageService;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -161,5 +162,12 @@ public class AssetUtils {
         boolean registerResWithPackage = state.registerResWithPackage;
         if (registerResWithPackage) return "packages/" + projectName + "/";
         return "";
+    }
+
+    @Nullable
+    public static String getAssetExtension(String assetFileName) {
+        int lastDotIndex = assetFileName.lastIndexOf(".");
+        if (lastDotIndex < 0) return null;
+        return assetFileName.substring(lastDotIndex);
     }
 }

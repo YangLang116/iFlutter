@@ -8,12 +8,21 @@ import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.xtu.plugin.flutter.store.StorageService;
-import com.xtu.plugin.flutter.utils.*;
+import com.xtu.plugin.flutter.utils.AssetUtils;
+import com.xtu.plugin.flutter.utils.ClassUtils;
+import com.xtu.plugin.flutter.utils.CollectionUtils;
+import com.xtu.plugin.flutter.utils.DartUtils;
+import com.xtu.plugin.flutter.utils.LogUtils;
+import com.xtu.plugin.flutter.utils.StringUtils;
+import com.xtu.plugin.flutter.utils.ToastUtils;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DartRFileGenerator {
 
@@ -33,11 +42,10 @@ public class DartRFileGenerator {
                          @NotNull String projectName,
                          @NotNull String projectVersion,
                          @NotNull String resPrefix,
-                         @NotNull List<String> assetList,
-                         boolean force) {
+                         @NotNull List<String> assetList) {
         Application application = ApplicationManager.getApplication();
         application.invokeLater(() -> WriteAction.run(() -> {
-            if (!force && assetList.equals(latestAssetList)) return;
+            if (assetList.equals(latestAssetList)) return;
             //create new res
             Map<String, List<String>> assetCategory = new HashMap<>();
             for (String assetFileName : assetList) {
@@ -54,22 +62,11 @@ public class DartRFileGenerator {
                 final VirtualFile libVirtualDirectory = localFileSystem.refreshAndFindFileByIoFile(libDirectory);
                 assert libVirtualDirectory != null;
                 VirtualFile resVirtualDirectory = libVirtualDirectory.findChild("res");
-                if (!assetCategory.isEmpty()) {
-                    if (resVirtualDirectory == null) {
-                        resVirtualDirectory = libVirtualDirectory.createChildDirectory(project, "res");
-                    }
-                    List<String> usefulFileNameList = new ArrayList<>();
-                    for (Map.Entry<String, List<String>> entry : assetCategory.entrySet()) {
-                        String fileName = generateFile(project, resVirtualDirectory,
-                                resPrefix,
-                                entry.getKey(), entry.getValue(),
-                                projectName, projectVersion);
-                        usefulFileNameList.add(fileName);
-                    }
-                    //删除无用文件
-                    deleteUselessFile(project, resVirtualDirectory, usefulFileNameList);
-                } else if (resVirtualDirectory != null) {
-                    deleteUselessFile(project, resVirtualDirectory, Collections.emptyList());
+                if (resVirtualDirectory == null) {
+                    resVirtualDirectory = libVirtualDirectory.createChildDirectory(project, "res");
+                }
+                for (Map.Entry<String, List<String>> entry : assetCategory.entrySet()) {
+                    generateFile(project, resVirtualDirectory, resPrefix, entry.getKey(), entry.getValue(), projectName, projectVersion);
                 }
                 latestAssetList.clear();
                 latestAssetList.addAll(assetList);
@@ -87,25 +84,11 @@ public class DartRFileGenerator {
         return assetFileName.substring(0, index);
     }
 
-    private void deleteUselessFile(@NotNull Project project,
-                                   @NotNull VirtualFile directory,
-                                   @NotNull List<String> excludeNameList) throws IOException {
-        VirtualFile[] children = directory.getChildren();
-        if (children == null) return;
-        for (VirtualFile child : children) {
-            String fileName = child.getName();
-            if (Objects.equals(fileName, DartFontFileGenerator.getFileName())) continue;
-            if (excludeNameList.contains(fileName)) continue;
-            child.delete(project);
-        }
-    }
-
-    @NotNull
-    private String generateFile(@NotNull Project project, @NotNull VirtualFile rDirectory,
-                                @NotNull String resPrefix,
-                                @NotNull String assetDirName, @NotNull List<String> assetFileNames,
-                                @NotNull String projectName,
-                                @NotNull String projectVersion) {
+    private void generateFile(@NotNull Project project, @NotNull VirtualFile rDirectory,
+                              @NotNull String resPrefix,
+                              @NotNull String assetDirName, @NotNull List<String> assetFileNames,
+                              @NotNull String projectName,
+                              @NotNull String projectVersion) {
         String className = getClassName(assetDirName);
         LogUtils.info("DartRFileGenerator Class: " + className);
         StringBuilder fileStringBuilder = new StringBuilder();
@@ -132,7 +115,6 @@ public class DartRFileGenerator {
         fileStringBuilder.append("}\n");
         String fileName = assetDirName.toLowerCase() + "_res.dart";
         DartUtils.createDartFile(project, rDirectory, fileName, fileStringBuilder.toString(), null);
-        return fileName;
     }
 
     @NotNull
@@ -153,16 +135,14 @@ public class DartRFileGenerator {
 
     private boolean needIgnoreAsset(Project project, String assetFileName) {
         if (assetFileName.endsWith("/")) return true;
-        String extension = getAssetExtension(assetFileName);
+        String extension = AssetUtils.getAssetExtension(assetFileName);
         if (StringUtils.isEmpty(extension)) return false;
         StorageService storageService = StorageService.getInstance(project);
         List<String> ignoreResExtension = storageService.getState().ignoreResExtension;
         return ignoreResExtension.contains(extension);
     }
 
-    private String getAssetExtension(String assetFileName) {
-        int lastDotIndex = assetFileName.lastIndexOf(".");
-        if (lastDotIndex < 0) return null;
-        return assetFileName.substring(lastDotIndex);
+    public void resetCache() {
+        this.latestAssetList.clear();
     }
 }

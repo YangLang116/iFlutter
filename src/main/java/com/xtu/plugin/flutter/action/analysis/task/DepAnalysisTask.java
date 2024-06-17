@@ -6,6 +6,7 @@ import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.xtu.plugin.flutter.action.analysis.ui.AnalysisResultDialog;
 import com.xtu.plugin.flutter.utils.CommandUtils;
+
 import org.jetbrains.annotations.NotNull;
 
 public class DepAnalysisTask extends Task.Backgroundable {

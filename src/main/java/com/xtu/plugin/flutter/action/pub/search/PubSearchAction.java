@@ -7,6 +7,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.xtu.plugin.flutter.utils.PluginUtils;
+
 import org.jetbrains.annotations.NotNull;
 
 //Package 快捷搜索

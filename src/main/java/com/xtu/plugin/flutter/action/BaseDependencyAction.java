@@ -10,11 +10,13 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.xtu.plugin.flutter.utils.PluginUtils;
 import com.xtu.plugin.flutter.utils.PubSpecUtils;
-import kotlin.Pair;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.psi.YAMLFile;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
+
+import kotlin.Pair;
 
 //pubspec.yaml Dependency operation action
 public abstract class BaseDependencyAction extends AnAction {

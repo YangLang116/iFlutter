@@ -6,9 +6,10 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.Presentation;
 import com.xtu.plugin.flutter.window.res.ui.ResManagerRootPanel;
 import com.xtu.plugin.flutter.window.res.ui.SortType;
+
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
+import javax.swing.Icon;
 
 public class SortAction extends AnAction {
 

@@ -2,6 +2,7 @@ package com.xtu.plugin.flutter.action.j2d.generate;
 
 import com.xtu.plugin.flutter.utils.ClassUtils;
 import com.xtu.plugin.flutter.utils.StringUtils;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 

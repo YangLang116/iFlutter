@@ -5,9 +5,10 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
 import com.xtu.plugin.flutter.utils.AssetUtils;
 import com.xtu.plugin.flutter.utils.PluginUtils;
+import com.xtu.plugin.flutter.utils.StringUtils;
 import com.xtu.plugin.flutter.utils.ToastUtils;
 import com.xtu.plugin.flutter.window.res.ui.ResManagerListener;
-import com.xtu.plugin.flutter.utils.StringUtils;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.datatransfer.StringSelection;

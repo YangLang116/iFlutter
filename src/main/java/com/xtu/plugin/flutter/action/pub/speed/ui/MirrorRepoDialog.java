@@ -8,15 +8,19 @@ import com.xtu.plugin.flutter.action.pub.speed.helper.AndroidRepoHelper;
 import com.xtu.plugin.flutter.action.pub.speed.menu.RepoMouseListener;
 import com.xtu.plugin.flutter.utils.CollectionUtils;
 import com.xtu.plugin.flutter.utils.StringUtils;
+
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.Action;
+import javax.swing.DefaultListModel;
+import javax.swing.JComponent;
 
 public class MirrorRepoDialog extends DialogWrapper {
 
@@ -52,8 +56,7 @@ public class MirrorRepoDialog extends DialogWrapper {
     }
 
     @Override
-    @NotNull
-    protected Action[] createActions() {
+    protected Action @NotNull [] createActions() {
         return new Action[]{
                 new MirrorRepoDialog.AddRepoAction(),
                 new MirrorRepoDialog.ConfirmAction()

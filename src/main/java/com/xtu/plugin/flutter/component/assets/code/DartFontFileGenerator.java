@@ -7,12 +7,16 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.xtu.plugin.flutter.utils.*;
+import com.xtu.plugin.flutter.utils.CollectionUtils;
+import com.xtu.plugin.flutter.utils.DartUtils;
+import com.xtu.plugin.flutter.utils.FontUtils;
+import com.xtu.plugin.flutter.utils.LogUtils;
+import com.xtu.plugin.flutter.utils.ToastUtils;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 ///字体资源文件"font_res.dart"生成
@@ -34,10 +38,12 @@ public class DartFontFileGenerator {
         return sInstance;
     }
 
-    public void generate(@NotNull Project project, @NotNull String resPrefix, @NotNull List<String> fontAssetList, boolean force) {
+    public void generate(@NotNull Project project,
+                         @NotNull String resPrefix,
+                         @NotNull List<String> fontAssetList) {
         Application application = ApplicationManager.getApplication();
         application.invokeLater(() -> WriteAction.run(() -> {
-            if (!force && fontAssetList.equals(latestFontList)) return;
+            if (fontAssetList.equals(latestFontList)) return;
             try {
                 File libDirectory = new File(project.getBasePath(), "lib");
                 LocalFileSystem localFileSystem = LocalFileSystem.getInstance();
@@ -79,8 +85,7 @@ public class DartFontFileGenerator {
             String fontFamily = FontUtils.getFontFamilyName(fontAsset);
             familyList.add(fontFamily);
         }
-        CollectionUtils.duplicateList(familyList);
-        Collections.sort(familyList);
+        CollectionUtils.standardList(familyList);
         for (String fontFamily : familyList) {
             String variantName = getFontVariant(fontFamily);
             fileStringBuilder.append("  static const String ")
@@ -103,5 +108,9 @@ public class DartFontFileGenerator {
 
     public static String getClassName() {
         return FONT_CLASS_NAME;
+    }
+
+    public void resetCache() {
+        this.latestFontList.clear();
     }
 }

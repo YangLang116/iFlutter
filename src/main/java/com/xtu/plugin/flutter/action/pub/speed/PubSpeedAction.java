@@ -4,20 +4,24 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.Messages;
 import com.xtu.plugin.flutter.action.pub.speed.helper.AndroidGradleParser;
+import com.xtu.plugin.flutter.base.dialog.ComboBoxDialog;
 import com.xtu.plugin.flutter.utils.PluginUtils;
+
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class PubSpeedAction extends AnAction {
 
-    private static final String sInjectTitle = "Select injection type";
-    private static final String[] sInjectTypeList = new String[]{
+    private static final String sInjectTitle = "Select Injection Type";
+    private static final List<String> sInjectTypeList = Arrays.asList(
             "inject all",
-            "inject to flutter script",
+            "inject to project",
             "inject to plugin",
-            "inject to project"
-    };
+            "inject to flutter script"
+    );
 
     @Override
     public void update(@NotNull AnActionEvent e) {
@@ -35,14 +39,14 @@ public class PubSpeedAction extends AnAction {
     public void actionPerformed(@NotNull AnActionEvent e) {
         final Project project = e.getProject();
         if (project == null) return;
-        int selectIndex = Messages.showDialog(project, sInjectTitle, "", sInjectTypeList, -1, null);
-        if (selectIndex == -1) return;
-        AndroidGradleParser.start(
-                project,
-                canInject(selectIndex, 3),
+        ComboBoxDialog typeDialog = new ComboBoxDialog(project, sInjectTitle, sInjectTypeList, getClass().getSimpleName());
+        boolean isOk = typeDialog.showAndGet();
+        if (!isOk) return;
+        int selectIndex = typeDialog.getSelectIndex();
+        AndroidGradleParser.start(project,
+                canInject(selectIndex, 1),
                 canInject(selectIndex, 2),
-                canInject(selectIndex, 1)
-        );
+                canInject(selectIndex, 3));
     }
 
     private boolean canInject(int selectIndex, int where) {

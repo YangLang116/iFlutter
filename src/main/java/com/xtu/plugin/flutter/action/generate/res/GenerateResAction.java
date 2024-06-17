@@ -1,11 +1,18 @@
 package com.xtu.plugin.flutter.action.generate.res;
 
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.xtu.plugin.flutter.component.assets.code.DartFontFileGenerator;
 import com.xtu.plugin.flutter.component.assets.code.DartRFileGenerator;
-import com.xtu.plugin.flutter.utils.*;
+import com.xtu.plugin.flutter.utils.AssetUtils;
+import com.xtu.plugin.flutter.utils.FontUtils;
+import com.xtu.plugin.flutter.utils.PluginUtils;
+import com.xtu.plugin.flutter.utils.PubSpecUtils;
+import com.xtu.plugin.flutter.utils.StringUtils;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -13,6 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GenerateResAction extends AnAction {
+
+    @Override
+    public @NotNull ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.BGT;
+    }
 
     @Override
     public void update(@NotNull AnActionEvent e) {
@@ -37,12 +49,9 @@ public class GenerateResAction extends AnAction {
                 newAssetList.add(assetPath);
             }
         }
-        PubSpecUtils.writeAssetSafe(project, newAssetList, newFontList);
-        //force generate Res File
-        PubSpecUtils.readAssetSafe(project, (name, version, assetList, fontList) -> {
-            String resPrefix = AssetUtils.getResPrefix(project, name);
-            DartRFileGenerator.getInstance().generate(project, name, version, resPrefix, assetList, true);
-            DartFontFileGenerator.getInstance().generate(project, resPrefix, fontList, true);
-        });
+        DartRFileGenerator.getInstance().resetCache();
+        DartFontFileGenerator.getInstance().resetCache();
+        WriteCommandAction.runWriteCommandAction(project,
+                () -> PubSpecUtils.writeAssetList(project, newAssetList, newFontList));
     }
 }

@@ -5,12 +5,16 @@ import com.intellij.ui.JBColor;
 import com.intellij.ui.RoundedLineBorder;
 import com.intellij.ui.scale.JBUIScale;
 import com.xtu.plugin.flutter.utils.ImageUtils;
-import icons.PluginIcons;
+
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Graphics;
 import java.io.File;
+
+import javax.swing.JLabel;
+
+import icons.PluginIcons;
 
 
 public class ImageComponent extends JLabel {

@@ -23,9 +23,7 @@ import com.xtu.plugin.flutter.component.packages.update.PackageInfo;
 import com.xtu.plugin.flutter.store.StorageService;
 import com.xtu.plugin.flutter.utils.PubSpecUtils;
 import com.xtu.plugin.flutter.utils.StringUtils;
-import icons.PluginIcons;
-import io.flutter.pub.PubRoot;
-import io.flutter.sdk.FlutterSdk;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.YAMLElementGenerator;
@@ -34,10 +32,15 @@ import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLScalar;
 import org.jetbrains.yaml.psi.YAMLValue;
 
-import javax.swing.*;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+
+import javax.swing.Icon;
+
+import icons.PluginIcons;
+import io.flutter.pub.PubRoot;
+import io.flutter.sdk.FlutterSdk;
 
 public class PackageUpdateAnnotator implements Annotator {
 
@@ -47,8 +50,7 @@ public class PackageUpdateAnnotator implements Annotator {
         if (value instanceof YAMLMapping) {
             //git依赖
             YAMLKeyValue git = ((YAMLMapping) value).getKeyValueByKey("git");
-            if (git != null && git.getValue() instanceof YAMLMapping) {
-                YAMLMapping gitValueMap = (YAMLMapping) git.getValue();
+            if (git != null && git.getValue() instanceof YAMLMapping gitValueMap) {
                 YAMLKeyValue urlKeyValue = gitValueMap.getKeyValueByKey("url");
                 if (urlKeyValue == null) return null;
                 String url = urlKeyValue.getValueText();
@@ -61,8 +63,7 @@ public class PackageUpdateAnnotator implements Annotator {
             }
             //host 依赖
             YAMLKeyValue hosted = ((YAMLMapping) value).getKeyValueByKey("hosted");
-            if (hosted != null && hosted.getValue() instanceof YAMLMapping) {
-                YAMLMapping hostValueMap = (YAMLMapping) hosted.getValue();
+            if (hosted != null && hosted.getValue() instanceof YAMLMapping hostValueMap) {
                 YAMLKeyValue urlKeyValue = hostValueMap.getKeyValueByKey("url");
                 if (urlKeyValue == null) return null;
                 return urlKeyValue.getValueText();

@@ -1,5 +1,6 @@
 package com.xtu.plugin.flutter.action;
 
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -9,11 +10,13 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.xtu.plugin.flutter.utils.PluginUtils;
 import com.xtu.plugin.flutter.utils.PubSpecUtils;
-import kotlin.Pair;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.psi.YAMLFile;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
+
+import kotlin.Pair;
 
 //pubspec.yaml Dependency operation action
 public abstract class BaseDependencyAction extends AnAction {
@@ -41,6 +44,11 @@ public abstract class BaseDependencyAction extends AnAction {
         e.getPresentation().setVisible(yamlPsiElement != null
                 && yamlPsiElement.getParent() instanceof YAMLKeyValue
                 && PubSpecUtils.isDependencyElement(((YAMLKeyValue) yamlPsiElement.getParent())));
+    }
+
+    @Override
+    public @NotNull ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.BGT;
     }
 
     @Nullable

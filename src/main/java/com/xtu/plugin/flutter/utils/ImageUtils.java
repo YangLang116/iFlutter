@@ -73,7 +73,6 @@ public class ImageUtils {
                 return new ImageInfo(originImage, imageWidth, imageHeight);
             }
         } catch (Exception e) {
-            LogUtils.error("ImageUtils loadThumbnail", e);
             return loadDefaultIcon(defaultUrl, size);
         } finally {
             CloseUtils.close(imageInputStream);

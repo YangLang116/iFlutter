@@ -1,6 +1,7 @@
 package com.xtu.plugin.flutter.utils;
 
 import com.intellij.openapi.project.Project;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
@@ -10,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,7 +59,8 @@ public class PubUtils {
         try {
             final Map<String, String> pluginPathMap = new HashMap<>();
             FileInputStream fileInputStream = new FileInputStream(packageConfigFile);
-            bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
+            InputStreamReader streamReader = new InputStreamReader(fileInputStream, StandardCharsets.UTF_8);
+            bufferedReader = new BufferedReader(streamReader);
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 line = line.trim();
@@ -85,7 +88,8 @@ public class PubUtils {
         try {
             final Map<String, String> pluginPathMap = new HashMap<>();
             FileInputStream fileInputStream = new FileInputStream(flutterPluginsFile);
-            bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
+            InputStreamReader streamReader = new InputStreamReader(fileInputStream, StandardCharsets.UTF_8);
+            bufferedReader = new BufferedReader(streamReader);
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 line = line.trim();

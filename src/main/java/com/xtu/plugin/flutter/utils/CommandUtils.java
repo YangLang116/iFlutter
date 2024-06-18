@@ -2,9 +2,15 @@ package com.xtu.plugin.flutter.utils;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SystemInfo;
+
 import org.jetbrains.annotations.NotNull;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -13,7 +19,9 @@ public class CommandUtils {
     @NotNull
     public static CommandResult executeSync(@NotNull Project project, @NotNull String commandArgs, int maxTimeOut) {
         String projectPath = PluginUtils.getProjectPath(project);
-        if (StringUtils.isEmpty(projectPath)) return new CommandResult(CommandResult.FAIL, "project path is null");
+        if (StringUtils.isEmpty(projectPath)) {
+            return new CommandResult(CommandResult.FAIL, "project path is null");
+        }
         String flutterPath = DartUtils.getFlutterPath(project);
         if (StringUtils.isEmpty(flutterPath)) {
             return new CommandResult(CommandResult.FAIL, "must set flutter.sdk in local.properties");
@@ -38,7 +46,9 @@ public class CommandUtils {
             } else {
                 process.waitFor();
             }
-            if (errorBuffer.length() > 0) return new CommandResult(CommandResult.FAIL, errorBuffer.toString());
+            if (errorBuffer.length() > 0) {
+                return new CommandResult(CommandResult.FAIL, errorBuffer.toString());
+            }
             return new CommandResult(CommandResult.SUCCESS, resultBuffer.toString());
         } catch (Exception e) {
             return new CommandResult(CommandResult.FAIL, e.getMessage());
@@ -49,7 +59,8 @@ public class CommandUtils {
     }
 
     private static void fillBuffer(StringBuffer resultBuffer, InputStream inputStream) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+        InputStreamReader streamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+        BufferedReader bufferedReader = new BufferedReader(streamReader);
         String line;
         while ((line = bufferedReader.readLine()) != null) {
             resultBuffer.append(line).append("\n");

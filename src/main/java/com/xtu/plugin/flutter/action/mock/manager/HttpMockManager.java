@@ -8,12 +8,14 @@ import com.xtu.plugin.flutter.utils.HttpUtils;
 import com.xtu.plugin.flutter.utils.LogUtils;
 import com.xtu.plugin.flutter.utils.PluginUtils;
 import com.xtu.plugin.flutter.utils.ToastUtils;
-import okhttp3.mockwebserver.MockWebServer;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Locale;
+
+import okhttp3.mockwebserver.MockWebServer;
 
 public final class HttpMockManager implements Disposable {
 

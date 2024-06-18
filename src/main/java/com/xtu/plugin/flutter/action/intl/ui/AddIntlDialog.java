@@ -10,10 +10,7 @@ import com.xtu.plugin.flutter.action.intl.utils.IntlUtils;
 import com.xtu.plugin.flutter.store.StorageEntity;
 import com.xtu.plugin.flutter.store.StorageService;
 import com.xtu.plugin.flutter.utils.StringUtils;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
+
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,14 +18,26 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.swing.Action;
+import javax.swing.Box;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 public class AddIntlDialog extends DialogWrapper {
     private final Project project;
@@ -77,7 +86,7 @@ public class AddIntlDialog extends DialogWrapper {
         rootPanel.add(keyContainer);
         //local list
         rootPanel.add(Box.createVerticalStrut(10));
-        JLabel localeTip = new JLabel("Locale List：");
+        JLabel localeTip = new JLabel("Locale List: ");
         localeTip.setAlignmentX(Component.LEFT_ALIGNMENT);
         rootPanel.add(localeTip);
         rootPanel.add(Box.createVerticalStrut(5));
@@ -127,8 +136,7 @@ public class AddIntlDialog extends DialogWrapper {
     }
 
     @Override
-    @NotNull
-    protected Action[] createActions() {
+    protected Action @NotNull [] createActions() {
         return new Action[]{getOKAction()};
     }
 

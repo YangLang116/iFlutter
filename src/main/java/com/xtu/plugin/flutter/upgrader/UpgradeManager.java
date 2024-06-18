@@ -4,7 +4,11 @@ import com.google.gson.Gson;
 import com.intellij.ide.BrowserUtil;
 import com.intellij.ide.plugins.PluginManagerConfigurable;
 import com.intellij.ide.util.PropertiesComponent;
-import com.intellij.notification.*;
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationAction;
+import com.intellij.notification.NotificationGroupManager;
+import com.intellij.notification.NotificationListener;
+import com.intellij.notification.NotificationType;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.options.ShowSettingsUtil;
@@ -12,14 +16,16 @@ import com.intellij.openapi.project.Project;
 import com.xtu.plugin.flutter.base.net.NetworkManager;
 import com.xtu.plugin.flutter.utils.LogUtils;
 import com.xtu.plugin.flutter.utils.VersionUtils;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
+
 import org.apache.http.util.TextUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 public class UpgradeManager {
 

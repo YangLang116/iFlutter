@@ -3,15 +3,17 @@ package com.xtu.plugin.flutter.component.analysis.utils;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.xtu.plugin.flutter.utils.CloseUtils;
 import com.xtu.plugin.flutter.utils.LogUtils;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.io.File;
+import java.util.Iterator;
+import java.util.Locale;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
-import java.io.File;
-import java.util.Iterator;
-import java.util.Locale;
 
 public class ImageAnalysisUtils {
 

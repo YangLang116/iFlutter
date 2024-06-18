@@ -13,15 +13,28 @@ import com.intellij.util.ui.JBUI;
 import com.xtu.plugin.flutter.action.j2d.generate.J2DGenerator;
 import com.xtu.plugin.flutter.store.StorageEntity;
 import com.xtu.plugin.flutter.store.StorageService;
-import com.xtu.plugin.flutter.utils.*;
+import com.xtu.plugin.flutter.utils.ClassUtils;
+import com.xtu.plugin.flutter.utils.DartUtils;
+import com.xtu.plugin.flutter.utils.LogUtils;
+import com.xtu.plugin.flutter.utils.StringUtils;
+import com.xtu.plugin.flutter.utils.ToastUtils;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
 
 public class J2DDialog extends DialogWrapper {
 
@@ -66,7 +79,7 @@ public class J2DDialog extends DialogWrapper {
         //添加json数据
         Box jsonContainer = Box.createVerticalBox();
         jsonContainer.setBorder(JBUI.Borders.empty(10, 0, 5, 0));
-        JLabel jsonLabel = new JLabel("Json Data：");
+        JLabel jsonLabel = new JLabel("Json Data: ");
         jsonLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         jsonContainer.add(jsonLabel);
         jsonContainer.add(Box.createVerticalStrut(10));

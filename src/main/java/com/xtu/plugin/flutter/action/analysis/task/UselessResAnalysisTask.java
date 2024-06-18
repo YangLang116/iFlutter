@@ -8,12 +8,21 @@ import com.intellij.openapi.ui.MessageType;
 import com.xtu.plugin.flutter.action.analysis.ui.UselessResAnalysisDialog;
 import com.xtu.plugin.flutter.component.assets.code.DartFontFileGenerator;
 import com.xtu.plugin.flutter.component.assets.code.DartRFileGenerator;
-import com.xtu.plugin.flutter.utils.*;
+import com.xtu.plugin.flutter.utils.AssetUtils;
+import com.xtu.plugin.flutter.utils.CollectionUtils;
+import com.xtu.plugin.flutter.utils.FileUtils;
+import com.xtu.plugin.flutter.utils.FontUtils;
 import com.xtu.plugin.flutter.utils.StringUtils;
+import com.xtu.plugin.flutter.utils.ToastUtils;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class UselessResAnalysisTask extends Task.Backgroundable {
 

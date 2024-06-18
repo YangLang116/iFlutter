@@ -11,6 +11,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.xtu.plugin.flutter.window.res.ui.ResManagerListener;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.event.ActionEvent;

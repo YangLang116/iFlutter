@@ -10,10 +10,11 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.NlsActions;
 import com.intellij.util.Consumer;
 import com.xtu.plugin.flutter.advice.AdviceManager;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
+import java.awt.Component;
 
 public class FErrorReporter extends ErrorReportSubmitter {
 

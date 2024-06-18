@@ -10,6 +10,7 @@ import com.xtu.plugin.flutter.action.intl.utils.IntlUtils;
 import com.xtu.plugin.flutter.utils.CollectionUtils;
 import com.xtu.plugin.flutter.utils.StringUtils;
 import com.xtu.plugin.flutter.utils.ToastUtils;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

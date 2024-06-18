@@ -7,6 +7,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.xtu.plugin.flutter.base.entity.AssetResultEntity;
 import com.xtu.plugin.flutter.store.StorageService;
 import com.xtu.plugin.flutter.utils.*;
 import org.jetbrains.annotations.NotNull;
@@ -29,15 +30,14 @@ public class DartRFileGenerator {
         return sInstance;
     }
 
-    public void generate(@NotNull Project project,
-                         @NotNull String projectName,
-                         @NotNull String projectVersion,
-                         @NotNull String resPrefix,
-                         @NotNull List<String> assetList,
-                         boolean force) {
+    public void generate(@NotNull Project project, @NotNull AssetResultEntity resultEntity) {
+        String projectName = resultEntity.projectName;
+        String projectVersion = resultEntity.projectVersion;
+        List<String> assetList = resultEntity.assetList;
+        String resPrefix = AssetUtils.getResPrefix(project, projectName);
         Application application = ApplicationManager.getApplication();
         application.invokeLater(() -> WriteAction.run(() -> {
-            if (!force && assetList.equals(latestAssetList)) return;
+            if (assetList.equals(latestAssetList)) return;
             //create new res
             Map<String, List<String>> assetCategory = new HashMap<>();
             for (String assetFileName : assetList) {
@@ -60,10 +60,9 @@ public class DartRFileGenerator {
                     }
                     List<String> usefulFileNameList = new ArrayList<>();
                     for (Map.Entry<String, List<String>> entry : assetCategory.entrySet()) {
-                        String fileName = generateFile(project, resVirtualDirectory,
-                                resPrefix,
-                                entry.getKey(), entry.getValue(),
-                                projectName, projectVersion);
+                        String dirName = entry.getKey();
+                        List<String> assetNames = entry.getValue();
+                        String fileName = generateFile(project, resVirtualDirectory, resPrefix, dirName, assetNames, projectName, projectVersion);
                         usefulFileNameList.add(fileName);
                     }
                     //删除无用文件
@@ -80,27 +79,6 @@ public class DartRFileGenerator {
         }));
     }
 
-    @NotNull
-    private static String getAssetDirName(String assetFileName) {
-        int index = assetFileName.indexOf("/");
-        if (index <= 0) return "default";
-        return assetFileName.substring(0, index);
-    }
-
-    private void deleteUselessFile(@NotNull Project project,
-                                   @NotNull VirtualFile directory,
-                                   @NotNull List<String> excludeNameList) throws IOException {
-        VirtualFile[] children = directory.getChildren();
-        if (children == null) return;
-        for (VirtualFile child : children) {
-            String fileName = child.getName();
-            if (Objects.equals(fileName, DartFontFileGenerator.getFileName())) continue;
-            if (excludeNameList.contains(fileName)) continue;
-            child.delete(project);
-        }
-    }
-
-    @NotNull
     private String generateFile(@NotNull Project project, @NotNull VirtualFile rDirectory,
                                 @NotNull String resPrefix,
                                 @NotNull String assetDirName, @NotNull List<String> assetFileNames,
@@ -135,6 +113,28 @@ public class DartRFileGenerator {
         return fileName;
     }
 
+    private void deleteUselessFile(@NotNull Project project,
+                                   @NotNull VirtualFile directory,
+                                   @NotNull List<String> excludeNameList) throws IOException {
+        VirtualFile[] children = directory.getChildren();
+        if (children == null) return;
+        for (VirtualFile child : children) {
+            String fileName = child.getName();
+            if (Objects.equals(fileName, DartFontFileGenerator.getFileName())) continue;
+            if (excludeNameList.contains(fileName)) continue;
+            if (!fileName.endsWith("_res.dart")) continue;
+            child.delete(project);
+        }
+    }
+
+    @NotNull
+    private static String getAssetDirName(String assetFileName) {
+        int index = assetFileName.indexOf("/");
+        if (index <= 0) return "default";
+        return assetFileName.substring(0, index);
+    }
+
+
     @NotNull
     public static String getClassName(String assetDirName) {
         return ClassUtils.getClassName(assetDirName) + "Res";
@@ -153,16 +153,14 @@ public class DartRFileGenerator {
 
     private boolean needIgnoreAsset(Project project, String assetFileName) {
         if (assetFileName.endsWith("/")) return true;
-        String extension = getAssetExtension(assetFileName);
+        String extension = AssetUtils.getAssetExtension(assetFileName);
         if (StringUtils.isEmpty(extension)) return false;
         StorageService storageService = StorageService.getInstance(project);
         List<String> ignoreResExtension = storageService.getState().ignoreResExtension;
         return ignoreResExtension.contains(extension);
     }
 
-    private String getAssetExtension(String assetFileName) {
-        int lastDotIndex = assetFileName.lastIndexOf(".");
-        if (lastDotIndex < 0) return null;
-        return assetFileName.substring(lastDotIndex);
+    public void resetCache() {
+        this.latestAssetList.clear();
     }
 }

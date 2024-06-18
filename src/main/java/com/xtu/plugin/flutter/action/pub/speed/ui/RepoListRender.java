@@ -3,10 +3,12 @@ package com.xtu.plugin.flutter.action.pub.speed.ui;
 import com.intellij.icons.AllIcons;
 import com.intellij.ui.ColoredListCellRenderer;
 import com.intellij.ui.SimpleTextAttributes;
+
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Insets;
+
+import javax.swing.JList;
 
 public class RepoListRender extends ColoredListCellRenderer<String> {
     @Override

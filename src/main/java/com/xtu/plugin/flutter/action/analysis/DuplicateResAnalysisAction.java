@@ -8,6 +8,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.xtu.plugin.flutter.action.BaseResourceAction;
 import com.xtu.plugin.flutter.action.analysis.task.DuplicateResAnalysisTask;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;

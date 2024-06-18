@@ -15,6 +15,7 @@ import com.xtu.plugin.flutter.utils.LogUtils;
 import com.xtu.plugin.flutter.utils.StringUtils;
 import com.xtu.plugin.flutter.window.res.ResManagerToolWindowFactory;
 import com.xtu.plugin.flutter.window.res.ui.ResManagerRootPanel;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

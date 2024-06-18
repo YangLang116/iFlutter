@@ -5,6 +5,7 @@ import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
+import com.xtu.plugin.flutter.base.entity.AssetResultEntity;
 import com.xtu.plugin.flutter.component.assets.code.DartRFileGenerator;
 import com.xtu.plugin.flutter.utils.*;
 import org.jetbrains.annotations.NotNull;
@@ -63,8 +64,7 @@ public class AssetRegisterStorageService implements PersistentStateComponent<Ass
         List<String> assetList = this.storageEntity.assetList;
         assetList.clear();
         assetList.addAll(newAssetList);
-        CollectionUtils.duplicateList(assetList);
-        Collections.sort(assetList);
+        CollectionUtils.standardList(assetList);
     }
 
     ///获取储存资源列表
@@ -80,11 +80,10 @@ public class AssetRegisterStorageService implements PersistentStateComponent<Ass
                                            @NotNull List<String> newAssetList) {
         if (!AssetUtils.isFoldRegister(project)) return newAssetList;
         //pure asset list
-        CollectionUtils.duplicateList(newAssetList);
-        Collections.sort(newAssetList);
+        CollectionUtils.standardList(newAssetList);
         //generate R
-        String resPrefix = AssetUtils.getResPrefix(project, projectName);
-        DartRFileGenerator.getInstance().generate(project, projectName, projectVersion, resPrefix, newAssetList, false);
+        AssetResultEntity resultEntity = new AssetResultEntity(projectName, projectVersion, newAssetList, Collections.emptyList());
+        DartRFileGenerator.getInstance().generate(project, resultEntity);
         //update asset
         AssetRegisterStorageService service = getService(project);
         List<String> assetList = service.storageEntity.assetList;
@@ -104,8 +103,7 @@ public class AssetRegisterStorageService implements PersistentStateComponent<Ass
             if (index < 0) continue;
             assetFoldList.add(asset.substring(0, index + 1));
         }
-        CollectionUtils.duplicateList(assetFoldList);
-        Collections.sort(assetFoldList);
+        CollectionUtils.standardList(assetFoldList);
         return assetFoldList;
     }
 }

@@ -2,12 +2,18 @@ package com.xtu.plugin.flutter.window.res.menu;
 
 import com.intellij.openapi.project.Project;
 import com.xtu.plugin.flutter.utils.TinyUtils;
-import com.xtu.plugin.flutter.window.res.menu.item.*;
+import com.xtu.plugin.flutter.window.res.menu.item.CompressImgItem;
+import com.xtu.plugin.flutter.window.res.menu.item.CopyPathItem;
+import com.xtu.plugin.flutter.window.res.menu.item.CopyRefItem;
+import com.xtu.plugin.flutter.window.res.menu.item.DeleteItem;
+import com.xtu.plugin.flutter.window.res.menu.item.OpenFileItem;
 import com.xtu.plugin.flutter.window.res.ui.ResManagerListener;
+
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
 import java.io.File;
+
+import javax.swing.JPopupMenu;
 
 public class ResMenu extends JPopupMenu {
 

@@ -38,7 +38,7 @@
 
 - 插件安装: 插件已上传官方Plugins仓库，可搜索 `iFlutter` 下载
 - 插件文档: [点击跳转](http://iflutter.toolu.cn)
-- 插件改为最低兼容211版本，如遇到无法安装，请升级AndroidStudio
+- 插件改为最低兼容223版本，如遇到无法安装，请升级AndroidStudio
 
 ## 最新公告
 - 更多 `IDEA Plugin` [plugin market](https://plugins.jetbrains.com/vendor/7b7d4de7-b78a-4773-9256-7fed831fd6bd)

@@ -7,12 +7,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.xtu.plugin.flutter.utils.CollectionUtils;
-import com.xtu.plugin.flutter.utils.DartUtils;
-import com.xtu.plugin.flutter.utils.FontUtils;
-import com.xtu.plugin.flutter.utils.LogUtils;
-import com.xtu.plugin.flutter.utils.ToastUtils;
-
+import com.xtu.plugin.flutter.base.entity.AssetResultEntity;
+import com.xtu.plugin.flutter.utils.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -38,9 +34,10 @@ public class DartFontFileGenerator {
         return sInstance;
     }
 
-    public void generate(@NotNull Project project,
-                         @NotNull String resPrefix,
-                         @NotNull List<String> fontAssetList) {
+    public void generate(@NotNull Project project, @NotNull AssetResultEntity resultEntity) {
+        String projectName = resultEntity.projectName;
+        List<String> fontAssetList = resultEntity.fontList;
+        String resPrefix = AssetUtils.getResPrefix(project, projectName);
         Application application = ApplicationManager.getApplication();
         application.invokeLater(() -> WriteAction.run(() -> {
             if (fontAssetList.equals(latestFontList)) return;

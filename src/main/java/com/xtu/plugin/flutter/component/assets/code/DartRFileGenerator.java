@@ -7,22 +7,14 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.xtu.plugin.flutter.base.entity.AssetResultEntity;
 import com.xtu.plugin.flutter.store.StorageService;
-import com.xtu.plugin.flutter.utils.AssetUtils;
-import com.xtu.plugin.flutter.utils.ClassUtils;
-import com.xtu.plugin.flutter.utils.CollectionUtils;
-import com.xtu.plugin.flutter.utils.DartUtils;
-import com.xtu.plugin.flutter.utils.LogUtils;
-import com.xtu.plugin.flutter.utils.StringUtils;
-import com.xtu.plugin.flutter.utils.ToastUtils;
-
+import com.xtu.plugin.flutter.utils.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
 
 public class DartRFileGenerator {
 
@@ -38,11 +30,11 @@ public class DartRFileGenerator {
         return sInstance;
     }
 
-    public void generate(@NotNull Project project,
-                         @NotNull String projectName,
-                         @NotNull String projectVersion,
-                         @NotNull String resPrefix,
-                         @NotNull List<String> assetList) {
+    public void generate(@NotNull Project project, @NotNull AssetResultEntity resultEntity) {
+        String projectName = resultEntity.projectName;
+        String projectVersion = resultEntity.projectVersion;
+        List<String> assetList = resultEntity.assetList;
+        String resPrefix = AssetUtils.getResPrefix(project, projectName);
         Application application = ApplicationManager.getApplication();
         application.invokeLater(() -> WriteAction.run(() -> {
             if (assetList.equals(latestAssetList)) return;
@@ -62,11 +54,21 @@ public class DartRFileGenerator {
                 final VirtualFile libVirtualDirectory = localFileSystem.refreshAndFindFileByIoFile(libDirectory);
                 assert libVirtualDirectory != null;
                 VirtualFile resVirtualDirectory = libVirtualDirectory.findChild("res");
-                if (resVirtualDirectory == null) {
-                    resVirtualDirectory = libVirtualDirectory.createChildDirectory(project, "res");
-                }
-                for (Map.Entry<String, List<String>> entry : assetCategory.entrySet()) {
-                    generateFile(project, resVirtualDirectory, resPrefix, entry.getKey(), entry.getValue(), projectName, projectVersion);
+                if (!assetCategory.isEmpty()) {
+                    if (resVirtualDirectory == null) {
+                        resVirtualDirectory = libVirtualDirectory.createChildDirectory(project, "res");
+                    }
+                    List<String> usefulFileNameList = new ArrayList<>();
+                    for (Map.Entry<String, List<String>> entry : assetCategory.entrySet()) {
+                        String dirName = entry.getKey();
+                        List<String> assetNames = entry.getValue();
+                        String fileName = generateFile(project, resVirtualDirectory, resPrefix, dirName, assetNames, projectName, projectVersion);
+                        usefulFileNameList.add(fileName);
+                    }
+                    //删除无用文件
+                    deleteUselessFile(project, resVirtualDirectory, usefulFileNameList);
+                } else if (resVirtualDirectory != null) {
+                    deleteUselessFile(project, resVirtualDirectory, Collections.emptyList());
                 }
                 latestAssetList.clear();
                 latestAssetList.addAll(assetList);
@@ -77,18 +79,11 @@ public class DartRFileGenerator {
         }));
     }
 
-    @NotNull
-    private static String getAssetDirName(String assetFileName) {
-        int index = assetFileName.indexOf("/");
-        if (index <= 0) return "default";
-        return assetFileName.substring(0, index);
-    }
-
-    private void generateFile(@NotNull Project project, @NotNull VirtualFile rDirectory,
-                              @NotNull String resPrefix,
-                              @NotNull String assetDirName, @NotNull List<String> assetFileNames,
-                              @NotNull String projectName,
-                              @NotNull String projectVersion) {
+    private String generateFile(@NotNull Project project, @NotNull VirtualFile rDirectory,
+                                @NotNull String resPrefix,
+                                @NotNull String assetDirName, @NotNull List<String> assetFileNames,
+                                @NotNull String projectName,
+                                @NotNull String projectVersion) {
         String className = getClassName(assetDirName);
         LogUtils.info("DartRFileGenerator Class: " + className);
         StringBuilder fileStringBuilder = new StringBuilder();
@@ -115,7 +110,30 @@ public class DartRFileGenerator {
         fileStringBuilder.append("}\n");
         String fileName = assetDirName.toLowerCase() + "_res.dart";
         DartUtils.createDartFile(project, rDirectory, fileName, fileStringBuilder.toString(), null);
+        return fileName;
     }
+
+    private void deleteUselessFile(@NotNull Project project,
+                                   @NotNull VirtualFile directory,
+                                   @NotNull List<String> excludeNameList) throws IOException {
+        VirtualFile[] children = directory.getChildren();
+        if (children == null) return;
+        for (VirtualFile child : children) {
+            String fileName = child.getName();
+            if (Objects.equals(fileName, DartFontFileGenerator.getFileName())) continue;
+            if (excludeNameList.contains(fileName)) continue;
+            if (!fileName.endsWith("_res.dart")) continue;
+            child.delete(project);
+        }
+    }
+
+    @NotNull
+    private static String getAssetDirName(String assetFileName) {
+        int index = assetFileName.indexOf("/");
+        if (index <= 0) return "default";
+        return assetFileName.substring(0, index);
+    }
+
 
     @NotNull
     public static String getClassName(String assetDirName) {

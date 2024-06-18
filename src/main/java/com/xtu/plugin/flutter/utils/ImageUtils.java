@@ -1,23 +1,21 @@
 package com.xtu.plugin.flutter.utils;
 
 import com.intellij.util.ui.ImageUtil;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.Image;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.spi.ImageReaderSpi;
+import javax.imageio.stream.ImageInputStream;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.spi.ImageReaderSpi;
-import javax.imageio.stream.ImageInputStream;
-import javax.swing.ImageIcon;
 
 public class ImageUtils {
 
@@ -75,7 +73,6 @@ public class ImageUtils {
                 return new ImageInfo(originImage, imageWidth, imageHeight);
             }
         } catch (Exception e) {
-            LogUtils.error("ImageUtils loadThumbnail", e);
             return loadDefaultIcon(defaultUrl, size);
         } finally {
             CloseUtils.close(imageInputStream);

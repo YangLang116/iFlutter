@@ -3,16 +3,14 @@ package com.xtu.plugin.flutter.action.generate.res;
 import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.application.Application;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
+import com.xtu.plugin.flutter.base.entity.AssetResultEntity;
 import com.xtu.plugin.flutter.component.assets.code.DartFontFileGenerator;
 import com.xtu.plugin.flutter.component.assets.code.DartRFileGenerator;
-import com.xtu.plugin.flutter.utils.AssetUtils;
-import com.xtu.plugin.flutter.utils.FontUtils;
-import com.xtu.plugin.flutter.utils.PluginUtils;
-import com.xtu.plugin.flutter.utils.PubSpecUtils;
-import com.xtu.plugin.flutter.utils.StringUtils;
-
+import com.xtu.plugin.flutter.utils.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -51,7 +49,14 @@ public class GenerateResAction extends AnAction {
         }
         DartRFileGenerator.getInstance().resetCache();
         DartFontFileGenerator.getInstance().resetCache();
-        WriteCommandAction.runWriteCommandAction(project,
-                () -> PubSpecUtils.writeAssetList(project, newAssetList, newFontList));
+        WriteCommandAction.runWriteCommandAction(project, () -> {
+            PubSpecUtils.writeAssetList(project, newAssetList, newFontList);
+        });
+        Application application = ApplicationManager.getApplication();
+        application.invokeLater(() -> {
+            AssetResultEntity assetResult = PubSpecUtils.readAssetList(project);
+            DartRFileGenerator.getInstance().generate(project, assetResult);
+            DartFontFileGenerator.getInstance().generate(project, assetResult);
+        });
     }
 }

@@ -5,11 +5,9 @@ import com.intellij.openapi.project.Project;
 import com.xtu.plugin.flutter.base.entity.AssetResultEntity;
 import com.xtu.plugin.flutter.component.assets.code.DartFontFileGenerator;
 import com.xtu.plugin.flutter.component.assets.code.DartRFileGenerator;
-import com.xtu.plugin.flutter.utils.AssetUtils;
 import com.xtu.plugin.flutter.utils.FontUtils;
 import com.xtu.plugin.flutter.utils.LogUtils;
 import com.xtu.plugin.flutter.utils.PubSpecUtils;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -74,8 +72,7 @@ public class PubSpecFileHandler {
         //root package pubspec.yaml changed
         LogUtils.info("PubSpecFileHandler pubspec.yaml changed");
         AssetResultEntity assetResult = PubSpecUtils.readAssetList(project);
-        String resPrefix = AssetUtils.getResPrefix(project, assetResult.projectName);
-        DartRFileGenerator.getInstance().generate(project, assetResult.projectName, assetResult.projectVersion, resPrefix, assetResult.assetList);
-        DartFontFileGenerator.getInstance().generate(project, resPrefix, assetResult.fontList);
+        DartRFileGenerator.getInstance().generate(project, assetResult);
+        DartFontFileGenerator.getInstance().generate(project, assetResult);
     }
 }

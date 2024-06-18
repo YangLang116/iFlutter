@@ -5,19 +5,15 @@ import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
+import com.xtu.plugin.flutter.base.entity.AssetResultEntity;
 import com.xtu.plugin.flutter.component.assets.code.DartRFileGenerator;
-import com.xtu.plugin.flutter.utils.AssetUtils;
-import com.xtu.plugin.flutter.utils.CollectionUtils;
-import com.xtu.plugin.flutter.utils.FontUtils;
-import com.xtu.plugin.flutter.utils.LogUtils;
-import com.xtu.plugin.flutter.utils.PluginUtils;
-import com.xtu.plugin.flutter.utils.StringUtils;
-
+import com.xtu.plugin.flutter.utils.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @State(name = "iFlutterAsset", storages = {@Storage("iFlutter_Asset.xml")})
@@ -86,8 +82,8 @@ public class AssetRegisterStorageService implements PersistentStateComponent<Ass
         //pure asset list
         CollectionUtils.standardList(newAssetList);
         //generate R
-        String resPrefix = AssetUtils.getResPrefix(project, projectName);
-        DartRFileGenerator.getInstance().generate(project, projectName, projectVersion, resPrefix, newAssetList);
+        AssetResultEntity resultEntity = new AssetResultEntity(projectName, projectVersion, newAssetList, Collections.emptyList());
+        DartRFileGenerator.getInstance().generate(project, resultEntity);
         //update asset
         AssetRegisterStorageService service = getService(project);
         List<String> assetList = service.storageEntity.assetList;

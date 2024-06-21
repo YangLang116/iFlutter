@@ -8,7 +8,13 @@ import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.xtu.plugin.flutter.base.entity.AssetResultEntity;
-import com.xtu.plugin.flutter.utils.*;
+import com.xtu.plugin.flutter.utils.AssetUtils;
+import com.xtu.plugin.flutter.utils.CollectionUtils;
+import com.xtu.plugin.flutter.utils.DartUtils;
+import com.xtu.plugin.flutter.utils.FontUtils;
+import com.xtu.plugin.flutter.utils.LogUtils;
+import com.xtu.plugin.flutter.utils.ToastUtils;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;

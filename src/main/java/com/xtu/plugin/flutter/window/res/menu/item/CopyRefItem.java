@@ -8,7 +8,7 @@ import com.xtu.plugin.flutter.utils.AssetUtils;
 import com.xtu.plugin.flutter.utils.PluginUtils;
 import com.xtu.plugin.flutter.utils.StringUtils;
 import com.xtu.plugin.flutter.utils.ToastUtils;
-import com.xtu.plugin.flutter.window.res.ui.ResManagerListener;
+import com.xtu.plugin.flutter.window.res.core.IResRootPanel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -20,7 +20,7 @@ public class CopyRefItem extends AbstractItem {
 
     public CopyRefItem(@NotNull Project project,
                        @NotNull File imageFile,
-                       @NotNull ResManagerListener listener) {
+                       @NotNull IResRootPanel listener) {
         super("Copy Reference", project, imageFile, listener);
     }
 

@@ -11,13 +11,17 @@ import com.xtu.plugin.flutter.utils.CollectionUtils;
 import com.xtu.plugin.flutter.utils.FileUtils;
 import com.xtu.plugin.flutter.utils.PluginUtils;
 import com.xtu.plugin.flutter.utils.StringUtils;
+import com.xtu.plugin.flutter.utils.TinyUtils;
+import com.xtu.plugin.flutter.window.res.adapter.ResListAdapter;
+import com.xtu.plugin.flutter.window.res.core.IResRootPanel;
 import com.xtu.plugin.flutter.window.res.menu.ResMenu;
+import com.xtu.plugin.flutter.window.res.sort.SortHelper;
+import com.xtu.plugin.flutter.window.res.sort.SortType;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.InputEvent;
@@ -26,68 +30,57 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.swing.Box;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
-import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.Document;
 
-public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File>, ResManagerListener {
+public class ResRootPanel extends JPanel implements IResRootPanel {
 
+    private final Project project;
     private JLabel titleBar;
     private JComponent searchBar;
     private JTextField searchField;
     private JBList<File> listComponent;
+    private ResListAdapter listAdapter;
 
     private String keyword;
     private SortType sortType;
     private List<File> resList;
     private boolean showSearchBar;
 
-    private final Map<String, ResRowComponent> componentCache = new HashMap<>();
-
-    public ResManagerRootPanel(@NotNull Project project, boolean showSearchBar, @NotNull SortType sortType) {
-        setLayout(new BorderLayout());
+    public ResRootPanel(@NotNull Project project, boolean showSearchBar, @NotNull SortType sortType) {
+        this.project = project;
         this.sortType = sortType;
+        this.setLayout(new BorderLayout());
         this.registerKeyboardListener();
         this.showTopBar(showSearchBar);
-        this.addListView(project);
+        this.addListView();
     }
 
     private void registerKeyboardListener() {
         KeyStroke escKey = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
         this.registerKeyboardAction(e -> {
             if (!this.showSearchBar) return;
-            this.toggleTopBar();
+            this.searchRes();
         }, escKey, JComponent.WHEN_IN_FOCUSED_WINDOW);
         int modifiers = SystemInfo.isMac ? InputEvent.META_DOWN_MASK : InputEvent.CTRL_DOWN_MASK;
         KeyStroke searchKey = KeyStroke.getKeyStroke(KeyEvent.VK_F, modifiers);
         this.registerKeyboardAction(e -> {
             if (this.showSearchBar) return;
-            this.toggleTopBar();
+            this.searchRes();
         }, searchKey, JComponent.WHEN_IN_FOCUSED_WINDOW);
-    }
-
-    public void toggleTopBar() {
-        showTopBar(!showSearchBar);
-        validate();
-        repaint();
-        updateFocus();
     }
 
     private void showTopBar(boolean showSearchBar) {
@@ -113,18 +106,14 @@ public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File
         document.addDocumentListener(new DocumentAdapter() {
             @Override
             protected void textChanged(@NotNull DocumentEvent e) {
-                String keyword = searchField.getText().trim().toLowerCase(Locale.ROOT);
-                updateKeyword(keyword);
+                String input = searchField.getText().trim().toLowerCase(Locale.ROOT);
+                if (StringUtils.equals(keyword, input)) return;
+                keyword = input;
+                refreshList();
             }
         });
         searchBar.add(this.searchField);
         return searchBar;
-    }
-
-    private void updateKeyword(String keyword) {
-        if (StringUtils.equals(keyword, this.keyword)) return;
-        this.keyword = keyword;
-        this.refreshList();
     }
 
     private JLabel createTitleBar() {
@@ -134,9 +123,10 @@ public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File
         return titleBar;
     }
 
-    private void addListView(@NotNull Project project) {
+    private void addListView() {
         this.listComponent = new JBList<>();
-        this.listComponent.setCellRenderer(this);
+        this.listAdapter = new ResListAdapter();
+        this.listComponent.setCellRenderer(listAdapter);
         this.listComponent.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -146,7 +136,7 @@ public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File
                 if (SwingUtilities.isLeftMouseButton(e)) {
                     PluginUtils.openFile(project, imageFile);
                 } else if (SwingUtilities.isRightMouseButton(e)) {
-                    ResMenu menu = new ResMenu(project, imageFile, ResManagerRootPanel.this);
+                    ResMenu menu = new ResMenu(project, imageFile, ResRootPanel.this);
                     menu.show(listComponent, point.x, point.y);
                 }
             }
@@ -165,25 +155,9 @@ public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File
         return model.getElementAt(selectIndex);
     }
 
-    public void updateFocus() {
-        if (this.showSearchBar) {
-            this.searchField.requestFocus();
-        } else {
-            this.listComponent.requestFocus();
-        }
-    }
 
     @Override
-    public void reloadResList(@NotNull List<File> changeFileList) {
-        for (File imageFile : changeFileList) {
-            String path = imageFile.getAbsolutePath();
-            ResRowComponent resRowComponent = this.componentCache.remove(path);
-            if (resRowComponent != null) resRowComponent.dispose();
-        }
-        refreshResList(this.resList);
-    }
-
-    public void refreshResList(@NotNull List<File> resList) {
+    public void loadResList(@NotNull List<File> resList) {
         Long totalSize = resList.stream().map((File::length)).reduce(0L, Long::sum);
         String totalSizeStr = StringUtil.formatFileSize(totalSize);
         this.titleBar.setText(String.format("File Count: %d / Total Size: %s", resList.size(), totalSizeStr));
@@ -192,58 +166,33 @@ public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File
         this.updateFocus();
     }
 
-    public void sort(@NotNull SortType sort) {
+    @Override
+    public void reloadItems(@NotNull List<File> changeFileList) {
+        this.listAdapter.resetItems(changeFileList);
+        this.loadResList(this.resList);
+    }
+
+    @Override
+    public void cleanResList() {
+        this.listAdapter.cleanResList();
+    }
+
+    @Override
+    public void sortRes(@NotNull SortType sort) {
         this.sortType = sort;
         this.refreshList();
     }
 
-    private void refreshList() {
-        if (CollectionUtils.isEmpty(this.resList)) return;
-        List<File> resultList = new ArrayList<>(this.resList);
-        //sort
-        resultList.sort(getComparator(this.sortType));
-        //filter with keyword
-        if (StringUtil.isNotEmpty(this.keyword)) {
-            resultList = resultList.stream().filter(file -> {
-                String fileName = FileUtils.getFileName(file).toLowerCase(Locale.ROOT);
-                return fileName.contains(this.keyword);
-            }).collect(Collectors.toList());
-        }
-        DefaultListModel<File> listModel = new DefaultListModel<>();
-        listModel.addAll(resultList);
-        this.listComponent.setModel(listModel);
-    }
-
-    private static Comparator<File> getComparator(@NotNull SortType sortType) {
-        switch (sortType) {
-            case SORT_AZ:
-                return Comparator.comparing(File::getName);
-            case SORT_SIZE:
-                return Comparator.comparingLong(File::length).reversed();
-            default:
-                return Comparator.comparingLong(File::lastModified).reversed();
-        }
+    @Override
+    public void searchRes() {
+        showTopBar(!showSearchBar);
+        validate();
+        repaint();
+        updateFocus();
     }
 
     @Override
-    public Component getListCellRendererComponent(JList<? extends File> list, File assetFile, int index,
-                                                  boolean isSelected, boolean cellHasFocus) {
-        String path = assetFile.getAbsolutePath();
-        if (!componentCache.containsKey(path)) {
-            componentCache.put(path, new ResRowComponent(assetFile));
-        }
-        return componentCache.get(path);
-    }
-
-    public void cleanResList() {
-        for (Map.Entry<String, ResRowComponent> entry : componentCache.entrySet()) {
-            ResRowComponent jComponent = entry.getValue();
-            jComponent.dispose();
-        }
-        this.componentCache.clear();
-    }
-
-    public void localeRes(@NotNull String resName) {
+    public void locateRes(@NotNull String resName) {
         ListModel<File> listModel = this.listComponent.getModel();
         if (listModel == null) return;
         for (int i = 0; i < listModel.getSize(); i++) {
@@ -255,8 +204,42 @@ public class ResManagerRootPanel extends JPanel implements ListCellRenderer<File
         }
     }
 
-    @Nullable
-    public List<File> getResList() {
-        return resList;
+    @Override
+    public void compressRes() {
+        if (CollectionUtils.isEmpty(resList)) return;
+        List<File> resultList = new ArrayList<>();
+        for (File file : resList) {
+            if (!TinyUtils.isSupport(file)) continue;
+            resultList.add(file);
+        }
+        TinyUtils.compressImage(project, resultList, (success) -> {
+            if (success) reloadItems(resultList);
+        });
+    }
+
+    private void refreshList() {
+        if (CollectionUtils.isEmpty(this.resList)) return;
+        List<File> resultList = new ArrayList<>(this.resList);
+        //filter with keyword
+        if (StringUtil.isNotEmpty(this.keyword)) {
+            resultList = resultList.stream().filter(file -> {
+                String fileName = FileUtils.getFileName(file).toLowerCase(Locale.ROOT);
+                return fileName.contains(this.keyword);
+            }).collect(Collectors.toList());
+        }
+        //sort
+        SortHelper.sort(resultList, this.sortType);
+        DefaultListModel<File> listModel = new DefaultListModel<>();
+        listModel.addAll(resultList);
+        this.listComponent.setModel(listModel);
+    }
+
+
+    private void updateFocus() {
+        if (this.showSearchBar) {
+            this.searchField.requestFocus();
+        } else {
+            this.listComponent.requestFocus();
+        }
     }
 }

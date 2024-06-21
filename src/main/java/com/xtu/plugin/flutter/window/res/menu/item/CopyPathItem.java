@@ -7,7 +7,7 @@ import com.xtu.plugin.flutter.utils.AssetUtils;
 import com.xtu.plugin.flutter.utils.PluginUtils;
 import com.xtu.plugin.flutter.utils.StringUtils;
 import com.xtu.plugin.flutter.utils.ToastUtils;
-import com.xtu.plugin.flutter.window.res.ui.ResManagerListener;
+import com.xtu.plugin.flutter.window.res.core.IResRootPanel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -19,7 +19,7 @@ public class CopyPathItem extends AbstractItem {
 
     public CopyPathItem(@NotNull Project project,
                         @NotNull File imageFile,
-                        @NotNull ResManagerListener listener) {
+                        @NotNull IResRootPanel listener) {
         super("Copy Path", project, imageFile, listener);
     }
 

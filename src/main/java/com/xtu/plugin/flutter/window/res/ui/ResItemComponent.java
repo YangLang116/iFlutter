@@ -3,6 +3,7 @@ package com.xtu.plugin.flutter.window.res.ui;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.JBColor;
 import com.intellij.util.ui.JBUI;
+import com.xtu.plugin.flutter.base.component.ImageComponent;
 import com.xtu.plugin.flutter.utils.FileUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -16,12 +17,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
-public class ResRowComponent extends JPanel {
+public class ResItemComponent extends JPanel {
 
     private JLabel sizeLabel;
     private ImageComponent imageComponent;
 
-    ResRowComponent(@NotNull File imageFile) {
+    public ResItemComponent(@NotNull File imageFile) {
         setLayout(new BorderLayout());
         setBorder(JBUI.Borders.empty(2, 5));
         loadFileInfo(imageFile);

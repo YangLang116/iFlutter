@@ -1,4 +1,4 @@
-package com.xtu.plugin.flutter.window.res.ui;
+package com.xtu.plugin.flutter.base.component;
 
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.ui.JBColor;
@@ -57,7 +57,7 @@ public class ImageComponent extends JLabel {
         this.imageInfo = null;
     }
 
-    interface OnLoadImageListener {
+    public interface OnLoadImageListener {
         void loadFinish(int width, int height);
     }
 }

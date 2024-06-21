@@ -1,4 +1,4 @@
-package com.xtu.plugin.flutter.window.res.ui;
+package com.xtu.plugin.flutter.window.res.sort;
 
 public enum SortType {
     SORT_AZ,  //按照字母排序

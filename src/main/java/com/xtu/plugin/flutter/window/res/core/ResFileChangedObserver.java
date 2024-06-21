@@ -1,8 +1,8 @@
-package com.xtu.plugin.flutter.window.res.listener;
+package com.xtu.plugin.flutter.window.res.core;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.xtu.plugin.flutter.base.adapter.BulkFileAdapter;
+import com.xtu.plugin.flutter.base.adapter.FileChangedObserver;
 import com.xtu.plugin.flutter.utils.AssetUtils;
 import com.xtu.plugin.flutter.utils.CollectionUtils;
 
@@ -11,11 +11,11 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.util.List;
 
-public abstract class ResFileChangedAdapter extends BulkFileAdapter {
+public abstract class ResFileChangedObserver extends FileChangedObserver {
 
     private final List<String> supportExtends;
 
-    public ResFileChangedAdapter(@NotNull Project project, @NotNull List<String> supportExtends) {
+    public ResFileChangedObserver(@NotNull Project project, @NotNull List<String> supportExtends) {
         super(project);
         this.supportExtends = supportExtends;
     }
@@ -49,6 +49,12 @@ public abstract class ResFileChangedAdapter extends BulkFileAdapter {
     private void scanResListIfNeed(@NotNull Project project, @NotNull VirtualFile file) {
         String assetPath = AssetUtils.getAssetFilePath(project, file);
         if (CollectionUtils.endsWith(assetPath, supportExtends)) scanResList();
+    }
+
+    @Override
+    public void branchHasChanged(@NotNull String s) {
+        super.branchHasChanged(s);
+        scanResList();
     }
 
     abstract void scanResList();

@@ -10,7 +10,12 @@ import com.intellij.openapi.project.Project;
 import com.xtu.plugin.flutter.base.entity.AssetResultEntity;
 import com.xtu.plugin.flutter.component.assets.code.DartFontFileGenerator;
 import com.xtu.plugin.flutter.component.assets.code.DartRFileGenerator;
-import com.xtu.plugin.flutter.utils.*;
+import com.xtu.plugin.flutter.utils.AssetUtils;
+import com.xtu.plugin.flutter.utils.FontUtils;
+import com.xtu.plugin.flutter.utils.PluginUtils;
+import com.xtu.plugin.flutter.utils.PubSpecUtils;
+import com.xtu.plugin.flutter.utils.StringUtils;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;

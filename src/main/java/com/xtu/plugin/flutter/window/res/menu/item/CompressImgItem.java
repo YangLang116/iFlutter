@@ -2,7 +2,7 @@ package com.xtu.plugin.flutter.window.res.menu.item;
 
 import com.intellij.openapi.project.Project;
 import com.xtu.plugin.flutter.utils.TinyUtils;
-import com.xtu.plugin.flutter.window.res.ui.ResManagerListener;
+import com.xtu.plugin.flutter.window.res.core.IResRootPanel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -14,7 +14,7 @@ public class CompressImgItem extends AbstractItem {
 
     public CompressImgItem(@NotNull Project project,
                            @NotNull File imageFile,
-                           @NotNull ResManagerListener listener) {
+                           @NotNull IResRootPanel listener) {
         super("Compress Image", project, imageFile, listener);
     }
 
@@ -22,7 +22,7 @@ public class CompressImgItem extends AbstractItem {
     public void actionPerformed(ActionEvent e) {
         final List<File> imageFileList = List.of(imageFile);
         TinyUtils.compressImage(project, imageFileList, (success) -> {
-            if (success) listener.reloadResList(imageFileList);
+            if (success) listener.reloadItems(imageFileList);
         });
     }
 }

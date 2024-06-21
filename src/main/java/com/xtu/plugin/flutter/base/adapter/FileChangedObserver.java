@@ -1,7 +1,9 @@
 package com.xtu.plugin.flutter.base.adapter;
 
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vcs.BranchChangeListener;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.openapi.vfs.newvfs.BulkFileListener;
 import com.intellij.openapi.vfs.newvfs.events.VFileContentChangeEvent;
 import com.intellij.openapi.vfs.newvfs.events.VFileCopyEvent;
@@ -10,6 +12,7 @@ import com.intellij.openapi.vfs.newvfs.events.VFileDeleteEvent;
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent;
 import com.intellij.openapi.vfs.newvfs.events.VFileMoveEvent;
 import com.intellij.openapi.vfs.newvfs.events.VFilePropertyChangeEvent;
+import com.intellij.util.messages.MessageBusConnection;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -17,23 +20,34 @@ import java.io.File;
 import java.util.List;
 import java.util.Objects;
 
-public class BulkFileAdapter implements BulkFileListener {
+public class FileChangedObserver implements BulkFileListener, BranchChangeListener {
 
     public final Project project;
-    private boolean enable = true;
+    private boolean isBranchChanging = false;
 
-    public BulkFileAdapter(@NotNull Project project) {
+    public FileChangedObserver(@NotNull Project project) {
         this.project = project;
     }
 
+    public void bindFileChangedEvent() {
+        MessageBusConnection connect = project.getMessageBus().connect();
+        connect.subscribe(VirtualFileManager.VFS_CHANGES, this);
+        connect.subscribe(BranchChangeListener.VCS_BRANCH_CHANGED, this);
+    }
 
-    public void setBulkFileEnable(boolean enable) {
-        this.enable = enable;
+    @Override
+    public void branchWillChange(@NotNull String s) {
+        this.isBranchChanging = true;
+    }
+
+    @Override
+    public void branchHasChanged(@NotNull String s) {
+        this.isBranchChanging = false;
     }
 
     @Override
     public void after(@NotNull List<? extends VFileEvent> events) {
-        if (!enable) return;
+        if (isBranchChanging) return;
         for (VFileEvent event : events) {
             if (event instanceof VFileCopyEvent) {
                 VirtualFile virtualFile = ((VFileCopyEvent) event).findCreatedFile();
@@ -83,5 +97,4 @@ public class BulkFileAdapter implements BulkFileListener {
     public void onFileNameChanged(@NotNull Project project, @NotNull VirtualFile virtualFile,
                                   @NotNull String oldName, @NotNull String newName) {
     }
-
 }

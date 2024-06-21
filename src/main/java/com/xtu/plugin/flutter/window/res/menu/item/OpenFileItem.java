@@ -2,7 +2,7 @@ package com.xtu.plugin.flutter.window.res.menu.item;
 
 import com.intellij.ide.actions.RevealFileAction;
 import com.intellij.openapi.project.Project;
-import com.xtu.plugin.flutter.window.res.ui.ResManagerListener;
+import com.xtu.plugin.flutter.window.res.core.IResRootPanel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -13,7 +13,7 @@ public class OpenFileItem extends AbstractItem {
 
     public OpenFileItem(@NotNull Project project,
                         @NotNull File imageFile,
-                        @NotNull ResManagerListener listener) {
+                        @NotNull IResRootPanel listener) {
         super("Open In File Browser", project, imageFile, listener);
     }
 

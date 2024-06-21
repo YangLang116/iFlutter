@@ -10,7 +10,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
-import com.xtu.plugin.flutter.window.res.ui.ResManagerListener;
+import com.xtu.plugin.flutter.window.res.core.IResRootPanel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -21,7 +21,7 @@ public class DeleteItem extends AbstractItem {
 
     public DeleteItem(@NotNull Project project,
                       @NotNull File imageFile,
-                      @NotNull ResManagerListener listener) {
+                      @NotNull IResRootPanel listener) {
         super("Delete", project, imageFile, listener);
     }
 

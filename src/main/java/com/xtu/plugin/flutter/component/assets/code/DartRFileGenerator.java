@@ -9,12 +9,24 @@ import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.xtu.plugin.flutter.base.entity.AssetResultEntity;
 import com.xtu.plugin.flutter.store.StorageService;
-import com.xtu.plugin.flutter.utils.*;
+import com.xtu.plugin.flutter.utils.AssetUtils;
+import com.xtu.plugin.flutter.utils.ClassUtils;
+import com.xtu.plugin.flutter.utils.CollectionUtils;
+import com.xtu.plugin.flutter.utils.DartUtils;
+import com.xtu.plugin.flutter.utils.LogUtils;
+import com.xtu.plugin.flutter.utils.StringUtils;
+import com.xtu.plugin.flutter.utils.ToastUtils;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class DartRFileGenerator {
 

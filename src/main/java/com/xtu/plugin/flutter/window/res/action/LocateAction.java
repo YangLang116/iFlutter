@@ -7,15 +7,15 @@ import com.intellij.openapi.fileEditor.FileEditor;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.xtu.plugin.flutter.window.res.ui.ResManagerRootPanel;
+import com.xtu.plugin.flutter.window.res.core.IResRootPanel;
 
 import org.jetbrains.annotations.NotNull;
 
 public class LocateAction extends AnAction {
 
-    private final ResManagerRootPanel rootPanel;
+    private final IResRootPanel rootPanel;
 
-    public LocateAction(@NotNull ResManagerRootPanel rootPanel) {
+    public LocateAction(@NotNull IResRootPanel rootPanel) {
         super(AllIcons.General.Locate);
         this.rootPanel = rootPanel;
     }
@@ -29,6 +29,6 @@ public class LocateAction extends AnAction {
         if (selectedEditor == null) return;
         VirtualFile virtualFile = selectedEditor.getFile();
         if (virtualFile == null) return;
-        this.rootPanel.localeRes(virtualFile.getName());
+        this.rootPanel.locateRes(virtualFile.getName());
     }
 }

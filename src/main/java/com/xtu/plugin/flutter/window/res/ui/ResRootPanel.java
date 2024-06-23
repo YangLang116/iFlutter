@@ -7,23 +7,18 @@ import com.intellij.ui.DocumentAdapter;
 import com.intellij.ui.components.JBList;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.util.ui.JBUI;
-import com.xtu.plugin.flutter.utils.CollectionUtils;
-import com.xtu.plugin.flutter.utils.FileUtils;
-import com.xtu.plugin.flutter.utils.PluginUtils;
-import com.xtu.plugin.flutter.utils.StringUtils;
-import com.xtu.plugin.flutter.utils.TinyUtils;
+import com.xtu.plugin.flutter.utils.*;
 import com.xtu.plugin.flutter.window.res.adapter.ResListAdapter;
 import com.xtu.plugin.flutter.window.res.core.IResRootPanel;
 import com.xtu.plugin.flutter.window.res.menu.ResMenu;
-import com.xtu.plugin.flutter.window.res.sort.SortHelper;
 import com.xtu.plugin.flutter.window.res.sort.SortType;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.BorderLayout;
-import java.awt.Font;
-import java.awt.Point;
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.text.Document;
+import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -33,18 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
-
-import javax.swing.Box;
-import javax.swing.DefaultListModel;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-import javax.swing.ListModel;
-import javax.swing.SwingUtilities;
-import javax.swing.event.DocumentEvent;
-import javax.swing.text.Document;
 
 public class ResRootPanel extends JPanel implements IResRootPanel {
 
@@ -217,6 +200,11 @@ public class ResRootPanel extends JPanel implements IResRootPanel {
         });
     }
 
+    @Override
+    public JComponent asComponent() {
+        return this;
+    }
+
     private void refreshList() {
         if (CollectionUtils.isEmpty(this.resList)) return;
         List<File> resultList = new ArrayList<>(this.resList);
@@ -228,7 +216,8 @@ public class ResRootPanel extends JPanel implements IResRootPanel {
             }).collect(Collectors.toList());
         }
         //sort
-        SortHelper.sort(resultList, this.sortType);
+        resultList.sort(this.sortType.comparator);
+
         DefaultListModel<File> listModel = new DefaultListModel<>();
         listModel.addAll(resultList);
         this.listComponent.setModel(listModel);

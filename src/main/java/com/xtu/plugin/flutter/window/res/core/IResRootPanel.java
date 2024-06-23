@@ -1,9 +1,9 @@
 package com.xtu.plugin.flutter.window.res.core;
 
 import com.xtu.plugin.flutter.window.res.sort.SortType;
-
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.*;
 import java.io.File;
 import java.util.List;
 
@@ -21,5 +21,7 @@ public interface IResRootPanel {
 
     void compressRes();
 
-     void sortRes(@NotNull SortType sort) ;
+    void sortRes(@NotNull SortType sort);
+
+    JComponent asComponent();
 }

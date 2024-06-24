@@ -12,10 +12,12 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.tinify.Tinify;
 import com.xtu.plugin.flutter.configuration.SettingsConfiguration;
 import com.xtu.plugin.flutter.store.StorageService;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -38,10 +40,14 @@ public class TinyUtils {
 
     public static void compressImage(@NotNull Project project,
                                      @NotNull List<File> imageFileList,
-                                     @Nullable OnResultListener onResultListener) {
+                                     @Nullable TinyUtils.OnCompressListener listener) {
         final String tinyKey = StorageService.getInstance(project).getState().tinyApiKey;
         if (StringUtils.isEmpty(tinyKey)) {
-            int result = Messages.showYesNoDialog(project, "You must configure an apiKey for TinyPng", "", "OK", "Cancel", null);
+            int result = Messages.showYesNoDialog(
+                    project,
+                    "You must configure an apiKey for TinyPng",
+                    "", "Configure", "Cancel",
+                    Messages.getErrorIcon());
             if (result == Messages.YES) {
                 ShowSettingsUtil.getInstance().showSettingsDialog(project, SettingsConfiguration.class);
             }
@@ -53,47 +59,47 @@ public class TinyUtils {
             public void run(@NotNull ProgressIndicator indicator) {
                 indicator.setIndeterminate(true);
                 int fileCount = imageFileList.size();
+                List<File> successList = new ArrayList<>();
                 try {
                     for (int i = 0; i < fileCount; i++) {
-                        File imageFile = imageFileList.get(i);
-                        String message = String.format(Locale.ROOT, "compressing %s [%d/%d]",
-                                imageFile.getName(), i + 1, fileCount);
+                        File file = imageFileList.get(i);
+                        String message = String.format(Locale.ROOT, "compressing %s [%d/%d]", file.getName(), i + 1, fileCount);
                         indicator.setText(message);
-                        String imageFilePath = imageFile.getAbsolutePath();
+                        String imageFilePath = file.getAbsolutePath();
                         Tinify.fromFile(imageFilePath).toFile(imageFilePath);
+                        successList.add(file);
                     }
                     ToastUtils.make(project, MessageType.INFO, "compress image success");
-                    postCallBack(true);
                 } catch (Exception e) {
                     LogUtils.error("TinyUtils compressImage", e);
                     ToastUtils.make(project, MessageType.ERROR, "compress image fail: " + e.getMessage());
-                    postCallBack(false);
                 } finally {
+                    postCallBack(successList);
                     indicator.setIndeterminate(false);
                     indicator.setFraction(1);
                 }
             }
 
-            private void postCallBack(boolean success) {
-                if (onResultListener != null) {
-                    Application application = ApplicationManager.getApplication();
-                    application.invokeLater(() -> onResultListener.onFinish(success));
-                }
+            private void postCallBack(@NotNull List<File> successList) {
+                if (listener == null) return;
+                Application application = ApplicationManager.getApplication();
+                application.invokeLater(() -> listener.onFinish(successList));
             }
         }.queue();
     }
 
-    public static void showTinyDialog(@NotNull Project project, @NotNull VirtualFile virtualFile) {
+    public static void showTinyDialog(@NotNull Project project,
+                                      @NotNull VirtualFile virtualFile) {
         ApplicationManager.getApplication().invokeLater(() -> {
             String content = String.format(Locale.ROOT, "Do you need to compress %s ?", virtualFile.getName());
-            int result = Messages.showYesNoDialog(project, content, "", "OK", "Cancel", null);
+            int result = Messages.showYesNoDialog(project, content, "", "OK", "Cancel", Messages.getInformationIcon());
             if (result != Messages.YES) return;
             List<File> fileList = Collections.singletonList(new File(virtualFile.getPath()));
             compressImage(project, fileList, null);
         });
     }
 
-    public interface OnResultListener {
-        void onFinish(boolean success);
+    public interface OnCompressListener {
+        void onFinish(@NotNull List<File> successList);
     }
 }

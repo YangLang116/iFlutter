@@ -28,4 +28,6 @@ public class PluginIcons {
     public static Icon DOWNLOAD = IconLoader.getIcon("/icons/download.svg", PluginIcons.class);
     public static Icon OPEN = IconLoader.getIcon("/icons/open.svg", PluginIcons.class);
     public static Icon DELETE = IconLoader.getIcon("/icons/delete.svg", PluginIcons.class);
+    public static Icon LINK = IconLoader.getIcon("/icons/link.svg", PluginIcons.class);
+    public static Icon MAVEN = IconLoader.getIcon("/icons/maven.svg", PluginIcons.class);
 }

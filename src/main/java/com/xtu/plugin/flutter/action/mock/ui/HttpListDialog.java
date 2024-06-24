@@ -1,6 +1,5 @@
 package com.xtu.plugin.flutter.action.mock.ui;
 
-import com.intellij.openapi.ide.CopyPasteManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.MessageType;
@@ -9,6 +8,7 @@ import com.intellij.util.ui.JBUI;
 import com.xtu.plugin.flutter.action.mock.manager.HttpMockManager;
 import com.xtu.plugin.flutter.store.HttpEntity;
 import com.xtu.plugin.flutter.store.StorageService;
+import com.xtu.plugin.flutter.utils.PluginUtils;
 import com.xtu.plugin.flutter.utils.StringUtils;
 import com.xtu.plugin.flutter.utils.ToastUtils;
 import org.jetbrains.annotations.NonNls;
@@ -19,7 +19,6 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -141,8 +140,7 @@ public class HttpListDialog extends DialogWrapper implements ListSelectionListen
             if (StringUtils.isEmpty(url)) {
                 ToastUtils.make(project, MessageType.ERROR, "mock server fail");
             } else {
-                ToastUtils.make(project, MessageType.INFO, "copy path success");
-                CopyPasteManager.getInstance().setContents(new StringSelection(url));
+                PluginUtils.copyToClipboard(project, url, "copy path success");
                 close(DialogWrapper.OK_EXIT_CODE);
             }
         });

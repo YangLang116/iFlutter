@@ -3,7 +3,6 @@ package com.xtu.plugin.flutter.window.res.menu.action;
 import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.project.Project;
 import com.xtu.plugin.flutter.utils.PluginUtils;
 import icons.PluginIcons;
 import org.jetbrains.annotations.NotNull;
@@ -26,8 +25,6 @@ public class ResOpenFileAction extends AnAction {
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent event) {
-        Project project = event.getProject();
-        if (project == null) return;
-        PluginUtils.openFile(project, imageFile);
+        PluginUtils.openFileInBrowser(imageFile);
     }
 }

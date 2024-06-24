@@ -16,12 +16,14 @@ import com.xtu.plugin.flutter.window.res.adapter.ResListRender;
 import com.xtu.plugin.flutter.window.res.core.IResRootPanel;
 import com.xtu.plugin.flutter.window.res.menu.ResMenuGroup;
 import com.xtu.plugin.flutter.window.res.sort.SortType;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.Document;
+
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -121,7 +123,7 @@ public class ResRootPanel extends JPanel implements IResRootPanel {
                 File imageFile = getSelectImageFile(point);
                 if (imageFile == null) return;
                 if (SwingUtilities.isLeftMouseButton(e)) {
-                    PluginUtils.openFile(project, imageFile);
+                    PluginUtils.openFileInEditor(project, imageFile);
                 } else if (SwingUtilities.isRightMouseButton(e)) {
                     ResMenuGroup menuGroup = new ResMenuGroup(imageFile, ResRootPanel.this);
                     DataContext dataContext = DataManager.getInstance().getDataContext(listComponent);
@@ -199,13 +201,14 @@ public class ResRootPanel extends JPanel implements IResRootPanel {
     @Override
     public void compressRes() {
         if (CollectionUtils.isEmpty(resList)) return;
-        List<File> resultList = new ArrayList<>();
+        List<File> targetList = new ArrayList<>();
         for (File file : resList) {
             if (!TinyUtils.isSupport(file)) continue;
-            resultList.add(file);
+            targetList.add(file);
         }
-        TinyUtils.compressImage(project, resultList, (success) -> {
-            if (success) reloadItems(resultList);
+        TinyUtils.compressImage(project, targetList, (successList) -> {
+            if (successList.isEmpty()) return;
+            reloadItems(successList);
         });
     }
 

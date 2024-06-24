@@ -6,7 +6,9 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.xtu.plugin.flutter.utils.TinyUtils;
 import com.xtu.plugin.flutter.window.res.core.IResRootPanel;
+
 import icons.PluginIcons;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -32,9 +34,10 @@ public class ResCompressAction extends AnAction {
     public void actionPerformed(@NotNull AnActionEvent event) {
         Project project = event.getProject();
         if (project == null) return;
-        final List<File> imageFileList = List.of(imageFile);
-        TinyUtils.compressImage(project, imageFileList, (success) -> {
-            if (success) rootPanel.reloadItems(imageFileList);
+        final List<File> targetList = List.of(imageFile);
+        TinyUtils.compressImage(project, targetList, (successList) -> {
+            if (successList.isEmpty()) return;
+            rootPanel.reloadItems(successList);
         });
     }
 }

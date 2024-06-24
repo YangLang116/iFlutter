@@ -1,16 +1,14 @@
 package com.xtu.plugin.flutter.action.analysis.ui;
 
-import com.intellij.openapi.ide.CopyPasteManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBScrollPane;
+import com.xtu.plugin.flutter.utils.PluginUtils;
 import com.xtu.plugin.flutter.utils.StringUtils;
-import com.xtu.plugin.flutter.utils.ToastUtils;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,7 +19,6 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import java.awt.*;
-import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -120,9 +117,7 @@ public class AnalysisResultDialog extends DialogWrapper {
 
         @Override
         protected void doAction(ActionEvent e) {
-            StringSelection stringSelection = new StringSelection(AnalysisResultDialog.this.message);
-            CopyPasteManager.getInstance().setContents(stringSelection);
-            ToastUtils.make(AnalysisResultDialog.this.project, MessageType.INFO, "copy success");
+            PluginUtils.copyToClipboard(AnalysisResultDialog.this.project, AnalysisResultDialog.this.message, "copy success");
             AnalysisResultDialog.this.close(OK_EXIT_CODE);
         }
     }

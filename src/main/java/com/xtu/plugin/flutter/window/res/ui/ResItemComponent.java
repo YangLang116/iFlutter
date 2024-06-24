@@ -18,7 +18,7 @@ public class ResItemComponent extends JPanel {
 
     public ResItemComponent(@NotNull File imageFile) {
         setLayout(new BorderLayout());
-        setBorder(JBUI.Borders.empty(2, 5));
+        setBorder(JBUI.Borders.empty(0, 5));
         loadFileInfo(imageFile);
         loadThumbnail(imageFile);
         add(new JSeparator(JSeparator.HORIZONTAL), BorderLayout.SOUTH);
@@ -34,7 +34,7 @@ public class ResItemComponent extends JPanel {
 
     private void loadFileInfo(@NotNull File assetFile) {
         Box container = Box.createVerticalBox();
-        container.setBorder(JBUI.Borders.empty(10, 5));
+        container.setBorder(JBUI.Borders.empty(0, 5));
 
         container.add(Box.createVerticalGlue());
 

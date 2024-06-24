@@ -1,17 +1,14 @@
 package com.xtu.plugin.flutter.action.analysis.ui;
 
-import com.intellij.openapi.ide.CopyPasteManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.ui.MessageType;
 import com.intellij.ui.components.JBScrollPane;
-import com.xtu.plugin.flutter.utils.ToastUtils;
+import com.xtu.plugin.flutter.utils.PluginUtils;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 
 public class UselessResAnalysisDialog extends DialogWrapper {
@@ -36,9 +33,8 @@ public class UselessResAnalysisDialog extends DialogWrapper {
         return UselessResAnalysisDialog.class.getSimpleName();
     }
 
-    @NotNull
     @Override
-    protected Action[] createActions() {
+    protected Action @NotNull [] createActions() {
         return new Action[]{copyAction, getOKAction()};
     }
 
@@ -60,9 +56,7 @@ public class UselessResAnalysisDialog extends DialogWrapper {
 
         @Override
         protected void doAction(ActionEvent e) {
-            StringSelection stringSelection = new StringSelection(UselessResAnalysisDialog.this.result);
-            CopyPasteManager.getInstance().setContents(stringSelection);
-            ToastUtils.make(UselessResAnalysisDialog.this.project, MessageType.INFO, "copy success");
+            PluginUtils.copyToClipboard(project, result, "copy success");
             UselessResAnalysisDialog.this.close(OK_EXIT_CODE);
         }
     }

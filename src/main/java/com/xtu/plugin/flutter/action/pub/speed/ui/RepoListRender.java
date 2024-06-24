@@ -1,12 +1,12 @@
 package com.xtu.plugin.flutter.action.pub.speed.ui;
 
-import com.intellij.icons.AllIcons;
 import com.intellij.ui.ColoredListCellRenderer;
 import com.intellij.ui.SimpleTextAttributes;
+import com.intellij.util.ui.JBUI;
+import icons.PluginIcons;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import java.awt.*;
 
 public class RepoListRender extends ColoredListCellRenderer<String> {
     @Override
@@ -14,8 +14,8 @@ public class RepoListRender extends ColoredListCellRenderer<String> {
                                          String value,
                                          int index,
                                          boolean isSelected, boolean cellHasFocus) {
-        setBorderInsets(new Insets(10, 5, 10, 5));
-        setIcon(AllIcons.CodeWithMe.CwmInvite);
-        append(value, SimpleTextAttributes.REGULAR_ATTRIBUTES, true);
+        setBorder(JBUI.Borders.empty(10, 5));
+        setIcon(PluginIcons.MAVEN);
+        append(value, SimpleTextAttributes.LINK_BOLD_ATTRIBUTES, true);
     }
 }

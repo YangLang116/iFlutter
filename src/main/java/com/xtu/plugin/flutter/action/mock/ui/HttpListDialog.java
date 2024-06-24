@@ -1,150 +1,114 @@
 package com.xtu.plugin.flutter.action.mock.ui;
 
+import com.intellij.ide.DataManager;
+import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.ui.MessageType;
+import com.intellij.openapi.ui.popup.JBPopupFactory;
+import com.intellij.ui.awt.RelativePoint;
 import com.intellij.ui.components.JBList;
-import com.intellij.util.ui.JBUI;
+import com.intellij.ui.components.JBScrollPane;
+import com.xtu.plugin.flutter.action.mock.callback.IHttpListComponent;
 import com.xtu.plugin.flutter.action.mock.manager.HttpMockManager;
+import com.xtu.plugin.flutter.action.mock.menu.HttpMenuGroup;
+import com.xtu.plugin.flutter.action.mock.ui.render.HttpListRender;
 import com.xtu.plugin.flutter.store.HttpEntity;
 import com.xtu.plugin.flutter.store.StorageService;
-import com.xtu.plugin.flutter.utils.PluginUtils;
 import com.xtu.plugin.flutter.utils.StringUtils;
-import com.xtu.plugin.flutter.utils.ToastUtils;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
+import java.util.Optional;
 
-public class HttpListDialog extends DialogWrapper implements ListSelectionListener {
+public class HttpListDialog extends DialogWrapper implements IHttpListComponent {
 
     private JPanel rootView;
     private JTextField hostView;
-    private JScrollPane listViewContainer;
-    private JBList<HttpEntity> listView;
-
-    private boolean ignoreDataChanged;
+    private JPanel listContainer;
+    private final JBList<HttpEntity> listView = new JBList<>();
+    private final DefaultListModel<HttpEntity> listModel = new DefaultListModel<>();
     private final Project project;
-    private DefaultListModel<HttpEntity> listModel;
     private final Action createConfigAction = new CreateConfigAction();
     private final Action confirmAction = new ConfirmAction();
-
 
     public HttpListDialog(@Nullable Project project) {
         super(project, true, IdeModalityType.PROJECT);
         this.project = project;
-        setTitle("Http Mock");
+        setTitle("HTTP Mock");
         setVerticalStretch(2);
         init();
-    }
-
-    private List<HttpEntity> getHttpConfigList() {
-        return StorageService.getInstance(project).getState().httpEntityList;
     }
 
     @Nullable
     @Override
     protected JComponent createCenterPanel() {
         String baseUrl = HttpMockManager.getService(project).getBaseUrl();
-        hostView.setText(StringUtils.isEmpty(baseUrl) ? "Http Mock fail" : baseUrl);
-        listView = new JBList<>();
-        listModel = new DefaultListModel<>();
-        listModel.addAll(getHttpConfigList());
-        listView.setModel(listModel);
+        hostView.setText(StringUtils.isEmpty(baseUrl) ? "HTTP Mock fail" : baseUrl);
+        List<HttpEntity> httpConfigList = getHttpConfigList();
+        listView.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                Point point = e.getPoint();
+                int index = listView.locationToIndex(point);
+                if (index < 0 || index >= httpConfigList.size()) return;
+                HttpEntity httpEntity = httpConfigList.get(index);
+                if (SwingUtilities.isLeftMouseButton(e)) {
+                    modifyHttpConfig(httpEntity);
+                } else if (SwingUtilities.isRightMouseButton(e)) {
+                    RelativePoint showPoint = new RelativePoint(listView, point);
+                    HttpMenuGroup menuGroup = new HttpMenuGroup(httpEntity, HttpListDialog.this);
+                    DataContext dataContext = DataManager.getInstance().getDataContext(listView);
+                    JBPopupFactory.ActionSelectionAid speedSearch = JBPopupFactory.ActionSelectionAid.SPEEDSEARCH;
+                    JBPopupFactory.getInstance()
+                            .createActionGroupPopup(null, menuGroup, dataContext, speedSearch, false)
+                            .show(showPoint);
+                }
+            }
+        });
         listView.setCellRenderer(new HttpListRender());
-        listView.addListSelectionListener(this);
-        listView.addMouseListener(new HttpMouseListener());
-        listViewContainer.setViewportView(listView);
+        listModel.addAll(httpConfigList);
+        listView.setModel(listModel);
+        listContainer.add(new JBScrollPane(listView), BorderLayout.CENTER);
         return rootView;
     }
 
     @Override
-    public void valueChanged(ListSelectionEvent e) {
-        if (ignoreDataChanged) return;
-        HttpEntity httpEntity = listView.getSelectedValue();
-        createOrModifyConfig(httpEntity);
+    @NotNull
+    public List<HttpEntity> getHttpConfigList() {
+        return StorageService.getInstance(project).getState().httpEntityList;
     }
 
-    private void createOrModifyConfig(@Nullable HttpEntity httpEntity) {
-        ignoreDataChanged = true;
+    @Override
+    public void modifyHttpConfig(@Nullable HttpEntity httpEntity) {
         HttpConfigDialog httpConfigDialog = new HttpConfigDialog(project, httpEntity);
         boolean isOk = httpConfigDialog.showAndGet();
-        if (isOk) {
-            HttpEntity resultEntity = httpConfigDialog.getResultEntity();
-            List<HttpEntity> httpEntityList = getHttpConfigList();
-            HttpEntity oldEntity = null;
-            for (HttpEntity entity : httpEntityList) {
-                if (StringUtils.equals(entity.path, resultEntity.path)) {
-                    oldEntity = entity;
-                    break;
-                }
-            }
-            if (oldEntity != null) {
-                listModel.removeElement(oldEntity);
-                httpEntityList.remove(oldEntity);
-            }
-            listModel.add(0, resultEntity);
-            httpEntityList.add(0, resultEntity);
-            //滑动到最顶部
-            listViewContainer.getVerticalScrollBar().setValue(0);
-        }
-        ignoreDataChanged = false;
+        if (!isOk) return;
+        HttpEntity resultEntity = httpConfigDialog.getResultEntity();
+        Optional<HttpEntity> findEntityOption = getHttpConfigList()
+                .stream().filter(entity -> StringUtils.equals(entity.path, resultEntity.path))
+                .findFirst();
+        findEntityOption.ifPresent(this::deleteHttpConfig);
+        addHttpConfig(resultEntity);
+        listView.ensureIndexIsVisible(0); //滑动到最顶部
     }
 
-    private HttpEntity getHttpEntityByPoint(Point point) {
-        int index = listView.locationToIndex(point);
-        List<HttpEntity> httpConfigList = getHttpConfigList();
-        if (index < 0 || index >= httpConfigList.size()) return null;
-        return httpConfigList.get(index);
+    @Override
+    public void deleteHttpConfig(@NotNull HttpEntity httpEntity) {
+        listModel.removeElement(httpEntity);
+        getHttpConfigList().remove(httpEntity);
     }
 
-    private void showContextMenu(Component component, Point point) {
-        JPopupMenu popupMenu = new JPopupMenu();
-        popupMenu.add(createCopyMenuItem(point));
-        popupMenu.add(createDeleteMenuItem(point));
-        popupMenu.show(component, (int) point.getX(), (int) point.getY());
-    }
-
-    @NotNull
-    private JMenuItem createDeleteMenuItem(Point point) {
-        JMenuItem deleteItem = new JMenuItem("Delete");
-        deleteItem.addActionListener(e -> {
-            ignoreDataChanged = true;
-            List<HttpEntity> httpConfigList = getHttpConfigList();
-            HttpEntity httpEntity = getHttpEntityByPoint(point);
-            if (httpEntity != null) {
-                httpConfigList.remove(httpEntity);
-                listModel.removeElement(httpEntity);
-            }
-            ignoreDataChanged = false;
-        });
-        return deleteItem;
-    }
-
-    @NotNull
-    private JMenuItem createCopyMenuItem(Point point) {
-        JMenuItem copyPathMenu = new JMenuItem("Copy Path");
-        copyPathMenu.addActionListener(e -> {
-            HttpEntity httpEntity = getHttpEntityByPoint(point);
-            if (httpEntity == null) return;
-            HttpMockManager mockManager = HttpMockManager.getService(project);
-            String url = mockManager.getUrl(httpEntity.path);
-            if (StringUtils.isEmpty(url)) {
-                ToastUtils.make(project, MessageType.ERROR, "mock server fail");
-            } else {
-                PluginUtils.copyToClipboard(project, url, "copy path success");
-                close(DialogWrapper.OK_EXIT_CODE);
-            }
-        });
-        return copyPathMenu;
+    @Override
+    public void addHttpConfig(@NotNull HttpEntity httpEntity) {
+        listModel.add(0, httpEntity);
+        getHttpConfigList().add(0, httpEntity);
     }
 
     @Nullable
@@ -155,50 +119,8 @@ public class HttpListDialog extends DialogWrapper implements ListSelectionListen
     }
 
     @Override
-    @NotNull
-    protected Action[] createActions() {
+    protected Action @NotNull [] createActions() {
         return new Action[]{createConfigAction, confirmAction};
-    }
-
-    private class HttpMouseListener extends MouseAdapter {
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            if (SwingUtilities.isRightMouseButton(e)) {
-                showContextMenu(e.getComponent(), e.getPoint());
-            }
-        }
-    }
-
-    static class HttpListRender implements ListCellRenderer<HttpEntity> {
-
-        @Override
-        public Component getListCellRendererComponent(JList<? extends HttpEntity> list,
-                                                      HttpEntity value,
-                                                      int index,
-                                                      boolean isSelected,
-                                                      boolean cellHasFocus) {
-            Box rootBox = Box.createVerticalBox();
-            //内容区域
-            Box contentBox = Box.createVerticalBox();
-            contentBox.setBorder(JBUI.Borders.empty(5, 16));
-            //添加path展示
-            JLabel pathView = new JLabel(value.path);
-            pathView.setFont(new Font(Font.DIALOG, Font.BOLD, 14));
-            contentBox.add(pathView);
-            //添加说明信息
-            contentBox.add(Box.createVerticalStrut(3));
-            JLabel descriptionView = new JLabel(value.description);
-            descriptionView.setFont(new Font(Font.DIALOG, Font.PLAIN, 12));
-            contentBox.add(descriptionView);
-
-            rootBox.add(contentBox);
-            //添加分割线
-            JSeparator jSeparator = new JSeparator(SwingConstants.CENTER);
-            jSeparator.setPreferredSize(new Dimension(rootBox.getWidth(), 10));
-            rootBox.add(jSeparator);
-
-            return rootBox;
-        }
     }
 
     private class CreateConfigAction extends DialogWrapper.DialogWrapperAction {
@@ -209,7 +131,7 @@ public class HttpListDialog extends DialogWrapper implements ListSelectionListen
 
         @Override
         protected void doAction(ActionEvent e) {
-            createOrModifyConfig(null);
+            modifyHttpConfig(null);
         }
     }
 

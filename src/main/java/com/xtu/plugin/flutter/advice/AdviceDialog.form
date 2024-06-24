@@ -14,7 +14,7 @@
         </constraints>
         <properties>
           <font style="1"/>
-          <text value="Title"/>
+          <text value="Problem Summary"/>
         </properties>
       </component>
       <vspacer id="30dbd">
@@ -32,7 +32,7 @@
           <alignmentX value="0.0"/>
           <alignmentY value="0.0"/>
           <horizontalAlignment value="2"/>
-          <margin top="3" left="9" bottom="3" right="9"/>
+          <margin top="3" left="8" bottom="3" right="8"/>
         </properties>
       </component>
       <component id="f0048" class="javax.swing.JLabel" binding="contentLabel">
@@ -41,7 +41,7 @@
         </constraints>
         <properties>
           <font style="1"/>
-          <text value="Content"/>
+          <text value="Detailed explanation of the problem"/>
         </properties>
       </component>
       <component id="1af71" class="javax.swing.JTextArea" binding="contentField">

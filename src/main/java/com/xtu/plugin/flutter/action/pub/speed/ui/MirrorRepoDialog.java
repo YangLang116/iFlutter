@@ -1,11 +1,15 @@
 package com.xtu.plugin.flutter.action.pub.speed.ui;
 
+import com.intellij.ide.DataManager;
+import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.ui.popup.JBPopupFactory;
+import com.intellij.ui.awt.RelativePoint;
 import com.intellij.ui.components.JBList;
 import com.xtu.plugin.flutter.action.pub.speed.helper.AndroidRepoHelper;
-import com.xtu.plugin.flutter.action.pub.speed.menu.RepoMouseListener;
+import com.xtu.plugin.flutter.action.pub.speed.menu.RepoMenuGroup;
 import com.xtu.plugin.flutter.utils.CollectionUtils;
 import com.xtu.plugin.flutter.utils.StringUtils;
 import org.jetbrains.annotations.NonNls;
@@ -15,6 +19,8 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +28,8 @@ public class MirrorRepoDialog extends DialogWrapper {
 
     private final Project project;
     private final JBList<String> listView = new JBList<>();
+    private final AddRepoAction addRepoAction = new AddRepoAction();
+    private final ConfirmAction confirmAction = new ConfirmAction();
 
     public MirrorRepoDialog(@NotNull Project project, @NotNull Component parentComponent) {
         super(project, parentComponent, true, IdeModalityType.PROJECT, true);
@@ -40,7 +48,23 @@ public class MirrorRepoDialog extends DialogWrapper {
         }
         listView.setModel(listModel);
         listView.setCellRenderer(new RepoListRender());
-        listView.addMouseListener(new RepoMouseListener(listView));
+        listView.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (!SwingUtilities.isRightMouseButton(e)) return;
+                Point point = e.getPoint();
+                int index = listView.locationToIndex(point);
+                if (index < 0 || index >= listModel.size()) return;
+                String repo = listModel.get(index);
+                RelativePoint showPoint = new RelativePoint(listView, point);
+                RepoMenuGroup menuGroup = new RepoMenuGroup(repo, listModel);
+                DataContext dataContext = DataManager.getInstance().getDataContext(listView);
+                JBPopupFactory.ActionSelectionAid speedSearch = JBPopupFactory.ActionSelectionAid.SPEEDSEARCH;
+                JBPopupFactory.getInstance()
+                        .createActionGroupPopup(null, menuGroup, dataContext, speedSearch, false)
+                        .show(showPoint);
+            }
+        });
         return listView;
     }
 
@@ -53,10 +77,7 @@ public class MirrorRepoDialog extends DialogWrapper {
 
     @Override
     protected Action @NotNull [] createActions() {
-        return new Action[]{
-                new MirrorRepoDialog.AddRepoAction(),
-                new MirrorRepoDialog.ConfirmAction()
-        };
+        return new Action[]{addRepoAction, confirmAction};
     }
 
     public String getRepoStr() {

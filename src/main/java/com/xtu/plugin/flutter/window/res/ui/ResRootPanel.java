@@ -16,14 +16,12 @@ import com.xtu.plugin.flutter.window.res.adapter.ResListRender;
 import com.xtu.plugin.flutter.window.res.core.IResRootPanel;
 import com.xtu.plugin.flutter.window.res.menu.ResMenuGroup;
 import com.xtu.plugin.flutter.window.res.sort.SortType;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.Document;
-
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;

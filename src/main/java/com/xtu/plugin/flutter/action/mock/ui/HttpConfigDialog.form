@@ -25,7 +25,8 @@
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Http Path"/>
+              <font style="1"/>
+              <text value="HTTP Path"/>
             </properties>
           </component>
           <component id="2ebf6" class="javax.swing.JTextField" binding="pathView">
@@ -51,7 +52,8 @@
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Http Method"/>
+              <font style="1"/>
+              <text value="HTTP Method"/>
             </properties>
           </component>
           <hspacer id="56bfe">
@@ -80,7 +82,8 @@
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Http Description"/>
+              <font style="1"/>
+              <text value="HTTP Description"/>
             </properties>
           </component>
           <component id="907c3" class="javax.swing.JTextField" binding="descriptionView">
@@ -106,7 +109,8 @@
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Http Response"/>
+              <font style="1"/>
+              <text value="HTTP Response"/>
             </properties>
           </component>
           <scrollpane id="1fbfc">

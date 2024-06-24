@@ -19,15 +19,15 @@ public class HttpConfigDialog extends DialogWrapper {
     private JTextField descriptionView;
     private JTextPane responseView;
 
-    private HttpEntity outOutEntity;
     private final HttpEntity inputEntity;
+    private HttpEntity resultEntity;
     private final Action saveAction = new SaveAction();
     private final Action cancelAction = new CancelAction();
 
     public HttpConfigDialog(@Nullable Project project, @Nullable HttpEntity httpEntity) {
         super(project, false, IdeModalityType.PROJECT);
         this.inputEntity = httpEntity;
-        setTitle("Http Mock Config");
+        setTitle("HTTP Mock Config");
         setHorizontalStretch(2);
         setVerticalStretch(2);
         init();
@@ -70,17 +70,16 @@ public class HttpConfigDialog extends DialogWrapper {
                 || StringUtils.isEmpty(responseValue)) {
             return;
         }
-        outOutEntity = new HttpEntity(pathValue, methodValue, descriptionValue, responseValue);
+        resultEntity = new HttpEntity(pathValue, methodValue, descriptionValue, responseValue);
         close(DialogWrapper.OK_EXIT_CODE);
     }
 
     public HttpEntity getResultEntity() {
-        return outOutEntity;
+        return resultEntity;
     }
 
     @Override
-    @NotNull
-    protected Action[] createActions() {
+    protected Action @NotNull [] createActions() {
         return new Action[]{saveAction, cancelAction};
     }
 

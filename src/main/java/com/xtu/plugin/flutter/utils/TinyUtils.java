@@ -12,16 +12,11 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.tinify.Tinify;
 import com.xtu.plugin.flutter.configuration.SettingsConfiguration;
 import com.xtu.plugin.flutter.store.StorageService;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 public class TinyUtils {
 

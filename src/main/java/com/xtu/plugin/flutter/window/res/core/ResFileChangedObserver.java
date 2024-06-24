@@ -5,7 +5,6 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.xtu.plugin.flutter.base.adapter.FileChangedObserver;
 import com.xtu.plugin.flutter.utils.AssetUtils;
 import com.xtu.plugin.flutter.utils.CollectionUtils;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;

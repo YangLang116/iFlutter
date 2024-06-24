@@ -1,10 +1,9 @@
 package com.xtu.plugin.flutter.window.res.action;
 
-import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.xtu.plugin.flutter.window.res.core.IResRootPanel;
-
+import icons.PluginIcons;
 import org.jetbrains.annotations.NotNull;
 
 public class SearchAction extends AnAction {
@@ -12,7 +11,7 @@ public class SearchAction extends AnAction {
     private final IResRootPanel rootPanel;
 
     public SearchAction(@NotNull IResRootPanel rootPanel) {
-        super(AllIcons.Actions.Replace);
+        super(PluginIcons.SEARCH);
         this.rootPanel = rootPanel;
     }
 

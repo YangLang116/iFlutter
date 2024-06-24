@@ -7,7 +7,6 @@ import com.jetbrains.lang.dart.psi.DartClass;
 import com.jetbrains.lang.dart.psi.DartFactoryConstructorDeclaration;
 import com.jetbrains.lang.dart.util.DartResolveUtil;
 import com.xtu.plugin.flutter.utils.StringUtils;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

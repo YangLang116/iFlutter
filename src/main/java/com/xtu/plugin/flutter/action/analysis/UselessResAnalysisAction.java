@@ -6,7 +6,6 @@ import com.xtu.plugin.flutter.action.BaseResourceAction;
 import com.xtu.plugin.flutter.action.analysis.task.UselessResAnalysisTask;
 import com.xtu.plugin.flutter.utils.PluginUtils;
 import com.xtu.plugin.flutter.utils.StringUtils;
-
 import org.jetbrains.annotations.NotNull;
 
 public class UselessResAnalysisAction extends BaseResourceAction {

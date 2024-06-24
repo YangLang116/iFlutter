@@ -11,7 +11,7 @@ import com.intellij.openapi.wm.StatusBar;
 import com.intellij.openapi.wm.WindowManager;
 import com.intellij.ui.awt.RelativePoint;
 
-import javax.swing.JComponent;
+import javax.swing.*;
 
 /**
  * Created by YangLang on 2017/11/25.

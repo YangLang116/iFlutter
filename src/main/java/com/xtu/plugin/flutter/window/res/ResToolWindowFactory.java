@@ -17,7 +17,6 @@ import com.xtu.plugin.flutter.window.res.core.IResRootPanel;
 import com.xtu.plugin.flutter.window.res.core.ResToolWindowRefresher;
 import com.xtu.plugin.flutter.window.res.sort.SortType;
 import com.xtu.plugin.flutter.window.res.ui.ResRootPanel;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;

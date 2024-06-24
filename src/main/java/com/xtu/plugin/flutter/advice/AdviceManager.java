@@ -9,17 +9,15 @@ import com.xtu.plugin.flutter.base.net.NetworkManager;
 import com.xtu.plugin.flutter.utils.CloseUtils;
 import com.xtu.plugin.flutter.utils.ToastUtils;
 import com.xtu.plugin.flutter.utils.VersionUtils;
-
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
 public class AdviceManager {
 

@@ -6,16 +6,16 @@
         <group>
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
             <action id="com.xtu.plugin.flutter.ConvertDependencyToLocalAction"
-                    icon="PluginIcons.LOGO"
+                    icon="PluginIcons.FETCH"
                     class="com.xtu.plugin.flutter.action.convert.ConvertDependencyToLocalAction">
             </action>
             <action id="com.xtu.plugin.flutter.YamlPackageAnchorAction"
-                    icon="PluginIcons.LOGO"
+                    icon="PluginIcons.LOCATE"
                     class="com.xtu.plugin.flutter.action.anchor.yaml.YamlPackageAnchorAction">
             </action>
         </group>
         <action id="com.xtu.plugin.flutter.remove.comment"
-                icon="PluginIcons.LOGO"
+                icon="PluginIcons.COMMENT"
                 class="com.xtu.plugin.flutter.action.remove.CommentRemoveAction">
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
         </action>

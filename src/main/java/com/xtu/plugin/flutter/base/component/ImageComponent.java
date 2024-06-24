@@ -5,23 +5,21 @@ import com.intellij.ui.JBColor;
 import com.intellij.ui.RoundedLineBorder;
 import com.intellij.ui.scale.JBUIScale;
 import com.xtu.plugin.flutter.utils.ImageUtils;
-
+import icons.PluginIcons;
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.Dimension;
-import java.awt.Graphics;
+import javax.swing.*;
+import java.awt.*;
 import java.io.File;
-
-import javax.swing.JLabel;
-
-import icons.PluginIcons;
 
 
 public class ImageComponent extends JLabel {
 
+    private final int paddingSize;
     private ImageUtils.ImageInfo imageInfo;
 
-    public ImageComponent(int size) {
+    public ImageComponent(int size, int paddingSize) {
+        this.paddingSize = paddingSize;
         setPreferredSize(new Dimension(size, size));
         setBorder(new RoundedLineBorder(JBColor.border(), JBUIScale.scale(4), JBUIScale.scale(2)));
     }
@@ -45,10 +43,25 @@ public class ImageComponent extends JLabel {
     @Override
     public void paint(Graphics g) {
         if (imageInfo == null) return;
-        Dimension preferredSize = getPreferredSize();
-        int startX = (preferredSize.width - imageInfo.dWidth) / 2;
-        int startY = (preferredSize.height - imageInfo.dHeight) / 2;
-        g.drawImage(imageInfo.image, startX, startY, imageInfo.dWidth, imageInfo.dHeight, this);
+        int imgWidth = imageInfo.dWidth;
+        int imgHeight = imageInfo.dHeight;
+        int areaWidth = getWidth() - 2 * paddingSize;
+        int areaHeight = getHeight() - 2 * paddingSize;
+        if (imgWidth > areaWidth || imgHeight > areaHeight) {
+            double radioW = imgWidth * 1.0 / areaWidth;
+            double radioH = imgHeight * 1.0 / areaHeight;
+            double radio = Math.max(radioW, radioH);
+            imgWidth = (int) Math.floor(imgWidth / radio);
+            imgHeight = (int) Math.floor(imgHeight / radio);
+        }
+        int startX = paddingSize + (areaWidth - imgWidth) / 2;
+        int startY = paddingSize + (areaHeight - imgHeight) / 2;
+        int endX = startX + imgWidth;
+        int endY = startY + imgHeight;
+        g.drawImage(imageInfo.image,
+                startX, startY, endX, endY,
+                0, 0, imageInfo.dWidth, imageInfo.dHeight,
+                null);
     }
 
     public void dispose() {

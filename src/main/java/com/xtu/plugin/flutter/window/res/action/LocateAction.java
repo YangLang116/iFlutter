@@ -1,6 +1,5 @@
 package com.xtu.plugin.flutter.window.res.action;
 
-import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.fileEditor.FileEditor;
@@ -8,7 +7,7 @@ import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.xtu.plugin.flutter.window.res.core.IResRootPanel;
-
+import icons.PluginIcons;
 import org.jetbrains.annotations.NotNull;
 
 public class LocateAction extends AnAction {
@@ -16,7 +15,7 @@ public class LocateAction extends AnAction {
     private final IResRootPanel rootPanel;
 
     public LocateAction(@NotNull IResRootPanel rootPanel) {
-        super(AllIcons.General.Locate);
+        super(PluginIcons.LOCATE);
         this.rootPanel = rootPanel;
     }
 

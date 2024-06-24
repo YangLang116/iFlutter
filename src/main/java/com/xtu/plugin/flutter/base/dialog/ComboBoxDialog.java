@@ -3,15 +3,12 @@ package com.xtu.plugin.flutter.base.dialog;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.ui.DialogWrapper;
-
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.swing.*;
 import java.util.List;
-
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComponent;
 
 public class ComboBoxDialog extends DialogWrapper {
 

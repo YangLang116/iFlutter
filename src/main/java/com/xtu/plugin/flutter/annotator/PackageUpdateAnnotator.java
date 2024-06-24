@@ -23,7 +23,9 @@ import com.xtu.plugin.flutter.component.packages.update.PackageInfo;
 import com.xtu.plugin.flutter.store.StorageService;
 import com.xtu.plugin.flutter.utils.PubSpecUtils;
 import com.xtu.plugin.flutter.utils.StringUtils;
-
+import icons.PluginIcons;
+import io.flutter.pub.PubRoot;
+import io.flutter.sdk.FlutterSdk;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.YAMLElementGenerator;
@@ -32,15 +34,10 @@ import org.jetbrains.yaml.psi.YAMLMapping;
 import org.jetbrains.yaml.psi.YAMLScalar;
 import org.jetbrains.yaml.psi.YAMLValue;
 
+import javax.swing.*;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-
-import javax.swing.Icon;
-
-import icons.PluginIcons;
-import io.flutter.pub.PubRoot;
-import io.flutter.sdk.FlutterSdk;
 
 public class PackageUpdateAnnotator implements Annotator {
 
@@ -152,7 +149,7 @@ public class PackageUpdateAnnotator implements Annotator {
         @Override
         @NotNull
         public Icon getIcon() {
-            return PluginIcons.LOGO;
+            return PluginIcons.DOWNLOAD;
         }
 
         @Override

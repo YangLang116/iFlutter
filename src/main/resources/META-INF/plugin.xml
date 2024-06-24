@@ -40,6 +40,7 @@
             <add-to-group group-id="ProjectViewPopupMenu" anchor="after"
                           relative-to-action="ProjectViewPopupMenuRefactoringGroup"/>
             <action id="com.xtu.plugin.flutter.GenerateResAction"
+                    icon="PluginIcons.ASSET"
                     class="com.xtu.plugin.flutter.action.generate.res.GenerateResAction"/>
             <action id="com.xtu.plugin.flutter.ImageFoldingAction"
                     class="com.xtu.plugin.flutter.action.image.ImageFoldingAction"/>
@@ -49,6 +50,7 @@
                     class="com.xtu.plugin.flutter.action.analysis.UselessResAnalysisAction"/>
             <separator/>
             <action id="com.xtu.plugin.flutter.J2DAction"
+                    icon="PluginIcons.CODE"
                     class="com.xtu.plugin.flutter.action.j2d.J2DAction"/>
             <separator/>
             <action id="com.xtu.plugin.flutter.AddIntlAction"
@@ -61,28 +63,32 @@
             </action>
             <separator/>
             <action id="com.xtu.plugin.flutter.HttpMockAction"
+                    icon="PluginIcons.NET"
                     class="com.xtu.plugin.flutter.action.mock.HttpMockAction"/>
             <separator/>
             <action id="com.xtu.plugin.flutter.DepAnalysisAction"
+                    icon="PluginIcons.DEPENDENCY"
                     class="com.xtu.plugin.flutter.action.analysis.DepAnalysisAction"/>
             <separator/>
-            <action id="com.xtu.plugin.flutter.PubSpeedAction"
-                    class="com.xtu.plugin.flutter.action.pub.speed.PubSpeedAction"/>
             <action id="com.xtu.plugin.flutter.PubSearchAction"
+                    icon="PluginIcons.SEARCH"
                     class="com.xtu.plugin.flutter.action.pub.search.PubSearchAction">
                 <keyboard-shortcut first-keystroke="alt f" keymap="$default"/>
             </action>
+            <action id="com.xtu.plugin.flutter.PubSpeedAction"
+                    class="com.xtu.plugin.flutter.action.pub.speed.PubSpeedAction"/>
             <separator/>
             <action id="com.xtu.plugin.flutter.UsageAction"
+                    icon="PluginIcons.NOTE"
                     class="com.xtu.plugin.flutter.action.usage.UsageAction"/>
         </group>
         <action id="com.xtu.plugin.flutter.DartGenerateFromJsonAndToJsonAction"
-                icon="PluginIcons.LOGO"
+                icon="PluginIcons.CODE"
                 class="com.xtu.plugin.flutter.action.generate.json.DartGenerateFromJsonAndToJsonAction">
             <add-to-group anchor="after" relative-to-action="Generate.EqualsAndHashcode.Dart" group-id="GenerateGroup"/>
         </action>
         <action id="com.xtu.plugin.flutter.DartGenerateConstructorAction"
-                icon="PluginIcons.LOGO"
+                icon="PluginIcons.CODE"
                 class="com.xtu.plugin.flutter.action.generate.constructor.DartGenerateConstructorAction">
             <add-to-group anchor="after" relative-to-action="Generate.EqualsAndHashcode.Dart" group-id="GenerateGroup"/>
         </action>

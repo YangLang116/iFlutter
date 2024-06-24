@@ -17,12 +17,9 @@ import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.xtu.plugin.flutter.component.packages.update.PackageInfo;
 import com.xtu.plugin.flutter.store.StorageService;
-import com.xtu.plugin.flutter.utils.LogUtils;
-import com.xtu.plugin.flutter.utils.PluginUtils;
-import com.xtu.plugin.flutter.utils.PubUtils;
-import com.xtu.plugin.flutter.utils.StringUtils;
-import com.xtu.plugin.flutter.utils.ToastUtils;
-
+import com.xtu.plugin.flutter.utils.*;
+import io.flutter.pub.PubRoot;
+import io.flutter.sdk.FlutterSdk;
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.YAMLElementGenerator;
@@ -31,9 +28,6 @@ import org.jetbrains.yaml.psi.YAMLKeyValue;
 
 import java.io.File;
 import java.util.Map;
-
-import io.flutter.pub.PubRoot;
-import io.flutter.sdk.FlutterSdk;
 
 public class ConvertDependencyToLocalTask extends Task.Backgroundable {
 

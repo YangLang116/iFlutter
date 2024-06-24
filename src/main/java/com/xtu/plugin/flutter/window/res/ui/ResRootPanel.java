@@ -1,16 +1,20 @@
 package com.xtu.plugin.flutter.window.res.ui;
 
+import com.intellij.ide.DataManager;
+import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.DocumentAdapter;
+import com.intellij.ui.awt.RelativePoint;
 import com.intellij.ui.components.JBList;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.util.ui.JBUI;
 import com.xtu.plugin.flutter.utils.*;
-import com.xtu.plugin.flutter.window.res.adapter.ResListAdapter;
+import com.xtu.plugin.flutter.window.res.adapter.ResListRender;
 import com.xtu.plugin.flutter.window.res.core.IResRootPanel;
-import com.xtu.plugin.flutter.window.res.menu.ResMenu;
+import com.xtu.plugin.flutter.window.res.menu.ResMenuGroup;
 import com.xtu.plugin.flutter.window.res.sort.SortType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,7 +40,7 @@ public class ResRootPanel extends JPanel implements IResRootPanel {
     private JComponent searchBar;
     private JTextField searchField;
     private JBList<File> listComponent;
-    private ResListAdapter listAdapter;
+    private ResListRender listAdapter;
 
     private String keyword;
     private SortType sortType;
@@ -108,7 +112,7 @@ public class ResRootPanel extends JPanel implements IResRootPanel {
 
     private void addListView() {
         this.listComponent = new JBList<>();
-        this.listAdapter = new ResListAdapter();
+        this.listAdapter = new ResListRender();
         this.listComponent.setCellRenderer(listAdapter);
         this.listComponent.addMouseListener(new MouseAdapter() {
             @Override
@@ -119,8 +123,13 @@ public class ResRootPanel extends JPanel implements IResRootPanel {
                 if (SwingUtilities.isLeftMouseButton(e)) {
                     PluginUtils.openFile(project, imageFile);
                 } else if (SwingUtilities.isRightMouseButton(e)) {
-                    ResMenu menu = new ResMenu(project, imageFile, ResRootPanel.this);
-                    menu.show(listComponent, point.x, point.y);
+                    ResMenuGroup menuGroup = new ResMenuGroup(imageFile, ResRootPanel.this);
+                    DataContext dataContext = DataManager.getInstance().getDataContext(listComponent);
+                    JBPopupFactory.ActionSelectionAid selectionAid = JBPopupFactory.ActionSelectionAid.SPEEDSEARCH;
+                    RelativePoint showPoint = new RelativePoint(listComponent, e.getPoint());
+                    JBPopupFactory.getInstance()
+                            .createActionGroupPopup(null, menuGroup, dataContext, selectionAid, false)
+                            .show(showPoint);
                 }
             }
         });

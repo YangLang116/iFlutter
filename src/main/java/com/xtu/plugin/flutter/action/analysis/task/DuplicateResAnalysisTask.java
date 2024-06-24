@@ -6,7 +6,6 @@ import com.intellij.openapi.ui.MessageType;
 import com.xtu.plugin.flutter.action.analysis.ui.DuplicateResDisplayDialog;
 import com.xtu.plugin.flutter.utils.FileUtils;
 import com.xtu.plugin.flutter.utils.ToastUtils;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;

@@ -1,32 +1,41 @@
-package com.xtu.plugin.flutter.window.res.menu.item;
+package com.xtu.plugin.flutter.window.res.menu.action;
 
 import com.intellij.history.LocalHistory;
 import com.intellij.history.LocalHistoryAction;
 import com.intellij.ide.IdeBundle;
 import com.intellij.ide.util.DeleteHandler;
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
+import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
-import com.xtu.plugin.flutter.window.res.core.IResRootPanel;
-
+import icons.PluginIcons;
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.event.ActionEvent;
 import java.io.File;
 
-public class DeleteItem extends AbstractItem {
+public class ResDeleteAction extends AnAction {
 
-    public DeleteItem(@NotNull Project project,
-                      @NotNull File imageFile,
-                      @NotNull IResRootPanel listener) {
-        super("Delete", project, imageFile, listener);
+    private final File imageFile;
+
+    public ResDeleteAction(@NotNull File imageFile) {
+        super("Delete", null, PluginIcons.DELETE);
+        this.imageFile = imageFile;
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public @NotNull ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.BGT;
+    }
+
+    @Override
+    public void actionPerformed(@NotNull AnActionEvent event) {
+        Project project = event.getProject();
+        if (project == null) return;
         LocalFileSystem localFileSystem = LocalFileSystem.getInstance();
         VirtualFile virtualFile = localFileSystem.refreshAndFindFileByIoFile(imageFile);
         if (virtualFile == null) return;

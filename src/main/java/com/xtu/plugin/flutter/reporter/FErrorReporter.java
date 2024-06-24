@@ -10,11 +10,10 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.NlsActions;
 import com.intellij.util.Consumer;
 import com.xtu.plugin.flutter.advice.AdviceManager;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.Component;
+import java.awt.*;
 
 public class FErrorReporter extends ErrorReportSubmitter {
 
@@ -28,7 +27,7 @@ public class FErrorReporter extends ErrorReportSubmitter {
     }
 
     @Override
-    public boolean submit(@NotNull IdeaLoggingEvent[] events,
+    public boolean submit(IdeaLoggingEvent @NotNull [] events,
                           @Nullable String additionalInfo,
                           @NotNull Component parentComponent,
                           @NotNull Consumer<? super SubmittedReportInfo> consumer) {

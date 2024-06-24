@@ -6,7 +6,6 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.xtu.plugin.flutter.action.analysis.task.DepAnalysisTask;
 import com.xtu.plugin.flutter.utils.PluginUtils;
-
 import org.jetbrains.annotations.NotNull;
 
 public class DepAnalysisAction extends AnAction {

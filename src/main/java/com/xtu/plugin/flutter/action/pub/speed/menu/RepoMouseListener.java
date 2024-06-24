@@ -2,18 +2,12 @@ package com.xtu.plugin.flutter.action.pub.speed.menu;
 
 import com.intellij.ui.components.JBList;
 import com.xtu.plugin.flutter.utils.StringUtils;
-
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.Component;
-import java.awt.Point;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
-import javax.swing.DefaultListModel;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.SwingUtilities;
 
 public class RepoMouseListener extends MouseAdapter {
 

@@ -12,7 +12,6 @@ import com.xtu.plugin.flutter.utils.FileUtils;
 import com.xtu.plugin.flutter.utils.LogUtils;
 import com.xtu.plugin.flutter.utils.StringUtils;
 import com.xtu.plugin.flutter.window.res.ResToolWindowFactory;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;

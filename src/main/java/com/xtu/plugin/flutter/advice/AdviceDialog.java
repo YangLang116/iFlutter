@@ -6,16 +6,11 @@ import com.intellij.openapi.ui.MessageType;
 import com.intellij.util.ui.JBUI;
 import com.xtu.plugin.flutter.utils.StringUtils;
 import com.xtu.plugin.flutter.utils.ToastUtils;
-
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 public class AdviceDialog extends DialogWrapper {
 
@@ -40,6 +35,7 @@ public class AdviceDialog extends DialogWrapper {
 
     private AdviceDialog(@Nullable Project project) {
         super(project, null, false, IdeModalityType.PROJECT);
+        setHorizontalStretch(1.5f);
         setTitle("Suggestion & Feedback");
         initUI();
         init();

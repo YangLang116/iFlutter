@@ -13,23 +13,14 @@ import com.xtu.plugin.flutter.store.StorageEntity;
 import com.xtu.plugin.flutter.store.StorageService;
 import com.xtu.plugin.flutter.utils.CollectionUtils;
 import com.xtu.plugin.flutter.utils.StringUtils;
-
+import icons.PluginIcons;
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collections;
 import java.util.Objects;
-
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
-import icons.PluginIcons;
 
 public final class SettingsConfiguration implements SearchableConfigurable {
 
@@ -103,6 +94,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
             }
         });
         //建议与反馈
+        adviceLabel.setIcon(PluginIcons.NOTE);
         adviceLabel.setText("<html><u>Suggestion & Feedback</u></html>");
         adviceLabel.addMouseListener(new MouseAdapter() {
             @Override

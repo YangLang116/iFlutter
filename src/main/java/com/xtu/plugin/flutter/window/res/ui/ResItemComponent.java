@@ -5,17 +5,11 @@ import com.intellij.ui.JBColor;
 import com.intellij.util.ui.JBUI;
 import com.xtu.plugin.flutter.base.component.ImageComponent;
 import com.xtu.plugin.flutter.utils.FileUtils;
-
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.BorderLayout;
-import java.awt.Font;
+import javax.swing.*;
+import java.awt.*;
 import java.io.File;
-
-import javax.swing.Box;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSeparator;
 
 public class ResItemComponent extends JPanel {
 
@@ -31,8 +25,8 @@ public class ResItemComponent extends JPanel {
     }
 
     private void loadThumbnail(@NotNull File assetFile) {
-        add(this.imageComponent = new ImageComponent(60), BorderLayout.WEST);
-        this.imageComponent.loadImage(assetFile, 50, (width, height) -> {
+        add(this.imageComponent = new ImageComponent(60, 5), BorderLayout.WEST);
+        this.imageComponent.loadImage(assetFile, 180, (width, height) -> {
             String originText = this.sizeLabel.getText();
             this.sizeLabel.setText(String.format("%s | %d x %d", originText, width, height));
         });

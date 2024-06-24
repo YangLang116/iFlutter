@@ -8,7 +8,6 @@ import com.xtu.plugin.flutter.component.packages.update.FlutterPackageUpdater;
 import com.xtu.plugin.flutter.store.asset.AssetRegisterStorageService;
 import com.xtu.plugin.flutter.upgrader.UpgradeManager;
 import com.xtu.plugin.flutter.utils.LogUtils;
-
 import org.jetbrains.annotations.NotNull;
 
 public class FProjectManager implements StartupActivity {

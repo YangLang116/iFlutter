@@ -13,14 +13,12 @@ import com.xtu.plugin.flutter.utils.AssetUtils;
 import com.xtu.plugin.flutter.utils.PluginUtils;
 import com.xtu.plugin.flutter.utils.StringUtils;
 import com.xtu.plugin.flutter.utils.ToastUtils;
-
+import kotlin.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 
 import java.io.File;
 import java.util.List;
-
-import kotlin.Pair;
 
 public class ConvertDependencyToLocalAction extends BaseDependencyAction {
 

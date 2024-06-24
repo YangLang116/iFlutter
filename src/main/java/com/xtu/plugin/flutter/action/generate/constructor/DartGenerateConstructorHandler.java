@@ -5,7 +5,6 @@ import com.jetbrains.lang.dart.DartComponentType;
 import com.jetbrains.lang.dart.ide.generation.BaseDartGenerateHandler;
 import com.jetbrains.lang.dart.psi.DartClass;
 import com.jetbrains.lang.dart.psi.DartComponent;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

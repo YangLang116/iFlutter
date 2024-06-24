@@ -12,7 +12,6 @@ import com.intellij.psi.PsiElement;
 import com.xtu.plugin.flutter.action.pub.speed.entity.AndroidMavenInfo;
 import com.xtu.plugin.flutter.utils.ArrayUtils;
 import com.xtu.plugin.flutter.utils.CollectionUtils;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;

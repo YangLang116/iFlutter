@@ -8,7 +8,6 @@ import com.xtu.plugin.flutter.component.assets.code.DartRFileGenerator;
 import com.xtu.plugin.flutter.utils.FontUtils;
 import com.xtu.plugin.flutter.utils.LogUtils;
 import com.xtu.plugin.flutter.utils.PubSpecUtils;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

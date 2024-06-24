@@ -1,7 +1,6 @@
 package com.xtu.plugin.flutter.utils;
 
 import com.intellij.psi.PsiElement;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

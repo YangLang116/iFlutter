@@ -14,7 +14,6 @@ import com.xtu.plugin.flutter.utils.LogUtils;
 import com.xtu.plugin.flutter.utils.PluginUtils;
 import com.xtu.plugin.flutter.utils.PubSpecUtils;
 import com.xtu.plugin.flutter.utils.TinyUtils;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;

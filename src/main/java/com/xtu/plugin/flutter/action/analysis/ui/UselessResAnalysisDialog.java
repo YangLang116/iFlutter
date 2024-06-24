@@ -6,17 +6,13 @@ import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.MessageType;
 import com.intellij.ui.components.JBScrollPane;
 import com.xtu.plugin.flutter.utils.ToastUtils;
-
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.swing.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
-
-import javax.swing.Action;
-import javax.swing.JComponent;
-import javax.swing.JTextPane;
 
 public class UselessResAnalysisDialog extends DialogWrapper {
 

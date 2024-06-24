@@ -1,19 +1,16 @@
 package com.xtu.plugin.flutter.window.res.adapter;
 
 import com.xtu.plugin.flutter.window.res.ui.ResItemComponent;
-
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.Component;
+import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.JList;
-import javax.swing.ListCellRenderer;
-
-public class ResListAdapter implements ListCellRenderer<File> {
+public class ResListRender implements ListCellRenderer<File> {
 
     private final Map<String, ResItemComponent> componentCache = new HashMap<>();
 

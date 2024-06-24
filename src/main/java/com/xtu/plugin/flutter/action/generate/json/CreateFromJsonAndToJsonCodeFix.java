@@ -6,15 +6,9 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.jetbrains.lang.dart.ide.generation.BaseCreateMethodsFix;
-import com.jetbrains.lang.dart.psi.DartClass;
-import com.jetbrains.lang.dart.psi.DartComponent;
-import com.jetbrains.lang.dart.psi.DartComponentName;
-import com.jetbrains.lang.dart.psi.DartReferenceExpression;
-import com.jetbrains.lang.dart.psi.DartSimpleType;
-import com.jetbrains.lang.dart.psi.DartTypeArguments;
+import com.jetbrains.lang.dart.psi.*;
 import com.xtu.plugin.flutter.action.generate.json.entity.DartFieldEntity;
 import com.xtu.plugin.flutter.utils.DartUtils;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

@@ -1,10 +1,9 @@
 package com.xtu.plugin.flutter.window.res.action;
 
-import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.xtu.plugin.flutter.window.res.core.IResRootPanel;
-
+import icons.PluginIcons;
 import org.jetbrains.annotations.NotNull;
 
 public class CompressAction extends AnAction {
@@ -12,7 +11,7 @@ public class CompressAction extends AnAction {
     private final IResRootPanel rootPanel;
 
     public CompressAction(@NotNull IResRootPanel rootPanel) {
-        super(AllIcons.Actions.IntentionBulbGrey);
+        super(PluginIcons.COMPRESS);
         this.rootPanel = rootPanel;
     }
 

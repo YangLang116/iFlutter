@@ -40,7 +40,7 @@ public class StorageEntity {
     //是否生成数据不可修改的fromJson
     public boolean isUnModifiableFromJson = false;
     //tiny api key
-    public boolean autoTinyImage = true;
+    public boolean autoTinyImage = false;
     public String tinyApiKey = "";
 
     public StorageEntity() {

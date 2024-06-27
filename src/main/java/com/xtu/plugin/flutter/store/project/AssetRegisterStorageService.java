@@ -1,4 +1,4 @@
-package com.xtu.plugin.flutter.store.asset;
+package com.xtu.plugin.flutter.store.project;
 
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
@@ -7,6 +7,7 @@ import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
 import com.xtu.plugin.flutter.base.entity.AssetResultEntity;
 import com.xtu.plugin.flutter.component.assets.code.DartRFileGenerator;
+import com.xtu.plugin.flutter.store.project.entity.AssetStorageEntity;
 import com.xtu.plugin.flutter.utils.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

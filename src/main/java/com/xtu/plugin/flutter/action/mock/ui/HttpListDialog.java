@@ -12,8 +12,8 @@ import com.xtu.plugin.flutter.action.mock.callback.IHttpListComponent;
 import com.xtu.plugin.flutter.action.mock.manager.HttpMockManager;
 import com.xtu.plugin.flutter.action.mock.menu.HttpMenuGroup;
 import com.xtu.plugin.flutter.action.mock.ui.render.HttpListRender;
-import com.xtu.plugin.flutter.store.HttpEntity;
-import com.xtu.plugin.flutter.store.StorageService;
+import com.xtu.plugin.flutter.store.project.entity.HttpEntity;
+import com.xtu.plugin.flutter.store.project.ProjectStorageService;
 import com.xtu.plugin.flutter.utils.StringUtils;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
@@ -82,7 +82,7 @@ public class HttpListDialog extends DialogWrapper implements IHttpListComponent 
     @Override
     @NotNull
     public List<HttpEntity> getHttpConfigList() {
-        return StorageService.getInstance(project).getState().httpEntityList;
+        return ProjectStorageService.getInstance(project).getState().httpEntityList;
     }
 
     @Override

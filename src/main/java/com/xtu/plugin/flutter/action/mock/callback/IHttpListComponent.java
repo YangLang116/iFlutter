@@ -1,6 +1,6 @@
 package com.xtu.plugin.flutter.action.mock.callback;
 
-import com.xtu.plugin.flutter.store.HttpEntity;
+import com.xtu.plugin.flutter.store.project.entity.HttpEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

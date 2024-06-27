@@ -1,4 +1,4 @@
-package com.xtu.plugin.flutter.store.asset;
+package com.xtu.plugin.flutter.store.project.entity;
 
 import java.util.ArrayList;
 import java.util.List;

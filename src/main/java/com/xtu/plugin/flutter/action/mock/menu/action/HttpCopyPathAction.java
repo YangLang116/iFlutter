@@ -6,7 +6,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
 import com.xtu.plugin.flutter.action.mock.manager.HttpMockManager;
-import com.xtu.plugin.flutter.store.HttpEntity;
+import com.xtu.plugin.flutter.store.project.entity.HttpEntity;
 import com.xtu.plugin.flutter.utils.PluginUtils;
 import com.xtu.plugin.flutter.utils.StringUtils;
 import com.xtu.plugin.flutter.utils.ToastUtils;

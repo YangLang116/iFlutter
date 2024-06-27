@@ -11,8 +11,8 @@ import com.intellij.openapi.wm.WindowManager;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.util.ui.JBUI;
 import com.xtu.plugin.flutter.action.j2d.generate.J2DGenerator;
-import com.xtu.plugin.flutter.store.StorageEntity;
-import com.xtu.plugin.flutter.store.StorageService;
+import com.xtu.plugin.flutter.store.project.entity.ProjectStorageEntity;
+import com.xtu.plugin.flutter.store.project.ProjectStorageService;
 import com.xtu.plugin.flutter.utils.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -84,7 +84,7 @@ public class J2DDialog extends DialogWrapper {
         okButton.addActionListener(e -> {
             String className = classNameFiled.getText();
             String jsonData = jsonArea.getText();
-            StorageEntity storageEntity = StorageService.getInstance(project).getState();
+            ProjectStorageEntity storageEntity = ProjectStorageService.getInstance(project).getState();
             generateDart(storageEntity.flutter2Enable, storageEntity.isUnModifiableFromJson, className, jsonData);
             close(OK_EXIT_CODE);
         });

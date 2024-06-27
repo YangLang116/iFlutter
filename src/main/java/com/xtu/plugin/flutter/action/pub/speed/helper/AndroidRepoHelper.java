@@ -1,7 +1,7 @@
 package com.xtu.plugin.flutter.action.pub.speed.helper;
 
 import com.intellij.openapi.project.Project;
-import com.xtu.plugin.flutter.store.StorageService;
+import com.xtu.plugin.flutter.store.project.ProjectStorageService;
 import com.xtu.plugin.flutter.utils.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,7 +21,7 @@ public class AndroidRepoHelper {
 
     @Nullable
     public static List<String> getRepoList(@NotNull Project project) {
-        StorageService storageService = StorageService.getInstance(project);
+        ProjectStorageService storageService = ProjectStorageService.getInstance(project);
         String mirrorRepoStr = storageService.getState().mirrorRepoStr;
         if (StringUtils.isEmpty(mirrorRepoStr)) return null;
         return Arrays.asList(mirrorRepoStr.split(REPO_SPLIT));

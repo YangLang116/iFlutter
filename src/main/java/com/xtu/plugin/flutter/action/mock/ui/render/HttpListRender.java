@@ -1,7 +1,7 @@
 package com.xtu.plugin.flutter.action.mock.ui.render;
 
 import com.intellij.util.ui.JBUI;
-import com.xtu.plugin.flutter.store.HttpEntity;
+import com.xtu.plugin.flutter.store.project.entity.HttpEntity;
 import icons.PluginIcons;
 
 import javax.swing.*;

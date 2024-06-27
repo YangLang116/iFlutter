@@ -7,8 +7,8 @@ import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.util.ui.JBUI;
 import com.xtu.plugin.flutter.action.intl.translate.TransApi;
 import com.xtu.plugin.flutter.action.intl.utils.IntlUtils;
-import com.xtu.plugin.flutter.store.StorageEntity;
-import com.xtu.plugin.flutter.store.StorageService;
+import com.xtu.plugin.flutter.store.project.entity.ProjectStorageEntity;
+import com.xtu.plugin.flutter.store.project.ProjectStorageService;
 import com.xtu.plugin.flutter.utils.StringUtils;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -49,8 +49,8 @@ public class AddIntlDialog extends DialogWrapper {
     }
 
     private TransApi initTransApi() {
-        StorageService storageService = StorageService.getInstance(project);
-        StorageEntity storageEntity = storageService.getState();
+        ProjectStorageService storageService = ProjectStorageService.getInstance(project);
+        ProjectStorageEntity storageEntity = storageService.getState();
         String apiId = storageEntity.apiKey;
         String apiSecret = storageEntity.apiSecret;
         return new TransApi(apiId, apiSecret);

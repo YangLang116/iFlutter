@@ -3,7 +3,7 @@ package com.xtu.plugin.flutter.component.packages.update;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
-import com.xtu.plugin.flutter.store.StorageService;
+import com.xtu.plugin.flutter.store.project.ProjectStorageService;
 import com.xtu.plugin.flutter.utils.CommandUtils;
 import com.xtu.plugin.flutter.utils.LogUtils;
 import com.xtu.plugin.flutter.utils.PluginUtils;
@@ -96,7 +96,7 @@ public class FlutterPackageUpdater implements Disposable {
     private void updatePackageInfo(List<PackageInfo> packageInfoList) {
         if (this.isDetach) return;
         LogUtils.info("FlutterPackageUpdater updatePackageInfo size: " + packageInfoList.size());
-        Map<String, PackageInfo> infoMap = StorageService.getInstance(project).getState().packageInfoMap;
+        Map<String, PackageInfo> infoMap = ProjectStorageService.getInstance(project).getState().packageInfoMap;
         infoMap.clear();
         for (PackageInfo packageInfo : packageInfoList) {
             infoMap.put(packageInfo.name, packageInfo);

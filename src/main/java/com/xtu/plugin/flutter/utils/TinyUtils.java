@@ -11,7 +11,7 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.tinify.Tinify;
 import com.xtu.plugin.flutter.configuration.SettingsConfiguration;
-import com.xtu.plugin.flutter.store.StorageService;
+import com.xtu.plugin.flutter.store.project.ProjectStorageService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,7 +36,7 @@ public class TinyUtils {
     public static void compressImage(@NotNull Project project,
                                      @NotNull List<File> imageFileList,
                                      @Nullable TinyUtils.OnCompressListener listener) {
-        final String tinyKey = StorageService.getInstance(project).getState().tinyApiKey;
+        final String tinyKey = ProjectStorageService.getInstance(project).getState().tinyApiKey;
         if (StringUtils.isEmpty(tinyKey)) {
             int result = Messages.showYesNoDialog(
                     project,

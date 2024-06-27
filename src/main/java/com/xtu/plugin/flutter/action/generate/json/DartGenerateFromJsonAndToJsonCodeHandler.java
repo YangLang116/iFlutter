@@ -7,8 +7,8 @@ import com.jetbrains.lang.dart.ide.generation.BaseCreateMethodsFix;
 import com.jetbrains.lang.dart.ide.generation.BaseDartGenerateHandler;
 import com.jetbrains.lang.dart.psi.DartClass;
 import com.jetbrains.lang.dart.psi.DartComponent;
-import com.xtu.plugin.flutter.store.StorageEntity;
-import com.xtu.plugin.flutter.store.StorageService;
+import com.xtu.plugin.flutter.store.project.entity.ProjectStorageEntity;
+import com.xtu.plugin.flutter.store.project.ProjectStorageService;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -31,7 +31,7 @@ public class DartGenerateFromJsonAndToJsonCodeHandler extends BaseDartGenerateHa
     @NotNull
     protected BaseCreateMethodsFix<DartComponent> createFix(@NotNull DartClass dartClass) {
         Project project = dartClass.getProject();
-        StorageEntity storageEntity = StorageService.getInstance(project).getState();
+        ProjectStorageEntity storageEntity = ProjectStorageService.getInstance(project).getState();
         return new CreateFromJsonAndToJsonCodeFix(dartClass,
                 storageEntity.flutter2Enable, storageEntity.isUnModifiableFromJson,
                 this.hasFromJson, hasToJson);

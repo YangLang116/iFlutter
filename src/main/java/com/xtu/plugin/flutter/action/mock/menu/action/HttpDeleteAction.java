@@ -4,7 +4,7 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.xtu.plugin.flutter.action.mock.callback.IHttpListComponent;
-import com.xtu.plugin.flutter.store.HttpEntity;
+import com.xtu.plugin.flutter.store.project.entity.HttpEntity;
 import icons.PluginIcons;
 import org.jetbrains.annotations.NotNull;
 

@@ -1,4 +1,4 @@
-package com.xtu.plugin.flutter.store;
+package com.xtu.plugin.flutter.store.project.entity;
 
 import com.intellij.util.xmlb.annotations.Transient;
 import com.xtu.plugin.flutter.action.pub.speed.helper.AndroidRepoHelper;
@@ -6,7 +6,7 @@ import com.xtu.plugin.flutter.component.packages.update.PackageInfo;
 
 import java.util.*;
 
-public class StorageEntity {
+public class ProjectStorageEntity {
 
     //资源变化检测目录，用于实时生成R文件
     public List<String> resDir = Arrays.asList("assets", "images");
@@ -43,14 +43,14 @@ public class StorageEntity {
     public boolean autoTinyImage = false;
     public String tinyApiKey = "";
 
-    public StorageEntity() {
+    public ProjectStorageEntity() {
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        StorageEntity that = (StorageEntity) o;
+        ProjectStorageEntity that = (ProjectStorageEntity) o;
         return flutter2Enable == that.flutter2Enable
                 && resCheckEnable == that.resCheckEnable
                 && Objects.equals(resDir, that.resDir)

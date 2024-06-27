@@ -16,7 +16,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.xtu.plugin.flutter.component.packages.update.PackageInfo;
-import com.xtu.plugin.flutter.store.StorageService;
+import com.xtu.plugin.flutter.store.project.ProjectStorageService;
 import com.xtu.plugin.flutter.utils.*;
 import io.flutter.pub.PubRoot;
 import io.flutter.sdk.FlutterSdk;
@@ -149,7 +149,7 @@ public class ConvertDependencyToLocalTask extends Task.Backgroundable {
     }
 
     private static void removeAnnotator(Project project, String packageName) {
-        Map<String, PackageInfo> infoMap = StorageService.getInstance(project).getState().packageInfoMap;
+        Map<String, PackageInfo> infoMap = ProjectStorageService.getInstance(project).getState().packageInfoMap;
         infoMap.remove(packageName);
     }
 }

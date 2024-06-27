@@ -5,8 +5,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.xtu.plugin.flutter.component.analysis.utils.ImageAnalysisUtils;
-import com.xtu.plugin.flutter.store.StorageEntity;
-import com.xtu.plugin.flutter.store.StorageService;
+import com.xtu.plugin.flutter.store.project.entity.ProjectStorageEntity;
+import com.xtu.plugin.flutter.store.project.ProjectStorageService;
 import com.xtu.plugin.flutter.utils.AssetUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,8 +30,8 @@ public class ImageSizeAnalyzer {
 
     private void doAnalysis(@NotNull VirtualFile file) {
         final String filePath = file.getPath();
-        StorageService storageService = StorageService.getInstance(project);
-        final StorageEntity storageEntity = storageService.getState();
+        ProjectStorageService storageService = ProjectStorageService.getInstance(project);
+        final ProjectStorageEntity storageEntity = storageService.getState();
         ApplicationManager.getApplication().executeOnPooledThread(() -> {
             final File imageFile = new File(filePath);
             String sizeTip = getIllegalSizeTip(imageFile, storageEntity.maxPicSize);

@@ -13,7 +13,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.xtu.plugin.flutter.base.entity.AssetResultEntity;
-import com.xtu.plugin.flutter.store.asset.AssetRegisterStorageService;
+import com.xtu.plugin.flutter.store.project.AssetRegisterStorageService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.YAMLElementGenerator;

@@ -20,7 +20,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import com.xtu.plugin.flutter.component.packages.update.PackageInfo;
-import com.xtu.plugin.flutter.store.StorageService;
+import com.xtu.plugin.flutter.store.project.ProjectStorageService;
 import com.xtu.plugin.flutter.utils.PubSpecUtils;
 import com.xtu.plugin.flutter.utils.StringUtils;
 import icons.PluginIcons;
@@ -109,7 +109,7 @@ public class PackageUpdateAnnotator implements Annotator {
     }
 
     private PackageInfo getPackageInfo(Project project, String packageName) {
-        Map<String, PackageInfo> packageInfoMap = StorageService.getInstance(project).getState().packageInfoMap;
+        Map<String, PackageInfo> packageInfoMap = ProjectStorageService.getInstance(project).getState().packageInfoMap;
         return packageInfoMap.get(packageName);
     }
 

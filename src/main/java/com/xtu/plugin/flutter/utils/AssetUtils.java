@@ -2,8 +2,8 @@ package com.xtu.plugin.flutter.utils;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.xtu.plugin.flutter.store.StorageEntity;
-import com.xtu.plugin.flutter.store.StorageService;
+import com.xtu.plugin.flutter.store.project.entity.ProjectStorageEntity;
+import com.xtu.plugin.flutter.store.project.ProjectStorageService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,11 +18,11 @@ public class AssetUtils {
     private static final Pattern sPattern = Pattern.compile("\\d+\\.0x");
 
     public static List<String> supportAssetFoldName(@NotNull Project project) {
-        return StorageService.getInstance(project).getState().resDir;
+        return ProjectStorageService.getInstance(project).getState().resDir;
     }
 
     public static boolean isFoldRegister(@NotNull Project project) {
-        return StorageService.getInstance(project).getState().foldRegisterEnable;
+        return ProjectStorageService.getInstance(project).getState().foldRegisterEnable;
     }
 
     public static boolean isAssetDir(@NotNull Project project, @NotNull VirtualFile virtualFile) {
@@ -156,8 +156,8 @@ public class AssetUtils {
 
     @NotNull
     public static String getResPrefix(@NotNull Project project, @NotNull String projectName) {
-        StorageService storageService = StorageService.getInstance(project);
-        StorageEntity state = storageService.getState();
+        ProjectStorageService storageService = ProjectStorageService.getInstance(project);
+        ProjectStorageEntity state = storageService.getState();
         boolean registerResWithPackage = state.registerResWithPackage;
         if (registerResWithPackage) return "packages/" + projectName + "/";
         return "";

@@ -1,8 +1,8 @@
 package com.xtu.plugin.flutter.action.mock.manager.dispatcher;
 
 import com.intellij.openapi.project.Project;
-import com.xtu.plugin.flutter.store.HttpEntity;
-import com.xtu.plugin.flutter.store.StorageService;
+import com.xtu.plugin.flutter.store.project.entity.HttpEntity;
+import com.xtu.plugin.flutter.store.project.ProjectStorageService;
 import com.xtu.plugin.flutter.utils.StringUtils;
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
@@ -24,7 +24,7 @@ public final class HttpDispatcher extends Dispatcher {
     public MockResponse dispatch(@NotNull RecordedRequest recordedRequest) {
         String path = recordedRequest.getPath();
         String method = recordedRequest.getMethod();
-        List<HttpEntity> httpEntityList = StorageService.getInstance(project).getState().httpEntityList;
+        List<HttpEntity> httpEntityList = ProjectStorageService.getInstance(project).getState().httpEntityList;
         for (HttpEntity httpEntity : httpEntityList) {
             if (StringUtils.equals(httpEntity.path, path)) {
                 if (StringUtils.equalsIgnoreCase(httpEntity.method, method)) {

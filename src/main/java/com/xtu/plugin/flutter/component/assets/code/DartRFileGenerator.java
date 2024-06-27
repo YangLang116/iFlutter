@@ -8,7 +8,7 @@ import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.xtu.plugin.flutter.base.entity.AssetResultEntity;
-import com.xtu.plugin.flutter.store.StorageService;
+import com.xtu.plugin.flutter.store.project.ProjectStorageService;
 import com.xtu.plugin.flutter.utils.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -155,7 +155,7 @@ public class DartRFileGenerator {
         if (assetFileName.endsWith("/")) return true;
         String extension = AssetUtils.getAssetExtension(assetFileName);
         if (StringUtils.isEmpty(extension)) return false;
-        StorageService storageService = StorageService.getInstance(project);
+        ProjectStorageService storageService = ProjectStorageService.getInstance(project);
         List<String> ignoreResExtension = storageService.getState().ignoreResExtension;
         return ignoreResExtension.contains(extension);
     }

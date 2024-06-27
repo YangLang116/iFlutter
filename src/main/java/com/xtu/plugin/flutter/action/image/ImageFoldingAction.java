@@ -9,8 +9,8 @@ import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.xtu.plugin.flutter.action.BaseResourceAction;
 import com.xtu.plugin.flutter.base.entity.AssetResultEntity;
-import com.xtu.plugin.flutter.store.StorageEntity;
-import com.xtu.plugin.flutter.store.StorageService;
+import com.xtu.plugin.flutter.store.project.entity.ProjectStorageEntity;
+import com.xtu.plugin.flutter.store.project.ProjectStorageService;
 import com.xtu.plugin.flutter.utils.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,7 +40,7 @@ public class ImageFoldingAction extends BaseResourceAction {
 
     private void doAction(@NotNull Project project, @NotNull VirtualFile virtualFile) {
         File imageDirectory = new File(virtualFile.getPath());
-        StorageEntity storageEntity = StorageService.getInstance(project).getState();
+        ProjectStorageEntity storageEntity = ProjectStorageService.getInstance(project).getState();
         boolean oldStatus = storageEntity.resCheckEnable;
         try {
             storageEntity.resCheckEnable = false; // 归整资源时，为防止反复对pubspec.yaml读写，临时关闭资源监听

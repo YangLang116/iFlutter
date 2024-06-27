@@ -7,7 +7,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.xtu.plugin.flutter.action.mock.callback.IHttpListComponent;
 import com.xtu.plugin.flutter.action.mock.menu.action.HttpCopyPathAction;
 import com.xtu.plugin.flutter.action.mock.menu.action.HttpDeleteAction;
-import com.xtu.plugin.flutter.store.HttpEntity;
+import com.xtu.plugin.flutter.store.project.entity.HttpEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

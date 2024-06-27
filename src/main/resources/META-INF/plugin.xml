@@ -17,9 +17,9 @@
         <defaultLiveTemplates file="/template/Flutter.xml"/>
         <postStartupActivity implementation="com.xtu.plugin.flutter.component.FProjectManager"/>
         <liveTemplateContext implementation="com.xtu.plugin.flutter.template.FlutterContext"/>
-        <projectService serviceImplementation="com.xtu.plugin.flutter.store.StorageService"/>
+        <projectService serviceImplementation="com.xtu.plugin.flutter.store.project.ProjectStorageService"/>
         <projectService serviceImplementation="com.xtu.plugin.flutter.action.mock.manager.HttpMockManager"/>
-        <projectService serviceImplementation="com.xtu.plugin.flutter.store.asset.AssetRegisterStorageService"/>
+        <projectService serviceImplementation="com.xtu.plugin.flutter.store.project.AssetRegisterStorageService"/>
         <projectService serviceImplementation="com.xtu.plugin.flutter.component.assets.AssetsManager"/>
         <projectService serviceImplementation="com.xtu.plugin.flutter.component.packages.update.FlutterPackageUpdater"/>
         <projectConfigurable parentId="tools" instance="com.xtu.plugin.flutter.configuration.SettingsConfiguration"/>

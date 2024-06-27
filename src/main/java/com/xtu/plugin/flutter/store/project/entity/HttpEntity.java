@@ -1,4 +1,4 @@
-package com.xtu.plugin.flutter.store;
+package com.xtu.plugin.flutter.store.project.entity;
 
 import java.util.Objects;
 

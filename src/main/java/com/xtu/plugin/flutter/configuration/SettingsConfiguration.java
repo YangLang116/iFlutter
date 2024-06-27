@@ -9,8 +9,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.xtu.plugin.flutter.action.pub.speed.ui.MirrorRepoDialog;
 import com.xtu.plugin.flutter.advice.AdviceDialog;
-import com.xtu.plugin.flutter.store.StorageEntity;
-import com.xtu.plugin.flutter.store.StorageService;
+import com.xtu.plugin.flutter.store.project.entity.ProjectStorageEntity;
+import com.xtu.plugin.flutter.store.project.ProjectStorageService;
 import com.xtu.plugin.flutter.utils.CollectionUtils;
 import com.xtu.plugin.flutter.utils.StringUtils;
 import icons.PluginIcons;
@@ -128,14 +128,14 @@ public final class SettingsConfiguration implements SearchableConfigurable {
         return rootPanel;
     }
 
-    private StorageEntity getStorageEntity() {
-        StorageService storageService = StorageService.getInstance(project);
+    private ProjectStorageEntity getStorageEntity() {
+        ProjectStorageService storageService = ProjectStorageService.getInstance(project);
         return storageService.getState();
     }
 
     @Override
     public boolean isModified() {
-        StorageEntity storageEntity = getStorageEntity();
+        ProjectStorageEntity storageEntity = getStorageEntity();
         return !CollectionUtils.join(storageEntity.resDir, LIST_SPLIT_CHAR).equals(resDetectField.getText().trim())
                 || !CollectionUtils.join(storageEntity.ignoreResExtension, LIST_SPLIT_CHAR).equals(ignoreResField.getText().trim())
                 || storageEntity.flutter2Enable != flutter2EnableBox.isSelected()
@@ -157,7 +157,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
 
     @Override
     public void reset() {
-        StorageEntity storageEntity = getStorageEntity();
+        ProjectStorageEntity storageEntity = getStorageEntity();
         String resDirListStr = CollectionUtils.join(storageEntity.resDir, LIST_SPLIT_CHAR);
         resDetectField.setText(resDirListStr);
         String ignoreResExtensionStr = CollectionUtils.join(storageEntity.ignoreResExtension, LIST_SPLIT_CHAR);
@@ -180,7 +180,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
 
     @Override
     public void apply() {
-        StorageEntity storageEntity = getStorageEntity();
+        ProjectStorageEntity storageEntity = getStorageEntity();
         String resStr = resDetectField.getText().trim();
         storageEntity.resDir = StringUtils.isEmpty(resStr) ?
                 Collections.emptyList() : CollectionUtils.split(resStr, LIST_SPLIT_CHAR);

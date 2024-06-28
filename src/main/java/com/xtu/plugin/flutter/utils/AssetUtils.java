@@ -2,8 +2,8 @@ package com.xtu.plugin.flutter.utils;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.xtu.plugin.flutter.store.project.entity.ProjectStorageEntity;
 import com.xtu.plugin.flutter.store.project.ProjectStorageService;
+import com.xtu.plugin.flutter.store.project.entity.ProjectStorageEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

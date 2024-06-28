@@ -9,8 +9,10 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.xtu.plugin.flutter.action.pub.speed.ui.MirrorRepoDialog;
 import com.xtu.plugin.flutter.advice.AdviceDialog;
-import com.xtu.plugin.flutter.store.project.entity.ProjectStorageEntity;
+import com.xtu.plugin.flutter.store.ide.IdeStorageService;
+import com.xtu.plugin.flutter.store.ide.entity.IdeStorageEntity;
 import com.xtu.plugin.flutter.store.project.ProjectStorageService;
+import com.xtu.plugin.flutter.store.project.entity.ProjectStorageEntity;
 import com.xtu.plugin.flutter.utils.CollectionUtils;
 import com.xtu.plugin.flutter.utils.StringUtils;
 import icons.PluginIcons;
@@ -128,83 +130,90 @@ public final class SettingsConfiguration implements SearchableConfigurable {
         return rootPanel;
     }
 
-    private ProjectStorageEntity getStorageEntity() {
+    private ProjectStorageEntity getProjectStorage() {
         ProjectStorageService storageService = ProjectStorageService.getInstance(project);
         return storageService.getState();
     }
 
+    private IdeStorageEntity getIdeStorage() {
+        return IdeStorageService.getInstance().getState();
+    }
+
     @Override
     public boolean isModified() {
-        ProjectStorageEntity storageEntity = getStorageEntity();
-        return !CollectionUtils.join(storageEntity.resDir, LIST_SPLIT_CHAR).equals(resDetectField.getText().trim())
-                || !CollectionUtils.join(storageEntity.ignoreResExtension, LIST_SPLIT_CHAR).equals(ignoreResField.getText().trim())
-                || storageEntity.flutter2Enable != flutter2EnableBox.isSelected()
-                || storageEntity.resCheckEnable != resCheckEnableBox.isSelected()
-                || storageEntity.foldRegisterEnable != foldRegisterBox.isSelected()
-                || storageEntity.registerResWithPackage != withPackageNameBox.isSelected()
-                || storageEntity.isUnModifiableFromJson != isUnModifiableFromJson.isSelected()
-                || !Objects.equals(storageEntity.mirrorRepoStr, mirrorRepoStr)
-                || !Objects.equals(storageEntity.apiKey, apiKeyField.getText().trim())
-                || !Objects.equals(storageEntity.apiSecret, apiSecretField.getText().trim())
-                || storageEntity.enableSizeMonitor != enableSizeMonitor.isSelected()
-                || storageEntity.maxPicSize != Integer.parseInt(maxPicSizeField.getText().trim())
-                || storageEntity.maxPicWidth != Integer.parseInt(maxPicWidthField.getText().trim())
-                || storageEntity.maxPicHeight != Integer.parseInt(maxPicHeightField.getText().trim())
-                || !Objects.equals(storageEntity.tinyApiKey, tinyApiKeyField.getText().trim())
-                || storageEntity.autoTinyImage != autoTinyImage.isSelected();
+        IdeStorageEntity ideStorage = getIdeStorage();
+        ProjectStorageEntity projectStorage = getProjectStorage();
+        return !CollectionUtils.join(projectStorage.resDir, LIST_SPLIT_CHAR).equals(resDetectField.getText().trim())
+                || !CollectionUtils.join(projectStorage.ignoreResExtension, LIST_SPLIT_CHAR).equals(ignoreResField.getText().trim())
+                || projectStorage.flutter2Enable != flutter2EnableBox.isSelected()
+                || projectStorage.resCheckEnable != resCheckEnableBox.isSelected()
+                || projectStorage.foldRegisterEnable != foldRegisterBox.isSelected()
+                || projectStorage.registerResWithPackage != withPackageNameBox.isSelected()
+                || projectStorage.isUnModifiableFromJson != isUnModifiableFromJson.isSelected()
+                || !Objects.equals(ideStorage.mirrorRepoStr, mirrorRepoStr)
+                || !Objects.equals(ideStorage.apiKey, apiKeyField.getText().trim())
+                || !Objects.equals(ideStorage.apiSecret, apiSecretField.getText().trim())
+                || projectStorage.enableSizeMonitor != enableSizeMonitor.isSelected()
+                || projectStorage.maxPicSize != Integer.parseInt(maxPicSizeField.getText().trim())
+                || projectStorage.maxPicWidth != Integer.parseInt(maxPicWidthField.getText().trim())
+                || projectStorage.maxPicHeight != Integer.parseInt(maxPicHeightField.getText().trim())
+                || !Objects.equals(ideStorage.tinyApiKey, tinyApiKeyField.getText().trim())
+                || projectStorage.autoTinyImage != autoTinyImage.isSelected();
 
     }
 
     @Override
     public void reset() {
-        ProjectStorageEntity storageEntity = getStorageEntity();
-        String resDirListStr = CollectionUtils.join(storageEntity.resDir, LIST_SPLIT_CHAR);
+        IdeStorageEntity ideStorage = getIdeStorage();
+        ProjectStorageEntity projectStorage = getProjectStorage();
+        String resDirListStr = CollectionUtils.join(projectStorage.resDir, LIST_SPLIT_CHAR);
         resDetectField.setText(resDirListStr);
-        String ignoreResExtensionStr = CollectionUtils.join(storageEntity.ignoreResExtension, LIST_SPLIT_CHAR);
+        String ignoreResExtensionStr = CollectionUtils.join(projectStorage.ignoreResExtension, LIST_SPLIT_CHAR);
         ignoreResField.setText(ignoreResExtensionStr);
-        flutter2EnableBox.setSelected(storageEntity.flutter2Enable);
-        resCheckEnableBox.setSelected(storageEntity.resCheckEnable);
-        foldRegisterBox.setSelected(storageEntity.foldRegisterEnable);
-        withPackageNameBox.setSelected(storageEntity.registerResWithPackage);
-        isUnModifiableFromJson.setSelected(storageEntity.isUnModifiableFromJson);
-        apiKeyField.setText(storageEntity.apiKey);
-        apiSecretField.setText(storageEntity.apiSecret);
-        enableSizeMonitor.setSelected(storageEntity.enableSizeMonitor);
-        maxPicSizeField.setText(String.valueOf(storageEntity.maxPicSize));
-        maxPicWidthField.setText(String.valueOf(storageEntity.maxPicWidth));
-        maxPicHeightField.setText(String.valueOf(storageEntity.maxPicHeight));
-        mirrorRepoStr = storageEntity.mirrorRepoStr;
-        tinyApiKeyField.setText(storageEntity.tinyApiKey);
-        autoTinyImage.setSelected(storageEntity.autoTinyImage);
+        flutter2EnableBox.setSelected(projectStorage.flutter2Enable);
+        resCheckEnableBox.setSelected(projectStorage.resCheckEnable);
+        foldRegisterBox.setSelected(projectStorage.foldRegisterEnable);
+        withPackageNameBox.setSelected(projectStorage.registerResWithPackage);
+        isUnModifiableFromJson.setSelected(projectStorage.isUnModifiableFromJson);
+        apiKeyField.setText(ideStorage.apiKey);
+        apiSecretField.setText(ideStorage.apiSecret);
+        enableSizeMonitor.setSelected(projectStorage.enableSizeMonitor);
+        maxPicSizeField.setText(String.valueOf(projectStorage.maxPicSize));
+        maxPicWidthField.setText(String.valueOf(projectStorage.maxPicWidth));
+        maxPicHeightField.setText(String.valueOf(projectStorage.maxPicHeight));
+        mirrorRepoStr = ideStorage.mirrorRepoStr;
+        tinyApiKeyField.setText(ideStorage.tinyApiKey);
+        autoTinyImage.setSelected(projectStorage.autoTinyImage);
     }
 
     @Override
     public void apply() {
-        ProjectStorageEntity storageEntity = getStorageEntity();
+        IdeStorageEntity ideStorage = getIdeStorage();
+        ProjectStorageEntity projectStorage = getProjectStorage();
         String resStr = resDetectField.getText().trim();
-        storageEntity.resDir = StringUtils.isEmpty(resStr) ?
+        projectStorage.resDir = StringUtils.isEmpty(resStr) ?
                 Collections.emptyList() : CollectionUtils.split(resStr, LIST_SPLIT_CHAR);
         String ignoreResExtensionStr = ignoreResField.getText().trim();
-        storageEntity.ignoreResExtension = StringUtils.isEmpty(ignoreResExtensionStr) ?
+        projectStorage.ignoreResExtension = StringUtils.isEmpty(ignoreResExtensionStr) ?
                 Collections.emptyList() : CollectionUtils.split(ignoreResExtensionStr, LIST_SPLIT_CHAR);
-        storageEntity.flutter2Enable = flutter2EnableBox.isSelected();
-        storageEntity.resCheckEnable = resCheckEnableBox.isSelected();
-        storageEntity.registerResWithPackage = withPackageNameBox.isSelected();
-        storageEntity.isUnModifiableFromJson = isUnModifiableFromJson.isSelected();
-        storageEntity.apiKey = apiKeyField.getText().trim();
-        storageEntity.apiSecret = apiSecretField.getText().trim();
-        storageEntity.enableSizeMonitor = enableSizeMonitor.isSelected();
-        storageEntity.maxPicSize = Integer.parseInt(maxPicSizeField.getText().trim());
-        storageEntity.maxPicWidth = Integer.parseInt(maxPicWidthField.getText().trim());
-        storageEntity.maxPicHeight = Integer.parseInt(maxPicHeightField.getText().trim());
-        storageEntity.mirrorRepoStr = mirrorRepoStr;
+        projectStorage.flutter2Enable = flutter2EnableBox.isSelected();
+        projectStorage.resCheckEnable = resCheckEnableBox.isSelected();
+        projectStorage.registerResWithPackage = withPackageNameBox.isSelected();
+        projectStorage.isUnModifiableFromJson = isUnModifiableFromJson.isSelected();
+        ideStorage.apiKey = apiKeyField.getText().trim();
+        ideStorage.apiSecret = apiSecretField.getText().trim();
+        projectStorage.enableSizeMonitor = enableSizeMonitor.isSelected();
+        projectStorage.maxPicSize = Integer.parseInt(maxPicSizeField.getText().trim());
+        projectStorage.maxPicWidth = Integer.parseInt(maxPicWidthField.getText().trim());
+        projectStorage.maxPicHeight = Integer.parseInt(maxPicHeightField.getText().trim());
+        ideStorage.mirrorRepoStr = mirrorRepoStr;
         //检查是否更新了注册方式
-        if (storageEntity.foldRegisterEnable != foldRegisterBox.isSelected()) {
-            storageEntity.foldRegisterEnable = foldRegisterBox.isSelected();
+        if (projectStorage.foldRegisterEnable != foldRegisterBox.isSelected()) {
+            projectStorage.foldRegisterEnable = foldRegisterBox.isSelected();
             reStartIDE();
         }
-        storageEntity.tinyApiKey = tinyApiKeyField.getText().trim();
-        storageEntity.autoTinyImage = autoTinyImage.isSelected();
+        ideStorage.tinyApiKey = tinyApiKeyField.getText().trim();
+        projectStorage.autoTinyImage = autoTinyImage.isSelected();
     }
 
     private void reStartIDE() {

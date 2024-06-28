@@ -1,7 +1,6 @@
 package com.xtu.plugin.flutter.store.project.entity;
 
 import com.intellij.util.xmlb.annotations.Transient;
-import com.xtu.plugin.flutter.action.pub.speed.helper.AndroidRepoHelper;
 import com.xtu.plugin.flutter.component.packages.update.PackageInfo;
 
 import java.util.*;
@@ -23,25 +22,20 @@ public class ProjectStorageEntity {
     //最新版本信息
     @Transient
     public Map<String, PackageInfo> packageInfoMap = new HashMap<>();
-    //翻译api key
-    public String apiKey = "20220420001182709";
-    //翻译api secret
-    public String apiSecret = "Jq7NWiluWPYwKoILFQ1V";
+    //是否开启图片尺寸监听
+    public boolean enableSizeMonitor = true;
     //最大图片
     public int maxPicSize = 500;
-    //最大图片宽高
+    //最大图片宽
     public int maxPicWidth = 1280;
+    //最大图片高
     public int maxPicHeight = 2400;
-    public boolean enableSizeMonitor = true;
-    //仓库镜像地址
-    public String mirrorRepoStr = AndroidRepoHelper.getDefaultRepoStr();
     //是否带包名生成资源文件
     public boolean registerResWithPackage = false;
     //是否生成数据不可修改的fromJson
     public boolean isUnModifiableFromJson = false;
-    //tiny api key
+    //是否开启TinyPng压缩
     public boolean autoTinyImage = false;
-    public String tinyApiKey = "";
 
     public ProjectStorageEntity() {
     }
@@ -57,16 +51,12 @@ public class ProjectStorageEntity {
                 && Objects.equals(ignoreResExtension, that.ignoreResExtension)
                 && Objects.equals(httpEntityList, that.httpEntityList)
                 && foldRegisterEnable == that.foldRegisterEnable
-                && Objects.equals(apiKey, that.apiKey)
-                && Objects.equals(apiSecret, that.apiSecret)
                 && enableSizeMonitor == that.enableSizeMonitor
                 && maxPicSize == that.maxPicSize
                 && maxPicWidth == that.maxPicWidth
                 && registerResWithPackage == that.registerResWithPackage
                 && maxPicHeight == that.maxPicHeight
                 && isUnModifiableFromJson == that.isUnModifiableFromJson
-                && Objects.equals(mirrorRepoStr, that.mirrorRepoStr)
-                && Objects.equals(tinyApiKey, that.tinyApiKey)
                 && autoTinyImage == that.autoTinyImage;
     }
 
@@ -80,16 +70,12 @@ public class ProjectStorageEntity {
                 ", httpEntityList=" + httpEntityList +
                 ", foldRegisterEnable=" + foldRegisterEnable +
                 ", packageInfoMap=" + packageInfoMap +
-                ", apiKey=" + apiKey +
-                ", apiSecret=" + apiSecret +
                 ", enableSizeMonitor=" + enableSizeMonitor +
                 ", maxPicSize=" + maxPicSize +
                 ", maxPicWidth=" + maxPicWidth +
                 ", maxPicHeight=" + maxPicHeight +
-                ", mirrorRepoStr=" + mirrorRepoStr +
                 ", registerResWithPackage=" + registerResWithPackage +
                 ", isUnModifiableFromJson=" + isUnModifiableFromJson +
-                ", tinyApiKey=" + tinyApiKey +
                 ", autoTinyImage=" + autoTinyImage +
                 '}';
     }

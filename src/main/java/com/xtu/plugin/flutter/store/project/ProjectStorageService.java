@@ -13,7 +13,7 @@ public class ProjectStorageService implements PersistentStateComponent<ProjectSt
 
     private ProjectStorageEntity storageEntity = new ProjectStorageEntity();
 
-    public static ProjectStorageService getInstance(Project project) {
+    public static ProjectStorageService getInstance(@NotNull Project project) {
         return project.getService(ProjectStorageService.class);
     }
 

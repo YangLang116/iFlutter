@@ -42,7 +42,7 @@ public class MirrorRepoDialog extends DialogWrapper {
     @Override
     protected @Nullable JComponent createCenterPanel() {
         DefaultListModel<String> listModel = new DefaultListModel<>();
-        List<String> repoList = AndroidRepoHelper.getRepoList(project);
+        List<String> repoList = AndroidRepoHelper.getRepoList();
         if (!CollectionUtils.isEmpty(repoList)) {
             listModel.addAll(repoList);
         }

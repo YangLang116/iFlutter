@@ -7,8 +7,8 @@ import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.util.ui.JBUI;
 import com.xtu.plugin.flutter.action.intl.translate.TransApi;
 import com.xtu.plugin.flutter.action.intl.utils.IntlUtils;
-import com.xtu.plugin.flutter.store.project.entity.ProjectStorageEntity;
-import com.xtu.plugin.flutter.store.project.ProjectStorageService;
+import com.xtu.plugin.flutter.store.ide.IdeStorageService;
+import com.xtu.plugin.flutter.store.ide.entity.IdeStorageEntity;
 import com.xtu.plugin.flutter.utils.StringUtils;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 
 public class AddIntlDialog extends DialogWrapper {
-    private final Project project;
     private final TransApi transApi;
     private final List<String> localeList;
     private final Map<String, JTextField> localeFieldMap = new HashMap<>();
@@ -42,15 +41,14 @@ public class AddIntlDialog extends DialogWrapper {
 
     public AddIntlDialog(@Nullable Project project, @NotNull List<String> localeList) {
         super(project, null, false, IdeModalityType.PROJECT, true);
-        this.project = project;
         this.localeList = localeList;
         this.transApi = initTransApi();
         init();
     }
 
     private TransApi initTransApi() {
-        ProjectStorageService storageService = ProjectStorageService.getInstance(project);
-        ProjectStorageEntity storageEntity = storageService.getState();
+        IdeStorageService storageService = IdeStorageService.getInstance();
+        IdeStorageEntity storageEntity = storageService.getState();
         String apiId = storageEntity.apiKey;
         String apiSecret = storageEntity.apiSecret;
         return new TransApi(apiId, apiSecret);

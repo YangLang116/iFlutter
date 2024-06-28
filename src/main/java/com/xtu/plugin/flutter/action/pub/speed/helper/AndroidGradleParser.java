@@ -27,7 +27,7 @@ public class AndroidGradleParser {
                              boolean injectProject,
                              boolean injectPlugin,
                              boolean injectFlutterGradle) {
-        List<String> mavenMirrorRepo = AndroidRepoHelper.getRepoList(project);
+        List<String> mavenMirrorRepo = AndroidRepoHelper.getRepoList();
         if (CollectionUtils.isEmpty(mavenMirrorRepo)) return;
         ReadAction.run(() -> {
             String projectPath = PluginUtils.getProjectPath(project);

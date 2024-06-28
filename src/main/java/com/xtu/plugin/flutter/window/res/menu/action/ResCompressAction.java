@@ -4,6 +4,9 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
+import com.xtu.plugin.flutter.store.ide.IdeStorageService;
+import com.xtu.plugin.flutter.store.ide.entity.IdeStorageEntity;
+import com.xtu.plugin.flutter.utils.StringUtils;
 import com.xtu.plugin.flutter.utils.TinyUtils;
 import com.xtu.plugin.flutter.window.res.core.IResRootPanel;
 import icons.PluginIcons;
@@ -24,11 +27,6 @@ public class ResCompressAction extends AnAction {
     }
 
     @Override
-    public @NotNull ActionUpdateThread getActionUpdateThread() {
-        return ActionUpdateThread.BGT;
-    }
-
-    @Override
     public void actionPerformed(@NotNull AnActionEvent event) {
         Project project = event.getProject();
         if (project == null) return;
@@ -37,5 +35,17 @@ public class ResCompressAction extends AnAction {
             if (successList.isEmpty()) return;
             rootPanel.reloadItems(successList);
         });
+    }
+
+    @Override
+    public void update(@NotNull AnActionEvent e) {
+        IdeStorageEntity ideStorage = IdeStorageService.getStorage();
+        boolean hasTinyKey = !StringUtils.isEmpty(ideStorage.tinyApiKey);
+        e.getPresentation().setEnabled(hasTinyKey && TinyUtils.isSupport(imageFile));
+    }
+
+    @Override
+    public @NotNull ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.BGT;
     }
 }

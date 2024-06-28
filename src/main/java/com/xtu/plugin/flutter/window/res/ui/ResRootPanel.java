@@ -128,7 +128,7 @@ public class ResRootPanel extends JPanel implements IResRootPanel {
                     JBPopupFactory.ActionSelectionAid selectionAid = JBPopupFactory.ActionSelectionAid.SPEEDSEARCH;
                     RelativePoint showPoint = new RelativePoint(listComponent, e.getPoint());
                     JBPopupFactory.getInstance()
-                            .createActionGroupPopup(null, menuGroup, dataContext, selectionAid, false)
+                            .createActionGroupPopup(null, menuGroup, dataContext, selectionAid, true)
                             .show(showPoint);
                 }
             }

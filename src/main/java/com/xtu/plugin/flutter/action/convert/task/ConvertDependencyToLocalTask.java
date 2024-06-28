@@ -149,7 +149,7 @@ public class ConvertDependencyToLocalTask extends Task.Backgroundable {
     }
 
     private static void removeAnnotator(Project project, String packageName) {
-        Map<String, PackageInfo> infoMap = ProjectStorageService.getInstance(project).getState().packageInfoMap;
+        Map<String, PackageInfo> infoMap = ProjectStorageService.getStorage(project).packageInfoMap;
         infoMap.remove(packageName);
     }
 }

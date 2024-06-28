@@ -1,5 +1,6 @@
 package com.xtu.plugin.flutter.window.res.action;
 
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.fileEditor.FileEditor;
@@ -29,5 +30,10 @@ public class LocateAction extends AnAction {
         VirtualFile virtualFile = selectedEditor.getFile();
         if (virtualFile == null) return;
         this.rootPanel.locateRes(virtualFile.getName());
+    }
+
+    @Override
+    public @NotNull ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.BGT;
     }
 }

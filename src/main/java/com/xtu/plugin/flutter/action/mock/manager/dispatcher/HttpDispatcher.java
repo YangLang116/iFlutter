@@ -24,7 +24,7 @@ public final class HttpDispatcher extends Dispatcher {
     public MockResponse dispatch(@NotNull RecordedRequest recordedRequest) {
         String path = recordedRequest.getPath();
         String method = recordedRequest.getMethod();
-        List<HttpEntity> httpEntityList = ProjectStorageService.getInstance(project).getState().httpEntityList;
+        List<HttpEntity> httpEntityList = ProjectStorageService.getStorage(project).httpEntityList;
         for (HttpEntity httpEntity : httpEntityList) {
             if (StringUtils.equals(httpEntity.path, path)) {
                 if (StringUtils.equalsIgnoreCase(httpEntity.method, method)) {

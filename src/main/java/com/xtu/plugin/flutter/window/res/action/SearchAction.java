@@ -1,5 +1,6 @@
 package com.xtu.plugin.flutter.window.res.action;
 
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.xtu.plugin.flutter.window.res.core.IResRootPanel;
@@ -18,5 +19,10 @@ public class SearchAction extends AnAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
         this.rootPanel.searchRes();
+    }
+
+    @Override
+    public @NotNull ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.BGT;
     }
 }

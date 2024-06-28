@@ -84,7 +84,7 @@ public class J2DDialog extends DialogWrapper {
         okButton.addActionListener(e -> {
             String className = classNameFiled.getText();
             String jsonData = jsonArea.getText();
-            ProjectStorageEntity storageEntity = ProjectStorageService.getInstance(project).getState();
+            ProjectStorageEntity storageEntity = ProjectStorageService.getStorage(project);
             generateDart(storageEntity.flutter2Enable, storageEntity.isUnModifiableFromJson, className, jsonData);
             close(OK_EXIT_CODE);
         });

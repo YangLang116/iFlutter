@@ -82,7 +82,7 @@ public class HttpListDialog extends DialogWrapper implements IHttpListComponent 
     @Override
     @NotNull
     public List<HttpEntity> getHttpConfigList() {
-        return ProjectStorageService.getInstance(project).getState().httpEntityList;
+        return ProjectStorageService.getStorage(project).httpEntityList;
     }
 
     @Override

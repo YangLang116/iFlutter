@@ -3,7 +3,6 @@ package com.xtu.plugin.flutter.utils;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.xtu.plugin.flutter.store.project.ProjectStorageService;
-import com.xtu.plugin.flutter.store.project.entity.ProjectStorageEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,11 +17,11 @@ public class AssetUtils {
     private static final Pattern sPattern = Pattern.compile("\\d+\\.0x");
 
     public static List<String> supportAssetFoldName(@NotNull Project project) {
-        return ProjectStorageService.getInstance(project).getState().resDir;
+        return ProjectStorageService.getStorage(project).resDir;
     }
 
     public static boolean isFoldRegister(@NotNull Project project) {
-        return ProjectStorageService.getInstance(project).getState().foldRegisterEnable;
+        return ProjectStorageService.getStorage(project).foldRegisterEnable;
     }
 
     public static boolean isAssetDir(@NotNull Project project, @NotNull VirtualFile virtualFile) {
@@ -156,9 +155,7 @@ public class AssetUtils {
 
     @NotNull
     public static String getResPrefix(@NotNull Project project, @NotNull String projectName) {
-        ProjectStorageService storageService = ProjectStorageService.getInstance(project);
-        ProjectStorageEntity state = storageService.getState();
-        boolean registerResWithPackage = state.registerResWithPackage;
+        boolean registerResWithPackage = ProjectStorageService.getStorage(project).registerResWithPackage;
         if (registerResWithPackage) return "packages/" + projectName + "/";
         return "";
     }

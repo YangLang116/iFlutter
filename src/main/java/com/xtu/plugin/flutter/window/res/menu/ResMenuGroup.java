@@ -32,9 +32,7 @@ public class ResMenuGroup extends ActionGroup {
         children.add(new ResCopyPathAction(imageFile));
         children.add(new ResCopyRefAction(imageFile));
         children.add(new Separator());
-        if (TinyUtils.isSupport(imageFile)) {
-            children.add(new ResCompressAction(imageFile, rootPanel));
-        }
+        children.add(new ResCompressAction(imageFile, rootPanel));
         children.add(new Separator());
         children.add(new ResDeleteAction(imageFile));
         children.add(new Separator());

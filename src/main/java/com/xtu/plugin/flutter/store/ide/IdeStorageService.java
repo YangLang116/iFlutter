@@ -12,8 +12,10 @@ public class IdeStorageService implements PersistentStateComponent<IdeStorageEnt
 
     private IdeStorageEntity storageEntity = new IdeStorageEntity();
 
-    public static IdeStorageService getInstance() {
-        return ApplicationManager.getApplication().getService(IdeStorageService.class);
+    public static IdeStorageEntity getStorage() {
+        return ApplicationManager.getApplication()
+                .getService(IdeStorageService.class)
+                .getState();
     }
 
     @Override

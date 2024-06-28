@@ -31,6 +31,10 @@ public class AssetRegisterStorageService implements PersistentStateComponent<Ass
         return project.getService(AssetRegisterStorageService.class);
     }
 
+    public static AssetStorageEntity getStorage(@NotNull Project project) {
+        return getService(project).getState();
+    }
+
     @Override
     public @Nullable
     AssetStorageEntity getState() {

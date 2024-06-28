@@ -130,19 +130,10 @@ public final class SettingsConfiguration implements SearchableConfigurable {
         return rootPanel;
     }
 
-    private ProjectStorageEntity getProjectStorage() {
-        ProjectStorageService storageService = ProjectStorageService.getInstance(project);
-        return storageService.getState();
-    }
-
-    private IdeStorageEntity getIdeStorage() {
-        return IdeStorageService.getInstance().getState();
-    }
-
     @Override
     public boolean isModified() {
-        IdeStorageEntity ideStorage = getIdeStorage();
-        ProjectStorageEntity projectStorage = getProjectStorage();
+        IdeStorageEntity ideStorage = IdeStorageService.getStorage();
+        ProjectStorageEntity projectStorage = ProjectStorageService.getStorage(project);
         return !CollectionUtils.join(projectStorage.resDir, LIST_SPLIT_CHAR).equals(resDetectField.getText().trim())
                 || !CollectionUtils.join(projectStorage.ignoreResExtension, LIST_SPLIT_CHAR).equals(ignoreResField.getText().trim())
                 || projectStorage.flutter2Enable != flutter2EnableBox.isSelected()
@@ -164,8 +155,8 @@ public final class SettingsConfiguration implements SearchableConfigurable {
 
     @Override
     public void reset() {
-        IdeStorageEntity ideStorage = getIdeStorage();
-        ProjectStorageEntity projectStorage = getProjectStorage();
+        IdeStorageEntity ideStorage = IdeStorageService.getStorage();
+        ProjectStorageEntity projectStorage = ProjectStorageService.getStorage(project);
         String resDirListStr = CollectionUtils.join(projectStorage.resDir, LIST_SPLIT_CHAR);
         resDetectField.setText(resDirListStr);
         String ignoreResExtensionStr = CollectionUtils.join(projectStorage.ignoreResExtension, LIST_SPLIT_CHAR);
@@ -188,8 +179,8 @@ public final class SettingsConfiguration implements SearchableConfigurable {
 
     @Override
     public void apply() {
-        IdeStorageEntity ideStorage = getIdeStorage();
-        ProjectStorageEntity projectStorage = getProjectStorage();
+        IdeStorageEntity ideStorage = IdeStorageService.getStorage();
+        ProjectStorageEntity projectStorage = ProjectStorageService.getStorage(project);
         String resStr = resDetectField.getText().trim();
         projectStorage.resDir = StringUtils.isEmpty(resStr) ?
                 Collections.emptyList() : CollectionUtils.split(resStr, LIST_SPLIT_CHAR);

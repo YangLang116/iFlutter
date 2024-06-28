@@ -40,7 +40,7 @@ public class ImageFoldingAction extends BaseResourceAction {
 
     private void doAction(@NotNull Project project, @NotNull VirtualFile virtualFile) {
         File imageDirectory = new File(virtualFile.getPath());
-        ProjectStorageEntity storageEntity = ProjectStorageService.getInstance(project).getState();
+        ProjectStorageEntity storageEntity = ProjectStorageService.getStorage(project);
         boolean oldStatus = storageEntity.resCheckEnable;
         try {
             storageEntity.resCheckEnable = false; // 归整资源时，为防止反复对pubspec.yaml读写，临时关闭资源监听

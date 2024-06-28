@@ -20,8 +20,7 @@ public class AndroidRepoHelper {
 
     @Nullable
     public static List<String> getRepoList() {
-        IdeStorageService storageService = IdeStorageService.getInstance();
-        String mirrorRepoStr = storageService.getState().mirrorRepoStr;
+        String mirrorRepoStr = IdeStorageService.getStorage().mirrorRepoStr;
         if (StringUtils.isEmpty(mirrorRepoStr)) return null;
         return Arrays.asList(mirrorRepoStr.split(REPO_SPLIT));
     }

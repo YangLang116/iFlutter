@@ -96,7 +96,7 @@ public class FlutterPackageUpdater implements Disposable {
     private void updatePackageInfo(List<PackageInfo> packageInfoList) {
         if (this.isDetach) return;
         LogUtils.info("FlutterPackageUpdater updatePackageInfo size: " + packageInfoList.size());
-        Map<String, PackageInfo> infoMap = ProjectStorageService.getInstance(project).getState().packageInfoMap;
+        Map<String, PackageInfo> infoMap = ProjectStorageService.getStorage(project).packageInfoMap;
         infoMap.clear();
         for (PackageInfo packageInfo : packageInfoList) {
             infoMap.put(packageInfo.name, packageInfo);

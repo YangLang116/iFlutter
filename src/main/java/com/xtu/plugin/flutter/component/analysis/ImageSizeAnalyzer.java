@@ -30,8 +30,7 @@ public class ImageSizeAnalyzer {
 
     private void doAnalysis(@NotNull VirtualFile file) {
         final String filePath = file.getPath();
-        ProjectStorageService storageService = ProjectStorageService.getInstance(project);
-        final ProjectStorageEntity storageEntity = storageService.getState();
+        final ProjectStorageEntity storageEntity = ProjectStorageService.getStorage(project);
         ApplicationManager.getApplication().executeOnPooledThread(() -> {
             final File imageFile = new File(filePath);
             String sizeTip = getIllegalSizeTip(imageFile, storageEntity.maxPicSize);

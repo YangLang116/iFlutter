@@ -7,6 +7,7 @@ import com.intellij.ide.BrowserUtil;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.lang.annotation.HighlightSeverity;
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.application.ApplicationManager;
@@ -109,7 +110,7 @@ public class PackageUpdateAnnotator implements Annotator {
     }
 
     private PackageInfo getPackageInfo(Project project, String packageName) {
-        Map<String, PackageInfo> packageInfoMap = ProjectStorageService.getInstance(project).getState().packageInfoMap;
+        Map<String, PackageInfo> packageInfoMap = ProjectStorageService.getStorage(project).packageInfoMap;
         return packageInfoMap.get(packageName);
     }
 
@@ -165,6 +166,11 @@ public class PackageUpdateAnnotator implements Annotator {
 
         private PackageUpdaterAction(String packageUrl) {
             this.packageUrl = packageUrl;
+        }
+
+        @Override
+        public @NotNull ActionUpdateThread getActionUpdateThread() {
+            return ActionUpdateThread.BGT;
         }
 
         @Override

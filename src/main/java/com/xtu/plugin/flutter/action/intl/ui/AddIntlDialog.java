@@ -47,8 +47,7 @@ public class AddIntlDialog extends DialogWrapper {
     }
 
     private TransApi initTransApi() {
-        IdeStorageService storageService = IdeStorageService.getInstance();
-        IdeStorageEntity storageEntity = storageService.getState();
+        IdeStorageEntity storageEntity = IdeStorageService.getStorage();
         String apiId = storageEntity.apiKey;
         String apiSecret = storageEntity.apiSecret;
         return new TransApi(apiId, apiSecret);

@@ -7,13 +7,11 @@ import com.xtu.plugin.flutter.base.adapter.FileChangedObserver;
 import com.xtu.plugin.flutter.component.analysis.ImageSizeAnalyzer;
 import com.xtu.plugin.flutter.component.assets.handler.AssetFileHandler;
 import com.xtu.plugin.flutter.component.assets.handler.PubSpecFileHandler;
+import com.xtu.plugin.flutter.store.ide.IdeStorageService;
 import com.xtu.plugin.flutter.store.project.AssetRegisterStorageService;
 import com.xtu.plugin.flutter.store.project.ProjectStorageService;
 import com.xtu.plugin.flutter.store.project.entity.ProjectStorageEntity;
-import com.xtu.plugin.flutter.utils.LogUtils;
-import com.xtu.plugin.flutter.utils.PluginUtils;
-import com.xtu.plugin.flutter.utils.PubSpecUtils;
-import com.xtu.plugin.flutter.utils.TinyUtils;
+import com.xtu.plugin.flutter.utils.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -104,16 +102,18 @@ public class AssetsManager extends FileChangedObserver implements Disposable {
     }
 
     public static boolean canTinyImage(@NotNull Project project, @NotNull VirtualFile virtualFile) {
-        ProjectStorageEntity state = ProjectStorageService.getInstance(project).getState();
+        String tinyApiKey = IdeStorageService.getStorage().tinyApiKey;
+        if (StringUtils.isEmpty(tinyApiKey)) return false;
+        ProjectStorageEntity state = ProjectStorageService.getStorage(project);
         if (!state.autoTinyImage) return false;
         return TinyUtils.isSupport(virtualFile);
     }
 
     public static boolean enableSizeCheck(@NotNull Project project) {
-        return ProjectStorageService.getInstance(project).getState().enableSizeMonitor;
+        return ProjectStorageService.getStorage(project).enableSizeMonitor;
     }
 
     public static boolean enableResCheck(@NotNull Project project) {
-        return ProjectStorageService.getInstance(project).getState().resCheckEnable;
+        return ProjectStorageService.getStorage(project).resCheckEnable;
     }
 }

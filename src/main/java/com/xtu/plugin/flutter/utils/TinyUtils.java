@@ -2,7 +2,6 @@ package com.xtu.plugin.flutter.utils;
 
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.options.ShowSettingsUtil;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
@@ -10,7 +9,6 @@ import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.tinify.Tinify;
-import com.xtu.plugin.flutter.configuration.SettingsConfiguration;
 import com.xtu.plugin.flutter.store.ide.IdeStorageService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,19 +34,7 @@ public class TinyUtils {
     public static void compressImage(@NotNull Project project,
                                      @NotNull List<File> imageFileList,
                                      @Nullable TinyUtils.OnCompressListener listener) {
-        final String tinyKey = IdeStorageService.getInstance().getState().tinyApiKey;
-        if (StringUtils.isEmpty(tinyKey)) {
-            int result = Messages.showYesNoDialog(
-                    project,
-                    "You must configure an apiKey for TinyPng",
-                    "", "Configure", "Cancel",
-                    Messages.getErrorIcon());
-            if (result == Messages.YES) {
-                ShowSettingsUtil.getInstance().showSettingsDialog(project, SettingsConfiguration.class);
-            }
-            return;
-        }
-        Tinify.setKey(tinyKey);
+        Tinify.setKey(IdeStorageService.getStorage().tinyApiKey);
         new Task.Backgroundable(project, "compressing...") {
             @Override
             public void run(@NotNull ProgressIndicator indicator) {

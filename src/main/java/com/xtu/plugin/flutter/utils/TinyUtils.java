@@ -6,7 +6,6 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
-import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.tinify.Tinify;
 import com.xtu.plugin.flutter.store.ide.IdeStorageService;
@@ -14,7 +13,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 
 public class TinyUtils {
 
@@ -67,17 +69,6 @@ public class TinyUtils {
                 application.invokeLater(() -> listener.onFinish(successList));
             }
         }.queue();
-    }
-
-    public static void showTinyDialog(@NotNull Project project,
-                                      @NotNull VirtualFile virtualFile) {
-        ApplicationManager.getApplication().invokeLater(() -> {
-            String content = String.format(Locale.ROOT, "Do you need to compress %s ?", virtualFile.getName());
-            int result = Messages.showYesNoDialog(project, content, "", "OK", "Cancel", Messages.getInformationIcon());
-            if (result != Messages.YES) return;
-            List<File> fileList = Collections.singletonList(new File(virtualFile.getPath()));
-            compressImage(project, fileList, null);
-        });
     }
 
     public interface OnCompressListener {

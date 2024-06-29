@@ -35,7 +35,7 @@ public class ProjectStorageEntity {
     //是否生成数据不可修改的fromJson
     public boolean isUnModifiableFromJson = false;
     //是否开启TinyPng压缩
-    public boolean autoTinyImage = false;
+    public boolean autoTinyImage = true;
 
     public ProjectStorageEntity() {
     }

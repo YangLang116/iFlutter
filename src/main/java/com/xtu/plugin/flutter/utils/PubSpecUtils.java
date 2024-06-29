@@ -71,7 +71,8 @@ public class PubSpecUtils {
     }
 
     //判断当前文件是否根目录pubspec.yaml文件
-    public static boolean isRootPubSpecFile(@NotNull Project project, @NotNull VirtualFile virtualFile) {
+    public static boolean isRootPubSpecFile(@NotNull Project project, @Nullable VirtualFile virtualFile) {
+        if (virtualFile == null) return false;
         String projectPath = PluginUtils.getProjectPath(project);
         if (StringUtils.isEmpty(projectPath)) return false;
         String rootPubSpecPath = projectPath + "/" + getFileName();

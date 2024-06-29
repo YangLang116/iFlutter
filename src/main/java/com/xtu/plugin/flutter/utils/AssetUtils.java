@@ -33,7 +33,8 @@ public class AssetUtils {
         return StringUtils.equals(projectPath, virtualFile.getParent().getPath());
     }
 
-    public static boolean isAssetFile(@NotNull Project project, @NotNull VirtualFile virtualFile) {
+    public static boolean isAssetFile(@NotNull Project project, @Nullable VirtualFile virtualFile) {
+        if (virtualFile == null) return false;
         String assetPath = virtualFile.getPath();
         File assetFile = new File(assetPath);
         return isAssetFile(project, assetFile);

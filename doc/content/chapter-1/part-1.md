@@ -28,7 +28,7 @@ iFlutter解决方案: 当在 `指定的目录` 中添加、删除、重命名文
 
 - 生成的 `_res.dart` 文件的规则又是什么呢？ 如果 `指定的目录` 是 `images`，那么就会生成 `lib/res/images_res.dart` 文件，对应的类名 `ImagesRes`。按此类推，如果目录名是 `Assets`，生成的文件和类名分别是 `lib/res/assets_res.dart` 和 `AssetsRes`。值得一提的是，如果开发者手动修改 `pubspec.yaml` 文件中资源的配置，`iFlutter` 也会感知，并重新生成 `_res.dart` 文件。
 
-- 从 `节省包体积`、`照顾强迫症研发` 出发，可配置某些资源不会在 `_res.dart` 文件中生成字段，比如 `.json` 文件，默认都生成，开发者可自行配置：
+- 从 `节省包体积`、`照顾强迫症研发` 出发，可配置某些资源不会在 `_res.dart` 文件中生成字段，多个配置使用`,`隔开，比如 `.json` 文件，默认都生成，开发者可自行配置：
 
 ![资源联动配置](http://iflutter.toolu.cn/configs/config_ignore_field.png)
 

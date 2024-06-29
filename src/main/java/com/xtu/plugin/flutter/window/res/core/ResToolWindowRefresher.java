@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ResToolWindowRefresher extends ResFileChangedObserver implements ToolWindowManagerListener {
+public class ResToolWindowRefresher extends ResToolWindowContentObserver implements ToolWindowManagerListener {
 
     private static final List<String> SUPPORT_IMAGE_FORMAT = Arrays.asList("jpg", "jpeg", "png", "webp", "svg");
 

@@ -4,6 +4,10 @@
 
 ###
 
+## [4.1.3] - 2024-06-30
+
+- `Base`:  Optimize resource detection logic (优化资源检测逻辑)
+
 ## [4.1.2] - 2024-06-24
 
 - `Base`: UI optimization (UI 优化)

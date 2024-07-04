@@ -14,7 +14,10 @@ import com.xtu.plugin.flutter.store.ide.IdeStorageService;
 import com.xtu.plugin.flutter.store.project.AssetRegisterStorageService;
 import com.xtu.plugin.flutter.store.project.ProjectStorageService;
 import com.xtu.plugin.flutter.store.project.entity.ProjectStorageEntity;
-import com.xtu.plugin.flutter.utils.*;
+import com.xtu.plugin.flutter.utils.LogUtils;
+import com.xtu.plugin.flutter.utils.PluginUtils;
+import com.xtu.plugin.flutter.utils.StringUtils;
+import com.xtu.plugin.flutter.utils.TinyUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -93,11 +96,9 @@ public class AssetsManager extends AssetFileChangedObserver implements Disposabl
     }
 
     @Override
-    public void onAssetContentChanged(@NotNull Project project, @NotNull VirtualFile virtualFile) {
-        if (PubSpecUtils.isRootPubSpecFile(project, virtualFile)) {
-            if (enableResCheck(project)) {
-                this.specFileHandler.onPsiFileChanged(project);
-            }
+    public void onPubSpecFileChanged(@NotNull Project project, @NotNull VirtualFile virtualFile) {
+        if (enableResCheck(project)) {
+            this.specFileHandler.onPsiFileChanged(project);
         }
     }
 

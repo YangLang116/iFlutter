@@ -62,7 +62,9 @@ public class AssetFileChangedObserver implements BulkFileListener, BranchChangeL
                 if (AssetUtils.isAssetFile(project, deleteFile)) onAssetDeleted(project, deleteFile);
             } else if (event instanceof VFileContentChangeEvent) {
                 VirtualFile file = event.getFile();
-                if (AssetUtils.isAssetFile(project, file) || PubSpecUtils.isRootPubSpecFile(project, file)) {
+                if (PubSpecUtils.isRootPubSpecFile(project, file)) {
+                    onPubSpecFileChanged(project, file);
+                } else if (AssetUtils.isAssetFile(project, file)) {
                     onAssetContentChanged(project, file);
                 }
             } else if (event instanceof VFilePropertyChangeEvent) {
@@ -88,10 +90,14 @@ public class AssetFileChangedObserver implements BulkFileListener, BranchChangeL
     public void onAssetDeleted(@NotNull Project project, @NotNull VirtualFile deleteFile) {
     }
 
+    public void onAssetNameChanged(@NotNull Project project, @NotNull VirtualFile virtualFile,
+                                   @NotNull String oldName, @NotNull String newName) {
+    }
+
     public void onAssetContentChanged(@NotNull Project project, @NotNull VirtualFile file) {
     }
 
-    public void onAssetNameChanged(@NotNull Project project, @NotNull VirtualFile virtualFile,
-                                   @NotNull String oldName, @NotNull String newName) {
+    public void onPubSpecFileChanged(@NotNull Project project, @NotNull VirtualFile file) {
+
     }
 }

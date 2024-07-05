@@ -16,7 +16,6 @@
     <extensions defaultExtensionNs="com.intellij">
         <defaultLiveTemplates file="/template/Flutter.xml"/>
         <postStartupActivity implementation="com.xtu.plugin.flutter.component.FProjectManager"/>
-        <liveTemplateContext implementation="com.xtu.plugin.flutter.template.FlutterContext"/>
         <applicationService serviceImplementation="com.xtu.plugin.flutter.store.ide.IdeStorageService"/>
         <projectService serviceImplementation="com.xtu.plugin.flutter.store.project.ProjectStorageService"/>
         <projectService serviceImplementation="com.xtu.plugin.flutter.action.mock.manager.HttpMockManager"/>

@@ -45,15 +45,6 @@
         </constraints>
         <properties/>
       </component>
-      <component id="3830f" class="javax.swing.JCheckBox" binding="flutter2EnableBox">
-        <constraints>
-          <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <selected value="true"/>
-          <text value="Compatible with Flutter 2.0"/>
-        </properties>
-      </component>
       <component id="2767d" class="javax.swing.JCheckBox" binding="resCheckEnableBox">
         <constraints>
           <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
@@ -422,7 +413,7 @@
       <grid id="ea23d" layout-manager="GridLayoutManager" row-count="1" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="30" left="0" bottom="0" right="0"/>
         <constraints>
-          <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties/>
         <border type="none"/>
@@ -443,6 +434,15 @@
           </component>
         </children>
       </grid>
+      <component id="3830f" class="javax.swing.JCheckBox" binding="flutter2EnableBox">
+        <constraints>
+          <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <selected value="true"/>
+          <text value="Support null-safety"/>
+        </properties>
+      </component>
     </children>
   </grid>
 </form>

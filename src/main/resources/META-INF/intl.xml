@@ -1,5 +1,5 @@
 <idea-plugin>
-    <actions resource-bundle="message.ActionsBundle">
+    <actions resource-bundle="messages.ActionsBundle">
         <action id="com.xtu.plugin.flutter.inject.AddIntlAction"
                 class="com.xtu.plugin.flutter.action.intl.action.AddIntlAction"
                 icon="PluginIcons.LOGO">

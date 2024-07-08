@@ -1,14 +1,10 @@
-package com.xtu.plugin.flutter.action;
+package com.xtu.plugin.flutter.base.action;
 
-import com.intellij.openapi.actionSystem.ActionUpdateThread;
-import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.xtu.plugin.flutter.utils.PluginUtils;
 import com.xtu.plugin.flutter.utils.PubSpecUtils;
 import kotlin.Pair;
 import org.jetbrains.annotations.NotNull;
@@ -16,16 +12,11 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.yaml.psi.YAMLFile;
 import org.jetbrains.yaml.psi.YAMLKeyValue;
 
-//pubspec.yaml Dependency operation action
-public abstract class BaseDependencyAction extends AnAction {
+//PubSpec.yaml Dependency operation action
+public abstract class YamlDependencyAction extends FlutterProjectAction {
 
     @Override
-    public void update(@NotNull AnActionEvent e) {
-        Project project = e.getProject();
-        if (!PluginUtils.isFlutterProject(project)) {
-            e.getPresentation().setVisible(false);
-            return;
-        }
+    public void whenUpdate(@NotNull AnActionEvent e) {
         Editor editor = e.getData(CommonDataKeys.EDITOR);
         if (editor == null) {
             e.getPresentation().setVisible(false);
@@ -37,16 +28,16 @@ public abstract class BaseDependencyAction extends AnAction {
             return;
         }
         int offset = editor.getCaretModel().getOffset();
-        PsiElement yamlPsiElement = psiFile.findElementAt(offset);
-        //select packageName element
-        e.getPresentation().setVisible(yamlPsiElement != null
-                && yamlPsiElement.getParent() instanceof YAMLKeyValue
-                && PubSpecUtils.isDependencyElement(((YAMLKeyValue) yamlPsiElement.getParent())));
+        boolean isDependencyNode = isDependencyElement(psiFile.findElementAt(offset));
+        e.getPresentation().setVisible(isDependencyNode);
     }
 
-    @Override
-    public @NotNull ActionUpdateThread getActionUpdateThread() {
-        return ActionUpdateThread.BGT;
+    //select packageName element
+    private boolean isDependencyElement(@Nullable PsiElement yamlPsiElement) {
+        if (yamlPsiElement == null) return false;
+        PsiElement parentNode = yamlPsiElement.getParent();
+        if (!(parentNode instanceof YAMLKeyValue)) return false;
+        return PubSpecUtils.isDependencyElement(((YAMLKeyValue) parentNode));
     }
 
     @Nullable

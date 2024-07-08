@@ -30,7 +30,7 @@ public class CommentRemoveAction extends AnAction {
         final Project project = e.getProject();
         final PsiFile psiFile = e.getData(CommonDataKeys.PSI_FILE);
         final Presentation presentation = e.getPresentation();
-        presentation.setEnabledAndVisible(project != null && psiFile != null && isSupportFile(psiFile));
+        presentation.setVisible(project != null && psiFile != null && isSupportFile(psiFile));
     }
 
     @Override

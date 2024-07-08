@@ -7,7 +7,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.xtu.plugin.flutter.action.BaseResourceAction;
+import com.xtu.plugin.flutter.base.action.AssetDirAction;
 import com.xtu.plugin.flutter.base.entity.AssetResultEntity;
 import com.xtu.plugin.flutter.store.project.ProjectStorageService;
 import com.xtu.plugin.flutter.store.project.entity.ProjectStorageEntity;
@@ -21,14 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 //整理images目录下的图片
-public class ImageFoldingAction extends BaseResourceAction {
-
-    @Override
-    public void update(@NotNull AnActionEvent e) {
-        Project project = e.getProject();
-        boolean isFlutterProject = PluginUtils.isFlutterProject(project);
-        e.getPresentation().setVisible(isFlutterProject);
-    }
+public class ImageFoldingAction extends AssetDirAction {
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {

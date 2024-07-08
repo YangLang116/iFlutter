@@ -2,7 +2,7 @@
     <extensions defaultExtensionNs="com.intellij">
         <annotator language="yaml" implementationClass="com.xtu.plugin.flutter.annotator.PackageUpdateAnnotator"/>
     </extensions>
-    <actions resource-bundle="message.ActionsBundle">
+    <actions resource-bundle="messages.ActionsBundle">
         <group>
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
             <action id="com.xtu.plugin.flutter.ConvertDependencyToLocalAction"

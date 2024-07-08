@@ -7,7 +7,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectUtil;
 import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.xtu.plugin.flutter.action.BaseDependencyAction;
+import com.xtu.plugin.flutter.base.action.YamlDependencyAction;
 import com.xtu.plugin.flutter.action.convert.task.ConvertDependencyToLocalTask;
 import com.xtu.plugin.flutter.utils.AssetUtils;
 import com.xtu.plugin.flutter.utils.PluginUtils;
@@ -20,7 +20,7 @@ import org.jetbrains.yaml.psi.YAMLKeyValue;
 import java.io.File;
 import java.util.List;
 
-public class ConvertDependencyToLocalAction extends BaseDependencyAction {
+public class ConvertDependencyToLocalAction extends YamlDependencyAction {
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {

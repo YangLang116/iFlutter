@@ -11,8 +11,6 @@
     <depends config-file="yaml.xml">org.jetbrains.plugins.yaml</depends>
     <depends config-file="intl.xml" optional="true">com.localizely.flutter-intl</depends>
 
-    <resource-bundle>message.ActionsBundle</resource-bundle>
-
     <extensions defaultExtensionNs="com.intellij">
         <defaultLiveTemplates file="/template/Flutter.xml"/>
         <postStartupActivity implementation="com.xtu.plugin.flutter.component.FProjectManager"/>
@@ -33,7 +31,7 @@
         <errorHandler implementation="com.xtu.plugin.flutter.reporter.FErrorReporter"/>
         <projectViewNodeDecorator implementation="com.xtu.plugin.flutter.decorator.AssetNodeDecorator"/>
     </extensions>
-    <actions resource-bundle="message.ActionsBundle">
+    <actions resource-bundle="messages.ActionsBundle">
         <group id="com.xtu.plugin.flutter.group"
                icon="PluginIcons.LOGO"
                popup="true">

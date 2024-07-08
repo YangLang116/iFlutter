@@ -6,13 +6,13 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.xtu.plugin.flutter.action.BaseResourceAction;
+import com.xtu.plugin.flutter.base.action.AssetDirAction;
 import com.xtu.plugin.flutter.action.analysis.task.DuplicateResAnalysisTask;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
-public class DuplicateResAnalysisAction extends BaseResourceAction {
+public class DuplicateResAnalysisAction extends AssetDirAction {
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {

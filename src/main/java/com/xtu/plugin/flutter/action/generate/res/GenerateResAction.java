@@ -1,35 +1,25 @@
 package com.xtu.plugin.flutter.action.generate.res;
 
-import com.intellij.openapi.actionSystem.ActionUpdateThread;
-import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
+import com.xtu.plugin.flutter.base.action.FlutterProjectAction;
 import com.xtu.plugin.flutter.base.entity.AssetResultEntity;
 import com.xtu.plugin.flutter.component.assets.code.DartFontFileGenerator;
 import com.xtu.plugin.flutter.component.assets.code.DartRFileGenerator;
-import com.xtu.plugin.flutter.utils.*;
+import com.xtu.plugin.flutter.utils.AssetUtils;
+import com.xtu.plugin.flutter.utils.FontUtils;
+import com.xtu.plugin.flutter.utils.PubSpecUtils;
+import com.xtu.plugin.flutter.utils.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GenerateResAction extends AnAction {
-
-    @Override
-    public @NotNull ActionUpdateThread getActionUpdateThread() {
-        return ActionUpdateThread.BGT;
-    }
-
-    @Override
-    public void update(@NotNull AnActionEvent e) {
-        Project project = e.getProject();
-        boolean isFlutterProject = PluginUtils.isFlutterProject(project);
-        e.getPresentation().setVisible(isFlutterProject);
-    }
+public class GenerateResAction extends FlutterProjectAction {
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {

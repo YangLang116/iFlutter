@@ -17,7 +17,7 @@ import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.xtu.plugin.flutter.action.BaseDependencyAction;
+import com.xtu.plugin.flutter.base.action.YamlDependencyAction;
 import com.xtu.plugin.flutter.utils.FileUtils;
 import com.xtu.plugin.flutter.utils.PubSpecUtils;
 import com.xtu.plugin.flutter.utils.StringUtils;
@@ -29,7 +29,7 @@ import org.jetbrains.yaml.psi.YAMLKeyValue;
 
 import java.io.File;
 
-public class YamlPackageAnchorAction extends BaseDependencyAction {
+public class YamlPackageAnchorAction extends YamlDependencyAction {
 
     private static final String LIBRARY_DART = "Dart Packages";
     private static final String LIBRARY_FLUTTER = "Flutter Plugins";

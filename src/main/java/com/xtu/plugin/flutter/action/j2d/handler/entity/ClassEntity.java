@@ -1,4 +1,4 @@
-package com.xtu.plugin.flutter.action.j2d.generate;
+package com.xtu.plugin.flutter.action.j2d.handler.entity;
 
 public class ClassEntity {
 

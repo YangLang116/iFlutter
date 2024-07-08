@@ -16,7 +16,7 @@ public class StringUtils {
     }
 
     public static boolean isEmpty(String str) {
-        return str == null || str.isEmpty();
+        return str == null || str.trim().isEmpty();
     }
 
     public static String join(Collection<?> collection, String separator) {

@@ -20,14 +20,14 @@ public class CreateFromJsonAndToJsonCodeFix extends BaseCreateMethodsFix<DartCom
 
     private final boolean hasFromJson;
     private final boolean hasToJson;
-    private final boolean enableFlutter2;
+    private final boolean nullSafety;
     private final boolean isUnModifiableFromJson;
 
     public CreateFromJsonAndToJsonCodeFix(@NotNull DartClass dartClass,
-                                          boolean enableFlutter2, boolean isUnModifiableFromJson,
+                                          boolean nullSafety, boolean isUnModifiableFromJson,
                                           boolean hasFromJson, boolean hasToJson) {
         super(dartClass);
-        this.enableFlutter2 = enableFlutter2;
+        this.nullSafety = nullSafety;
         this.isUnModifiableFromJson = isUnModifiableFromJson;
         this.hasFromJson = hasFromJson;
         this.hasToJson = hasToJson;
@@ -49,17 +49,80 @@ public class CreateFromJsonAndToJsonCodeFix extends BaseCreateMethodsFix<DartCom
     }
 
     protected Template buildFunctionsText(@NotNull TemplateManager templateManager, @NotNull Set<DartComponent> elementsToProcess) {
-//        DartVarAccessDeclaration
-//            DartType
-//              DartSimpleType
-//                  DartReferenceExpression
-//                        DartId
-//                  DartTypeArguments
-//                       DartTypeList
-//                          DartType
-//          DartComponentName
         Template template = templateManager.createTemplate(this.getClass().getName(), "Dart");
         template.setToReformat(true);
+        List<DartFieldEntity> dartFieldList = parseFieldList(elementsToProcess);
+        if (!hasFromJson) genFromJson(template, dartFieldList);
+        if (!hasToJson) genToJson(template, dartFieldList);
+        return template;
+    }
+
+    private void genFromJson(@NotNull Template template, @NotNull List<DartFieldEntity> fieldList) {
+        String className = myDartClass.getName();
+        template.addTextSegment(String.format(Locale.ROOT,
+                "factory %s.fromJson(Map<String, dynamic> json) {return %s(",
+                className, className)
+        );
+        for (DartFieldEntity field : fieldList) {
+            if (field.isList()) {
+                DartFieldEntity argument = field.argument;
+                if (argument != null && !argument.isBuiltInType) {
+                    String structWord = isUnModifiableFromJson ? "unmodifiable" : "from";
+                    template.addTextSegment(String.format(Locale.ROOT,
+                            """
+                                     %s: json['%s'] == null ? \
+                                     null : \
+                                     List<%s>.%s(json['%s'].map((x) => %s.fromJson(x))),
+                                    """,
+                            field.name, field.name,
+                            argument.type, structWord, field.name, argument.type));
+                } else {
+                    template.addTextSegment(String.format(Locale.ROOT,
+                            "%s: json['%s'],",
+                            field.name, field.name));
+                }
+            } else if (!field.isBuiltInType) {
+                template.addTextSegment(String.format(Locale.ROOT,
+                        "%s: %s.fromJson(json['%s']),",
+                        field.name, field.type, field.name));
+            } else {
+                template.addTextSegment(String.format(Locale.ROOT,
+                        "%s: json['%s'],",
+                        field.name, field.name));
+            }
+        }
+        template.addTextSegment(");}\n");
+    }
+
+    private void genToJson(@NotNull Template template, @NotNull List<DartFieldEntity> fieldList) {
+        template.addTextSegment("Map<String, dynamic> toJson() => {");
+        for (DartFieldEntity field : fieldList) {
+            if (field.isList()) {
+                DartFieldEntity argument = field.argument;
+                if (argument != null && !argument.isBuiltInType) {
+                    template.addTextSegment(String.format(Locale.ROOT,
+                            "'%s': %s%s.map((e) => e.toJson()).toList(),",
+                            field.name, field.name, nullSafety ? "?" : ""));
+                } else {
+                    template.addTextSegment(String.format(Locale.ROOT,
+                            "'%s': %s,",
+                            field.name, field.name));
+                }
+            } else if (!field.isBuiltInType) {
+                template.addTextSegment(String.format(Locale.ROOT,
+                        "'%s': %s%s.toJson(),",
+                        field.name, field.name, nullSafety ? "?" : ""));
+            } else {
+                template.addTextSegment(String.format(Locale.ROOT,
+                        "'%s': %s,",
+                        field.name, field.name));
+            }
+        }
+        template.addTextSegment("};\n");
+    }
+
+    @NotNull
+    private List<DartFieldEntity> parseFieldList(@NotNull Set<DartComponent> elementsToProcess) {
         List<DartFieldEntity> dartFieldList = new ArrayList<>();
         for (DartComponent varAccessComponent : elementsToProcess) {
             DartComponentName componentName = PsiTreeUtil.getChildOfType(varAccessComponent, DartComponentName.class);
@@ -84,58 +147,7 @@ public class CreateFromJsonAndToJsonCodeFix extends BaseCreateMethodsFix<DartCom
             }
             dartFieldList.add(fieldEntity);
         }
-        if (!hasFromJson) { //生成fromJson方法
-            String className = myDartClass.getName();
-            template.addTextSegment(String.format(
-                    Locale.US,
-                    "factory %s.fromJson(Map<String, dynamic> json) {return %s(",
-                    className, className));
-            for (DartFieldEntity fieldEntity : dartFieldList) {
-                if (fieldEntity.isList()) {
-                    DartFieldEntity argument = fieldEntity.argument;
-                    if (argument != null && !argument.isBuiltInType) {
-                        String structWord = isUnModifiableFromJson ? "unmodifiable" : "from";
-                        template.addTextSegment(String.format(Locale.US,
-                                "%s: json['%s'] == null ? " +
-                                        "List<%s>.%s([]) : " +
-                                        "\nList<%s>.%s(\njson['%s'].map((x) => %s.fromJson(x))),",
-                                fieldEntity.name, fieldEntity.name,
-                                argument.type, structWord,
-                                argument.type, structWord, fieldEntity.name, argument.type));
-                    } else {
-                        template.addTextSegment(String.format(Locale.US, "%s: json['%s'],", fieldEntity.name, fieldEntity.name));
-                    }
-                } else if (!fieldEntity.isBuiltInType) {
-                    template.addTextSegment(String.format(Locale.US, "%s: %s.fromJson(json['%s']),",
-                            fieldEntity.name, fieldEntity.type, fieldEntity.name));
-                } else {
-                    template.addTextSegment(String.format(Locale.US, "%s: json['%s'],", fieldEntity.name, fieldEntity.name));
-                }
-            }
-            template.addTextSegment(");}\n");
-        }
-        if (!hasToJson) {
-            template.addTextSegment("Map<String, dynamic> toJson() => {");
-            for (DartFieldEntity fieldEntity : dartFieldList) {
-                if (fieldEntity.isList()) {
-                    DartFieldEntity argument = fieldEntity.argument;
-                    if (argument != null && !argument.isBuiltInType) {
-                        template.addTextSegment(String.format(Locale.US,
-                                "'%s': %s%s.map((e) => e.toJson()).toList(),",
-                                fieldEntity.name, fieldEntity.name, enableFlutter2 ? "?" : ""));
-                    } else {
-                        template.addTextSegment(String.format(Locale.US, "'%s': %s,", fieldEntity.name, fieldEntity.name));
-                    }
-                } else if (!fieldEntity.isBuiltInType) {
-                    template.addTextSegment(String.format(Locale.US, "'%s': %s%s.toJson(),",
-                            fieldEntity.name, fieldEntity.name, enableFlutter2 ? "?" : ""));
-                } else {
-                    template.addTextSegment(String.format(Locale.US, "'%s': %s,", fieldEntity.name, fieldEntity.name));
-                }
-            }
-            template.addTextSegment("};\n");
-        }
-        return template;
+        return dartFieldList;
     }
 
     protected Template buildFunctionsText(TemplateManager templateManager, DartComponent e) {

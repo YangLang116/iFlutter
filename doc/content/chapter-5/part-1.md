@@ -2,16 +2,16 @@
 
 - 添加资源 (快捷键: Option/Alt + A)
 
-![添加资源](http://iflutter.toolu.cn/configs/intl_add.gif)
+![添加资源](../../configs/intl_add.gif)
 
 - 移除资源 (快捷键: Option/Alt + R)
 
-![移除资源](http://iflutter.toolu.cn/configs/intl_remove.gif)
+![移除资源](../../configs/intl_remove.gif)
 
 
 如果当前IDEA安装了`flutter_intl`插件，为了提供统一的开发习惯，`iFlutter`会在`flutter_intl`功能入口处，注入资源管理入口，效果如下：
 
-![功能注入](http://iflutter.toolu.cn/configs/intl_inject.png)
+![功能注入](../../configs/intl_inject.png)
 
 ---
 
@@ -19,6 +19,6 @@
 
 `iFlutter` 作为IDEA插件会被多个团队使用，而百度翻译请求存在QPS限制，为了保证各个团队的翻译功能不受限，`iFlutter` 将百度翻译需要的 `API KEY` 和 `API SECRET` 以配置的方式提供出来，如下图:
 
-![翻译配置](http://iflutter.toolu.cn/configs/intl_config.png)
+![翻译配置](../../configs/intl_config.png)
 
 其中的 `API KEY` 和 `API SECRET` 需要在[百度翻译平台](https://api.fanyi.baidu.com/product/11)注册获取。

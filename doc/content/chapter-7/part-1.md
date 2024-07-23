@@ -15,15 +15,15 @@
 
 - SVGA 文件预览
 
-<img src="http://iflutter.toolu.cn/configs/svga-opt.gif" width="600"/>
+<img src="../../configs/svga-opt.gif" width="600"/>
 
 
 - Lottie 文件预览
 
-<img src="http://iflutter.toolu.cn/configs/lottie-opt.gif" width="600"/>
+<img src="../../configs/lottie-opt.gif" width="600"/>
 
 ## 期望
 - [Github](https://github.com/YangLang116/MediaFilePreviewer): 希望有更多小伙伴参与，增强IDEA对各类文件的支持
 
 ## 其他
-- [iFlutter](http://iflutter.toolu.cn): 一款辅助Flutter开发的 IDEA 插件
+- [iFlutter](https://yanglang116.github.io/iFlutter): 一款辅助Flutter开发的 IDEA 插件

@@ -1,7 +1,6 @@
 package com.xtu.plugin.flutter.window.res.menu;
 
 import com.intellij.openapi.actionSystem.*;
-import com.xtu.plugin.flutter.utils.TinyUtils;
 import com.xtu.plugin.flutter.window.res.core.IResRootPanel;
 import com.xtu.plugin.flutter.window.res.menu.action.*;
 import org.jetbrains.annotations.NotNull;

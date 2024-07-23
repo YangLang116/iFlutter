@@ -26,8 +26,8 @@
     ],
     "pluginsConfig": {
        "donate": {
-         "wechat": "http://iflutter.toolu.cn/configs/wx_pay.jpg",
-         "alipay": "http://iflutter.toolu.cn/configs/alipay.jpg",
+         "wechat": "./configs/wx_pay.jpg",
+         "alipay": "./configs/alipay.jpg",
          "title": "鼓励一下",
          "button": "赏",
          "alipayText": "支付宝打赏",

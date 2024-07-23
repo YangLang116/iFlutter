@@ -1,6 +1,5 @@
 package com.xtu.plugin.flutter.action.analysis;
 
-import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.xtu.plugin.flutter.action.analysis.task.DepAnalysisTask;

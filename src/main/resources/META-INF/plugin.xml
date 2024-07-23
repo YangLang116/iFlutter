@@ -34,6 +34,7 @@
     <actions resource-bundle="messages.ActionsBundle">
         <group id="com.xtu.plugin.flutter.group"
                icon="PluginIcons.LOGO"
+               class="com.xtu.plugin.flutter.action.IFlutterActionGroup"
                popup="true">
             <add-to-group group-id="ProjectViewPopupMenu" anchor="after"
                           relative-to-action="ProjectViewPopupMenuRefactoringGroup"/>

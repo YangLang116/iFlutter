@@ -1,5 +1,6 @@
 package com.xtu.plugin.flutter.utils;
 
+import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.fileTypes.FileType;
@@ -56,25 +57,41 @@ public class DartUtils {
 
     //生成Dart类
     //必须运行在EDT线程中
-    public static void createDartFile(@NotNull Project project, @NotNull VirtualFile parentDirectory, @NotNull String fileName, @NotNull String fileContent, @Nullable OnDartFileCreateListener listener) {
-        ApplicationManager.getApplication().assertIsDispatchThread();
+    public static void createDartFile(@NotNull Project project,
+                                      @NotNull VirtualFile parentDir,
+                                      @NotNull String fileName,
+                                      @NotNull String fileContent,
+                                      @Nullable DartUtils.OnFileCreatedListener listener) {
+        Application application = ApplicationManager.getApplication();
+        application.assertIsDispatchThread();
         WriteCommandAction.runWriteCommandAction(project, () -> {
+            FileTypeRegistry typeRegistry = FileTypeRegistry.getInstance();
+            FileType fileType = typeRegistry.getFileTypeByFileName(fileName);
+            PsiFileFactory fileFactory = PsiFileFactory.getInstance(project);
+            PsiFile newFile = fileFactory.createFileFromText(fileName, fileType, fileContent);
+            CodeStyleManager styleManager = CodeStyleManager.getInstance(project);
+            PsiFile formatFile = (PsiFile) styleManager.reformat(newFile);
+
             PsiManager psiManager = PsiManager.getInstance(project);
-            PsiDirectory psiDirectory = psiManager.findDirectory(parentDirectory);
-            assert psiDirectory != null;
-            PsiFile oldFile = psiDirectory.findFile(fileName);
-            if (oldFile != null) oldFile.delete();
-            FileType type = FileTypeRegistry.getInstance().getFileTypeByFileName(fileName);
-            PsiFile tempFile = PsiFileFactory.getInstance(project).createFileFromText(fileName, type, fileContent);
-            PsiFile newFile = (PsiFile) psiDirectory.add(CodeStyleManager.getInstance(project).reformat(tempFile));
+            PsiDirectory psiDir = psiManager.findDirectory(parentDir);
+            assert psiDir != null;
+            PsiFile resultFile;
+            PsiFile originFile = psiDir.findFile(fileName);
+            if (originFile == null) {
+                resultFile = psiDir.add(formatFile).getContainingFile();
+            } else {
+                resultFile = PsiUtils.replacePsiFile(originFile, formatFile);
+            }
             if (listener != null) {
-                VirtualFile virtualFile = newFile.getVirtualFile();
-                ApplicationManager.getApplication().invokeLater(() -> listener.onFinish(virtualFile));
+                VirtualFile virtualFile = resultFile.getVirtualFile();
+                application.invokeLater(() -> listener.onCreated(virtualFile));
             }
         });
     }
 
-    public interface OnDartFileCreateListener {
-        void onFinish(@NotNull VirtualFile virtualFile);
+    public interface OnFileCreatedListener {
+
+        void onCreated(@NotNull VirtualFile virtualFile);
+
     }
 }

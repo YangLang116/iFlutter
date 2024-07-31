@@ -1,15 +1,16 @@
 package com.xtu.plugin.flutter.utils;
 
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class PsiUtils {
 
-    @SuppressWarnings("unchecked")
     @Nullable
     public static <T> T findFirstChildByType(@NotNull PsiElement parentPsi, @NotNull Class<T> classType) {
         PsiElement[] children = parentPsi.getChildren();
@@ -19,8 +20,6 @@ public class PsiUtils {
         return null;
     }
 
-
-    @SuppressWarnings("unchecked")
     @Nullable
     public static <T> T findFirstChild(@NotNull PsiElement parentPsi,
                                        @NotNull Class<T> classType,
@@ -34,7 +33,6 @@ public class PsiUtils {
         return null;
     }
 
-    @SuppressWarnings("unchecked")
     @NotNull
     public static <T> List<T> findChildren(@NotNull PsiElement parentPsi,
                                            @NotNull Class<T> classType,
@@ -47,5 +45,16 @@ public class PsiUtils {
             if (psiChildText.startsWith(prefix)) resultList.add((T) psiChild);
         }
         return resultList;
+    }
+
+    //替换psiFile.replace()处理，避免出现 `because "treeParent" is null`
+    public static PsiFile replacePsiFile(@NotNull PsiFile originFile, @NotNull PsiFile newFile) {
+        for (PsiElement oldEl : originFile.getChildren()) {
+            oldEl.delete();
+        }
+        for (PsiElement newEl : newFile.getChildren()) {
+            originFile.add(newEl);
+        }
+        return originFile;
     }
 }

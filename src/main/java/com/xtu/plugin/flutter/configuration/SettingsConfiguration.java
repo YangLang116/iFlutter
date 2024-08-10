@@ -9,12 +9,12 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.xtu.plugin.flutter.action.pub.speed.ui.MirrorRepoDialog;
 import com.xtu.plugin.flutter.advice.AdviceDialog;
+import com.xtu.plugin.flutter.base.utils.CollectionUtils;
+import com.xtu.plugin.flutter.base.utils.StringUtils;
 import com.xtu.plugin.flutter.store.ide.IdeStorageService;
 import com.xtu.plugin.flutter.store.ide.entity.IdeStorageEntity;
 import com.xtu.plugin.flutter.store.project.ProjectStorageService;
 import com.xtu.plugin.flutter.store.project.entity.ProjectStorageEntity;
-import com.xtu.plugin.flutter.utils.CollectionUtils;
-import com.xtu.plugin.flutter.utils.StringUtils;
 import icons.PluginIcons;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,7 +35,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
     private JPanel rootPanel;
     private JTextField resDetectField;
     private JTextField ignoreResField;
-    private JCheckBox flutter2EnableBox;
+    private JCheckBox supportNullSafetyBox;
     private JCheckBox resCheckEnableBox;
     private JCheckBox foldRegisterBox;
     private JTextField apiKeyField;
@@ -95,7 +95,6 @@ public final class SettingsConfiguration implements SearchableConfigurable {
                 BrowserUtil.open(sPluginUrl);
             }
         });
-        //建议与反馈
         adviceLabel.setIcon(PluginIcons.NOTE);
         adviceLabel.setText("<html><u>Suggestion & Feedback</u></html>");
         adviceLabel.addMouseListener(new MouseAdapter() {
@@ -104,14 +103,12 @@ public final class SettingsConfiguration implements SearchableConfigurable {
                 AdviceDialog.show(project);
             }
         });
-        //修改镜像仓库
         mirrorRepoBtn.addActionListener(e -> {
             MirrorRepoDialog mirrorRepoDialog = new MirrorRepoDialog(project, rootPanel);
             boolean isOk = mirrorRepoDialog.showAndGet();
             if (!isOk) return;
             mirrorRepoStr = mirrorRepoDialog.getRepoStr();
         });
-        //图片尺寸开关
         enableSizeMonitor.addActionListener(e -> {
             boolean isSelected = enableSizeMonitor.isSelected();
             JTextField[] fieldList = new JTextField[]{maxPicSizeField, maxPicWidthField, maxPicHeightField};
@@ -136,7 +133,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
         ProjectStorageEntity projectStorage = ProjectStorageService.getStorage(project);
         return !CollectionUtils.join(projectStorage.resDir, LIST_SPLIT_CHAR).equals(resDetectField.getText().trim())
                 || !CollectionUtils.join(projectStorage.ignoreResExtension, LIST_SPLIT_CHAR).equals(ignoreResField.getText().trim())
-                || projectStorage.flutter2Enable != flutter2EnableBox.isSelected()
+                || projectStorage.supportNullSafety != supportNullSafetyBox.isSelected()
                 || projectStorage.resCheckEnable != resCheckEnableBox.isSelected()
                 || projectStorage.foldRegisterEnable != foldRegisterBox.isSelected()
                 || projectStorage.registerResWithPackage != withPackageNameBox.isSelected()
@@ -161,7 +158,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
         resDetectField.setText(resDirListStr);
         String ignoreResExtensionStr = CollectionUtils.join(projectStorage.ignoreResExtension, LIST_SPLIT_CHAR);
         ignoreResField.setText(ignoreResExtensionStr);
-        flutter2EnableBox.setSelected(projectStorage.flutter2Enable);
+        supportNullSafetyBox.setSelected(projectStorage.supportNullSafety);
         resCheckEnableBox.setSelected(projectStorage.resCheckEnable);
         foldRegisterBox.setSelected(projectStorage.foldRegisterEnable);
         withPackageNameBox.setSelected(projectStorage.registerResWithPackage);
@@ -187,7 +184,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
         String ignoreResExtensionStr = ignoreResField.getText().trim();
         projectStorage.ignoreResExtension = StringUtils.isEmpty(ignoreResExtensionStr) ?
                 Collections.emptyList() : CollectionUtils.split(ignoreResExtensionStr, LIST_SPLIT_CHAR);
-        projectStorage.flutter2Enable = flutter2EnableBox.isSelected();
+        projectStorage.supportNullSafety = supportNullSafetyBox.isSelected();
         projectStorage.resCheckEnable = resCheckEnableBox.isSelected();
         projectStorage.registerResWithPackage = withPackageNameBox.isSelected();
         projectStorage.isUnModifiableFromJson = isUnModifiableFromJson.isSelected();
@@ -198,7 +195,6 @@ public final class SettingsConfiguration implements SearchableConfigurable {
         projectStorage.maxPicWidth = Integer.parseInt(maxPicWidthField.getText().trim());
         projectStorage.maxPicHeight = Integer.parseInt(maxPicHeightField.getText().trim());
         ideStorage.mirrorRepoStr = mirrorRepoStr;
-        //检查是否更新了注册方式
         if (projectStorage.foldRegisterEnable != foldRegisterBox.isSelected()) {
             projectStorage.foldRegisterEnable = foldRegisterBox.isSelected();
             reStartIDE();

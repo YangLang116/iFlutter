@@ -1,4 +1,4 @@
-package com.xtu.plugin.flutter.utils;
+package com.xtu.plugin.flutter.base.utils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,8 +39,9 @@ public class CollectionUtils {
 
     public static boolean endsWith(@Nullable String test, @NotNull List<String> ends) {
         if (test == null) return false;
+        final String finalTest = test.toLowerCase();
         for (String end : ends) {
-            if (test.endsWith(end)) return true;
+            if (finalTest.endsWith(end.toLowerCase())) return true;
         }
         return false;
     }

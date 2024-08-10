@@ -6,9 +6,9 @@ import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
 import com.xtu.plugin.flutter.base.entity.AssetResultEntity;
+import com.xtu.plugin.flutter.base.utils.*;
 import com.xtu.plugin.flutter.component.assets.code.DartRFileGenerator;
 import com.xtu.plugin.flutter.store.project.entity.AssetStorageEntity;
-import com.xtu.plugin.flutter.utils.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,7 +51,7 @@ public class AssetRegisterStorageService implements PersistentStateComponent<Ass
         LogUtils.info("AssetRegisterStorageService refreshIfNeed");
         if (!PluginUtils.isFlutterProject(project)) return;
         if (!AssetUtils.isFoldRegister(project)) return;
-        DumbService.getInstance(project).smartInvokeLater(this::refreshAsset); //同步最新资源列表
+        DumbService.getInstance(project).smartInvokeLater(this::refreshAsset);
     }
 
     private void refreshAsset() {

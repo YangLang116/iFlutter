@@ -11,9 +11,9 @@ import com.intellij.openapi.wm.WindowManager;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.util.ui.JBUI;
 import com.xtu.plugin.flutter.action.j2d.handler.J2DHandler;
+import com.xtu.plugin.flutter.base.utils.*;
 import com.xtu.plugin.flutter.store.project.ProjectStorageService;
 import com.xtu.plugin.flutter.store.project.entity.ProjectStorageEntity;
-import com.xtu.plugin.flutter.utils.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -134,18 +134,18 @@ public class J2DDialog extends DialogWrapper {
             return;
         }
         ProjectStorageEntity storage = ProjectStorageService.getStorage(project);
-        J2DHandler handler = new J2DHandler(storage.flutter2Enable, storage.isUnModifiableFromJson);
+        J2DHandler handler = new J2DHandler(storage.supportNullSafety, storage.isUnModifiableFromJson);
         try {
-            String result = handler.genCode(className, jsonData);
-            genDartFile(fileName, result);
+            String code = handler.genCode(className, jsonData);
+            genDartFile(fileName, code);
             close(OK_EXIT_CODE);
         } catch (Exception e) {
             ToastUtils.make(project, MessageType.ERROR, e.getMessage());
         }
     }
 
-    private void genDartFile(@NotNull String fileName, @NotNull String content) {
-        DartUtils.createDartFile(project, selectDirectory, fileName, content, virtualFile -> {
+    private void genDartFile(@NotNull String fileName, @NotNull String code) {
+        DartUtils.createDartFile(project, selectDirectory, fileName, code, virtualFile -> {
             //更新交互UI
             StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);
             if (statusBar != null) statusBar.setInfo("Dart Entity Create Completed");

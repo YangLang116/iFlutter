@@ -1,8 +1,8 @@
 package com.xtu.plugin.flutter.component.analysis.utils;
 
 import com.intellij.openapi.vfs.VirtualFile;
-import com.xtu.plugin.flutter.utils.CloseUtils;
-import com.xtu.plugin.flutter.utils.LogUtils;
+import com.xtu.plugin.flutter.base.utils.CloseUtils;
+import com.xtu.plugin.flutter.base.utils.LogUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

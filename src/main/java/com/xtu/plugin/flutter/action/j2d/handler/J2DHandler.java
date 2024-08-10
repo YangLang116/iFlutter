@@ -2,8 +2,8 @@ package com.xtu.plugin.flutter.action.j2d.handler;
 
 import com.xtu.plugin.flutter.action.j2d.handler.entity.ClassEntity;
 import com.xtu.plugin.flutter.action.j2d.handler.entity.FieldDescriptor;
-import com.xtu.plugin.flutter.utils.ClassUtils;
-import com.xtu.plugin.flutter.utils.StringUtils;
+import com.xtu.plugin.flutter.base.utils.ClassUtils;
+import com.xtu.plugin.flutter.base.utils.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
@@ -12,7 +12,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 public class J2DHandler {
@@ -72,10 +71,10 @@ public class J2DHandler {
         for (FieldDescriptor field : fieldList) {
             if (field.isList && field.subType != null) {
                 String formatTemplate = nullSafety ? "final List<%s>? %s;" : "final List<%s> %s;";
-                infoBuilder.append(String.format(Locale.ROOT, formatTemplate, field.subType.type, field.displayName));
+                infoBuilder.append(String.format(formatTemplate, field.subType.type, field.displayName));
             } else {
                 String formatTemplate = nullSafety ? "final %s? %s;" : "final %s %s;";
-                infoBuilder.append(String.format(Locale.ROOT, formatTemplate, field.type, field.displayName));
+                infoBuilder.append(String.format(formatTemplate, field.type, field.displayName));
             }
         }
         return infoBuilder.toString();
@@ -98,13 +97,13 @@ public class J2DHandler {
         infoBodyBuilder.append(className).append("(");
         for (FieldDescriptor field : fieldList) {
             if (field.isPrime) {
-                infoBodyBuilder.append(String.format(Locale.ROOT,
+                infoBodyBuilder.append(String.format(
                         "%s: json['%s'],",
                         field.displayName, field.key));
             } else if (field.isList) {
                 if (field.subType != null && field.subType.isObject) {
                     String structWord = isUnModifiableFromJson ? "unmodifiable" : "from";
-                    infoBodyBuilder.append(String.format(Locale.ROOT,
+                    infoBodyBuilder.append(String.format(
                             """
                                     %s: json['%s'] == null? \
                                              null : \
@@ -113,18 +112,18 @@ public class J2DHandler {
                             field.displayName, field.key,
                             field.subType.type, structWord, field.key, field.subType.type));
                 } else {
-                    infoBodyBuilder.append(String.format(Locale.ROOT,
+                    infoBodyBuilder.append(String.format(
                             "%s: json['%s'],",
                             field.displayName, field.key));
                 }
             } else if (field.isObject) {
-                infoBodyBuilder.append(String.format(Locale.ROOT,
+                infoBodyBuilder.append(String.format(
                         "%s: json['%s'] == null? null : %s.fromJson(json['%s']),",
                         field.displayName, field.key, field.type, field.key));
             }
         }
         infoBodyBuilder.append(");");
-        return String.format(Locale.ROOT,
+        return String.format(
                 "factory %s.fromJson(Map<String, dynamic> json) { return %s }",
                 className, infoBodyBuilder);
     }
@@ -133,18 +132,18 @@ public class J2DHandler {
     private String createToJsonInfo(@NotNull List<FieldDescriptor> fieldList) {
         StringBuilder infoBodyBuilder = new StringBuilder();
         for (FieldDescriptor field : fieldList) {
-            infoBodyBuilder.append(String.format(Locale.ROOT, "'%s': ", field.displayName));
+            infoBodyBuilder.append(String.format("'%s': ", field.displayName));
             if (field.isList && field.subType != null && field.subType.isObject) {
                 String formatTemplate = nullSafety ? "%s?.map((e) => e.toJson()).toList()," : "%s.map((e) => e.toJson()).toList(),";
-                infoBodyBuilder.append(String.format(Locale.ROOT, formatTemplate, field.displayName));
+                infoBodyBuilder.append(String.format(formatTemplate, field.displayName));
             } else if (field.isObject) {
                 String formatTemplate = nullSafety ? "%s?.toJson()," : "%s.toJson(),";
-                infoBodyBuilder.append(String.format(Locale.ROOT, formatTemplate, field.displayName));
+                infoBodyBuilder.append(String.format(formatTemplate, field.displayName));
             } else {
                 infoBodyBuilder.append(field.displayName).append(",");
             }
         }
-        return String.format(Locale.ROOT,
+        return String.format(
                 "Map<String, dynamic> toJson() => { %s };",
                 infoBodyBuilder
         );

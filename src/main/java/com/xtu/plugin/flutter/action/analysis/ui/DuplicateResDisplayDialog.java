@@ -6,7 +6,7 @@ import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.wm.WindowManager;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.treeStructure.Tree;
-import com.xtu.plugin.flutter.utils.PluginUtils;
+import com.xtu.plugin.flutter.base.utils.PluginUtils;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,7 +18,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 public class DuplicateResDisplayDialog extends DialogWrapper {
@@ -84,7 +83,7 @@ public class DuplicateResDisplayDialog extends DialogWrapper {
 
         @Override
         public String toString() {
-            return String.format(Locale.ROOT, "%s(%s)", rawFile.getName(), rawFile.getAbsolutePath());
+            return String.format("%s(%s)", rawFile.getName(), rawFile.getAbsolutePath());
         }
     }
 

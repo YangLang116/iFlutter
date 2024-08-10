@@ -1,4 +1,4 @@
-package com.xtu.plugin.flutter.utils;
+package com.xtu.plugin.flutter.base.utils;
 
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
@@ -16,7 +16,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 public class TinyUtils {
 
@@ -46,7 +45,7 @@ public class TinyUtils {
                 try {
                     for (int i = 0; i < fileCount; i++) {
                         File file = imageFileList.get(i);
-                        String message = String.format(Locale.ROOT, "compressing %s [%d/%d]", file.getName(), i + 1, fileCount);
+                        String message = String.format("compressing %s [%d/%d]", file.getName(), i + 1, fileCount);
                         indicator.setText(message);
                         String imageFilePath = file.getAbsolutePath();
                         Tinify.fromFile(imageFilePath).toFile(imageFilePath);

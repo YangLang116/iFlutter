@@ -11,8 +11,8 @@ public class ProjectStorageEntity {
     public List<String> resDir = Arrays.asList("assets", "images");
     //根据资源文件后缀，屏蔽R中某些字段的生成
     public List<String> ignoreResExtension = Collections.emptyList();
-    //是否打开flutter2.0
-    public boolean flutter2Enable = true;
+    //是否打开flutter2.0，空安全支持
+    public boolean supportNullSafety = true;
     //是否打开资源变更检查
     public boolean resCheckEnable = true;
     //HTTP Mock 配置
@@ -45,7 +45,7 @@ public class ProjectStorageEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ProjectStorageEntity that = (ProjectStorageEntity) o;
-        return flutter2Enable == that.flutter2Enable
+        return supportNullSafety == that.supportNullSafety
                 && resCheckEnable == that.resCheckEnable
                 && Objects.equals(resDir, that.resDir)
                 && Objects.equals(ignoreResExtension, that.ignoreResExtension)
@@ -65,7 +65,7 @@ public class ProjectStorageEntity {
         return "StorageEntity{" +
                 "resDir=" + resDir +
                 ", ignoreResExtension=" + ignoreResExtension +
-                ", flutter2Enable=" + flutter2Enable +
+                ", supportNullSafety=" + supportNullSafety +
                 ", resCheckEnable=" + resCheckEnable +
                 ", httpEntityList=" + httpEntityList +
                 ", foldRegisterEnable=" + foldRegisterEnable +

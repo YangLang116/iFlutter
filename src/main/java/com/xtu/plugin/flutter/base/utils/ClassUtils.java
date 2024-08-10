@@ -1,13 +1,15 @@
-package com.xtu.plugin.flutter.utils;
+package com.xtu.plugin.flutter.base.utils;
+
+import org.jetbrains.annotations.NotNull;
 
 public class ClassUtils {
 
-    public static String splashName(String name) {
-        if (name == null) return null;
+    public static String splashName(@NotNull String name) {
         StringBuilder resultSb = new StringBuilder();
         for (int i = 0, j = name.length(); i < j; i++) {
             char c = name.charAt(i);
-            if (Character.isUpperCase(c) && i != 0) {
+            if (i != 0 && Character.isUpperCase(c)
+                    && i + 1 < j && Character.isLowerCase(name.charAt(i + 1))) {
                 resultSb.append("_");
             }
             resultSb.append(Character.toLowerCase(c));

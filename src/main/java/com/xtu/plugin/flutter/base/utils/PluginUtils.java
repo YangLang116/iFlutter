@@ -1,4 +1,4 @@
-package com.xtu.plugin.flutter.utils;
+package com.xtu.plugin.flutter.base.utils;
 
 import com.intellij.ide.actions.RevealFileAction;
 import com.intellij.openapi.fileEditor.FileEditorManager;

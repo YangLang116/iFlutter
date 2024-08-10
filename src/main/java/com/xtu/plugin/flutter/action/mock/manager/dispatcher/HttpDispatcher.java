@@ -1,9 +1,9 @@
 package com.xtu.plugin.flutter.action.mock.manager.dispatcher;
 
 import com.intellij.openapi.project.Project;
+import com.xtu.plugin.flutter.base.utils.StringUtils;
 import com.xtu.plugin.flutter.store.project.ProjectStorageService;
 import com.xtu.plugin.flutter.store.project.entity.HttpEntity;
-import com.xtu.plugin.flutter.utils.StringUtils;
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.RecordedRequest;

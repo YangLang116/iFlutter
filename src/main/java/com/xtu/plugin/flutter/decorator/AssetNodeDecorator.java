@@ -6,7 +6,7 @@ import com.intellij.ide.projectView.ProjectViewNode;
 import com.intellij.ide.projectView.ProjectViewNodeDecorator;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.xtu.plugin.flutter.utils.AssetUtils;
+import com.xtu.plugin.flutter.base.utils.AssetUtils;
 
 public class AssetNodeDecorator implements ProjectViewNodeDecorator {
     @Override

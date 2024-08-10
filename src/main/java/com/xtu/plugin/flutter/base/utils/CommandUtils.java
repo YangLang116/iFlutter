@@ -1,4 +1,4 @@
-package com.xtu.plugin.flutter.utils;
+package com.xtu.plugin.flutter.base.utils;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SystemInfo;
@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class CommandUtils {
@@ -23,7 +22,7 @@ public class CommandUtils {
         }
         String executorName = SystemInfo.isWindows ? "flutter.bat" : "flutter";
         File executorFile = new File(flutterPath, "bin" + File.separator + executorName);
-        String command = String.format(Locale.ROOT, "%s %s", executorFile.getAbsolutePath(), commandArgs);
+        String command = String.format("%s %s", executorFile.getAbsolutePath(), commandArgs);
         return CommandUtils.executeSync(command, new File(projectPath), maxTimeOut);
     }
 

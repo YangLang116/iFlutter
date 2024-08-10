@@ -7,8 +7,8 @@ import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.openapi.vfs.newvfs.BulkFileListener;
 import com.intellij.openapi.vfs.newvfs.events.*;
 import com.intellij.util.messages.MessageBusConnection;
-import com.xtu.plugin.flutter.utils.AssetUtils;
-import com.xtu.plugin.flutter.utils.PubSpecUtils;
+import com.xtu.plugin.flutter.base.utils.AssetUtils;
+import com.xtu.plugin.flutter.base.utils.PubSpecUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;

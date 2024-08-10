@@ -3,16 +3,15 @@ package com.xtu.plugin.flutter.component.assets.handler;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.xtu.plugin.flutter.base.entity.AssetResultEntity;
+import com.xtu.plugin.flutter.base.utils.FontUtils;
+import com.xtu.plugin.flutter.base.utils.LogUtils;
+import com.xtu.plugin.flutter.base.utils.PubSpecUtils;
 import com.xtu.plugin.flutter.component.assets.code.DartFontFileGenerator;
 import com.xtu.plugin.flutter.component.assets.code.DartRFileGenerator;
-import com.xtu.plugin.flutter.utils.FontUtils;
-import com.xtu.plugin.flutter.utils.LogUtils;
-import com.xtu.plugin.flutter.utils.PubSpecUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class PubSpecFileHandler {
 
@@ -57,7 +56,7 @@ public class PubSpecFileHandler {
     }
 
     void changeAsset(Project project, String oldAssetName, String newAssetName) {
-        LogUtils.info(String.format(Locale.ROOT, "PubSpecFileHandler changeAsset(%s -> %s)", oldAssetName, newAssetName));
+        LogUtils.info(String.format("PubSpecFileHandler changeAsset(%s -> %s)", oldAssetName, newAssetName));
         WriteCommandAction.runWriteCommandAction(project, () -> {
             AssetResultEntity assetResult = PubSpecUtils.readAssetList(project);
             List<String> newAssetList = new ArrayList<>(assetResult.assetList);

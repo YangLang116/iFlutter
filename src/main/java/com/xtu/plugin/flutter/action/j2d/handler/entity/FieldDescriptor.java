@@ -1,6 +1,6 @@
 package com.xtu.plugin.flutter.action.j2d.handler.entity;
 
-import com.xtu.plugin.flutter.utils.ClassUtils;
+import com.xtu.plugin.flutter.base.utils.ClassUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

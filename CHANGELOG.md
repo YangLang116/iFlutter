@@ -4,14 +4,23 @@
 
 ###
 
+## [4.1.5] - 2024-08-10
+
+- `Flutter Resource`: 优化资源列表预览尺寸
+
+## [4.1.4] - 2024-08-03
+
+- `Base`: 调整R文件创建逻辑
+- `Base`: 优化 `fromJson`、`toJson`
+
 ## [4.1.3] - 2024-06-30
 
-- `Base`:  Optimize resource detection logic (优化资源检测逻辑)
+- `Base`: 优化资源检测逻辑
 
 ## [4.1.2] - 2024-06-24
 
-- `Base`: UI optimization (UI 优化)
-- `Flutter Resource`: Interactive fine-tuning (交互细调整)
+- `Base`: UI 优化
+- `Flutter Resource`: 交互细调整
 
 ## [4.1.1] - 2024-06-17
 

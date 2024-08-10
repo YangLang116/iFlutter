@@ -6,7 +6,7 @@ import com.intellij.openapi.ui.MessageType;
 import com.intellij.psi.PsiElement;
 import com.xtu.plugin.flutter.action.pub.speed.entity.AndroidMavenInfo;
 import com.xtu.plugin.flutter.action.pub.speed.entity.AndroidPluginInfo;
-import com.xtu.plugin.flutter.utils.*;
+import com.xtu.plugin.flutter.base.utils.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.groovy.lang.psi.GroovyFile;
@@ -75,8 +75,8 @@ public class AndroidGradleParser {
         File rootAndroidDirectory = new File(projectPath, "android");
         if (rootAndroidDirectory.exists() && rootAndroidDirectory.isDirectory()) {
             AndroidPluginInfo rootAndroid = new AndroidPluginInfo("Root", rootAndroidDirectory);
-            projectPluginList.add(rootAndroid); //添加根项目
-            File appDirectory = new File(rootAndroidDirectory, "app");  //添加App项目
+            projectPluginList.add(rootAndroid);
+            File appDirectory = new File(rootAndroidDirectory, "app");
             if (appDirectory.exists() && appDirectory.isDirectory()) {
                 AndroidPluginInfo appAndroid = new AndroidPluginInfo("App", appDirectory);
                 projectPluginList.add(appAndroid);

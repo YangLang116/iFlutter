@@ -7,6 +7,10 @@ import com.intellij.openapi.ui.DoNotAskOption;
 import com.intellij.openapi.ui.MessageDialogBuilder;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.xtu.plugin.flutter.base.adapter.AssetFileChangedObserver;
+import com.xtu.plugin.flutter.base.utils.LogUtils;
+import com.xtu.plugin.flutter.base.utils.PluginUtils;
+import com.xtu.plugin.flutter.base.utils.StringUtils;
+import com.xtu.plugin.flutter.base.utils.TinyUtils;
 import com.xtu.plugin.flutter.component.analysis.ImageSizeAnalyzer;
 import com.xtu.plugin.flutter.component.assets.handler.AssetFileHandler;
 import com.xtu.plugin.flutter.component.assets.handler.PubSpecFileHandler;
@@ -14,16 +18,11 @@ import com.xtu.plugin.flutter.store.ide.IdeStorageService;
 import com.xtu.plugin.flutter.store.project.AssetRegisterStorageService;
 import com.xtu.plugin.flutter.store.project.ProjectStorageService;
 import com.xtu.plugin.flutter.store.project.entity.ProjectStorageEntity;
-import com.xtu.plugin.flutter.utils.LogUtils;
-import com.xtu.plugin.flutter.utils.PluginUtils;
-import com.xtu.plugin.flutter.utils.StringUtils;
-import com.xtu.plugin.flutter.utils.TinyUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * 处理flutter项目中的资源文件
@@ -123,7 +122,7 @@ public class AssetsManager extends AssetFileChangedObserver implements Disposabl
                                 @NotNull VirtualFile addFile) {
         ApplicationManager.getApplication().invokeLater(() -> {
             String title = "Compress Image";
-            String message = String.format(Locale.ROOT, "Do you need to compress '%s' ?", addFile.getName());
+            String message = String.format("Do you need to compress '%s' ?", addFile.getName());
             boolean needCompress;
             if (System.currentTimeMillis() - remindOptionTime <= 30 * 1000) {
                 needCompress = remindOptionResult;

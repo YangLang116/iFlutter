@@ -3,10 +3,8 @@ package icons;
 import com.intellij.openapi.util.IconLoader;
 
 import javax.swing.*;
-import java.net.URL;
 
 public class PluginIcons {
-    public static URL FAIL_PIC = PluginIcons.class.getResource("/icons/load_fail.png");
     public static Icon GITHUB = IconLoader.getIcon("/icons/github.svg", PluginIcons.class);
     public static Icon STAR = IconLoader.getIcon("/icons/star.svg", PluginIcons.class);
     public static Icon LOGO = IconLoader.getIcon("/icons/logo.svg", PluginIcons.class);

@@ -2,8 +2,8 @@ package com.xtu.plugin.flutter.component.assets.handler;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.xtu.plugin.flutter.utils.AssetUtils;
-import com.xtu.plugin.flutter.utils.PluginUtils;
+import com.xtu.plugin.flutter.base.utils.AssetUtils;
+import com.xtu.plugin.flutter.base.utils.PluginUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;

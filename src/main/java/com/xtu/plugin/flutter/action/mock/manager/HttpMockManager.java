@@ -4,10 +4,10 @@ import com.intellij.openapi.Disposable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
 import com.xtu.plugin.flutter.action.mock.manager.dispatcher.HttpDispatcher;
-import com.xtu.plugin.flutter.utils.HttpUtils;
-import com.xtu.plugin.flutter.utils.LogUtils;
-import com.xtu.plugin.flutter.utils.PluginUtils;
-import com.xtu.plugin.flutter.utils.ToastUtils;
+import com.xtu.plugin.flutter.base.utils.HttpUtils;
+import com.xtu.plugin.flutter.base.utils.LogUtils;
+import com.xtu.plugin.flutter.base.utils.PluginUtils;
+import com.xtu.plugin.flutter.base.utils.ToastUtils;
 import okhttp3.mockwebserver.MockWebServer;
 import org.jetbrains.annotations.NotNull;
 

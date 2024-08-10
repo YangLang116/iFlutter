@@ -4,15 +4,14 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.xtu.plugin.flutter.base.utils.AssetUtils;
 import com.xtu.plugin.flutter.component.analysis.utils.ImageAnalysisUtils;
 import com.xtu.plugin.flutter.store.project.ProjectStorageService;
 import com.xtu.plugin.flutter.store.project.entity.ProjectStorageEntity;
-import com.xtu.plugin.flutter.utils.AssetUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.util.Locale;
 
 public class ImageSizeAnalyzer {
 
@@ -43,7 +42,7 @@ public class ImageSizeAnalyzer {
     private String getIllegalSizeTip(@NotNull File imageFile, int maxPicSize) {
         int imageSize = ImageAnalysisUtils.getImageSize(imageFile);
         if (imageSize < maxPicSize) return null;
-        return String.format(Locale.ROOT, "Size limit: %dk，current: %dk", maxPicSize, imageSize);
+        return String.format("Size limit: %dk, current: %dk", maxPicSize, imageSize);
     }
 
     private String getIllegalDimensionTip(@NotNull File imageFile, int maxPicWidth, int maxPicHeight) {
@@ -52,7 +51,7 @@ public class ImageSizeAnalyzer {
         int cWidth = dimension.width;
         int cHeight = dimension.height;
         if (cWidth < maxPicWidth && cHeight < maxPicHeight) return null;
-        return String.format("Dimension limit: %dx%d，current: %dx%d", maxPicWidth, maxPicHeight, cWidth, cHeight);
+        return String.format("Dimension limit: %dx%d, current: %dx%d", maxPicWidth, maxPicHeight, cWidth, cHeight);
     }
 
     private void showWarnDialog(@NotNull File imageFile, @Nullable String sizeTip, @Nullable String dimensionTip) {

@@ -7,17 +7,15 @@ import com.xtu.plugin.flutter.action.intl.BaseIntlAction;
 import com.xtu.plugin.flutter.action.intl.IntlResManager;
 import com.xtu.plugin.flutter.action.intl.ui.AddIntlDialog;
 import com.xtu.plugin.flutter.action.intl.utils.IntlUtils;
-import com.xtu.plugin.flutter.utils.CollectionUtils;
-import com.xtu.plugin.flutter.utils.StringUtils;
-import com.xtu.plugin.flutter.utils.ToastUtils;
+import com.xtu.plugin.flutter.base.utils.CollectionUtils;
+import com.xtu.plugin.flutter.base.utils.StringUtils;
+import com.xtu.plugin.flutter.base.utils.ToastUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
 
-/**
- * 简化国际化语言内容添加
- */
+@SuppressWarnings("SpellCheckingInspection")
 public class AddIntlAction extends BaseIntlAction {
 
     @Override

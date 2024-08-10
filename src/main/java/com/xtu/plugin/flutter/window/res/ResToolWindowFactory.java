@@ -8,7 +8,7 @@ import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import com.intellij.ui.content.ContentManager;
-import com.xtu.plugin.flutter.utils.PluginUtils;
+import com.xtu.plugin.flutter.base.utils.PluginUtils;
 import com.xtu.plugin.flutter.window.res.action.CompressAction;
 import com.xtu.plugin.flutter.window.res.action.LocateAction;
 import com.xtu.plugin.flutter.window.res.action.SearchAction;

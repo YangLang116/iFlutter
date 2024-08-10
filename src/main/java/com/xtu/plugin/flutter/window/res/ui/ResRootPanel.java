@@ -5,13 +5,14 @@ import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.util.SystemInfo;
+import com.intellij.openapi.util.text.Formats;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.DocumentAdapter;
 import com.intellij.ui.awt.RelativePoint;
 import com.intellij.ui.components.JBList;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.util.ui.JBUI;
-import com.xtu.plugin.flutter.utils.*;
+import com.xtu.plugin.flutter.base.utils.*;
 import com.xtu.plugin.flutter.window.res.adapter.ResListRender;
 import com.xtu.plugin.flutter.window.res.core.IResRootPanel;
 import com.xtu.plugin.flutter.window.res.menu.ResMenuGroup;
@@ -151,7 +152,7 @@ public class ResRootPanel extends JPanel implements IResRootPanel {
     @Override
     public void loadResList(@NotNull List<File> resList) {
         Long totalSize = resList.stream().map((File::length)).reduce(0L, Long::sum);
-        String totalSizeStr = StringUtil.formatFileSize(totalSize);
+        String totalSizeStr = Formats.formatFileSize(totalSize);
         this.titleBar.setText(String.format("File Count: %d / Total Size: %s", resList.size(), totalSizeStr));
         this.resList = resList;
         this.refreshList();

@@ -4,8 +4,8 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.xtu.plugin.flutter.action.analysis.task.UselessResAnalysisTask;
 import com.xtu.plugin.flutter.base.action.AssetDirAction;
-import com.xtu.plugin.flutter.utils.PluginUtils;
-import com.xtu.plugin.flutter.utils.StringUtils;
+import com.xtu.plugin.flutter.base.utils.PluginUtils;
+import com.xtu.plugin.flutter.base.utils.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 public class UselessResAnalysisAction extends AssetDirAction {

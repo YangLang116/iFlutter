@@ -16,20 +16,21 @@ GameCenter is an IDEA Plugin for Developer to play Games
 
 - FlappyBird - 从项目 [FlappyBird](https://github.com/kingyuluk/FlappyBird) 进行移植
 
-- FC游戏 - [游戏清单](https://game.toolu.cn/conf.json) 按键说明如下：
+- FC游戏 - [游戏清单](https://github.com/YangLang116/nes-game-list) 按键说明如下：
 
-| 按键 | player1 | player2 |
-| :----: | :----: | :----: |  
-| Left | A | Num-4 |  
-| Right | D | Num-6 |  
-| Up | W | Num-8 |
-| Down | S | Num-2 |  
-| A | J | Num-7 |  
-| B | K | Num-9 |
-| AA | Z | Num-/ |
-| BB | X | Num-* |
-| Start |	Enter |	Num-1 |
-| Select | Ctrl |	Num-3 |
+|  按键  | player1 | player2 |
+| :----: | :-----: | :-----: |
+|  Left  |    A    |  Num-4  |
+| Right  |    D    |  Num-6  |
+|   Up   |    W    |  Num-8  |
+|  Down  |    S    |  Num-2  |
+|   A    |    J    |  Num-7  |
+|   B    |    K    |  Num-9  |
+|   AA   |    Z    |  Num-/  |
+|   BB   |    X    | Num-\*  |
+| Start  |  Enter  |  Num-1  |
+| Select |  Ctrl   |  Num-3  |
+
 
 ## 重点说明
 

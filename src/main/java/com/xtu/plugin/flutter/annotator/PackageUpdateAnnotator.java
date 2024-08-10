@@ -20,10 +20,10 @@ import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
+import com.xtu.plugin.flutter.base.utils.PubSpecUtils;
+import com.xtu.plugin.flutter.base.utils.StringUtils;
 import com.xtu.plugin.flutter.component.packages.update.PackageInfo;
 import com.xtu.plugin.flutter.store.project.ProjectStorageService;
-import com.xtu.plugin.flutter.utils.PubSpecUtils;
-import com.xtu.plugin.flutter.utils.StringUtils;
 import icons.PluginIcons;
 import io.flutter.pub.PubRoot;
 import io.flutter.sdk.FlutterSdk;
@@ -36,7 +36,6 @@ import org.jetbrains.yaml.psi.YAMLScalar;
 import org.jetbrains.yaml.psi.YAMLValue;
 
 import javax.swing.*;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -68,7 +67,7 @@ public class PackageUpdateAnnotator implements Annotator {
             }
             return null;
         }
-        return String.format(Locale.ROOT, "https://pub.dev/packages/%s/versions", packageName);
+        return String.format("https://pub.dev/packages/%s/versions", packageName);
     }
 
     @Nullable
@@ -141,7 +140,7 @@ public class PackageUpdateAnnotator implements Annotator {
         @Override
         @Nullable
         public String getTooltipText() {
-            return String.format(Locale.ROOT, "%s can update: %s -> %s\n\n Click to view",
+            return String.format("%s can update: %s -> %s\n\n Click to view",
                     packageInfo.name,
                     packageInfo.currentVersion,
                     packageInfo.latestVersion);

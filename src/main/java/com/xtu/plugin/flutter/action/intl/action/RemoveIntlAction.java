@@ -6,15 +6,13 @@ import com.intellij.openapi.ui.Messages;
 import com.xtu.plugin.flutter.action.intl.BaseIntlAction;
 import com.xtu.plugin.flutter.action.intl.IntlResManager;
 import com.xtu.plugin.flutter.action.intl.utils.IntlUtils;
-import com.xtu.plugin.flutter.utils.CollectionUtils;
-import com.xtu.plugin.flutter.utils.StringUtils;
+import com.xtu.plugin.flutter.base.utils.CollectionUtils;
+import com.xtu.plugin.flutter.base.utils.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-/**
- * 简化国际化语言内容删除
- */
+@SuppressWarnings("SpellCheckingInspection")
 public class RemoveIntlAction extends BaseIntlAction {
 
     @Override

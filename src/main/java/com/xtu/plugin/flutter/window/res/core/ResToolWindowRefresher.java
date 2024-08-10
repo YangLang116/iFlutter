@@ -7,10 +7,10 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.openapi.wm.ex.ToolWindowManagerListener;
 import com.intellij.util.messages.MessageBusConnection;
-import com.xtu.plugin.flutter.utils.AssetUtils;
-import com.xtu.plugin.flutter.utils.FileUtils;
-import com.xtu.plugin.flutter.utils.LogUtils;
-import com.xtu.plugin.flutter.utils.StringUtils;
+import com.xtu.plugin.flutter.base.utils.AssetUtils;
+import com.xtu.plugin.flutter.base.utils.FileUtils;
+import com.xtu.plugin.flutter.base.utils.LogUtils;
+import com.xtu.plugin.flutter.base.utils.StringUtils;
 import com.xtu.plugin.flutter.window.res.ResToolWindowFactory;
 import org.jetbrains.annotations.NotNull;
 
@@ -62,7 +62,7 @@ public class ResToolWindowRefresher extends ResToolWindowContentObserver impleme
             for (File file : allAssetFile) {
                 String extension = FileUtils.getExtension(file);
                 if (StringUtils.isEmpty(extension)) continue;
-                if (SUPPORT_IMAGE_FORMAT.contains(extension)) resList.add(file);
+                if (SUPPORT_IMAGE_FORMAT.contains(extension.toLowerCase())) resList.add(file);
             }
             application.invokeLater(() -> rootPanel.loadResList(resList));
         });

@@ -29,8 +29,8 @@ dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     implementation("com.squareup.okhttp3:mockwebserver:4.9.3")
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
-    implementation("com.twelvemonkeys.imageio:imageio-webp:3.9.4")
-    implementation("com.twelvemonkeys.imageio:imageio-batik:3.9.4")
+    implementation("com.twelvemonkeys.imageio:imageio-webp:3.10.1")
+    implementation("com.twelvemonkeys.imageio:imageio-batik:3.10.1")
     implementation("com.tinify:tinify:1.8.3")
 }
 
@@ -84,12 +84,12 @@ tasks {
         version.set(properties("pluginVersion"))
         // Extract the <!-- Plugin description --> section from README.md and provide for the plugin's manifest
         pluginDescription.set(
-            projectDir.resolve("README.md").readText().lines().run {
+            projectDir.resolve("PLUGIN_DESC.md").readText().lines().run {
                 val start = "<!-- Plugin description -->"
                 val end = "<!-- Plugin description end -->"
 
                 if (!containsAll(listOf(start, end))) {
-                    throw GradleException("Plugin description section not found in README.md:\n$start ... $end")
+                    throw GradleException("Plugin description section not found in PLUGIN_DESC.md:\n$start ... $end")
                 }
                 subList(indexOf(start) + 1, indexOf(end))
             }.joinToString("\n").run { markdownToHTML(this) }

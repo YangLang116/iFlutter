@@ -4,8 +4,8 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
 import com.xtu.plugin.flutter.action.analysis.ui.DuplicateResDisplayDialog;
-import com.xtu.plugin.flutter.utils.FileUtils;
-import com.xtu.plugin.flutter.utils.ToastUtils;
+import com.xtu.plugin.flutter.base.utils.FileUtils;
+import com.xtu.plugin.flutter.base.utils.ToastUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;

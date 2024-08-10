@@ -9,8 +9,8 @@ import com.jetbrains.lang.dart.ide.generation.BaseCreateMethodsFix;
 import com.jetbrains.lang.dart.psi.DartClass;
 import com.jetbrains.lang.dart.psi.DartComponent;
 import com.jetbrains.lang.dart.psi.DartComponentName;
-import com.xtu.plugin.flutter.utils.CollectionUtils;
-import com.xtu.plugin.flutter.utils.StringUtils;
+import com.xtu.plugin.flutter.base.utils.CollectionUtils;
+import com.xtu.plugin.flutter.base.utils.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,8 +18,11 @@ import java.util.Set;
 
 public class DartGenerateConstructorCodeFix extends BaseCreateMethodsFix<DartComponent> {
 
-    public DartGenerateConstructorCodeFix(@NotNull DartClass dartClass) {
+    private final boolean supportNullSafety;
+
+    public DartGenerateConstructorCodeFix(boolean supportNullSafety, @NotNull DartClass dartClass) {
         super(dartClass);
+        this.supportNullSafety = supportNullSafety;
     }
 
     @Override
@@ -53,8 +56,7 @@ public class DartGenerateConstructorCodeFix extends BaseCreateMethodsFix<DartCom
                                           @NotNull Set<DartComponent> elementsToProcess) {
         Template template = templateManager.createTemplate(this.getClass().getName(), "Dart");
         template.setToReformat(true);
-        String className = myDartClass.getName();
-        template.addTextSegment(String.format("%s(", className));
+        template.addTextSegment(String.format("%s(", myDartClass.getName()));
         if (!CollectionUtils.isEmpty(elementsToProcess)) {
             template.addTextSegment("{");
             for (DartComponent varAccessComponent : elementsToProcess) {
@@ -62,7 +64,8 @@ public class DartGenerateConstructorCodeFix extends BaseCreateMethodsFix<DartCom
                 if (componentName == null) continue;
                 String name = componentName.getText();
                 if (StringUtils.isEmpty(name)) continue;
-                template.addTextSegment(String.format("this.%s,", name));
+                boolean isNullable = !supportNullSafety || varAccessComponent.getText().contains("?");
+                template.addTextSegment(String.format("%s this.%s,", (isNullable ? "" : "required"), name));
             }
             template.addTextSegment("}");
         }

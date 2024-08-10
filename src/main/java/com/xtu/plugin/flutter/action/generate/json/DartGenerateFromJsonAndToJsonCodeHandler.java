@@ -33,7 +33,7 @@ public class DartGenerateFromJsonAndToJsonCodeHandler extends BaseDartGenerateHa
         Project project = dartClass.getProject();
         ProjectStorageEntity storageEntity = ProjectStorageService.getStorage(project);
         return new CreateFromJsonAndToJsonCodeFix(dartClass,
-                storageEntity.flutter2Enable, storageEntity.isUnModifiableFromJson,
+                storageEntity.supportNullSafety, storageEntity.isUnModifiableFromJson,
                 this.hasFromJson, hasToJson);
     }
 

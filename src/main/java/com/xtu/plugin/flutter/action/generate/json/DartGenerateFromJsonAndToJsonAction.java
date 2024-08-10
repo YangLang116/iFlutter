@@ -6,7 +6,7 @@ import com.jetbrains.lang.dart.ide.generation.BaseDartGenerateHandler;
 import com.jetbrains.lang.dart.psi.DartClass;
 import com.jetbrains.lang.dart.psi.DartFactoryConstructorDeclaration;
 import com.jetbrains.lang.dart.util.DartResolveUtil;
-import com.xtu.plugin.flutter.utils.StringUtils;
+import com.xtu.plugin.flutter.base.utils.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,7 +34,6 @@ public class DartGenerateFromJsonAndToJsonAction extends BaseDartGenerateAction 
             }
         }
         boolean hasToJson = doesClassContainMethod(dartClass, "toJson");
-        //更新状态
         this.hasFromJson = hasFromJson;
         this.hasToJson = hasToJson;
         return hasFromJson && hasToJson;

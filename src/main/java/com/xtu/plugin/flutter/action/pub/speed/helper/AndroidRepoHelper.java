@@ -1,7 +1,7 @@
 package com.xtu.plugin.flutter.action.pub.speed.helper;
 
+import com.xtu.plugin.flutter.base.utils.StringUtils;
 import com.xtu.plugin.flutter.store.ide.IdeStorageService;
-import com.xtu.plugin.flutter.utils.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

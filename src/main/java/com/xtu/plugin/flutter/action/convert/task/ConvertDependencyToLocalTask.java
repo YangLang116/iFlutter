@@ -15,9 +15,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.xtu.plugin.flutter.base.utils.*;
 import com.xtu.plugin.flutter.component.packages.update.PackageInfo;
 import com.xtu.plugin.flutter.store.project.ProjectStorageService;
-import com.xtu.plugin.flutter.utils.*;
 import io.flutter.pub.PubRoot;
 import io.flutter.sdk.FlutterSdk;
 import org.apache.commons.io.FileUtils;
@@ -104,7 +104,7 @@ public class ConvertDependencyToLocalTask extends Task.Backgroundable {
             removeAnnotator(project, packageName);
             LocalFileSystem.getInstance()
                     .refreshAndFindFileByIoFile(localDependencyFile);
-            String relativePath = com.xtu.plugin.flutter.utils.FileUtils.getRelativePath(projectPath, localDependencyFile);
+            String relativePath = com.xtu.plugin.flutter.base.utils.FileUtils.getRelativePath(projectPath, localDependencyFile);
 //          创建新的psi，并替换老的依赖方式
 //          flutter_custom_calendar:
 //              path: dependencies/flutter_custom_calendar

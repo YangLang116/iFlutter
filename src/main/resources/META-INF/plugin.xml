@@ -10,7 +10,10 @@
     <depends>io.flutter</depends>
     <depends config-file="yaml.xml">org.jetbrains.plugins.yaml</depends>
     <depends config-file="intl.xml" optional="true">com.localizely.flutter-intl</depends>
-
+    <applicationListeners>
+        <listener topic="com.intellij.ide.AppLifecycleListener"
+                  class="com.xtu.plugin.flutter.listener.AppLifecycleListenerImpl"/>
+    </applicationListeners>
     <extensions defaultExtensionNs="com.intellij">
         <defaultLiveTemplates file="/template/Flutter.xml"/>
         <postStartupActivity implementation="com.xtu.plugin.flutter.component.FProjectManager"/>

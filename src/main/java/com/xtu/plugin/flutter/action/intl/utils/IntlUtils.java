@@ -6,13 +6,16 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectUtil;
 import com.intellij.openapi.util.ThrowableComputable;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.xtu.plugin.flutter.utils.StringUtils;
+import com.xtu.plugin.flutter.base.utils.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class IntlUtils {
 
@@ -39,7 +42,7 @@ public class IntlUtils {
 
     @NotNull
     public static String getFileName(String locale) {
-        return String.format(Locale.ROOT, "intl_%s.arb", locale);
+        return String.format("intl_%s.arb", locale);
     }
 
     @Nullable

@@ -1,4 +1,4 @@
-package com.xtu.plugin.flutter.utils;
+package com.xtu.plugin.flutter.base.utils;
 
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Document;
@@ -21,7 +21,6 @@ import org.jetbrains.yaml.psi.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 
@@ -365,7 +364,7 @@ public class PubSpecUtils {
     private static void notifyPubSpecUpdate(Project project) {
         StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);
         if (statusBar != null) {
-            statusBar.setInfo(String.format(Locale.ROOT, "update %s success", getFileName()));
+            statusBar.setInfo(String.format("update %s success", getFileName()));
         }
     }
 }

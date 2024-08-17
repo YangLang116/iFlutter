@@ -1,14 +1,11 @@
 package com.xtu.plugin.flutter.base.utils;
 
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.StatusBar;
 import com.intellij.openapi.wm.WindowManager;
-import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -24,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 
+@SuppressWarnings("SpellCheckingInspection")
 public class PubSpecUtils {
 
     private static final String NODE_FLUTTER = "flutter";
@@ -206,20 +204,14 @@ public class PubSpecUtils {
         YAMLSequence oldAssetSequence = getFlutterSequence(project, NODE_ASSET);
         YAMLSequence oldFontSequence = getFlutterSequence(project, NODE_FONT);
         YAMLElementGenerator elementGenerator = YAMLElementGenerator.getInstance(project);
-        //modify asset
-        if (modifyAsset(project, assetList, oldAssetSequence, elementGenerator)) return;
-        //modify font
-        if (modifyFont(project, fontList, oldFontSequence, elementGenerator)) return;
+        //modify asset and font
+        boolean assetModifyFail = modifyAsset(project, assetList, oldAssetSequence, elementGenerator);
+        boolean fontModifyFail = modifyFont(project, fontList, oldFontSequence, elementGenerator);
+        if (assetModifyFail && fontModifyFail) return;
+        //save document
         YAMLFile rootPubspecFile = getRootPubSpecPsiFile(project);
         assert rootPubspecFile != null;
-        PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(project);
-        Document document = psiDocumentManager.getDocument(rootPubspecFile);
-        if (document != null) {
-            //sync psi - document
-            psiDocumentManager.doPostponedOperationsAndUnblockDocument(document);
-            //sync psi - vfs
-            FileDocumentManager.getInstance().saveDocument(document);
-        }
+        PsiUtils.saveDocument(project, rootPubspecFile);
         //refresh UI
         notifyPubSpecUpdate(project);
     }

@@ -1,7 +1,5 @@
-<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
-        "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg t="1719060738598" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1651"
+<svg class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
      width="16" height="16">
     <path d="M341.333333 810.666667h128v128h85.333334v-128h128l-170.666667-170.666667-170.666667 170.666667z m341.333334-640h-128V42.666667h-85.333334v128H341.333333l170.666667 170.666666 170.666667-170.666666zM170.666667 384v85.333333h682.666666V384H170.666667zM170.666667 512h682.666666v85.333333H170.666667z"
-          p-id="1652" fill="#6C707E"></path>
+          fill="#6C707E"/>
 </svg>

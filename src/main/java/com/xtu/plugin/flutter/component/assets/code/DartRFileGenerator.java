@@ -109,7 +109,7 @@ public class DartRFileGenerator {
         }
         fileStringBuilder.append("}\n");
         String fileName = assetDirName.toLowerCase() + "_res.dart";
-        DartUtils.createDartFile(project, rDirectory, fileName, fileStringBuilder.toString(), null);
+        DartUtils.createDartFile(project, rDirectory, fileName, fileStringBuilder.toString());
         return fileName;
     }
 

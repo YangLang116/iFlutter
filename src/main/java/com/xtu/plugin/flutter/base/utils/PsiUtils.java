@@ -1,5 +1,9 @@
 package com.xtu.plugin.flutter.base.utils;
 
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
@@ -47,7 +51,7 @@ public class PsiUtils {
         return resultList;
     }
 
-    //替换psiFile.replace()处理，避免出现 `because "treeParent" is null`
+    @NotNull
     public static PsiFile replacePsiFile(@NotNull PsiFile originFile, @NotNull PsiFile newFile) {
         for (PsiElement oldEl : originFile.getChildren()) {
             oldEl.delete();
@@ -56,5 +60,16 @@ public class PsiUtils {
             originFile.add(newEl);
         }
         return originFile;
+    }
+
+    public static void saveDocument(@NotNull Project project, @NotNull PsiFile file) {
+        PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(project);
+        Document document = psiDocumentManager.getDocument(file);
+        if (document != null) {
+            //sync psi - document
+            psiDocumentManager.doPostponedOperationsAndUnblockDocument(document);
+            //sync psi - vfs
+            FileDocumentManager.getInstance().saveDocument(document);
+        }
     }
 }

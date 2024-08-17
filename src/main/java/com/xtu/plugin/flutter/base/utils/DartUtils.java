@@ -55,8 +55,14 @@ public class DartUtils {
         return FileUtils.isChildPath(flutterPath, dartFile.getPath());
     }
 
-    //生成Dart类
-    //必须运行在EDT线程中
+    public static void createDartFile(@NotNull Project project,
+                                      @NotNull VirtualFile parentDir,
+                                      @NotNull String fileName,
+                                      @NotNull String fileContent) {
+        createDartFile(project, parentDir, fileName, fileContent, null);
+    }
+
+
     public static void createDartFile(@NotNull Project project,
                                       @NotNull VirtualFile parentDir,
                                       @NotNull String fileName,
@@ -65,33 +71,46 @@ public class DartUtils {
         Application application = ApplicationManager.getApplication();
         application.assertIsDispatchThread();
         WriteCommandAction.runWriteCommandAction(project, () -> {
-            FileTypeRegistry typeRegistry = FileTypeRegistry.getInstance();
-            FileType fileType = typeRegistry.getFileTypeByFileName(fileName);
-            PsiFileFactory fileFactory = PsiFileFactory.getInstance(project);
-            PsiFile newFile = fileFactory.createFileFromText(fileName, fileType, fileContent);
-            CodeStyleManager styleManager = CodeStyleManager.getInstance(project);
-            PsiFile formatFile = (PsiFile) styleManager.reformat(newFile);
-
-            PsiManager psiManager = PsiManager.getInstance(project);
-            PsiDirectory psiDir = psiManager.findDirectory(parentDir);
-            assert psiDir != null;
-            PsiFile resultFile;
-            PsiFile originFile = psiDir.findFile(fileName);
-            if (originFile == null) {
-                resultFile = psiDir.add(formatFile).getContainingFile();
-            } else {
-                resultFile = PsiUtils.replacePsiFile(originFile, formatFile);
-            }
+            PsiFile formatFile = createPsiFile(project, fileName, fileContent);
+            PsiFile resultFile = modifyPsiTree(project, parentDir, fileName, formatFile);
+            PsiUtils.saveDocument(project, resultFile);
             if (listener != null) {
                 VirtualFile virtualFile = resultFile.getVirtualFile();
-                application.invokeLater(() -> listener.onCreated(virtualFile));
+                application.invokeLater(() -> listener.onFinish(virtualFile));
             }
         });
     }
 
+
+    @NotNull
+    private static PsiFile createPsiFile(@NotNull Project project, @NotNull String fileName, @NotNull String fileContent) {
+        FileTypeRegistry typeRegistry = FileTypeRegistry.getInstance();
+        FileType fileType = typeRegistry.getFileTypeByFileName(fileName);
+        PsiFileFactory fileFactory = PsiFileFactory.getInstance(project);
+        PsiFile newFile = fileFactory.createFileFromText(fileName, fileType, fileContent);
+        CodeStyleManager styleManager = CodeStyleManager.getInstance(project);
+        return (PsiFile) styleManager.reformat(newFile);
+    }
+
+    @NotNull
+    private static PsiFile modifyPsiTree(@NotNull Project project,
+                                         @NotNull VirtualFile parentDir,
+                                         @NotNull String fileName,
+                                         @NotNull PsiFile formatFile) {
+        PsiManager psiManager = PsiManager.getInstance(project);
+        PsiDirectory psiDir = psiManager.findDirectory(parentDir);
+        assert psiDir != null;
+        PsiFile originFile = psiDir.findFile(fileName);
+        if (originFile == null) {
+            return psiDir.add(formatFile).getContainingFile();
+        } else {
+            return PsiUtils.replacePsiFile(originFile, formatFile);
+        }
+    }
+
     public interface OnFileCreatedListener {
 
-        void onCreated(@NotNull VirtualFile virtualFile);
+        void onFinish(@NotNull VirtualFile virtualFile);
 
     }
 }

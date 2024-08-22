@@ -18,25 +18,27 @@ GameCenter is an IDEA Plugin for Developer to play Games
 
 - FC游戏 - [游戏清单](https://github.com/YangLang116/nes-game-list) 按键说明如下：
 
-|  按键  | player1 | player2 |
-| :----: | :-----: | :-----: |
-|  Left  |    A    |  Num-4  |
-| Right  |    D    |  Num-6  |
-|   Up   |    W    |  Num-8  |
-|  Down  |    S    |  Num-2  |
-|   A    |    J    |  Num-7  |
-|   B    |    K    |  Num-9  |
-|   AA   |    Z    |  Num-/  |
-|   BB   |    X    | Num-\*  |
-| Start  |  Enter  |  Num-1  |
-| Select |  Ctrl   |  Num-3  |
-
+| 按键 | player1 | player2 |
+| :----: | :----: | :----: |  
+| Left | A | ← |  
+| Right | D |→ |  
+| Up | W | ↑ |
+| Down | S | ↓ |  
+| B | J | Num-1 |  
+| A | K | Num-2 |
+| Start |	Enter |	Num-8 |
+| Select | Tab |	Num-7 |
 
 ## 重点说明
 
-如果当前IDEA支持 [JCEF](https://plugins.jetbrains.com/docs/intellij/jcef.html) ，FC游戏会在IDEA中直接打开，否则只能借助系统浏览器运行。
-默认情况下，Intellij IDEA 支持JCEF的，而AndroidStudio
-不支持，如果想要打开IDEA的JCEF功能，请参考文档 [如何打开JCEF?](https://yanglang116.github.io/iFlutter/content/chapter-9/part-1.html)
+### JCEF
+如果当前IDEA支持 [JCEF](https://plugins.jetbrains.com/docs/intellij/jcef.html) ，FC游戏会在IDEA中直接打开，否则只能借助系统浏览器运行。 默认情况下，Intellij IDEA 支持JCEF的，而AndroidStudio 不支持，如果想要打开IDEA的JCEF功能，请参考文档 [如何打开JCEF?](https://www.jianshu.com/p/68056562d1c4)
+
+### 游戏乱码
+点击主菜单栏 `Help` > `Edit Custom VM Options` 入口，并在弹窗中添加以下配置：
+```
+-Dfile.encoding=UTF-8
+```
 
 ---
 
@@ -46,7 +48,7 @@ GameCenter is an IDEA Plugin for Developer to play Games
 
 ### 开发环境要求
 
-- java 11
+- java 17
 
 ### 开发步骤
 
@@ -80,8 +82,8 @@ audioService.play(audioStream);
 - 4、将编写的Swing游戏导出成jar文件
 
 - 5、注入游戏到 `Game Center` IDEA插件
-    - 将第4步生成的jar，放入项目根目录的`libs`文件夹
-    - 在`src/main/resources/game/swing/conf.properties` 中配置游戏，格式如下：
+  - 将第4步生成的jar，放入项目根目录的`libs`文件夹
+  - 在`src/main/resources/game/swing/conf.properties` 中配置游戏，格式如下：
 
   ```
   Game Name=runGame 函数所在的类的FQN，例如：FlyBird=com.kingyu.flappybird.app.App

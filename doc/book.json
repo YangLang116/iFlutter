@@ -26,8 +26,8 @@
     ],
     "pluginsConfig": {
        "donate": {
-         "wechat": "./configs/wx_pay.jpg",
-         "alipay": "./configs/alipay.jpg",
+         "wechat": "https://yanglang116.github.io/iFlutter/configs/wx_pay.jpg",
+         "alipay": "https://yanglang116.github.io/iFlutter/configs/alipay.jpg",
          "title": "鼓励一下",
          "button": "赏",
          "alipayText": "支付宝打赏",

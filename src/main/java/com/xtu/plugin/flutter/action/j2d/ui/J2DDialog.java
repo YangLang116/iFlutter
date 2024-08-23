@@ -103,18 +103,18 @@ public class J2DDialog extends DialogWrapper {
         btn.addActionListener(e -> {
             String className = classNameFiled.getText();
             String jsonData = jsonDataField.getText();
-            if (StringUtils.isEmpty(className) || StringUtils.isEmpty(jsonData)) {
-                ToastUtils.make(project, MessageType.WARNING, "className or json data is empty");
-                return;
-            }
-            clickListener.onClick(className.trim(), jsonData.trim());
+            clickListener.onClick(className, jsonData);
         });
         return btn;
     }
 
-    private void toFormat(@NotNull String className, @NotNull String jsonData) {
+    private void toFormat(@Nullable String className, @Nullable String jsonData) {
+        if (StringUtils.isEmpty(jsonData)) {
+            ToastUtils.make(project, MessageType.ERROR, "json data is empty");
+            return;
+        }
         try {
-            String formatJson = J2DHandler.formatJson(jsonData);
+            String formatJson = J2DHandler.formatJson(jsonData.trim());
             jsonDataField.setText(formatJson);
         } catch (Exception ex) {
             LogUtils.error("J2DDialog format: ", ex);
@@ -122,7 +122,13 @@ public class J2DDialog extends DialogWrapper {
         }
     }
 
-    private void genCode(@NotNull String className, @NotNull String jsonData) {
+    private void genCode(@Nullable String className, @Nullable String jsonData) {
+        if (StringUtils.isEmpty(className) || StringUtils.isEmpty(jsonData)) {
+            ToastUtils.make(project, MessageType.ERROR, "className or json data is empty");
+            return;
+        }
+        className = className.trim();
+        jsonData = jsonData.trim();
         if (jsonData.startsWith("[")) {
             ToastUtils.make(project, MessageType.ERROR, "can not support jsonArray to dart");
             return;
@@ -155,6 +161,6 @@ public class J2DDialog extends DialogWrapper {
     }
 
     interface OnBtnClickListener {
-        void onClick(@NotNull String className, @NotNull String jsonData);
+        void onClick(@Nullable String className, @Nullable String jsonData);
     }
 }

@@ -211,7 +211,7 @@ public class PubSpecUtils {
         //save document
         YAMLFile rootPubspecFile = getRootPubSpecPsiFile(project);
         assert rootPubspecFile != null;
-        PsiUtils.saveDocument(project, rootPubspecFile);
+        PsiUtils.savePsiFile(project, rootPubspecFile);
         //refresh UI
         notifyPubSpecUpdate(project);
     }

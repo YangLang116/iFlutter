@@ -2,12 +2,13 @@ package com.xtu.plugin.flutter.base.utils;
 
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.fileTypes.FileTypeRegistry;
+import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.*;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiManager;
+import com.intellij.psi.PsiReference;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.jetbrains.lang.dart.psi.DartReferenceExpression;
@@ -17,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 public class DartUtils {
@@ -70,42 +72,22 @@ public class DartUtils {
                                       @Nullable DartUtils.OnFileCreatedListener listener) {
         Application application = ApplicationManager.getApplication();
         application.assertIsDispatchThread();
-        WriteCommandAction.runWriteCommandAction(project, () -> {
-            PsiFile formatFile = createPsiFile(project, fileName, fileContent);
-            PsiFile resultFile = modifyPsiTree(project, parentDir, fileName, formatFile);
-            PsiUtils.saveDocument(project, resultFile);
-            if (listener != null) {
-                VirtualFile virtualFile = resultFile.getVirtualFile();
-                application.invokeLater(() -> listener.onFinish(virtualFile));
+        WriteAction.run(() -> {
+            try {
+                VirtualFile targetFile = parentDir.findOrCreateChildData(project, fileName);
+                targetFile.setBinaryContent(fileContent.getBytes(StandardCharsets.UTF_8));
+                targetFile.refresh(false, false);
+                PsiFile targetPsi = PsiManager.getInstance(project).findFile(targetFile);
+                if (targetPsi == null) return;
+                CodeStyleManager.getInstance(project).reformat(targetPsi);
+                PsiUtils.savePsiFile(project, targetPsi);
+                if (listener != null) {
+                    application.invokeLater(() -> listener.onFinish(targetFile));
+                }
+            } catch (Exception e) {
+                LogUtils.error("DartUtils createDartFile", e);
             }
         });
-    }
-
-
-    @NotNull
-    private static PsiFile createPsiFile(@NotNull Project project, @NotNull String fileName, @NotNull String fileContent) {
-        FileTypeRegistry typeRegistry = FileTypeRegistry.getInstance();
-        FileType fileType = typeRegistry.getFileTypeByFileName(fileName);
-        PsiFileFactory fileFactory = PsiFileFactory.getInstance(project);
-        PsiFile newFile = fileFactory.createFileFromText(fileName, fileType, fileContent);
-        CodeStyleManager styleManager = CodeStyleManager.getInstance(project);
-        return (PsiFile) styleManager.reformat(newFile);
-    }
-
-    @NotNull
-    private static PsiFile modifyPsiTree(@NotNull Project project,
-                                         @NotNull VirtualFile parentDir,
-                                         @NotNull String fileName,
-                                         @NotNull PsiFile formatFile) {
-        PsiManager psiManager = PsiManager.getInstance(project);
-        PsiDirectory psiDir = psiManager.findDirectory(parentDir);
-        assert psiDir != null;
-        PsiFile originFile = psiDir.findFile(fileName);
-        if (originFile == null) {
-            return psiDir.add(formatFile).getContainingFile();
-        } else {
-            return PsiUtils.replacePsiFile(originFile, formatFile);
-        }
     }
 
     public interface OnFileCreatedListener {

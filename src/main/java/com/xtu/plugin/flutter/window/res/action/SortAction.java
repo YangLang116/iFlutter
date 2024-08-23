@@ -10,7 +10,6 @@ import com.xtu.plugin.flutter.window.res.core.IResRootPanel;
 import com.xtu.plugin.flutter.window.res.sort.SortType;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
@@ -51,7 +50,7 @@ public class SortAction extends AnAction {
                 .show(relativePoint);
     }
 
-    private void refreshSortType(@Nonnull SortType newSortType) {
+    private void refreshSortType(@NotNull SortType newSortType) {
         if (newSortType == this.sortType) return;
         this.sortType = newSortType;
         this.rootPanel.sortRes(newSortType);

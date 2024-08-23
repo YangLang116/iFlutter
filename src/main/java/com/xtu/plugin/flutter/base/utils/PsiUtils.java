@@ -51,18 +51,7 @@ public class PsiUtils {
         return resultList;
     }
 
-    @NotNull
-    public static PsiFile replacePsiFile(@NotNull PsiFile originFile, @NotNull PsiFile newFile) {
-        for (PsiElement oldEl : originFile.getChildren()) {
-            oldEl.delete();
-        }
-        for (PsiElement newEl : newFile.getChildren()) {
-            originFile.add(newEl);
-        }
-        return originFile;
-    }
-
-    public static void saveDocument(@NotNull Project project, @NotNull PsiFile file) {
+    public static void savePsiFile(@NotNull Project project, @NotNull PsiFile file) {
         PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(project);
         Document document = psiDocumentManager.getDocument(file);
         if (document != null) {

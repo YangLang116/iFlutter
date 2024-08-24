@@ -55,12 +55,14 @@ public class AdviceDialog extends DialogWrapper {
     }
 
     @Override
-    public @Nullable JComponent getPreferredFocusedComponent() {
+    @Nullable
+    public JComponent getPreferredFocusedComponent() {
         return this.titleField;
     }
 
     @Override
-    protected @Nullable JComponent createCenterPanel() {
+    @Nullable
+    protected JComponent createCenterPanel() {
         return this.rootPanel;
     }
 

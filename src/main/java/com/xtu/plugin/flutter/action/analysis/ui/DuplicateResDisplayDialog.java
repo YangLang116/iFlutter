@@ -52,7 +52,8 @@ public class DuplicateResDisplayDialog extends DialogWrapper {
     }
 
     @Override
-    protected Action @NotNull [] createActions() {
+    @NotNull
+    protected Action[] createActions() {
         return new Action[]{copyAction, getOKAction()};
     }
 

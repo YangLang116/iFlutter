@@ -153,8 +153,8 @@ public class PackageUpdateAnnotator implements Annotator {
         }
 
         @Override
-        public @Nullable
-        AnAction getClickAction() {
+        @Nullable
+        public AnAction getClickAction() {
             return this.updaterAction;
         }
     }
@@ -168,7 +168,8 @@ public class PackageUpdateAnnotator implements Annotator {
         }
 
         @Override
-        public @NotNull ActionUpdateThread getActionUpdateThread() {
+        @NotNull
+        public ActionUpdateThread getActionUpdateThread() {
             return ActionUpdateThread.BGT;
         }
 

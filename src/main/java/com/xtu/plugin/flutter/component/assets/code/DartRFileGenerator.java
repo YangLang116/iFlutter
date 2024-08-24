@@ -2,7 +2,7 @@ package com.xtu.plugin.flutter.component.assets.code;
 
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.WriteAction;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.vfs.LocalFileSystem;
@@ -17,9 +17,6 @@ import java.io.IOException;
 import java.util.*;
 
 public class DartRFileGenerator {
-
-    //缓存上一次写入记录，避免重复写入
-    private final List<String> latestAssetList = new ArrayList<>();
 
     private static final DartRFileGenerator sInstance = new DartRFileGenerator();
 
@@ -36,8 +33,7 @@ public class DartRFileGenerator {
         List<String> assetList = resultEntity.assetList;
         String resPrefix = AssetUtils.getResPrefix(project, projectName);
         Application application = ApplicationManager.getApplication();
-        application.invokeLater(() -> WriteAction.run(() -> {
-            if (assetList.equals(latestAssetList)) return;
+        application.invokeLater(() -> WriteCommandAction.runWriteCommandAction(project, () -> {
             //create new res
             Map<String, List<String>> assetCategory = new HashMap<>();
             for (String assetFileName : assetList) {
@@ -70,8 +66,6 @@ public class DartRFileGenerator {
                 } else if (resVirtualDirectory != null) {
                     deleteUselessFile(project, resVirtualDirectory, Collections.emptyList());
                 }
-                latestAssetList.clear();
-                latestAssetList.addAll(assetList);
             } catch (Exception e) {
                 LogUtils.error("DartRFileGenerator generate", e);
                 ToastUtils.make(project, MessageType.ERROR, e.getMessage());
@@ -93,7 +87,7 @@ public class DartRFileGenerator {
                 .append("// ignore_for_file: lines_longer_than_80_chars\n")
                 .append("class ").append(className).append(" {\n");
         //private constructor
-        fileStringBuilder.append(className).append("._();");
+        fileStringBuilder.append(className).append("._();\n");
         //create name and version
         fileStringBuilder.append("  static const String PLUGIN_NAME = '").append(projectName).append("';\n");
         fileStringBuilder.append("  static const String PLUGIN_VERSION = '").append(projectVersion).append("';\n");
@@ -157,9 +151,5 @@ public class DartRFileGenerator {
         if (StringUtils.isEmpty(extension)) return false;
         List<String> ignoreResExtension = ProjectStorageService.getStorage(project).ignoreResExtension;
         return ignoreResExtension.contains(extension);
-    }
-
-    public void resetCache() {
-        this.latestAssetList.clear();
     }
 }

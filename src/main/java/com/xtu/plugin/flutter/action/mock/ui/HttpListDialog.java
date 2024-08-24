@@ -119,7 +119,8 @@ public class HttpListDialog extends DialogWrapper implements IHttpListComponent 
     }
 
     @Override
-    protected Action @NotNull [] createActions() {
+    @NotNull
+    protected Action[] createActions() {
         return new Action[]{createConfigAction, confirmAction};
     }
 

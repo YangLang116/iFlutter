@@ -18,8 +18,8 @@ public class ProjectStorageService implements PersistentStateComponent<ProjectSt
     }
 
     @Override
-    public @NotNull
-    ProjectStorageEntity getState() {
+    @NotNull
+    public ProjectStorageEntity getState() {
         return storageEntity;
     }
 

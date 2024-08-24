@@ -57,7 +57,8 @@ public class SortAction extends AnAction {
     }
 
     @Override
-    public @NotNull ActionUpdateThread getActionUpdateThread() {
+    @NotNull
+    public ActionUpdateThread getActionUpdateThread() {
         return ActionUpdateThread.BGT;
     }
 }

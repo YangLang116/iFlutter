@@ -137,7 +137,8 @@ public class AssetsManager extends AssetFileChangedObserver implements Disposabl
                             }
 
                             @Override
-                            public @NotNull String getDoNotShowMessage() {
+                            @NotNull
+                            public String getDoNotShowMessage() {
                                 return "No more reminders within 30s";
                             }
 

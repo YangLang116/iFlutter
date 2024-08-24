@@ -21,12 +21,14 @@ public class ResMenuGroup extends ActionGroup {
     }
 
     @Override
-    public @NotNull ActionUpdateThread getActionUpdateThread() {
+    @NotNull
+    public ActionUpdateThread getActionUpdateThread() {
         return ActionUpdateThread.BGT;
     }
 
     @Override
-    public AnAction @NotNull [] getChildren(@Nullable AnActionEvent anActionEvent) {
+    @NotNull
+    public AnAction[] getChildren(@Nullable AnActionEvent anActionEvent) {
         List<AnAction> children = new ArrayList<>();
         children.add(new ResCopyPathAction(imageFile));
         children.add(new ResCopyRefAction(imageFile));

@@ -23,12 +23,14 @@ public class RepoMenuGroup extends ActionGroup {
     }
 
     @Override
-    public @NotNull ActionUpdateThread getActionUpdateThread() {
+    @NotNull
+    public ActionUpdateThread getActionUpdateThread() {
         return ActionUpdateThread.BGT;
     }
 
     @Override
-    public AnAction @NotNull [] getChildren(@Nullable AnActionEvent anActionEvent) {
+    @NotNull
+    public AnAction[] getChildren(@Nullable AnActionEvent anActionEvent) {
         List<AnAction> actionList = new ArrayList<>();
         actionList.add(new RepoDeleteAction(repo, model));
         return actionList.toArray(new AnAction[0]);

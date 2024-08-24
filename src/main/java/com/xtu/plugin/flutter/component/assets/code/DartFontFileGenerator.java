@@ -2,7 +2,7 @@ package com.xtu.plugin.flutter.component.assets.code;
 
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.WriteAction;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.vfs.LocalFileSystem;
@@ -22,9 +22,6 @@ public class DartFontFileGenerator {
     private static final String FONT_FILE_NAME = "font_res.dart";
     private static final String FONT_CLASS_NAME = "FontRes";
 
-    //缓存上一次写入记录，避免重复写入
-    private final List<String> latestFontList = new ArrayList<>();
-
     private static final DartFontFileGenerator sInstance = new DartFontFileGenerator();
 
     private DartFontFileGenerator() {
@@ -39,8 +36,7 @@ public class DartFontFileGenerator {
         List<String> fontAssetList = resultEntity.fontList;
         String resPrefix = AssetUtils.getResPrefix(project, projectName);
         Application application = ApplicationManager.getApplication();
-        application.invokeLater(() -> WriteAction.run(() -> {
-            if (fontAssetList.equals(latestFontList)) return;
+        application.invokeLater(() -> WriteCommandAction.runWriteCommandAction(project, () -> {
             try {
                 File libDirectory = new File(project.getBasePath(), "lib");
                 LocalFileSystem localFileSystem = LocalFileSystem.getInstance();
@@ -56,8 +52,6 @@ public class DartFontFileGenerator {
                     VirtualFile fontVirtualFile = resVirtualDirectory.findChild(FONT_FILE_NAME);
                     if (fontVirtualFile != null) fontVirtualFile.delete(project);
                 }
-                latestFontList.clear();
-                latestFontList.addAll(fontAssetList);
             } catch (Exception e) {
                 LogUtils.error("DartRFileGenerator generate", e);
                 ToastUtils.make(project, MessageType.ERROR, e.getMessage());
@@ -76,7 +70,7 @@ public class DartFontFileGenerator {
                 .append("// ignore_for_file: lines_longer_than_80_chars\n")
                 .append("class ").append(FONT_CLASS_NAME).append(" {\n");
         //private constructor
-        fileStringBuilder.append(FONT_CLASS_NAME).append("._();");
+        fileStringBuilder.append(FONT_CLASS_NAME).append("._();\n");
         List<String> familyList = new ArrayList<>();
         for (String fontAsset : fontAssetList) {
             String fontFamily = FontUtils.getFontFamilyName(fontAsset);
@@ -105,9 +99,5 @@ public class DartFontFileGenerator {
 
     public static String getClassName() {
         return FONT_CLASS_NAME;
-    }
-
-    public void resetCache() {
-        this.latestFontList.clear();
     }
 }

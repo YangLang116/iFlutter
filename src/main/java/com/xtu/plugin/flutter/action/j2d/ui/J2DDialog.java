@@ -1,5 +1,6 @@
 package com.xtu.plugin.flutter.action.j2d.ui;
 
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.Project;
@@ -151,13 +152,13 @@ public class J2DDialog extends DialogWrapper {
     }
 
     private void genDartFile(@NotNull String fileName, @NotNull String code) {
-        DartUtils.createDartFile(project, selectDirectory, fileName, code, virtualFile -> {
+        WriteCommandAction.runWriteCommandAction(project, () -> DartUtils.createDartFile(project, selectDirectory, fileName, code, virtualFile -> {
             //更新交互UI
             StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);
             if (statusBar != null) statusBar.setInfo("Dart Entity Create Completed");
             OpenFileDescriptor descriptor = new OpenFileDescriptor(project, virtualFile);
             FileEditorManager.getInstance(project).openTextEditor(descriptor, true);
-        });
+        }));
     }
 
     interface OnBtnClickListener {

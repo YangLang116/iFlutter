@@ -19,8 +19,8 @@ public class IdeStorageService implements PersistentStateComponent<IdeStorageEnt
     }
 
     @Override
-    public @NotNull
-    IdeStorageEntity getState() {
+    @NotNull
+    public IdeStorageEntity getState() {
         return storageEntity;
     }
 

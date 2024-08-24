@@ -10,7 +10,8 @@ import org.jetbrains.annotations.NotNull;
 public class IFlutterActionGroup extends DefaultActionGroup {
 
     @Override
-    public @NotNull ActionUpdateThread getActionUpdateThread() {
+    @NotNull
+    public ActionUpdateThread getActionUpdateThread() {
         return ActionUpdateThread.BGT;
     }
 

@@ -2,7 +2,6 @@ package com.xtu.plugin.flutter.base.utils;
 
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
@@ -70,24 +69,21 @@ public class DartUtils {
                                       @NotNull String fileName,
                                       @NotNull String fileContent,
                                       @Nullable DartUtils.OnFileCreatedListener listener) {
-        Application application = ApplicationManager.getApplication();
-        application.assertIsDispatchThread();
-        WriteAction.run(() -> {
-            try {
-                VirtualFile targetFile = parentDir.findOrCreateChildData(project, fileName);
-                targetFile.setBinaryContent(fileContent.getBytes(StandardCharsets.UTF_8));
-                targetFile.refresh(false, false);
-                PsiFile targetPsi = PsiManager.getInstance(project).findFile(targetFile);
-                if (targetPsi == null) return;
-                CodeStyleManager.getInstance(project).reformat(targetPsi);
-                PsiUtils.savePsiFile(project, targetPsi);
-                if (listener != null) {
-                    application.invokeLater(() -> listener.onFinish(targetFile));
-                }
-            } catch (Exception e) {
-                LogUtils.error("DartUtils createDartFile", e);
+        try {
+            VirtualFile targetFile = parentDir.findOrCreateChildData(project, fileName);
+            targetFile.setBinaryContent(fileContent.getBytes(StandardCharsets.UTF_8));
+            targetFile.refresh(false, false);
+            PsiFile targetPsi = PsiManager.getInstance(project).findFile(targetFile);
+            if (targetPsi == null) return;
+            CodeStyleManager.getInstance(project).reformat(targetPsi);
+            PsiUtils.savePsiFile(project, targetPsi);
+            if (listener != null) {
+                Application application = ApplicationManager.getApplication();
+                application.invokeLater(() -> listener.onFinish(targetFile));
             }
-        });
+        } catch (Exception e) {
+            LogUtils.error("DartUtils createDartFile", e);
+        }
     }
 
     public interface OnFileCreatedListener {

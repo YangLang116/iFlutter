@@ -36,8 +36,8 @@ public class AssetRegisterStorageService implements PersistentStateComponent<Ass
     }
 
     @Override
-    public @Nullable
-    AssetStorageEntity getState() {
+    @Nullable
+    public AssetStorageEntity getState() {
         return storageEntity;
     }
 

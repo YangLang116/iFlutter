@@ -79,7 +79,8 @@ public class HttpConfigDialog extends DialogWrapper {
     }
 
     @Override
-    protected Action @NotNull [] createActions() {
+    @NotNull
+    protected Action[] createActions() {
         return new Action[]{saveAction, cancelAction};
     }
 

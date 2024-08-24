@@ -37,8 +37,6 @@ public class GenerateResAction extends FlutterProjectAction {
                 newAssetList.add(assetPath);
             }
         }
-        DartRFileGenerator.getInstance().resetCache();
-        DartFontFileGenerator.getInstance().resetCache();
         WriteCommandAction.runWriteCommandAction(project, () -> {
             PubSpecUtils.writeAssetList(project, newAssetList, newFontList);
         });

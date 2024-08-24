@@ -25,12 +25,14 @@ public class HttpMenuGroup extends ActionGroup {
     }
 
     @Override
-    public @NotNull ActionUpdateThread getActionUpdateThread() {
+    @NotNull
+    public ActionUpdateThread getActionUpdateThread() {
         return ActionUpdateThread.BGT;
     }
 
     @Override
-    public AnAction @NotNull [] getChildren(@Nullable AnActionEvent anActionEvent) {
+    @NotNull
+    public AnAction[] getChildren(@Nullable AnActionEvent anActionEvent) {
         List<AnAction> actionList = new ArrayList<>();
         actionList.add(new HttpCopyPathAction(httpEntity));
         actionList.add(new HttpDeleteAction(httpEntity, listComponent));

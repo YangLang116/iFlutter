@@ -30,7 +30,16 @@ public class UpgradeManager {
     @SuppressWarnings("HttpUrlsUsage")
     private static final String sUrl = "http://iflutter.toolu.cn/iflutter-version.json";
 
-    public static void checkPluginVersion(@NotNull Project project) {
+    private UpgradeManager() {
+    }
+
+    private static final UpgradeManager sInstance = new UpgradeManager();
+
+    public static UpgradeManager getInstance() {
+        return sInstance;
+    }
+
+    public void checkPluginVersion(@NotNull Project project) {
         LogUtils.info("UpgradeManager checkPluginVersion");
         NetworkManager.getInstance().get(sUrl, new Callback() {
             @Override
@@ -60,9 +69,9 @@ public class UpgradeManager {
         });
     }
 
-    private static void pushNotification(@NotNull Project project,
-                                         String title, String subtitle, String content,
-                                         String detailBtnText, String detailUrl) {
+    private void pushNotification(@NotNull Project project,
+                                  String title, String subtitle, String content,
+                                  String detailBtnText, String detailUrl) {
         NotificationGroupManager.getInstance()
                 .getNotificationGroup(sGroupId)
                 .createNotification(content, NotificationType.INFORMATION)
@@ -74,7 +83,7 @@ public class UpgradeManager {
                 .notify(project);
     }
 
-    private static AnAction createUpgradeAction(@NotNull Project project) {
+    private AnAction createUpgradeAction(@NotNull Project project) {
         return new NotificationAction("Upgrade") {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e, @NotNull Notification notification) {
@@ -85,7 +94,7 @@ public class UpgradeManager {
         };
     }
 
-    private static AnAction createDetailAction(String detailBtnText, String detailUrl) {
+    private AnAction createDetailAction(String detailBtnText, String detailUrl) {
         return new NotificationAction(detailBtnText) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e, @NotNull Notification notification) {

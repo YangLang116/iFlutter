@@ -19,6 +19,6 @@ public class FProjectManager implements StartupActivity {
         AssetsManager.getService(project).attach();
         HttpMockManager.getService(project).activeServer();
         FlutterPackageUpdater.getService(project).attach();
-        UpgradeManager.checkPluginVersion(project);
+        UpgradeManager.getInstance().checkPluginVersion(project);
     }
 }

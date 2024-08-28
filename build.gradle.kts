@@ -17,8 +17,7 @@ repositories {
 
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-    implementation("com.squareup.okhttp3:mockwebserver:4.9.3")
-    implementation("com.squareup.okhttp3:okhttp:4.9.3")
+    implementation("com.squareup.okhttp3:mockwebserver:4.12.0")
     implementation("com.twelvemonkeys.imageio:imageio-webp:3.10.1")
     implementation("com.twelvemonkeys.imageio:imageio-batik:3.10.1")
     implementation("com.tinify:tinify:1.8.3")

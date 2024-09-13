@@ -56,11 +56,9 @@ public class FlutterPackageUpdater implements Disposable {
     private void pullLatestVersion() {
         try {
             if (this.isDetach) return;
-            LogUtils.info("FlutterPackageUpdater pullLatestVersion");
             CommandUtils.CommandResult commandResult = CommandUtils.executeSync(
                     project,
                     "pub outdated --dependency-overrides --dev-dependencies --no-prereleases --json", 5);
-            LogUtils.info("FlutterPackageUpdater pullLatestVersion result: " + commandResult.code);
             if (commandResult.code == CommandUtils.CommandResult.FAIL) return;
 
             final JSONObject versionJson = new JSONObject(commandResult.result);
@@ -95,7 +93,6 @@ public class FlutterPackageUpdater implements Disposable {
 
     private void updatePackageInfo(List<PackageInfo> packageInfoList) {
         if (this.isDetach) return;
-        LogUtils.info("FlutterPackageUpdater updatePackageInfo size: " + packageInfoList.size());
         Map<String, PackageInfo> infoMap = ProjectStorageService.getStorage(project).packageInfoMap;
         infoMap.clear();
         for (PackageInfo packageInfo : packageInfoList) {

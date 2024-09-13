@@ -34,7 +34,7 @@ public class AdviceDialog extends DialogWrapper {
     }
 
     private AdviceDialog(@Nullable Project project) {
-        super(project, null, false, IdeModalityType.PROJECT);
+        super(project, null, false, IdeModalityType.IDE);
         setHorizontalStretch(1.5f);
         setTitle("Suggestion & Feedback");
         initUI();

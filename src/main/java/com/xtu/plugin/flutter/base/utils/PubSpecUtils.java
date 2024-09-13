@@ -9,7 +9,8 @@ import com.intellij.openapi.wm.WindowManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.xtu.plugin.flutter.base.entity.AssetResultEntity;
+import com.xtu.plugin.flutter.base.entity.AssetInfoEntity;
+import com.xtu.plugin.flutter.base.entity.AssetInfoMetaEntity;
 import com.xtu.plugin.flutter.store.project.AssetRegisterStorageService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -143,7 +144,7 @@ public class PubSpecUtils {
     }
 
     // 读取资源列表
-    public static AssetResultEntity readAssetList(@NotNull Project project) {
+    public static AssetInfoEntity readAssetList(@NotNull Project project) {
         ApplicationManager.getApplication().assertIsDispatchThread();
         //asset list
         List<String> assetList = new ArrayList<>();
@@ -187,11 +188,10 @@ public class PubSpecUtils {
             }
             CollectionUtils.standardList(fontList);
         }
-        //project name
         String projectName = getProjectName(project);
-        //project version
         String projectVersion = getProjectVersion(project);
-        return new AssetResultEntity(projectName, projectVersion, assetList, fontList);
+        AssetInfoMetaEntity metaEntity = new AssetInfoMetaEntity(projectName, projectVersion);
+        return new AssetInfoEntity(metaEntity, assetList, fontList);
     }
 
     //更新资源列表

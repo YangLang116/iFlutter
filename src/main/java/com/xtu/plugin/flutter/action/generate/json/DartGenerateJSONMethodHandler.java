@@ -13,12 +13,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class DartGenerateFromJsonAndToJsonCodeHandler extends BaseDartGenerateHandler {
+public class DartGenerateJSONMethodHandler extends BaseDartGenerateHandler {
 
     private final boolean hasFromJson;
     private final boolean hasToJson;
 
-    public DartGenerateFromJsonAndToJsonCodeHandler(boolean hasFromJson, boolean hasToJson) {
+    public DartGenerateJSONMethodHandler(boolean hasFromJson, boolean hasToJson) {
         this.hasFromJson = hasFromJson;
         this.hasToJson = hasToJson;
     }
@@ -32,9 +32,7 @@ public class DartGenerateFromJsonAndToJsonCodeHandler extends BaseDartGenerateHa
     protected BaseCreateMethodsFix<DartComponent> createFix(@NotNull DartClass dartClass) {
         Project project = dartClass.getProject();
         ProjectStorageEntity storageEntity = ProjectStorageService.getStorage(project);
-        return new CreateFromJsonAndToJsonCodeFix(dartClass,
-                storageEntity.supportNullSafety, storageEntity.isUnModifiableFromJson,
-                this.hasFromJson, hasToJson);
+        return new DartGenerateJsonMethodCodeFix(dartClass, storageEntity.supportNullSafety, this.hasFromJson, hasToJson);
     }
 
     protected void collectCandidates(@NotNull DartClass dartClass, @NotNull List<DartComponent> candidates) {

@@ -1,6 +1,5 @@
 package com.xtu.plugin.flutter.action.j2d.ui;
 
-import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.Project;
@@ -13,8 +12,6 @@ import com.intellij.ui.components.JBScrollPane;
 import com.intellij.util.ui.JBUI;
 import com.xtu.plugin.flutter.action.j2d.handler.J2DHandler;
 import com.xtu.plugin.flutter.base.utils.*;
-import com.xtu.plugin.flutter.store.project.ProjectStorageService;
-import com.xtu.plugin.flutter.store.project.entity.ProjectStorageEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,14 +22,16 @@ import java.awt.*;
 public class J2DDialog extends DialogWrapper {
 
     private final Project project;
+    private final J2DHandler handler;
     private final VirtualFile selectDirectory;
 
     private JTextComponent classNameFiled;
     private JTextComponent jsonDataField;
 
     public J2DDialog(@NotNull Project project, @NotNull VirtualFile selectDirectory) {
-        super(project, null, false, IdeModalityType.PROJECT, false);
+        super(project, null, false, IdeModalityType.IDE, false);
         this.project = project;
+        this.handler = new J2DHandler(project);
         this.selectDirectory = selectDirectory;
         setHorizontalStretch(3);
         setVerticalStretch(2);
@@ -115,7 +114,7 @@ public class J2DDialog extends DialogWrapper {
             return;
         }
         try {
-            String formatJson = J2DHandler.formatJson(jsonData.trim());
+            String formatJson = handler.formatJson(jsonData.trim());
             jsonDataField.setText(formatJson);
         } catch (Exception ex) {
             LogUtils.error("J2DDialog format: ", ex);
@@ -140,8 +139,6 @@ public class J2DDialog extends DialogWrapper {
             ToastUtils.make(project, MessageType.ERROR, "dart bean is exist");
             return;
         }
-        ProjectStorageEntity storage = ProjectStorageService.getStorage(project);
-        J2DHandler handler = new J2DHandler(storage.supportNullSafety, storage.isUnModifiableFromJson);
         try {
             String code = handler.genCode(className, jsonData);
             genDartFile(fileName, code);
@@ -152,13 +149,18 @@ public class J2DDialog extends DialogWrapper {
     }
 
     private void genDartFile(@NotNull String fileName, @NotNull String code) {
-        WriteCommandAction.runWriteCommandAction(project, () -> DartUtils.createDartFile(project, selectDirectory, fileName, code, virtualFile -> {
+        DartUtils.createDartFile(project, selectDirectory, fileName, code, () -> {
             //更新交互UI
             StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);
-            if (statusBar != null) statusBar.setInfo("Dart Entity Create Completed");
-            OpenFileDescriptor descriptor = new OpenFileDescriptor(project, virtualFile);
-            FileEditorManager.getInstance(project).openTextEditor(descriptor, true);
-        }));
+            if (statusBar != null) {
+                statusBar.setInfo("Dart Entity Create Completed");
+            }
+            VirtualFile dartFile = selectDirectory.findChild(fileName);
+            if (dartFile != null) {
+                OpenFileDescriptor descriptor = new OpenFileDescriptor(project, dartFile);
+                FileEditorManager.getInstance(project).openTextEditor(descriptor, true);
+            }
+        });
     }
 
     interface OnBtnClickListener {

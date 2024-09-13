@@ -19,7 +19,7 @@ public class ComboBoxDialog extends DialogWrapper {
                           @NotNull String title,
                           @NotNull List<String> optionList,
                           @NotNull String dialogKey) {
-        super(project, null, false, IdeModalityType.PROJECT, true);
+        super(project, null, false, IdeModalityType.IDE, true);
         setHorizontalStretch(1.5f);
         setTitle(title);
         this.dialogKey = dialogKey;

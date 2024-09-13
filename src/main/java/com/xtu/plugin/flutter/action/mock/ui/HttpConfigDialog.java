@@ -25,7 +25,7 @@ public class HttpConfigDialog extends DialogWrapper {
     private final Action cancelAction = new CancelAction();
 
     public HttpConfigDialog(@Nullable Project project, @Nullable HttpEntity httpEntity) {
-        super(project, false, IdeModalityType.PROJECT);
+        super(project, false, IdeModalityType.IDE);
         this.inputEntity = httpEntity;
         setTitle("HTTP Mock Config");
         setHorizontalStretch(2);

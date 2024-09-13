@@ -9,11 +9,14 @@ import com.jetbrains.lang.dart.ide.generation.BaseCreateMethodsFix;
 import com.jetbrains.lang.dart.psi.DartClass;
 import com.jetbrains.lang.dart.psi.DartComponent;
 import com.jetbrains.lang.dart.psi.DartComponentName;
-import com.xtu.plugin.flutter.base.utils.CollectionUtils;
-import com.xtu.plugin.flutter.base.utils.StringUtils;
+import com.jetbrains.lang.dart.psi.DartSimpleType;
+import com.xtu.plugin.flutter.action.generate.constructor.entity.GenConstructorFieldDescriptor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import template.PluginTemplate;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class DartGenerateConstructorCodeFix extends BaseCreateMethodsFix<DartComponent> {
@@ -48,28 +51,28 @@ public class DartGenerateConstructorCodeFix extends BaseCreateMethodsFix<DartCom
                                    @NotNull Editor editor,
                                    @NotNull Set<DartComponent> elementsToProcess) {
         TemplateManager templateManager = TemplateManager.getInstance(project);
-        this.anchor = this.doAddMethodsForOne(editor, templateManager,
-                this.buildFunctionsText(templateManager, elementsToProcess), this.anchor);
+        Template template = this.buildTemplate(templateManager, elementsToProcess);
+        this.anchor = this.doAddMethodsForOne(editor, templateManager, template, this.anchor);
     }
 
-    protected Template buildFunctionsText(@NotNull TemplateManager templateManager,
-                                          @NotNull Set<DartComponent> elementsToProcess) {
+    @Nullable
+    protected Template buildTemplate(@NotNull TemplateManager templateManager, @NotNull Set<DartComponent> varList) {
+        String className = myDartClass.getName();
+        if (className == null) return null;
+        List<GenConstructorFieldDescriptor> fieldList = new ArrayList<>();
+        for (DartComponent var : varList) {
+            DartComponentName componentName = PsiTreeUtil.getChildOfType(var, DartComponentName.class);
+            if (componentName == null) continue;
+            String variantName = componentName.getText();
+            DartSimpleType dartSimpleType = PsiTreeUtil.findChildOfType(var, DartSimpleType.class);
+            if (dartSimpleType == null) continue;
+            boolean nullable = !supportNullSafety || dartSimpleType.getText().endsWith("?");
+            fieldList.add(new GenConstructorFieldDescriptor(nullable, variantName));
+        }
+        String content = PluginTemplate.getGenConstructor(className, fieldList);
         Template template = templateManager.createTemplate(this.getClass().getName(), "Dart");
         template.setToReformat(true);
-        template.addTextSegment(String.format("%s(", myDartClass.getName()));
-        if (!CollectionUtils.isEmpty(elementsToProcess)) {
-            template.addTextSegment("{");
-            for (DartComponent varAccessComponent : elementsToProcess) {
-                DartComponentName componentName = PsiTreeUtil.getChildOfType(varAccessComponent, DartComponentName.class);
-                if (componentName == null) continue;
-                String name = componentName.getText();
-                if (StringUtils.isEmpty(name)) continue;
-                boolean isNullable = !supportNullSafety || varAccessComponent.getText().contains("?");
-                template.addTextSegment(String.format("%s this.%s,", (isNullable ? "" : "required"), name));
-            }
-            template.addTextSegment("}");
-        }
-        template.addTextSegment(");");
+        template.addTextSegment(content);
         return template;
     }
 

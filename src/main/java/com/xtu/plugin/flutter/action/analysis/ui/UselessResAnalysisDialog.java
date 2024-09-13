@@ -18,7 +18,7 @@ public class UselessResAnalysisDialog extends DialogWrapper {
     private final Action copyAction;
 
     public UselessResAnalysisDialog(@Nullable Project project, String result) {
-        super(project, null, false, IdeModalityType.PROJECT, true);
+        super(project, null, false, IdeModalityType.IDE, true);
         this.project = project;
         this.result = result;
         this.copyAction = new CopyAction();

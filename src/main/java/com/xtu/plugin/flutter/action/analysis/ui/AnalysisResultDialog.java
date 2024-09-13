@@ -36,7 +36,7 @@ public class AnalysisResultDialog extends DialogWrapper {
     private final Action copyAction;
 
     public AnalysisResultDialog(@Nullable Project project, String message, String searchTitle, String searchMessage) {
-        super(project, null, true, IdeModalityType.PROJECT, true);
+        super(project, null, true, IdeModalityType.IDE, true);
         this.project = project;
         this.message = message;
         this.searchTitle = searchTitle;

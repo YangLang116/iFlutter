@@ -40,7 +40,7 @@ public class AddIntlDialog extends DialogWrapper {
     private JTextField keyTextField;
 
     public AddIntlDialog(@Nullable Project project, @NotNull List<String> localeList) {
-        super(project, null, false, IdeModalityType.PROJECT, true);
+        super(project, null, false, IdeModalityType.IDE, true);
         this.localeList = localeList;
         this.transApi = initTransApi();
         init();

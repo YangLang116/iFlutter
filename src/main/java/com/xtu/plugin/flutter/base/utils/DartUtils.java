@@ -2,12 +2,13 @@ package com.xtu.plugin.flutter.base.utils;
 
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.openapi.fileTypes.FileTypeRegistry;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.PsiReference;
+import com.intellij.psi.*;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.jetbrains.lang.dart.psi.DartReferenceExpression;
@@ -17,7 +18,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 public class DartUtils {
@@ -69,26 +69,59 @@ public class DartUtils {
                                       @NotNull String fileName,
                                       @NotNull String fileContent,
                                       @Nullable DartUtils.OnFileCreatedListener listener) {
-        try {
-            VirtualFile targetFile = parentDir.findOrCreateChildData(project, fileName);
-            targetFile.setBinaryContent(fileContent.getBytes(StandardCharsets.UTF_8));
-            targetFile.refresh(false, false);
-            PsiFile targetPsi = PsiManager.getInstance(project).findFile(targetFile);
-            if (targetPsi == null) return;
-            CodeStyleManager.getInstance(project).reformat(targetPsi);
-            PsiUtils.savePsiFile(project, targetPsi);
-            if (listener != null) {
-                Application application = ApplicationManager.getApplication();
-                application.invokeLater(() -> listener.onFinish(targetFile));
+        ApplicationManager.getApplication().assertIsDispatchThread();
+        WriteCommandAction.runWriteCommandAction(project, () -> {
+            PsiManager psiManager = PsiManager.getInstance(project);
+            PsiDirectory parentPsiDir = psiManager.findDirectory(parentDir);
+            if (parentPsiDir == null) return;
+            PsiFile existPsiFile = parentPsiDir.findFile(fileName);
+            if (existPsiFile == null) {
+                addNewFile(project, parentPsiDir, fileName, fileContent, listener);
+            } else {
+                updateFileContent(project, existPsiFile, fileContent, listener);
             }
-        } catch (Exception e) {
-            LogUtils.error("DartUtils createDartFile", e);
+        });
+    }
+
+    private static void addNewFile(@NotNull Project project,
+                                   @NotNull PsiDirectory directory,
+                                   @NotNull String fileName,
+                                   @NotNull String fileContent,
+                                   @Nullable DartUtils.OnFileCreatedListener listener) {
+        FileTypeRegistry typeRegistry = FileTypeRegistry.getInstance();
+        FileType fileType = typeRegistry.getFileTypeByFileName(fileName);
+        PsiFileFactory fileFactory = PsiFileFactory.getInstance(project);
+        PsiFile newFile = fileFactory.createFileFromText(fileName, fileType, fileContent);
+        CodeStyleManager.getInstance(project).reformat(newFile);
+        directory.add(newFile);
+        PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(project);
+        Document document = psiDocumentManager.getDocument(newFile);
+        if (document != null) {
+            psiDocumentManager.doPostponedOperationsAndUnblockDocument(document);
+        }
+        if (listener != null) {
+            Application application = ApplicationManager.getApplication();
+            application.invokeLater(listener::onFinish);
+        }
+    }
+
+    private static void updateFileContent(@NotNull Project project,
+                                          @NotNull PsiFile file,
+                                          @NotNull String fileContent,
+                                          @Nullable DartUtils.OnFileCreatedListener listener) {
+        PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(project);
+        Document document = psiDocumentManager.getDocument(file);
+        if (document == null) return;
+        document.setText(fileContent);
+        psiDocumentManager.commitDocument(document);
+        CodeStyleManager.getInstance(project).reformat(file);
+        if (listener != null) {
+            Application application = ApplicationManager.getApplication();
+            application.invokeLater(listener::onFinish);
         }
     }
 
     public interface OnFileCreatedListener {
-
-        void onFinish(@NotNull VirtualFile virtualFile);
-
+        void onFinish();
     }
 }

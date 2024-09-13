@@ -39,7 +39,7 @@ public class HttpListDialog extends DialogWrapper implements IHttpListComponent 
     private final Action confirmAction = new ConfirmAction();
 
     public HttpListDialog(@Nullable Project project) {
-        super(project, true, IdeModalityType.PROJECT);
+        super(project, true, IdeModalityType.IDE);
         this.project = project;
         setTitle("HTTP Mock");
         setVerticalStretch(2);

@@ -34,7 +34,7 @@ public class DuplicateResDisplayDialog extends DialogWrapper {
     private final Action copyAction;
 
     private DuplicateResDisplayDialog(@Nullable Project project, Component mainFrame, Map<String, List<File>> duplicateData) {
-        super(project, mainFrame, false, IdeModalityType.PROJECT);
+        super(project, mainFrame, false, IdeModalityType.IDE);
         this.project = project;
         this.duplicateData = duplicateData;
         this.copyAction = new CopyAction();

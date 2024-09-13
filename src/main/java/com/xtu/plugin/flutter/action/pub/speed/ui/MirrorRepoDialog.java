@@ -32,7 +32,7 @@ public class MirrorRepoDialog extends DialogWrapper {
     private final ConfirmAction confirmAction = new ConfirmAction();
 
     public MirrorRepoDialog(@NotNull Project project, @NotNull Component parentComponent) {
-        super(project, parentComponent, true, IdeModalityType.PROJECT, true);
+        super(project, parentComponent, true, IdeModalityType.IDE, true);
         this.project = project;
         setTitle("Mirror Repo Setting");
         setVerticalStretch(2);

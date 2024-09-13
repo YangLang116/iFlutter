@@ -10,7 +10,7 @@ import com.xtu.plugin.flutter.base.utils.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class DartGenerateFromJsonAndToJsonAction extends BaseDartGenerateAction {
+public class DartGenerateJSONMethodAction extends BaseDartGenerateAction {
 
     private boolean hasFromJson;
     private boolean hasToJson;
@@ -41,6 +41,6 @@ public class DartGenerateFromJsonAndToJsonAction extends BaseDartGenerateAction 
 
     @Override
     protected @NotNull BaseDartGenerateHandler getGenerateHandler() {
-        return new DartGenerateFromJsonAndToJsonCodeHandler(hasFromJson, hasToJson);
+        return new DartGenerateJSONMethodHandler(hasFromJson, hasToJson);
     }
 }

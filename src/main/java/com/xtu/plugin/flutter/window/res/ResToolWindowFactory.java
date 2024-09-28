@@ -1,6 +1,8 @@
 package com.xtu.plugin.flutter.window.res;
 
+import com.intellij.ide.ui.UISettingsListener;
 import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
@@ -8,6 +10,7 @@ import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import com.intellij.ui.content.ContentManager;
+import com.intellij.util.messages.MessageBus;
 import com.xtu.plugin.flutter.base.utils.PluginUtils;
 import com.xtu.plugin.flutter.window.res.action.CompressAction;
 import com.xtu.plugin.flutter.window.res.action.LocateAction;
@@ -34,6 +37,7 @@ public class ResToolWindowFactory implements ToolWindowFactory, DumbAware {
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
         ResRootPanel rootPanel = initResWindow(project, toolWindow);
+        initThemeChangedListener(rootPanel);
         initResWindowRefresher(project, rootPanel);
     }
 
@@ -48,6 +52,11 @@ public class ResToolWindowFactory implements ToolWindowFactory, DumbAware {
         toolWindow.setAutoHide(false);
         toolWindow.setTitleActions(createActionList(defaultSortType, rootPanel));
         return rootPanel;
+    }
+
+    private void initThemeChangedListener(@NotNull IResRootPanel rootPanel) {
+        MessageBus messageBus = ApplicationManager.getApplication().getMessageBus();
+        messageBus.connect().subscribe(UISettingsListener.TOPIC, (UISettingsListener) rootPanel::uiSettingsChanged);
     }
 
     private void initResWindowRefresher(@NotNull Project project, @NotNull IResRootPanel rootPanel) {

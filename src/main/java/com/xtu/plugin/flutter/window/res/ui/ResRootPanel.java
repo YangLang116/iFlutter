@@ -1,6 +1,7 @@
 package com.xtu.plugin.flutter.window.res.ui;
 
 import com.intellij.ide.DataManager;
+import com.intellij.ide.ui.UISettings;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
@@ -214,6 +215,11 @@ public class ResRootPanel extends JPanel implements IResRootPanel {
     @Override
     public JComponent asComponent() {
         return this;
+    }
+
+    @Override
+    public void uiSettingsChanged(@NotNull UISettings uiSettings) {
+        reloadItems(this.resList);
     }
 
     private void refreshList() {

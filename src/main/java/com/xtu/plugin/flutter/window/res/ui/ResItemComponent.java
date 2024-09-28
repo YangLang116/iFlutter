@@ -1,7 +1,6 @@
 package com.xtu.plugin.flutter.window.res.ui;
 
 import com.intellij.openapi.util.text.Formats;
-import com.intellij.ui.JBColor;
 import com.intellij.util.ui.JBUI;
 import com.xtu.plugin.flutter.base.component.ImageComponent;
 import com.xtu.plugin.flutter.base.utils.FileUtils;
@@ -47,9 +46,7 @@ public class ResItemComponent extends JPanel {
 
         String imageSize = Formats.formatFileSize(assetFile.length());
         sizeLabel = new JLabel(imageSize);
-        Font sizeFont = new Font(null, Font.PLAIN, JBUI.scaleFontSize(12f));
-        sizeLabel.setForeground(JBColor.foreground());
-        sizeLabel.setFont(sizeFont);
+        sizeLabel.setFont(new Font(null, Font.PLAIN, JBUI.scaleFontSize(12f)));
         container.add(sizeLabel);
 
         container.add(Box.createVerticalGlue());

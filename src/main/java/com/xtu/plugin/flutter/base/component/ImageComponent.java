@@ -2,6 +2,7 @@ package com.xtu.plugin.flutter.base.component;
 
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.ModalityState;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.RoundedLineBorder;
 import com.intellij.ui.scale.JBUIScale;
@@ -37,7 +38,7 @@ public class ImageComponent extends JLabel {
             imageInfo = info;
             revalidate();
             repaint();
-        });
+        }, ModalityState.any());
     }
 
     @Override

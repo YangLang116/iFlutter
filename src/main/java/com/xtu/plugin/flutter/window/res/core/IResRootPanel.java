@@ -1,5 +1,6 @@
 package com.xtu.plugin.flutter.window.res.core;
 
+import com.intellij.ide.ui.UISettings;
 import com.xtu.plugin.flutter.window.res.sort.SortType;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,4 +25,6 @@ public interface IResRootPanel {
     void sortRes(@NotNull SortType sort);
 
     JComponent asComponent();
+
+    void uiSettingsChanged(@NotNull UISettings uiSettings);
 }

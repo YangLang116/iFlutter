@@ -8,6 +8,7 @@ import com.intellij.ui.RoundedLineBorder;
 import com.intellij.ui.scale.JBUIScale;
 import com.xtu.plugin.flutter.base.utils.ImageUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,17 +17,18 @@ import java.io.File;
 
 public class ImageComponent extends JLabel {
 
-    private ImageUtils.ImageInfo imageInfo;
+    @Nullable
+    private Image image;
 
     public ImageComponent(int size) {
         setPreferredSize(new Dimension(size, size));
         setBorder(new RoundedLineBorder(JBColor.border(), JBUIScale.scale(4), JBUIScale.scale(2)));
     }
 
-    public void loadImage(@NotNull File assetImage, int size, @NotNull OnLoadImageListener listener) {
+    public void loadImage(@NotNull File imageFile, int size, @NotNull OnLoadImageListener listener) {
         Application application = ApplicationManager.getApplication();
         application.executeOnPooledThread(() -> {
-            final ImageUtils.ImageInfo info = ImageUtils.loadThumbnail(assetImage, "/icons/load_fail.png", size);
+            final ImageUtils.ImageInfo info = ImageUtils.loadThumbnail(imageFile, "/icons/load_fail.png", size);
             flushImage(info, listener);
         });
     }
@@ -35,7 +37,7 @@ public class ImageComponent extends JLabel {
         Application application = ApplicationManager.getApplication();
         application.invokeLater(() -> {
             listener.loadFinish(info.width, info.height);
-            imageInfo = info;
+            image = info.image;
             revalidate();
             repaint();
         }, ModalityState.any());
@@ -43,18 +45,18 @@ public class ImageComponent extends JLabel {
 
     @Override
     public void paint(Graphics g) {
-        if (imageInfo == null || imageInfo.image == null) return;
-        int imgWidth = imageInfo.image.getWidth(null);
-        int imgHeight = imageInfo.image.getHeight(null);
+        if (image == null) return;
+        int imgWidth = image.getWidth(null);
+        int imgHeight = image.getHeight(null);
         int startX = (getWidth() - imgWidth) / 2;
         int startY = (getHeight() - imgHeight) / 2;
-        g.drawImage(imageInfo.image, startX, startY, startX + imgWidth, startY + imgHeight, 0, 0, imgWidth, imgHeight, null);
+        g.drawImage(image, startX, startY, startX + imgWidth, startY + imgHeight, 0, 0, imgWidth, imgHeight, null);
     }
 
     public void dispose() {
-        if (this.imageInfo == null) return;
-        this.imageInfo.image.flush();
-        this.imageInfo = null;
+        if (image == null) return;
+        image.flush();
+        image = null;
     }
 
     public interface OnLoadImageListener {

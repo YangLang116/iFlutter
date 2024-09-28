@@ -1,6 +1,6 @@
 package com.xtu.plugin.flutter.base.utils;
 
-import com.intellij.util.ImageLoader;
+import net.coobird.thumbnailator.Thumbnails;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,6 +12,7 @@ import javax.imageio.stream.ImageInputStream;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -41,16 +42,26 @@ public class ImageUtils {
         return readerList.get(0);
     }
 
-    private static ImageInfo loadDefaultIcon(@NotNull String defaultUrl, int width, int height, int scaleSize) {
-        BufferedImage defaultImage = (BufferedImage) ImageLoader.loadFromResource(defaultUrl, ImageUtils.class);
-        Image scaleDefaultImage = getScaleImage(defaultImage, scaleSize, scaleSize);
-        return new ImageInfo(scaleDefaultImage, width, height);
+    @Nullable
+    private static BufferedImage loadDefaultIcon(@NotNull String defaultUrl, int scaleSize) {
+        URL defaultIcon = ImageUtils.class.getResource(defaultUrl);
+        try {
+            return Thumbnails.of(defaultIcon)
+                    .size(scaleSize, scaleSize)
+                    .imageType(BufferedImage.TYPE_INT_ARGB)
+                    .asBufferedImage();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @NotNull
     public static ImageInfo loadThumbnail(@NotNull File imageFile, @NotNull String defaultUrl, int scaleSize) {
         ImageReader imageReader = getImageReader(imageFile);
-        if (imageReader == null) return loadDefaultIcon(defaultUrl, 0, 0, scaleSize);
+        if (imageReader == null) {
+            BufferedImage defaultIcon = loadDefaultIcon(defaultUrl, scaleSize);
+            return new ImageInfo(defaultIcon, 0, 0);
+        }
         int originWidth = 0;
         int originHeight = 0;
         ImageInputStream imageStream = null;
@@ -71,7 +82,8 @@ public class ImageUtils {
                 return new ImageInfo(scaleImage, originWidth, originHeight);
             }
         } catch (Exception e) {
-            return loadDefaultIcon(defaultUrl, originWidth, originHeight, scaleSize);
+            BufferedImage defaultIcon = loadDefaultIcon(defaultUrl, scaleSize);
+            return new ImageInfo(defaultIcon, originWidth, originHeight);
         } finally {
             CloseUtils.close(imageStream);
             imageReader.dispose();
@@ -106,11 +118,12 @@ public class ImageUtils {
 
     public static class ImageInfo {
 
+        @Nullable
         public final Image image;
         public final int width;
         public final int height;
 
-        public ImageInfo(Image image, int width, int height) {
+        public ImageInfo(@Nullable Image image, int width, int height) {
             this.image = image;
             this.width = width;
             this.height = height;

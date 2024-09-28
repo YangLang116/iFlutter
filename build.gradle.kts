@@ -22,6 +22,7 @@ dependencies {
     }
     implementation("com.twelvemonkeys.imageio:imageio-webp:3.10.1")
     implementation("com.twelvemonkeys.imageio:imageio-batik:3.10.1")
+    implementation("net.coobird:thumbnailator:0.4.20")
     implementation("com.squareup.okhttp3:mockwebserver:4.12.0")
     implementation("com.tinify:tinify:1.8.3")
     implementation("org.freemarker:freemarker:2.3.33")

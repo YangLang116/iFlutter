@@ -1,6 +1,6 @@
 package com.xtu.plugin.flutter.window.res;
 
-import com.intellij.ide.ui.UISettingsListener;
+import com.intellij.ide.ui.LafManagerListener;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.DumbAware;
@@ -56,7 +56,7 @@ public class ResToolWindowFactory implements ToolWindowFactory, DumbAware {
 
     private void initThemeChangedListener(@NotNull IResRootPanel rootPanel) {
         MessageBus messageBus = ApplicationManager.getApplication().getMessageBus();
-        messageBus.connect().subscribe(UISettingsListener.TOPIC, (UISettingsListener) rootPanel::uiSettingsChanged);
+        messageBus.connect().subscribe(LafManagerListener.TOPIC, (LafManagerListener) lafManager -> rootPanel.lookAndFeelChanged(lafManager));
     }
 
     private void initResWindowRefresher(@NotNull Project project, @NotNull IResRootPanel rootPanel) {

@@ -1,7 +1,7 @@
 package com.xtu.plugin.flutter.window.res.ui;
 
 import com.intellij.ide.DataManager;
-import com.intellij.ide.ui.UISettings;
+import com.intellij.ide.ui.LafManager;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
@@ -218,7 +218,7 @@ public class ResRootPanel extends JPanel implements IResRootPanel {
     }
 
     @Override
-    public void uiSettingsChanged(@NotNull UISettings uiSettings) {
+    public void lookAndFeelChanged(@NotNull LafManager lafManager) {
         reloadItems(this.resList);
     }
 

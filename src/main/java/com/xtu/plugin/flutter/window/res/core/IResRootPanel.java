@@ -1,6 +1,6 @@
 package com.xtu.plugin.flutter.window.res.core;
 
-import com.intellij.ide.ui.UISettings;
+import com.intellij.ide.ui.LafManager;
 import com.xtu.plugin.flutter.window.res.sort.SortType;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,5 +26,5 @@ public interface IResRootPanel {
 
     JComponent asComponent();
 
-    void uiSettingsChanged(@NotNull UISettings uiSettings);
+    void lookAndFeelChanged(@NotNull LafManager lafManager);
 }

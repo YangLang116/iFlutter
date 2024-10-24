@@ -16,7 +16,7 @@ repositories {
 }
 
 dependencies {
-    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
+    implementation("org.json:json:20240303")
     implementation("org.apache.xmlgraphics:batik-all:1.17") {
         exclude("xml-apis", "xml-apis")
     }

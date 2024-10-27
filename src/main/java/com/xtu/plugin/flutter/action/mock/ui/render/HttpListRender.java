@@ -1,5 +1,6 @@
 package com.xtu.plugin.flutter.action.mock.ui.render;
 
+import com.intellij.ui.JBColor;
 import com.intellij.util.ui.JBUI;
 import com.xtu.plugin.flutter.store.project.entity.HttpEntity;
 import icons.PluginIcons;
@@ -14,23 +15,23 @@ public class HttpListRender extends JPanel implements ListCellRenderer<HttpEntit
 
     public HttpListRender() {
         setLayout(new BorderLayout());
-        setBorder(JBUI.Borders.empty(0, 5));
+        setBorder(JBUI.Borders.empty(0, 10));
         add(new JLabel(PluginIcons.LINK), BorderLayout.WEST);
 
         Box infoPanel = Box.createVerticalBox();
-        infoPanel.setBorder(JBUI.Borders.empty(5, 5));
-        infoPanel.add(this.pathLabel = createLabel(Font.BOLD, 13));
-        infoPanel.add(Box.createVerticalStrut(2));
-        infoPanel.add(this.descLabel = createLabel(Font.PLAIN, 12));
+        infoPanel.setBorder(JBUI.Borders.empty(5, 10, 5, 0));
+        this.pathLabel = new JLabel();
+        pathLabel.setForeground(JBColor.foreground());
+        pathLabel.setFont(new Font(null, Font.BOLD, 16));
+        infoPanel.add(pathLabel);
+        infoPanel.add(Box.createVerticalStrut(5));
+        this.descLabel = new JLabel();
+        descLabel.setForeground(JBColor.foreground().darker());
+        descLabel.setFont(new Font(null, Font.BOLD, 13));
+        infoPanel.add(descLabel);
         add(infoPanel, BorderLayout.CENTER);
 
         add(new JSeparator(), BorderLayout.SOUTH);
-    }
-
-    private JLabel createLabel(int style, int size) {
-        JLabel label = new JLabel();
-        label.setFont(new Font(null, style, JBUI.scaleFontSize(size)));
-        return label;
     }
 
     @Override

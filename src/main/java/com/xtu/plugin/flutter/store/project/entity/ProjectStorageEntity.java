@@ -1,7 +1,9 @@
 package com.xtu.plugin.flutter.store.project.entity;
 
+import com.intellij.util.xmlb.annotations.OptionTag;
 import com.intellij.util.xmlb.annotations.Transient;
 import com.xtu.plugin.flutter.component.packages.update.PackageInfo;
+import com.xtu.plugin.flutter.store.project.converter.HttpEntityConverter;
 
 import java.util.*;
 
@@ -16,6 +18,7 @@ public class ProjectStorageEntity {
     //是否打开资源变更检查
     public boolean resCheckEnable = true;
     //HTTP Mock 配置
+    @OptionTag(converter = HttpEntityConverter.class)
     public List<HttpEntity> httpEntityList = new ArrayList<>();
     //资源是否以目录形式注册
     public boolean foldRegisterEnable = false;

@@ -21,7 +21,7 @@
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <font style="1"/>
+              <font size="16" style="1"/>
               <text value="Host："/>
             </properties>
           </component>
@@ -34,6 +34,7 @@
             <properties>
               <editable value="false"/>
               <enabled value="false"/>
+              <font size="13"/>
             </properties>
           </component>
         </children>

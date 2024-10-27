@@ -17,6 +17,7 @@ repositories {
 
 dependencies {
     implementation("org.json:json:20240303")
+    implementation("com.google.code.gson:gson:2.11.0")
     implementation("org.apache.xmlgraphics:batik-all:1.17") {
         exclude("xml-apis", "xml-apis")
     }

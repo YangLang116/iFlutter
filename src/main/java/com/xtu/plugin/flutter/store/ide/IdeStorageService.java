@@ -7,7 +7,7 @@ import com.intellij.openapi.components.Storage;
 import com.xtu.plugin.flutter.store.ide.entity.IdeStorageEntity;
 import org.jetbrains.annotations.NotNull;
 
-@State(name = "iFlutter", storages = {@Storage("idea.iFlutter.xml")})
+@State(name = "iFlutter", storages = {@Storage("ide.iFlutter.xml")})
 public class IdeStorageService implements PersistentStateComponent<IdeStorageEntity> {
 
     private IdeStorageEntity storageEntity = new IdeStorageEntity();

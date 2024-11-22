@@ -100,7 +100,7 @@ intellijPlatform {
 intellijPlatformTesting {
     runIde {
         register("runOnAndroidStudio") {
-            localPath = file(providers.gradleProperty("idePath"))
+            localPath = file(providers.gradleProperty("asPath"))
         }
     }
 }

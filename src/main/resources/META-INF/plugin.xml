@@ -21,7 +21,8 @@
         <projectService serviceImplementation="com.xtu.plugin.flutter.component.assets.AssetsManager"/>
         <projectService serviceImplementation="com.xtu.plugin.flutter.component.packages.update.FlutterPackageUpdater"/>
         <projectConfigurable parentId="tools" instance="com.xtu.plugin.flutter.configuration.SettingsConfiguration"/>
-        <notificationGroup id="com.xtu.plugin.flutter.upgrade" displayType="BALLOON"
+        <notificationGroup id="com.xtu.plugin.flutter.upgrade"
+                           displayType="BALLOON"
                            key="com.xtu.plugin.flutter.upgrade"/>
         <toolWindow id="Flutter Resource"
                     icon="PluginIcons.WINDOW_ICON"
@@ -31,63 +32,93 @@
         <errorHandler implementation="com.xtu.plugin.flutter.reporter.FErrorReporter"/>
         <projectViewNodeDecorator implementation="com.xtu.plugin.flutter.decorator.AssetNodeDecorator"/>
     </extensions>
-    <actions resource-bundle="messages.ActionsBundle">
+    <actions>
         <group id="com.xtu.plugin.flutter.group"
                icon="PluginIcons.LOGO"
+               text="iFlutter"
+               description="Flutter Development Kit"
                class="com.xtu.plugin.flutter.action.IFlutterActionGroup"
                popup="true">
             <add-to-group group-id="ProjectViewPopupMenu" anchor="after"
                           relative-to-action="ProjectViewPopupMenuRefactoringGroup"/>
             <action id="com.xtu.plugin.flutter.GenerateResAction"
                     icon="PluginIcons.ASSET"
+                    text="Generate R File"
+                    description="Generate R File"
                     class="com.xtu.plugin.flutter.action.generate.res.GenerateResAction"/>
             <action id="com.xtu.plugin.flutter.ImageFoldingAction"
+                    text="Categorize Assets"
+                    description="Categorize Flutter Assets By File Name"
                     class="com.xtu.plugin.flutter.action.image.ImageFoldingAction"/>
             <action id="com.xtu.plugin.flutter.DuplicateResAnalysisAction"
+                    text="Check Duplicate Assets"
+                    description="Check if there are duplicate resource files in the project"
                     class="com.xtu.plugin.flutter.action.analysis.DuplicateResAnalysisAction"/>
             <action id="com.xtu.plugin.flutter.UselessResAnalysisAction"
+                    text="Check Useless Assets"
+                    description="Check if there are Useless resource files in the project"
                     class="com.xtu.plugin.flutter.action.analysis.UselessResAnalysisAction"/>
             <separator/>
             <action id="com.xtu.plugin.flutter.J2DAction"
                     icon="PluginIcons.CODE"
+                    text="Json to Dart"
+                    description="Json To Dart Bean"
                     class="com.xtu.plugin.flutter.action.j2d.J2DAction"/>
             <separator/>
             <action id="com.xtu.plugin.flutter.AddIntlAction"
+                    text="Add Locale Res (intl)"
+                    description="Add Locale Res (intl)"
                     class="com.xtu.plugin.flutter.action.intl.action.AddIntlAction">
                 <keyboard-shortcut first-keystroke="alt a" keymap="$default"/>
             </action>
             <action id="com.xtu.plugin.flutter.RemoveIntlAction"
+                    text="Remove Locale Res (intl)"
+                    description="Remove Locale Res (intl)"
                     class="com.xtu.plugin.flutter.action.intl.action.RemoveIntlAction">
                 <keyboard-shortcut first-keystroke="alt r" keymap="$default"/>
             </action>
             <separator/>
             <action id="com.xtu.plugin.flutter.HttpMockAction"
                     icon="PluginIcons.NET"
+                    text="Mock HTTP"
+                    description="HTTP Mock Tool"
                     class="com.xtu.plugin.flutter.action.mock.HttpMockAction"/>
             <separator/>
             <action id="com.xtu.plugin.flutter.DepAnalysisAction"
                     icon="PluginIcons.DEPENDENCY"
+                    text="Dependence Tree"
+                    description="Analysis project dependency tree"
                     class="com.xtu.plugin.flutter.action.analysis.DepAnalysisAction"/>
             <separator/>
             <action id="com.xtu.plugin.flutter.PubSearchAction"
                     icon="PluginIcons.SEARCH"
+                    text="Search From Pub"
+                    description="Search From Pub"
                     class="com.xtu.plugin.flutter.action.pub.search.PubSearchAction">
                 <keyboard-shortcut first-keystroke="alt f" keymap="$default"/>
             </action>
             <action id="com.xtu.plugin.flutter.PubSpeedAction"
+                    text="Mirror Repo Inject"
+                    description="Mirror Repo Inject"
                     class="com.xtu.plugin.flutter.action.pub.speed.PubSpeedAction"/>
             <separator/>
             <action id="com.xtu.plugin.flutter.UsageAction"
                     icon="PluginIcons.NOTE"
+                    text="Open Document"
+                    description="Open iFlutter usage documentation"
                     class="com.xtu.plugin.flutter.action.usage.UsageAction"/>
         </group>
         <action id="com.xtu.plugin.flutter.DartGenerateFromJsonAndToJsonAction"
                 icon="PluginIcons.CODE"
+                text="FromJson and ToJson"
+                description="Generate fromJson | toJson [iFlutter]"
                 class="com.xtu.plugin.flutter.action.generate.json.DartGenerateJSONMethodAction">
             <add-to-group anchor="after" relative-to-action="Generate.EqualsAndHashcode.Dart" group-id="GenerateGroup"/>
         </action>
         <action id="com.xtu.plugin.flutter.DartGenerateConstructorAction"
                 icon="PluginIcons.CODE"
+                text="Constructor for Json"
+                description="Generate a constructor for fromJson | toJson [iFlutter]"
                 class="com.xtu.plugin.flutter.action.generate.constructor.DartGenerateConstructorAction">
             <add-to-group anchor="after" relative-to-action="Generate.EqualsAndHashcode.Dart" group-id="GenerateGroup"/>
         </action>

@@ -1,15 +1,21 @@
 <idea-plugin>
-    <actions resource-bundle="messages.ActionsBundle">
+    <actions>
         <action id="com.xtu.plugin.flutter.inject.AddIntlAction"
-                class="com.xtu.plugin.flutter.action.intl.action.AddIntlAction"
-                icon="PluginIcons.LOGO">
-            <add-to-group group-id="FlutterIntlToolsActionGroup" anchor="after"
+                icon="PluginIcons.LOGO"
+                text="Add Locale Res"
+                description="Add Locale Res"
+                class="com.xtu.plugin.flutter.action.intl.action.AddIntlAction">
+            <add-to-group group-id="FlutterIntlToolsActionGroup"
+                          anchor="after"
                           relative-to-action="flutterIntl.removeLocale"/>
         </action>
         <action id="com.xtu.plugin.flutter.inject.RemoveIntlAction"
-                class="com.xtu.plugin.flutter.action.intl.action.RemoveIntlAction"
-                icon="PluginIcons.LOGO">
-            <add-to-group group-id="FlutterIntlToolsActionGroup" anchor="after"
+                icon="PluginIcons.LOGO"
+                text="Remove Locale Res"
+                description="Remove Locale Res"
+                class="com.xtu.plugin.flutter.action.intl.action.RemoveIntlAction">
+            <add-to-group group-id="FlutterIntlToolsActionGroup"
+                          anchor="after"
                           relative-to-action="com.xtu.plugin.flutter.inject.AddIntlAction"/>
         </action>
     </actions>

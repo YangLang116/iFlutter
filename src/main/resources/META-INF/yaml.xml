@@ -2,20 +2,26 @@
     <extensions defaultExtensionNs="com.intellij">
         <annotator language="yaml" implementationClass="com.xtu.plugin.flutter.annotator.PackageUpdateAnnotator"/>
     </extensions>
-    <actions resource-bundle="messages.ActionsBundle">
+    <actions>
         <group>
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
             <action id="com.xtu.plugin.flutter.ConvertDependencyToLocalAction"
                     icon="PluginIcons.FETCH"
+                    text="Convert To Local Dependency"
+                    description="Convert To Local Dependency"
                     class="com.xtu.plugin.flutter.action.convert.ConvertDependencyToLocalAction">
             </action>
             <action id="com.xtu.plugin.flutter.YamlPackageAnchorAction"
                     icon="PluginIcons.LOCATE"
+                    text="Anchor To Dependency"
+                    description="Anchor To Dependency"
                     class="com.xtu.plugin.flutter.action.anchor.yaml.YamlPackageAnchorAction">
             </action>
         </group>
         <action id="com.xtu.plugin.flutter.remove.comment"
                 icon="PluginIcons.COMMENT"
+                text="Remove Comments"
+                description="Remove Comments"
                 class="com.xtu.plugin.flutter.action.remove.CommentRemoveAction">
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
         </action>

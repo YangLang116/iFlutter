@@ -21,9 +21,7 @@
         <projectService serviceImplementation="com.xtu.plugin.flutter.component.assets.AssetsManager"/>
         <projectService serviceImplementation="com.xtu.plugin.flutter.component.packages.update.FlutterPackageUpdater"/>
         <projectConfigurable parentId="tools" instance="com.xtu.plugin.flutter.configuration.SettingsConfiguration"/>
-        <notificationGroup id="com.xtu.plugin.flutter.upgrade"
-                           displayType="BALLOON"
-                           key="com.xtu.plugin.flutter.upgrade"/>
+        <notificationGroup id="com.xtu.plugin.flutter.upgrade" displayType="BALLOON" key="iFlutter Upgrade"/>
         <toolWindow id="Flutter Resource"
                     icon="PluginIcons.WINDOW_ICON"
                     anchor="left"

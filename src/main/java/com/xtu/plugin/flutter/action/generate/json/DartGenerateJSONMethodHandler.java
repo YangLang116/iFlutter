@@ -15,12 +15,12 @@ import java.util.List;
 
 public class DartGenerateJSONMethodHandler extends BaseDartGenerateHandler {
 
-    private final boolean hasFromJson;
-    private final boolean hasToJson;
+    private final boolean createFromJson;
+    private final boolean createToJson;
 
-    public DartGenerateJSONMethodHandler(boolean hasFromJson, boolean hasToJson) {
-        this.hasFromJson = hasFromJson;
-        this.hasToJson = hasToJson;
+    public DartGenerateJSONMethodHandler(boolean createFromJson, boolean createToJson) {
+        this.createFromJson = createFromJson;
+        this.createToJson = createToJson;
     }
 
     @NotNull
@@ -32,7 +32,9 @@ public class DartGenerateJSONMethodHandler extends BaseDartGenerateHandler {
     protected BaseCreateMethodsFix<DartComponent> createFix(@NotNull DartClass dartClass) {
         Project project = dartClass.getProject();
         ProjectStorageEntity storageEntity = ProjectStorageService.getStorage(project);
-        return new DartGenerateJsonMethodCodeFix(dartClass, storageEntity.supportNullSafety, this.hasFromJson, hasToJson);
+        return new DartGenerateJsonMethodCodeFix(dartClass,
+                storageEntity.supportNullSafety,
+                this.createFromJson, createToJson);
     }
 
     protected void collectCandidates(@NotNull DartClass dartClass, @NotNull List<DartComponent> candidates) {

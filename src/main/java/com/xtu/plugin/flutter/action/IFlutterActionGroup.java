@@ -5,9 +5,15 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.project.Project;
 import com.xtu.plugin.flutter.base.utils.PluginUtils;
+import icons.PluginIcons;
 import org.jetbrains.annotations.NotNull;
 
 public class IFlutterActionGroup extends DefaultActionGroup {
+
+    public IFlutterActionGroup() {
+        //noinspection DialogTitleCapitalization
+        super("iFlutter", "Flutter Development Kit", PluginIcons.LOGO);
+    }
 
     @Override
     @NotNull

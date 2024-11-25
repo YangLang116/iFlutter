@@ -3,7 +3,9 @@
         <annotator language="yaml" implementationClass="com.xtu.plugin.flutter.annotator.PackageUpdateAnnotator"/>
     </extensions>
     <actions>
-        <group>
+        <group popup="false"
+               id="com.xtu.plugin.flutter.group.yaml"
+               class="com.xtu.plugin.flutter.action.IFlutterActionGroup">
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
             <action id="com.xtu.plugin.flutter.ConvertDependencyToLocalAction"
                     icon="PluginIcons.FETCH"

@@ -19,17 +19,18 @@ import java.util.Set;
 
 public class DartGenerateJsonMethodCodeFix extends BaseCreateMethodsFix<DartComponent> {
 
-    private final boolean hasFromJson;
-    private final boolean hasToJson;
+    private final boolean createFromJson;
+    private final boolean createToJson;
     private final boolean supportNullSafety;
 
     public DartGenerateJsonMethodCodeFix(@NotNull DartClass dartClass,
                                          boolean supportNullSafety,
-                                         boolean hasFromJson, boolean hasToJson) {
+                                         boolean createFromJson,
+                                         boolean createToJson) {
         super(dartClass);
         this.supportNullSafety = supportNullSafety;
-        this.hasFromJson = hasFromJson;
-        this.hasToJson = hasToJson;
+        this.createFromJson = createFromJson;
+        this.createToJson = createToJson;
     }
 
     @NotNull
@@ -55,8 +56,8 @@ public class DartGenerateJsonMethodCodeFix extends BaseCreateMethodsFix<DartComp
         List<GenJSONMethodFieldDescriptor> dartFieldList = parseFieldList(elementsToProcess);
         Template template = templateManager.createTemplate(this.getClass().getName(), "Dart");
         template.setToReformat(true);
-        if (!hasFromJson) addFromJSONSegment(project, template, dartFieldList);
-        if (!hasToJson) addToJSONSegment(template, dartFieldList);
+        if (createFromJson) addFromJSONSegment(project, template, dartFieldList);
+        if (createToJson) addToJSONSegment(template, dartFieldList);
         return template;
     }
 

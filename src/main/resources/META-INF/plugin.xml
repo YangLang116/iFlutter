@@ -31,12 +31,9 @@
         <projectViewNodeDecorator implementation="com.xtu.plugin.flutter.decorator.AssetNodeDecorator"/>
     </extensions>
     <actions>
-        <group id="com.xtu.plugin.flutter.group"
-               icon="PluginIcons.LOGO"
-               text="iFlutter"
-               description="Flutter Development Kit"
-               class="com.xtu.plugin.flutter.action.IFlutterActionGroup"
-               popup="true">
+        <group popup="true"
+               id="com.xtu.plugin.flutter.group.comm"
+               class="com.xtu.plugin.flutter.action.IFlutterActionGroup">
             <add-to-group group-id="ProjectViewPopupMenu" anchor="after"
                           relative-to-action="ProjectViewPopupMenuRefactoringGroup"/>
             <action id="com.xtu.plugin.flutter.GenerateResAction"
@@ -106,19 +103,31 @@
                     description="Open iFlutter usage documentation"
                     class="com.xtu.plugin.flutter.action.usage.UsageAction"/>
         </group>
-        <action id="com.xtu.plugin.flutter.DartGenerateFromJsonAndToJsonAction"
-                icon="PluginIcons.CODE"
-                text="FromJson and ToJson"
-                description="Generate fromJson | toJson [iFlutter]"
-                class="com.xtu.plugin.flutter.action.generate.json.DartGenerateJSONMethodAction">
+        <group popup="false"
+               id="com.xtu.plugin.flutter.group.code"
+               class="com.xtu.plugin.flutter.action.IFlutterActionGroup">
             <add-to-group anchor="after" relative-to-action="Generate.EqualsAndHashcode.Dart" group-id="GenerateGroup"/>
-        </action>
-        <action id="com.xtu.plugin.flutter.DartGenerateConstructorAction"
-                icon="PluginIcons.CODE"
-                text="Constructor for Json"
-                description="Generate a constructor for fromJson | toJson [iFlutter]"
-                class="com.xtu.plugin.flutter.action.generate.constructor.DartGenerateConstructorAction">
-            <add-to-group anchor="after" relative-to-action="Generate.EqualsAndHashcode.Dart" group-id="GenerateGroup"/>
-        </action>
+            <separator/>
+            <action id="com.xtu.plugin.flutter.constructor"
+                    icon="PluginIcons.CODE"
+                    text="Constructor for Json"
+                    description="Generate a constructor for fromJson | toJson [iFlutter]"
+                    class="com.xtu.plugin.flutter.action.generate.constructor.DartGenerateConstructorAction"/>
+            <action id="com.xtu.plugin.flutter.from.json"
+                    icon="PluginIcons.CODE"
+                    text="FromJson"
+                    description="Generate fromJson [iFlutter]"
+                    class="com.xtu.plugin.flutter.action.generate.json.action.DartGenerateFromJSONMethodAction"/>
+            <action id="com.xtu.plugin.flutter.to.json"
+                    icon="PluginIcons.CODE"
+                    text="ToJson"
+                    description="toJson [iFlutter]"
+                    class="com.xtu.plugin.flutter.action.generate.json.action.DartGenerateToJSONMethodAction"/>
+            <action id="com.xtu.plugin.flutter.json"
+                    icon="PluginIcons.CODE"
+                    text="FromJson and ToJson"
+                    description="Generate fromJson | toJson [iFlutter]"
+                    class="com.xtu.plugin.flutter.action.generate.json.action.DartGenerateJSONMethodAction"/>
+        </group>
     </actions>
 </idea-plugin>

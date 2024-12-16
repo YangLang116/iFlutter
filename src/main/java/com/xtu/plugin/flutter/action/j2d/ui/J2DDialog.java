@@ -8,7 +8,10 @@ import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.StatusBar;
 import com.intellij.openapi.wm.WindowManager;
+import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBScrollPane;
+import com.intellij.ui.components.JBTextArea;
+import com.intellij.ui.components.JBTextField;
 import com.intellij.util.ui.JBUI;
 import com.xtu.plugin.flutter.action.j2d.handler.J2DHandler;
 import com.xtu.plugin.flutter.base.utils.*;
@@ -19,12 +22,14 @@ import javax.swing.*;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
 
+@SuppressWarnings("DialogTitleCapitalization")
 public class J2DDialog extends DialogWrapper {
 
     private final Project project;
     private final J2DHandler handler;
     private final VirtualFile selectDirectory;
 
+    private JBCheckBox keepCommentBox;
     private JTextComponent classNameFiled;
     private JTextComponent jsonDataField;
 
@@ -55,9 +60,9 @@ public class J2DDialog extends DialogWrapper {
     protected JComponent createCenterPanel() {
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBorder(JBUI.Borders.empty(5));
-        mainPanel.add(createClassNameBox(), BorderLayout.NORTH);  //编辑类名
-        mainPanel.add(createJsonDataBox(), BorderLayout.CENTER);  //添加json数据
-        mainPanel.add(createBtnList(), BorderLayout.SOUTH); //操作按钮
+        mainPanel.add(createClassNameBox(), BorderLayout.NORTH);
+        mainPanel.add(createJsonDataBox(), BorderLayout.CENTER);
+        mainPanel.add(createBottomBar(), BorderLayout.SOUTH);
         return mainPanel;
     }
 
@@ -66,7 +71,7 @@ public class J2DDialog extends DialogWrapper {
         Box classNameContainer = Box.createHorizontalBox();
         classNameContainer.add(new JLabel("ClassName:"));
         classNameContainer.add(Box.createHorizontalStrut(10));
-        classNameFiled = new JTextField();
+        classNameFiled = new JBTextField();
         classNameFiled.setToolTipText("Using Camel-Case");
         classNameContainer.add(classNameFiled);
         return classNameContainer;
@@ -80,7 +85,8 @@ public class J2DDialog extends DialogWrapper {
         jsonLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         jsonContainer.add(jsonLabel);
         jsonContainer.add(Box.createVerticalStrut(10));
-        jsonDataField = new JTextPane();
+        jsonDataField = new JBTextArea();
+        jsonDataField.setBorder(JBUI.Borders.empty(5, 10));
         JBScrollPane scrollPane = new JBScrollPane(jsonDataField);
         scrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
         jsonContainer.add(scrollPane);
@@ -88,9 +94,11 @@ public class J2DDialog extends DialogWrapper {
     }
 
     @NotNull
-    private Box createBtnList() {
+    private Box createBottomBar() {
         Box btnBox = Box.createHorizontalBox();
         btnBox.add(Box.createHorizontalGlue());
+        btnBox.add(keepCommentBox = new JBCheckBox("Keep Comments"));
+        btnBox.add(Box.createHorizontalStrut(10));
         btnBox.add(createBtn("Format", this::toFormat));
         btnBox.add(Box.createHorizontalStrut(10));
         btnBox.add(createBtn("OK", this::genCode));
@@ -114,7 +122,7 @@ public class J2DDialog extends DialogWrapper {
             return;
         }
         try {
-            String formatJson = handler.formatJson(jsonData.trim());
+            String formatJson = JsonUtils.formatJson(jsonData.trim());
             jsonDataField.setText(formatJson);
         } catch (Exception ex) {
             LogUtils.error("J2DDialog format: ", ex);
@@ -140,7 +148,7 @@ public class J2DDialog extends DialogWrapper {
             return;
         }
         try {
-            String code = handler.genCode(className, jsonData);
+            String code = handler.genCode(className, jsonData, keepCommentBox.isSelected());
             genDartFile(fileName, code);
             close(OK_EXIT_CODE);
         } catch (Exception e) {

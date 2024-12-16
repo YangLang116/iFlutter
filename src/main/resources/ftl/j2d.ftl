@@ -1,5 +1,5 @@
 class ${className} {
-
+   <#if comment??>${comment}</#if>
    <#list fieldList as field>
      <#if (field.type == 2 && field.subType??)>
         final List<${field.subType.className}>${nullKey} ${field.displayName};

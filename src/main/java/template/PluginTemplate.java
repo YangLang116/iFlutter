@@ -10,6 +10,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import template.data.*;
 
 import java.io.CharArrayWriter;
@@ -59,12 +60,13 @@ public class PluginTemplate {
     @NotNull
     public static String getJ2DContent(@NotNull Project project,
                                        @NotNull String className,
+                                       @Nullable String comment,
                                        @NotNull List<J2DFieldDescriptor> fieldList) {
         try {
             Template template = configuration.getTemplate("j2d.ftl");
             String nullKey = getNullKey(project);
             String listConstructor = isUnModifiableList(project);
-            J2DTemplateData data = new J2DTemplateData(className, fieldList, nullKey, listConstructor);
+            J2DTemplateData data = new J2DTemplateData(className, comment, fieldList, nullKey, listConstructor);
             return process(template, data);
         } catch (Exception e) {
             LogUtils.error("PluginTemplate getJ2DContent", e);

@@ -4,6 +4,7 @@ import com.intellij.openapi.project.Project;
 import com.xtu.plugin.flutter.action.j2d.handler.entity.ClassEntity;
 import com.xtu.plugin.flutter.action.j2d.handler.entity.J2DFieldDescriptor;
 import com.xtu.plugin.flutter.base.utils.ClassUtils;
+import com.xtu.plugin.flutter.base.utils.JsonUtils;
 import com.xtu.plugin.flutter.base.utils.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,20 +25,11 @@ public class J2DHandler {
         this.project = project;
     }
 
-    public String formatJson(@NotNull String jsonData) throws JSONException {
-        if (jsonData.startsWith("[")) {
-            JSONArray jsonArray = new JSONArray(jsonData);
-            return jsonArray.toString(4);
-        } else {
-            JSONObject jsonObject = new JSONObject(jsonData);
-            return jsonObject.toString(4);
-        }
-    }
-
     @NotNull
-    public String genCode(@NotNull String className, @NotNull String jsonData) throws JSONException {
+    public String genCode(@NotNull String className, @NotNull String jsonData, boolean keepComment) throws JSONException {
         List<ClassEntity> classList = new ArrayList<>();
-        createAndSaveClass(className, new JSONObject(jsonData), classList);
+        JSONObject orderObj = JsonUtils.createOrderObj(jsonData);
+        createAndSaveClass(className, orderObj, keepComment, classList);
 
         StringBuilder fileContentBuilder = new StringBuilder();
         for (int i = classList.size() - 1; i >= 0; i--) {
@@ -49,21 +41,23 @@ public class J2DHandler {
 
     private void createAndSaveClass(@NotNull String className,
                                     @NotNull JSONObject jsonObject,
+                                    boolean keepComment,
                                     @NotNull List<ClassEntity> classList) {
-        List<J2DFieldDescriptor> fieldList = parseFieldList(jsonObject, classList);
-        String content = PluginTemplate.getJ2DContent(project, className, fieldList);
+        List<J2DFieldDescriptor> fieldList = parseFieldList(jsonObject, classList, keepComment);
+        String comment = getComment(jsonObject, keepComment);
+        String content = PluginTemplate.getJ2DContent(project, className, comment, fieldList);
         classList.add(new ClassEntity(className, content));
     }
 
-
     @NotNull
-    private List<J2DFieldDescriptor> parseFieldList(@NotNull JSONObject jsonObject, @NotNull List<ClassEntity> classList) {
+    private List<J2DFieldDescriptor> parseFieldList(@NotNull JSONObject jsonObject,
+                                                    @NotNull List<ClassEntity> classList,
+                                                    boolean keepComment) {
         List<J2DFieldDescriptor> fieldList = new ArrayList<>();
-        @SuppressWarnings("unchecked")
         Set<String> fieldSet = jsonObject.keySet();
         for (String fieldName : fieldSet) {
             Object fieldValue = jsonObject.get(fieldName);
-            J2DFieldDescriptor field = parseField(fieldName, fieldValue, classList, name -> ClassUtils.getClassName(name) + "Entity");
+            J2DFieldDescriptor field = parseField(fieldName, fieldValue, keepComment, classList, name -> ClassUtils.getClassName(name) + "Entity");
             if (field == null) continue;
             fieldList.add(field);
         }
@@ -72,6 +66,7 @@ public class J2DHandler {
 
     @Nullable
     private J2DFieldDescriptor parseField(@NotNull String key, @NotNull Object value,
+                                          boolean keepComment,
                                           @NotNull List<ClassEntity> classList,
                                           @NotNull ClassNameFactory classNameFactory) {
         if (value instanceof String) {
@@ -82,13 +77,13 @@ public class J2DHandler {
             return J2DFieldDescriptor.prime(key, "num");
         } else if (value instanceof JSONObject) {
             String className = getClassName(key, classNameFactory, classList);
-            createAndSaveClass(className, (JSONObject) value, classList);
+            createAndSaveClass(className, (JSONObject) value, keepComment, classList);
             return J2DFieldDescriptor.object(key, className);
         } else if (value instanceof JSONArray) {
             J2DFieldDescriptor argumentFieldDescriptor = null;
-            if (((JSONArray) value).length() > 0) {
+            if (!((JSONArray) value).isEmpty()) {
                 Object item = ((JSONArray) value).get(0);
-                argumentFieldDescriptor = parseField(key, item, classList, name -> ClassUtils.getClassName(name) + "ItemEntity");
+                argumentFieldDescriptor = parseField(key, item, keepComment, classList, name -> ClassUtils.getClassName(name) + "ItemEntity");
             }
             return J2DFieldDescriptor.list(key, argumentFieldDescriptor);
         }
@@ -112,5 +107,29 @@ public class J2DHandler {
             candidate = factory.create(name + (index++));
         }
         return candidate;
+    }
+
+    @Nullable
+    private String getComment(@NotNull JSONObject obj, boolean keepComment) {
+        if (!keepComment) {
+            return null;
+        }
+        JSONObject tempObj = new JSONObject();
+        for (String key : obj.keySet()) {
+            Object value = obj.get(key);
+            if (value instanceof JSONObject) {
+                continue;
+            }
+            if (value instanceof JSONArray && !((JSONArray) value).isEmpty() && ((JSONArray) value).get(0) instanceof JSONObject) {
+                continue;
+            }
+            tempObj.put(key, value);
+        }
+        String[] lines = tempObj.toString(4).split("\n");
+        StringBuilder commentSb = new StringBuilder();
+        for (String line : lines) {
+            commentSb.append("// ").append(line).append("\n");
+        }
+        return commentSb.toString();
     }
 }

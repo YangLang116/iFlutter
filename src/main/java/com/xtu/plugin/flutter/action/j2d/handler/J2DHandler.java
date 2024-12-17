@@ -11,11 +11,11 @@ import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.OrderJSONObject;
 import template.PluginTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class J2DHandler {
 
@@ -28,8 +28,8 @@ public class J2DHandler {
     @NotNull
     public String genCode(@NotNull String className, @NotNull String jsonData, boolean keepComment) throws JSONException {
         List<ClassEntity> classList = new ArrayList<>();
-        JSONObject orderObj = JsonUtils.createOrderObj(jsonData);
-        createAndSaveClass(className, orderObj, keepComment, classList);
+        JSONObject jsonObject = new JSONObject(jsonData);
+        createAndSaveClass(className, jsonObject, keepComment, classList);
 
         StringBuilder fileContentBuilder = new StringBuilder();
         for (int i = classList.size() - 1; i >= 0; i--) {
@@ -39,24 +39,19 @@ public class J2DHandler {
         return fileContentBuilder.toString();
     }
 
-    private void createAndSaveClass(@NotNull String className,
-                                    @NotNull JSONObject jsonObject,
-                                    boolean keepComment,
-                                    @NotNull List<ClassEntity> classList) {
-        List<J2DFieldDescriptor> fieldList = parseFieldList(jsonObject, classList, keepComment);
-        String comment = getComment(jsonObject, keepComment);
+    private void createAndSaveClass(@NotNull String className, @NotNull JSONObject jsonObj, boolean keepComment, @NotNull List<ClassEntity> classList) {
+        List<J2DFieldDescriptor> fieldList = parseFieldList(jsonObj, keepComment, classList);
+        String comment = getComment(jsonObj, keepComment);
         String content = PluginTemplate.getJ2DContent(project, className, comment, fieldList);
         classList.add(new ClassEntity(className, content));
     }
 
     @NotNull
-    private List<J2DFieldDescriptor> parseFieldList(@NotNull JSONObject jsonObject,
-                                                    @NotNull List<ClassEntity> classList,
-                                                    boolean keepComment) {
+    private List<J2DFieldDescriptor> parseFieldList(@NotNull JSONObject rawObj, boolean keepComment, @NotNull List<ClassEntity> classList) {
+        OrderJSONObject orderObj = JsonUtils.toOrderJsonObject(rawObj);
         List<J2DFieldDescriptor> fieldList = new ArrayList<>();
-        Set<String> fieldSet = jsonObject.keySet();
-        for (String fieldName : fieldSet) {
-            Object fieldValue = jsonObject.get(fieldName);
+        for (String fieldName : orderObj.keySet()) {
+            Object fieldValue = orderObj.get(fieldName);
             J2DFieldDescriptor field = parseField(fieldName, fieldValue, keepComment, classList, name -> ClassUtils.getClassName(name) + "Entity");
             if (field == null) continue;
             fieldList.add(field);
@@ -65,10 +60,7 @@ public class J2DHandler {
     }
 
     @Nullable
-    private J2DFieldDescriptor parseField(@NotNull String key, @NotNull Object value,
-                                          boolean keepComment,
-                                          @NotNull List<ClassEntity> classList,
-                                          @NotNull ClassNameFactory classNameFactory) {
+    private J2DFieldDescriptor parseField(@NotNull String key, @NotNull Object value, boolean keepComment, @NotNull List<ClassEntity> classList, @NotNull ClassNameFactory classNameFactory) {
         if (value instanceof String) {
             return J2DFieldDescriptor.prime(key, "String");
         } else if (value instanceof Boolean) {
@@ -90,9 +82,7 @@ public class J2DHandler {
         return null;
     }
 
-    private String getClassName(@NotNull String name,
-                                @NotNull ClassNameFactory factory,
-                                @NotNull List<ClassEntity> classList) {
+    private String getClassName(@NotNull String name, @NotNull ClassNameFactory factory, @NotNull List<ClassEntity> classList) {
         int index = 1;
         String candidate = factory.create(name);
         while (true) {
@@ -110,22 +100,22 @@ public class J2DHandler {
     }
 
     @Nullable
-    private String getComment(@NotNull JSONObject obj, boolean keepComment) {
+    private String getComment(@NotNull JSONObject rawJson, boolean keepComment) {
         if (!keepComment) {
             return null;
         }
-        JSONObject tempObj = new JSONObject();
-        for (String key : obj.keySet()) {
-            Object value = obj.get(key);
+        OrderJSONObject orderJson = new OrderJSONObject();
+        for (String key : JsonUtils.getOrderKeySet(rawJson)) {
+            Object value = rawJson.get(key);
             if (value instanceof JSONObject) {
                 continue;
             }
             if (value instanceof JSONArray && !((JSONArray) value).isEmpty() && ((JSONArray) value).get(0) instanceof JSONObject) {
                 continue;
             }
-            tempObj.put(key, value);
+            orderJson.put(key, value);
         }
-        String[] lines = tempObj.toString(4).split("\n");
+        String[] lines = orderJson.toString(4).split("\n");
         StringBuilder commentSb = new StringBuilder();
         for (String line : lines) {
             commentSb.append("// ").append(line).append("\n");

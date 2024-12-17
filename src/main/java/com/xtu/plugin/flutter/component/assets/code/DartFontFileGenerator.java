@@ -17,7 +17,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-///字体资源文件"font_res.dart"生成
+/// 字体资源文件"font_res.dart"生成
 
 public class DartFontFileGenerator {
 
@@ -92,7 +92,7 @@ public class DartFontFileGenerator {
 
     @NotNull
     public static String getFontVariant(String fontFamily) {
-        return fontFamily.toUpperCase().replace("-", "_");
+        return ClassUtils.getFieldName(fontFamily);
     }
 
     public static String getFileName() {

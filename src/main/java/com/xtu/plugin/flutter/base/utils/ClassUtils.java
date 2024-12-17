@@ -8,8 +8,7 @@ public class ClassUtils {
         StringBuilder resultSb = new StringBuilder();
         for (int i = 0, j = name.length(); i < j; i++) {
             char c = name.charAt(i);
-            if (i != 0 && Character.isUpperCase(c)
-                    && i + 1 < j && Character.isLowerCase(name.charAt(i + 1))) {
+            if (i != 0 && Character.isUpperCase(c) && i + 1 < j && Character.isLowerCase(name.charAt(i + 1))) {
                 resultSb.append("_");
             }
             resultSb.append(Character.toLowerCase(c));
@@ -17,14 +16,12 @@ public class ClassUtils {
         return resultSb.toString();
     }
 
-    public static String getClassName(String str) {
+    public static String getClassName(@NotNull String str) {
         String name = toCamelCase(str);
-        if (name == null) return null;
         return name.substring(0, 1).toUpperCase() + name.substring(1);
     }
 
-    public static String toCamelCase(String name) {
-        if (name == null) return null;
+    public static String toCamelCase(@NotNull String name) {
         int len = name.length();
         StringBuilder sb = new StringBuilder();
         boolean needUpCase = false;
@@ -42,6 +39,11 @@ public class ClassUtils {
             }
         }
         return sb.toString();
+    }
+
+    @NotNull
+    public static String getFieldName(@NotNull String name) {
+        return name.toUpperCase().replace("-", "_").replace(" ", "_");
     }
 }
 

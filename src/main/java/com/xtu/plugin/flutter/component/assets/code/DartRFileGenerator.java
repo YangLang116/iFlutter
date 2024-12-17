@@ -46,8 +46,8 @@ public class DartRFileGenerator {
                     List<String> usefulFileNameList = new ArrayList<>();
                     for (Map.Entry<String, List<String>> entry : assetCategory.entrySet()) {
                         String dirName = entry.getKey();
-                        List<String> assetNames = entry.getValue();
-                        String fileName = generateFile(project, meta, resVirtualDirectory, dirName, assetNames);
+                        List<String> assetPathList = entry.getValue();
+                        String fileName = generateFile(project, meta, resVirtualDirectory, dirName, assetPathList);
                         usefulFileNameList.add(fileName);
                     }
                     //删除无用文件
@@ -95,10 +95,10 @@ public class DartRFileGenerator {
                                 @NotNull AssetInfoMetaEntity meta,
                                 @NotNull VirtualFile rDirectory,
                                 @NotNull String assetDirName,
-                                @NotNull List<String> assetFileNames) {
+                                @NotNull List<String> assetPathList) {
         String className = getClassName(assetDirName);
         LogUtils.info("DartRFileGenerator Class: " + className);
-        String content = buildFileContent(project, meta, className, assetFileNames);
+        String content = buildFileContent(project, meta, className, assetPathList);
         String fileName = assetDirName.toLowerCase() + "_res.dart";
         DartUtils.createDartFile(project, rDirectory, fileName, content);
         return fileName;
@@ -108,15 +108,15 @@ public class DartRFileGenerator {
     private String buildFileContent(@NotNull Project project,
                                     @NotNull AssetInfoMetaEntity meta,
                                     @NotNull String className,
-                                    @NotNull List<String> assetFileNames) {
+                                    @NotNull List<String> assetPathList) {
         String resPrefix = AssetUtils.getResPrefix(project, meta.projectName);
         List<ResFileTemplateData.Field> fieldList = new ArrayList<>();
         fieldList.add(new ResFileTemplateData.Field("PLUGIN_NAME", meta.projectName));
         fieldList.add(new ResFileTemplateData.Field("PLUGIN_VERSION", meta.projectVersion));
-        for (String assetFileName : assetFileNames) {
-            if (ignoreAsset(project, assetFileName)) continue;
-            String variantName = getResName(assetFileName);
-            fieldList.add(new ResFileTemplateData.Field(variantName, resPrefix + assetFileName));
+        for (String assetPath : assetPathList) {
+            if (ignoreAsset(project, assetPath)) continue;
+            String variantName = getResName(assetPath);
+            fieldList.add(new ResFileTemplateData.Field(variantName, resPrefix + assetPath));
         }
         ResFileTemplateData data = new ResFileTemplateData(className, fieldList);
         return PluginTemplate.getResFileContent(data);
@@ -144,12 +144,13 @@ public class DartRFileGenerator {
     }
 
     @NotNull
-    public static String getResName(String assetFileName) {
-        int startIndex = assetFileName.lastIndexOf("/") + 1;
-        int endIndex = assetFileName.lastIndexOf(".");
+    public static String getResName(String assetPath) {
+        int startIndex = assetPath.lastIndexOf("/") + 1;
+        int endIndex = assetPath.lastIndexOf(".");
         if (endIndex < startIndex) {
-            endIndex = assetFileName.length();
+            endIndex = assetPath.length();
         }
-        return assetFileName.substring(startIndex, endIndex).toUpperCase().replace("-", "_");
+        String assetName = assetPath.substring(startIndex, endIndex);
+        return ClassUtils.getFieldName(assetName);
     }
 }

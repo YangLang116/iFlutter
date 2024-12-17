@@ -80,7 +80,7 @@ public class J2DDialog extends DialogWrapper {
     @NotNull
     private Box createJsonDataBox() {
         Box jsonContainer = Box.createVerticalBox();
-        jsonContainer.setBorder(JBUI.Borders.empty(10, 0, 5, 0));
+        jsonContainer.setBorder(JBUI.Borders.empty(10, 0));
         JLabel jsonLabel = new JLabel("Json Data: ");
         jsonLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         jsonContainer.add(jsonLabel);
@@ -97,7 +97,7 @@ public class J2DDialog extends DialogWrapper {
     private Box createBottomBar() {
         Box btnBox = Box.createHorizontalBox();
         btnBox.add(Box.createHorizontalGlue());
-        btnBox.add(keepCommentBox = new JBCheckBox("Keep Comments"));
+        btnBox.add(keepCommentBox = new JBCheckBox("Keep Comments", true));
         btnBox.add(Box.createHorizontalStrut(10));
         btnBox.add(createBtn("Format", this::toFormat));
         btnBox.add(Box.createHorizontalStrut(10));
@@ -147,8 +147,9 @@ public class J2DDialog extends DialogWrapper {
             ToastUtils.make(project, MessageType.ERROR, "dart bean is exist");
             return;
         }
+        boolean keepComment = keepCommentBox.isSelected();
         try {
-            String code = handler.genCode(className, jsonData, keepCommentBox.isSelected());
+            String code = handler.genCode(className, jsonData, keepComment);
             genDartFile(fileName, code);
             close(OK_EXIT_CODE);
         } catch (Exception e) {

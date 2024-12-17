@@ -3,8 +3,11 @@ package com.xtu.plugin.flutter.base.utils;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.OrderJSONObject;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class JsonUtils {
 
@@ -13,19 +16,23 @@ public class JsonUtils {
             JSONArray jsonArray = new JSONArray(jsonData);
             return jsonArray.toString(4);
         } else {
-            JSONObject orderObj = createOrderObj(jsonData);
+            JSONObject rawObj = new JSONObject(jsonData);
+            OrderJSONObject orderObj = toOrderJsonObject(rawObj);
             return orderObj.toString(4);
         }
     }
 
-    public static JSONObject createOrderObj(@NotNull String jsonData) {
-        JSONObject rawObj = new JSONObject(jsonData);
-        List<String> keys = new ArrayList<String>(rawObj.keySet());
-        Collections.sort(keys);
-        Map<String, Object> pairs = new LinkedHashMap<>();
-        for (String key : keys) {
-            pairs.put(key, rawObj.get(key));
+    public static OrderJSONObject toOrderJsonObject(@NotNull JSONObject rawObj) {
+        OrderJSONObject orderObj = new OrderJSONObject();
+        for (String key : getOrderKeySet(rawObj)) {
+            orderObj.put(key, rawObj.get(key));
         }
-        return new JSONObject(pairs);
+        return orderObj;
+    }
+
+    public static List<String> getOrderKeySet(@NotNull JSONObject jsonObj) {
+        List<String> keySet = new ArrayList<>(jsonObj.keySet());
+        Collections.sort(keySet);
+        return keySet;
     }
 }

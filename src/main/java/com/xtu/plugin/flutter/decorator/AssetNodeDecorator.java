@@ -17,7 +17,6 @@ public class AssetNodeDecorator implements ProjectViewNodeDecorator {
         if (virtualFile == null) return;
         boolean isAssetDir = AssetUtils.isAssetDir(project, virtualFile);
         if (!isAssetDir) return;
-        PresentationData presentation = node.getPresentation();
-        presentation.setIcon(AllIcons.Nodes.ResourceBundle);
+        data.setIcon(AllIcons.Nodes.ResourceBundle);
     }
 }

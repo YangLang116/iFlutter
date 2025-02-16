@@ -28,29 +28,23 @@ public class PluginTemplate {
     }
 
     @NotNull
-    private static String process(@NotNull Template template, @NotNull Object data) throws TemplateException, IOException {
+    private static String process(@NotNull String path, @NotNull Object data) throws TemplateException, IOException {
+        Template template = configuration.getTemplate(path);
         CharArrayWriter writer = new CharArrayWriter();
         template.process(data, writer);
-        return writer.toString().replace("\r", "");
+        return writer.toString();
+    }
+
+    private static boolean isSupportNullSafety(@NotNull Project project) {
+        return ProjectStorageService.getStorage(project).supportNullSafety;
     }
 
     @NotNull
-    private static String getNullKey(@NotNull Project project) {
-        boolean supportNullSafety = ProjectStorageService.getStorage(project).supportNullSafety;
-        return supportNullSafety ? "?" : "";
-    }
-
-    @NotNull
-    static String isUnModifiableList(@NotNull Project project) {
-        boolean isUnModifiable = ProjectStorageService.getStorage(project).isUnModifiableFromJson;
-        return isUnModifiable ? "unmodifiable" : "from";
-    }
-
-    @NotNull
-    public static String getResFileContent(@NotNull ResFileTemplateData data) {
+    public static String getResFileContent(@NotNull String className,
+                                           @NotNull List<ResFileTemplateData.Field> fieldList) {
+        ResFileTemplateData data = new ResFileTemplateData(className, fieldList);
         try {
-            Template template = configuration.getTemplate("res_file.ftl");
-            return process(template, data);
+            return process("res_file.ftl", data);
         } catch (Exception e) {
             LogUtils.error("PluginTemplate getResFileContent", e);
             return "";
@@ -58,29 +52,15 @@ public class PluginTemplate {
     }
 
     @NotNull
-    public static String getJ2DContent(@NotNull Project project,
-                                       @NotNull String className,
-                                       @Nullable String comment,
-                                       @NotNull List<J2DFieldDescriptor> fieldList) {
-        try {
-            Template template = configuration.getTemplate("j2d.ftl");
-            String nullKey = getNullKey(project);
-            String listConstructor = isUnModifiableList(project);
-            J2DTemplateData data = new J2DTemplateData(className, comment, fieldList, nullKey, listConstructor);
-            return process(template, data);
-        } catch (Exception e) {
-            LogUtils.error("PluginTemplate getJ2DContent", e);
-            return "";
-        }
-    }
-
-    @NotNull
-    public static String getGenConstructor(@NotNull String className,
+    public static String getGenConstructor(@NotNull Project project,
+                                           @NotNull String className,
                                            @NotNull List<GenConstructorFieldDescriptor> fieldList) {
+        if (fieldList.isEmpty()) return String.format("%s();", className);
+        boolean nullSafety = isSupportNullSafety(project);
+        String path = nullSafety ? "constructor/constructor_null_safety.ftl" : "constructor/constructor.ftl";
+        GenConstructorTemplateData data = new GenConstructorTemplateData(className, fieldList);
         try {
-            Template template = configuration.getTemplate("gen_constructor.ftl");
-            GenConstructorTemplateData data = new GenConstructorTemplateData(className, fieldList);
-            return process(template, data);
+            return process(path, data);
         } catch (Exception e) {
             LogUtils.error("PluginTemplate getGenConstructor", e);
             return "";
@@ -91,11 +71,11 @@ public class PluginTemplate {
     public static String getGenFromJSONMethod(@NotNull Project project,
                                               @NotNull String className,
                                               @NotNull List<GenJSONMethodFieldDescriptor> fieldList) {
+        boolean nullSafety = isSupportNullSafety(project);
+        String path = nullSafety ? "json/from_json_null_safety.ftl" : "json/from_json.ftl";
+        GenFromJSONTemplateData data = new GenFromJSONTemplateData(className, fieldList);
         try {
-            Template template = configuration.getTemplate("gen_from_json.ftl");
-            String listConstructor = isUnModifiableList(project);
-            GenFromJSONTemplateData data = new GenFromJSONTemplateData(className, fieldList, listConstructor);
-            return process(template, data);
+            return process(path, data);
         } catch (Exception e) {
             LogUtils.error("PluginTemplate getGenFromJSONMethod", e);
             return "";
@@ -103,13 +83,31 @@ public class PluginTemplate {
     }
 
     @NotNull
-    public static String getGenToJSONMethod(@NotNull List<GenJSONMethodFieldDescriptor> fieldList) {
+    public static String getGenToJSONMethod(@NotNull Project project,
+                                            @NotNull List<GenJSONMethodFieldDescriptor> fieldList) {
+        boolean nullSafety = isSupportNullSafety(project);
+        String path = nullSafety ? "json/to_json_null_safety.ftl" : "json/to_json.ftl";
+        GenToJSONTemplateData data = new GenToJSONTemplateData(fieldList);
         try {
-            Template template = configuration.getTemplate("gen_to_json.ftl");
-            GenToJSONTemplateData data = new GenToJSONTemplateData(fieldList);
-            return process(template, data);
+            return process(path, data);
         } catch (Exception e) {
             LogUtils.error("PluginTemplate getGenToJSONMethod", e);
+            return "";
+        }
+    }
+
+    @NotNull
+    public static String getJ2DContent(@NotNull Project project,
+                                       @NotNull String className,
+                                       @Nullable String comment,
+                                       @NotNull List<J2DFieldDescriptor> fieldList) {
+        boolean nullSafety = isSupportNullSafety(project);
+        String path = nullSafety ? "j2d/j2d_null_safety.ftl" : "j2d/j2d.ftl";
+        J2DTemplateData data = new J2DTemplateData(className, comment, fieldList);
+        try {
+            return process(path, data);
+        } catch (Exception e) {
+            LogUtils.error("PluginTemplate getJ2DContent", e);
             return "";
         }
     }

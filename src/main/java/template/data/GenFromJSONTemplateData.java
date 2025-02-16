@@ -10,14 +10,11 @@ public class GenFromJSONTemplateData {
 
     private final String className;
     private final List<GenJSONMethodFieldDescriptor> fieldList;
-    private final String listConstructor;
 
     public GenFromJSONTemplateData(@NotNull String className,
-                                   @NotNull List<GenJSONMethodFieldDescriptor> fieldList,
-                                   @NotNull String listConstructor) {
+                                   @NotNull List<GenJSONMethodFieldDescriptor> fieldList) {
         this.className = className;
         this.fieldList = fieldList;
-        this.listConstructor = listConstructor;
     }
 
     public String getClassName() {
@@ -26,9 +23,5 @@ public class GenFromJSONTemplateData {
 
     public List<GenJSONMethodFieldDescriptor> getFieldList() {
         return fieldList;
-    }
-
-    public String getListConstructor() {
-        return listConstructor;
     }
 }

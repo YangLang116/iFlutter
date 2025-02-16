@@ -12,19 +12,13 @@ public class J2DTemplateData {
     private final String className;
     private final String comment;
     private final List<J2DFieldDescriptor> fieldList;
-    private final String nullKey;
-    private final String listConstructor;
 
     public J2DTemplateData(@NotNull String className,
                            @Nullable String comment,
-                           @NotNull List<J2DFieldDescriptor> fieldList,
-                           @NotNull String nullKey,
-                           @NotNull String listConstructor) {
+                           @NotNull List<J2DFieldDescriptor> fieldList) {
         this.className = className;
         this.comment = comment;
         this.fieldList = fieldList;
-        this.nullKey = nullKey;
-        this.listConstructor = listConstructor;
     }
 
     public String getClassName() {
@@ -37,13 +31,5 @@ public class J2DTemplateData {
 
     public List<J2DFieldDescriptor> getFieldList() {
         return fieldList;
-    }
-
-    public String getNullKey() {
-        return nullKey;
-    }
-
-    public String getListConstructor() {
-        return listConstructor;
     }
 }

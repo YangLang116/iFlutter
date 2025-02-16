@@ -9,7 +9,6 @@ public class GenJSONMethodFieldDescriptor {
     private String className;
     private boolean buildIn;
     private boolean nullable;
-    private boolean dealNullable;
     private GenJSONMethodFieldDescriptor subType;
 
     public String getName() {
@@ -42,14 +41,6 @@ public class GenJSONMethodFieldDescriptor {
 
     public void setNullable(boolean nullable) {
         this.nullable = nullable;
-    }
-
-    public boolean isDealNullable() {
-        return dealNullable;
-    }
-
-    public void setDealNullable(boolean dealNullable) {
-        this.dealNullable = dealNullable;
     }
 
     public GenJSONMethodFieldDescriptor getSubType() {

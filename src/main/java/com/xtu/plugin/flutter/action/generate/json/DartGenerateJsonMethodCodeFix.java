@@ -21,14 +21,9 @@ public class DartGenerateJsonMethodCodeFix extends BaseCreateMethodsFix<DartComp
 
     private final boolean createFromJson;
     private final boolean createToJson;
-    private final boolean supportNullSafety;
 
-    public DartGenerateJsonMethodCodeFix(@NotNull DartClass dartClass,
-                                         boolean supportNullSafety,
-                                         boolean createFromJson,
-                                         boolean createToJson) {
+    public DartGenerateJsonMethodCodeFix(@NotNull DartClass dartClass, boolean createFromJson, boolean createToJson) {
         super(dartClass);
-        this.supportNullSafety = supportNullSafety;
         this.createFromJson = createFromJson;
         this.createToJson = createToJson;
     }
@@ -57,7 +52,7 @@ public class DartGenerateJsonMethodCodeFix extends BaseCreateMethodsFix<DartComp
         Template template = templateManager.createTemplate(this.getClass().getName(), "Dart");
         template.setToReformat(true);
         if (createFromJson) addFromJSONSegment(project, template, dartFieldList);
-        if (createToJson) addToJSONSegment(template, dartFieldList);
+        if (createToJson) addToJSONSegment(project, template, dartFieldList);
         return template;
     }
 
@@ -70,9 +65,10 @@ public class DartGenerateJsonMethodCodeFix extends BaseCreateMethodsFix<DartComp
         template.addTextSegment(fromJSONMethod);
     }
 
-    private void addToJSONSegment(@NotNull Template template,
+    private void addToJSONSegment(@NotNull Project project,
+                                  @NotNull Template template,
                                   @NotNull List<GenJSONMethodFieldDescriptor> fieldList) {
-        String toJSONMethod = PluginTemplate.getGenToJSONMethod(fieldList);
+        String toJSONMethod = PluginTemplate.getGenToJSONMethod(project, fieldList);
         template.addTextSegment(toJSONMethod);
     }
 
@@ -83,9 +79,7 @@ public class DartGenerateJsonMethodCodeFix extends BaseCreateMethodsFix<DartComp
             GenJSONMethodFieldDescriptor field = createField(var);
             if (field == null) continue;
             GenJSONMethodFieldDescriptor typeArgument = createTypeArgument(var);
-            if (typeArgument != null) {
-                field.setSubType(typeArgument);
-            }
+            if (typeArgument != null) field.setSubType(typeArgument);
             dartFieldList.add(field);
         }
         return dartFieldList;
@@ -103,8 +97,7 @@ public class DartGenerateJsonMethodCodeFix extends BaseCreateMethodsFix<DartComp
         if (referenceExpression == null) return null;
         fieldEntity.setClassName(referenceExpression.getText());
         fieldEntity.setBuildIn(DartUtils.isBuiltInType(referenceExpression));
-        fieldEntity.setNullable(!supportNullSafety || dartSimpleType.getText().endsWith("?"));
-        fieldEntity.setDealNullable(dartSimpleType.getText().endsWith("?"));
+        fieldEntity.setNullable(dartSimpleType.getText().endsWith("?"));
         return fieldEntity;
     }
 
@@ -117,8 +110,7 @@ public class DartGenerateJsonMethodCodeFix extends BaseCreateMethodsFix<DartComp
         GenJSONMethodFieldDescriptor argumentEntity = new GenJSONMethodFieldDescriptor();
         argumentEntity.setClassName(argumentReference.getText());
         argumentEntity.setBuildIn(DartUtils.isBuiltInType(argumentReference));
-        argumentEntity.setNullable(!supportNullSafety || typeArguments.getText().contains("?"));
-        argumentEntity.setDealNullable(typeArguments.getText().contains("?"));
+        argumentEntity.setNullable(typeArguments.getText().contains("?"));
         return argumentEntity;
     }
 

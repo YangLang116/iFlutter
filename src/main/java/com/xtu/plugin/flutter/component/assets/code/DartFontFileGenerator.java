@@ -80,14 +80,13 @@ public class DartFontFileGenerator {
 
         String resPrefix = AssetUtils.getResPrefix(project, meta.projectName);
         List<ResFileTemplateData.Field> fieldList = new ArrayList<>();
-        fieldList.add(new ResFileTemplateData.Field("PLUGIN_NAME", meta.projectName));
-        fieldList.add(new ResFileTemplateData.Field("PLUGIN_VERSION", meta.projectVersion));
+        fieldList.add(new ResFileTemplateData.Field("PROJECT_NAME", meta.projectName));
+        fieldList.add(new ResFileTemplateData.Field("PROJECT_VERSION", meta.projectVersion));
         for (String fontFamily : familyList) {
             String variantName = getFontVariant(fontFamily);
             fieldList.add(new ResFileTemplateData.Field(variantName, resPrefix + fontFamily));
         }
-        ResFileTemplateData data = new ResFileTemplateData(FONT_CLASS_NAME, fieldList);
-        return PluginTemplate.getResFileContent(data);
+        return PluginTemplate.getResFileContent(FONT_CLASS_NAME, fieldList);
     }
 
     @NotNull

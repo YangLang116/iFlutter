@@ -21,11 +21,8 @@ import java.util.Set;
 
 public class DartGenerateConstructorCodeFix extends BaseCreateMethodsFix<DartComponent> {
 
-    private final boolean supportNullSafety;
-
-    public DartGenerateConstructorCodeFix(boolean supportNullSafety, @NotNull DartClass dartClass) {
+    public DartGenerateConstructorCodeFix(@NotNull DartClass dartClass) {
         super(dartClass);
-        this.supportNullSafety = supportNullSafety;
     }
 
     @Override
@@ -51,12 +48,14 @@ public class DartGenerateConstructorCodeFix extends BaseCreateMethodsFix<DartCom
                                    @NotNull Editor editor,
                                    @NotNull Set<DartComponent> elementsToProcess) {
         TemplateManager templateManager = TemplateManager.getInstance(project);
-        Template template = this.buildTemplate(templateManager, elementsToProcess);
+        Template template = this.buildTemplate(project, templateManager, elementsToProcess);
         this.anchor = this.doAddMethodsForOne(editor, templateManager, template, this.anchor);
     }
 
     @Nullable
-    protected Template buildTemplate(@NotNull TemplateManager templateManager, @NotNull Set<DartComponent> varList) {
+    private Template buildTemplate(@NotNull Project project,
+                                   @NotNull TemplateManager templateManager,
+                                   @NotNull Set<DartComponent> varList) {
         String className = myDartClass.getName();
         if (className == null) return null;
         List<GenConstructorFieldDescriptor> fieldList = new ArrayList<>();
@@ -66,10 +65,10 @@ public class DartGenerateConstructorCodeFix extends BaseCreateMethodsFix<DartCom
             String variantName = componentName.getText();
             DartSimpleType dartSimpleType = PsiTreeUtil.findChildOfType(var, DartSimpleType.class);
             if (dartSimpleType == null) continue;
-            boolean nullable = !supportNullSafety || dartSimpleType.getText().endsWith("?");
+            boolean nullable = dartSimpleType.getText().endsWith("?");
             fieldList.add(new GenConstructorFieldDescriptor(nullable, variantName));
         }
-        String content = PluginTemplate.getGenConstructor(className, fieldList);
+        String content = PluginTemplate.getGenConstructor(project, className, fieldList);
         Template template = templateManager.createTemplate(this.getClass().getName(), "Dart");
         template.setToReformat(true);
         template.addTextSegment(content);

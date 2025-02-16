@@ -35,8 +35,6 @@ public class ProjectStorageEntity {
     public int maxPicHeight = 2400;
     //是否带包名生成资源文件
     public boolean registerResWithPackage = false;
-    //是否生成数据不可修改的fromJson
-    public boolean isUnModifiableFromJson = false;
     //是否开启TinyPng压缩
     public boolean autoTinyImage = true;
 
@@ -59,7 +57,6 @@ public class ProjectStorageEntity {
                 && maxPicWidth == that.maxPicWidth
                 && registerResWithPackage == that.registerResWithPackage
                 && maxPicHeight == that.maxPicHeight
-                && isUnModifiableFromJson == that.isUnModifiableFromJson
                 && autoTinyImage == that.autoTinyImage;
     }
 
@@ -78,7 +75,6 @@ public class ProjectStorageEntity {
                 ", maxPicWidth=" + maxPicWidth +
                 ", maxPicHeight=" + maxPicHeight +
                 ", registerResWithPackage=" + registerResWithPackage +
-                ", isUnModifiableFromJson=" + isUnModifiableFromJson +
                 ", autoTinyImage=" + autoTinyImage +
                 '}';
     }

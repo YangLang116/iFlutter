@@ -111,15 +111,14 @@ public class DartRFileGenerator {
                                     @NotNull List<String> assetPathList) {
         String resPrefix = AssetUtils.getResPrefix(project, meta.projectName);
         List<ResFileTemplateData.Field> fieldList = new ArrayList<>();
-        fieldList.add(new ResFileTemplateData.Field("PLUGIN_NAME", meta.projectName));
-        fieldList.add(new ResFileTemplateData.Field("PLUGIN_VERSION", meta.projectVersion));
+        fieldList.add(new ResFileTemplateData.Field("PROJECT_NAME", meta.projectName));
+        fieldList.add(new ResFileTemplateData.Field("PROJECT_VERSION", meta.projectVersion));
         for (String assetPath : assetPathList) {
             if (ignoreAsset(project, assetPath)) continue;
             String variantName = getResName(assetPath);
             fieldList.add(new ResFileTemplateData.Field(variantName, resPrefix + assetPath));
         }
-        ResFileTemplateData data = new ResFileTemplateData(className, fieldList);
-        return PluginTemplate.getResFileContent(data);
+        return PluginTemplate.getResFileContent(className, fieldList);
     }
 
 

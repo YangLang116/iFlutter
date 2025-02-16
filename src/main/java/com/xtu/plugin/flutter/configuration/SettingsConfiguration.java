@@ -48,7 +48,6 @@ public final class SettingsConfiguration implements SearchableConfigurable {
     private String mirrorRepoStr;
     private JButton mirrorRepoBtn;
     private JCheckBox withPackageNameBox;
-    private JCheckBox isUnModifiableFromJson;
     private JTextField tinyApiKeyField;
     private JLabel tinyQuestion;
     private JLabel adviceLabel;
@@ -137,7 +136,6 @@ public final class SettingsConfiguration implements SearchableConfigurable {
                 || projectStorage.resCheckEnable != resCheckEnableBox.isSelected()
                 || projectStorage.foldRegisterEnable != foldRegisterBox.isSelected()
                 || projectStorage.registerResWithPackage != withPackageNameBox.isSelected()
-                || projectStorage.isUnModifiableFromJson != isUnModifiableFromJson.isSelected()
                 || !Objects.equals(ideStorage.mirrorRepoStr, mirrorRepoStr)
                 || !Objects.equals(ideStorage.apiKey, apiKeyField.getText().trim())
                 || !Objects.equals(ideStorage.apiSecret, apiSecretField.getText().trim())
@@ -162,7 +160,6 @@ public final class SettingsConfiguration implements SearchableConfigurable {
         resCheckEnableBox.setSelected(projectStorage.resCheckEnable);
         foldRegisterBox.setSelected(projectStorage.foldRegisterEnable);
         withPackageNameBox.setSelected(projectStorage.registerResWithPackage);
-        isUnModifiableFromJson.setSelected(projectStorage.isUnModifiableFromJson);
         apiKeyField.setText(ideStorage.apiKey);
         apiSecretField.setText(ideStorage.apiSecret);
         enableSizeMonitor.setSelected(projectStorage.enableSizeMonitor);
@@ -187,7 +184,6 @@ public final class SettingsConfiguration implements SearchableConfigurable {
         projectStorage.supportNullSafety = supportNullSafetyBox.isSelected();
         projectStorage.resCheckEnable = resCheckEnableBox.isSelected();
         projectStorage.registerResWithPackage = withPackageNameBox.isSelected();
-        projectStorage.isUnModifiableFromJson = isUnModifiableFromJson.isSelected();
         ideStorage.apiKey = apiKeyField.getText().trim();
         ideStorage.apiSecret = apiSecretField.getText().trim();
         projectStorage.enableSizeMonitor = enableSizeMonitor.isSelected();

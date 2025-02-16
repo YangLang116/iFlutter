@@ -127,7 +127,7 @@
                     icon="PluginIcons.CODE"
                     text="FromJson and ToJson"
                     description="Generate fromJson | toJson [iFlutter]"
-                    class="com.xtu.plugin.flutter.action.generate.json.action.DartGenerateJSONMethodAction"/>
+                    class="com.xtu.plugin.flutter.action.generate.json.action.DartGenerateAllJSONMethodAction"/>
         </group>
     </actions>
 </idea-plugin>

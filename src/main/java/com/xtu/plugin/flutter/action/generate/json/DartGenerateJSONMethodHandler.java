@@ -1,14 +1,11 @@
 package com.xtu.plugin.flutter.action.generate.json;
 
-import com.intellij.openapi.project.Project;
 import com.intellij.util.containers.ContainerUtil;
 import com.jetbrains.lang.dart.DartComponentType;
 import com.jetbrains.lang.dart.ide.generation.BaseCreateMethodsFix;
 import com.jetbrains.lang.dart.ide.generation.BaseDartGenerateHandler;
 import com.jetbrains.lang.dart.psi.DartClass;
 import com.jetbrains.lang.dart.psi.DartComponent;
-import com.xtu.plugin.flutter.store.project.ProjectStorageService;
-import com.xtu.plugin.flutter.store.project.entity.ProjectStorageEntity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -30,11 +27,7 @@ public class DartGenerateJSONMethodHandler extends BaseDartGenerateHandler {
 
     @NotNull
     protected BaseCreateMethodsFix<DartComponent> createFix(@NotNull DartClass dartClass) {
-        Project project = dartClass.getProject();
-        ProjectStorageEntity storageEntity = ProjectStorageService.getStorage(project);
-        return new DartGenerateJsonMethodCodeFix(dartClass,
-                storageEntity.supportNullSafety,
-                this.createFromJson, createToJson);
+        return new DartGenerateJsonMethodCodeFix(dartClass, createFromJson, createToJson);
     }
 
     protected void collectCandidates(@NotNull DartClass dartClass, @NotNull List<DartComponent> candidates) {

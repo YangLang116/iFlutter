@@ -11,19 +11,20 @@ import com.xtu.plugin.flutter.base.utils.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class DartGenerateJSONMethodAction extends BaseDartGenerateAction {
+public abstract class DartGenerateJSONMethodAction extends BaseDartGenerateAction {
 
     private boolean createFromJson;
     private boolean createToJson;
 
     protected boolean doEnable(@Nullable DartClass dartClass) {
-        if (dartClass == null) return false;
         this.createFromJson = needGenFromJson(dartClass);
         this.createToJson = needGenToJson(dartClass);
-        return this.createFromJson || this.createToJson;
+        return doEnable(createFromJson, createToJson);
     }
 
-    protected boolean needGenFromJson(@NotNull DartClass dartClass) {
+    protected abstract boolean doEnable(boolean createFromJson, boolean createToJson);
+
+    protected boolean needGenFromJson(@Nullable DartClass dartClass) {
         DartFactoryConstructorDeclaration[] constructorDeclarationList = PsiTreeUtil.getChildrenOfType(DartResolveUtil.getBody(dartClass), DartFactoryConstructorDeclaration.class);
         if (constructorDeclarationList != null) {
             for (DartFactoryConstructorDeclaration constructor : constructorDeclarationList) {
@@ -35,7 +36,8 @@ public class DartGenerateJSONMethodAction extends BaseDartGenerateAction {
         return true;
     }
 
-    protected boolean needGenToJson(@NotNull DartClass dartClass) {
+    protected boolean needGenToJson(@Nullable DartClass dartClass) {
+        if (dartClass == null) return false;
         return !doesClassContainMethod(dartClass, "toJson");
     }
 

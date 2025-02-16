@@ -36,7 +36,7 @@ public class TinyUtils {
                                      @NotNull List<File> imageFileList,
                                      @Nullable TinyUtils.OnCompressListener listener) {
         Tinify.setKey(IdeStorageService.getStorage().tinyApiKey);
-        new Task.Backgroundable(project, "compressing...") {
+        new Task.Backgroundable(project, "Compressing...") {
             @Override
             public void run(@NotNull ProgressIndicator indicator) {
                 indicator.setIndeterminate(true);

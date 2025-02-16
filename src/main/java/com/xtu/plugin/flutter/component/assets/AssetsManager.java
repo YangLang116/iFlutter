@@ -115,53 +115,53 @@ public class AssetsManager extends AssetFileChangedObserver implements Disposabl
         return TinyUtils.isSupport(virtualFile);
     }
 
-    private long remindOptionTime;
-    private boolean remindOptionResult; //是否压缩
-
-    private void showTinyDialog(@NotNull Project project,
-                                @NotNull VirtualFile addFile) {
-        ApplicationManager.getApplication().invokeLater(() -> {
-            String title = "Compress Image";
-            String message = String.format("Do you need to compress '%s' ?", addFile.getName());
-            boolean needCompress;
-            if (System.currentTimeMillis() - remindOptionTime <= 30 * 1000) {
-                needCompress = remindOptionResult;
-            } else {
-                needCompress = MessageDialogBuilder.okCancel(title, message)
-                        .yesText("Compress")
-                        .noText("Cancel")
-                        .doNotAsk(new DoNotAskOption.Adapter() {
-                            @Override
-                            public boolean shouldSaveOptionsOnCancel() {
-                                return true;
-                            }
-
-                            @Override
-                            @NotNull
-                            public String getDoNotShowMessage() {
-                                return "No more reminders within 30s";
-                            }
-
-                            @Override
-                            public void rememberChoice(boolean isSelected, int exitCode) {
-                                if (!isSelected) return;
-                                remindOptionTime = System.currentTimeMillis();
-                                remindOptionResult = exitCode == 0;
-                            }
-                        })
-                        .ask(project);
-            }
-            if (!needCompress) return;
-            List<File> fileList = Collections.singletonList(new File(addFile.getPath()));
-            TinyUtils.compressImage(project, fileList, null);
-        });
-    }
-
     public boolean enableSizeCheck(@NotNull Project project) {
         return ProjectStorageService.getStorage(project).enableSizeMonitor;
     }
 
     public boolean enableResCheck(@NotNull Project project) {
         return ProjectStorageService.getStorage(project).resCheckEnable;
+    }
+
+    private long remindOptionTime;
+    private boolean remindOptionResult; //是否压缩
+
+    private void showTinyDialog(@NotNull Project project, @NotNull VirtualFile addFile) {
+        ApplicationManager.getApplication().invokeLater(() -> {
+            String title = "Compress Image";
+            String message = String.format("Do you need to compress '%s' ?", addFile.getName());
+            if (System.currentTimeMillis() - remindOptionTime <= 30 * 1000) {
+                if (remindOptionResult) doCompress(project, addFile);
+                return;
+            }
+            MessageDialogBuilder.okCancel(title, message).noText("Cancel").yesText("Compress")
+                    .doNotAsk(new DoNotAskOption.Adapter() {
+                        @Override
+                        public boolean shouldSaveOptionsOnCancel() {
+                            return true;
+                        }
+
+                        @Override
+                        @NotNull
+                        public String getDoNotShowMessage() {
+                            return "No more reminders within 30s";
+                        }
+
+                        @Override
+                        public void rememberChoice(boolean isSelected, int exitCode) {
+                            boolean isOK = exitCode == 0;
+                            if (isSelected) {
+                                remindOptionTime = System.currentTimeMillis();
+                                remindOptionResult = isOK;
+                            }
+                            if (isOK) doCompress(project, addFile);
+                        }
+                    }).ask(project);
+        });
+    }
+
+    private void doCompress(@NotNull Project project, @NotNull VirtualFile addFile) {
+        List<File> fileList = Collections.singletonList(new File(addFile.getPath()));
+        TinyUtils.compressImage(project, fileList, null);
     }
 }

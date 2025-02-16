@@ -69,8 +69,8 @@ public class ResToolWindowFactory implements ToolWindowFactory, DumbAware {
                                                    @NotNull IResRootPanel rootPanel) {
         return Arrays.asList(
                 new LocateAction(rootPanel),
-                new SearchAction(rootPanel),
                 new CompressAction(rootPanel),
-                new SortAction(defaultSortType, rootPanel));
+                new SortAction(defaultSortType, rootPanel),
+                new SearchAction(rootPanel));
     }
 }

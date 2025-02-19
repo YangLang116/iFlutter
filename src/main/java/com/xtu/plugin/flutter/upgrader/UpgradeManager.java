@@ -2,7 +2,6 @@ package com.xtu.plugin.flutter.upgrader;
 
 import com.google.gson.Gson;
 import com.intellij.ide.BrowserUtil;
-import com.intellij.ide.plugins.PluginManagerConfigurable;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationAction;
@@ -10,9 +9,11 @@ import com.intellij.notification.NotificationGroupManager;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ShowSettingsUtil;
 import com.intellij.openapi.project.Project;
 import com.xtu.plugin.flutter.base.net.NetworkManager;
+import com.xtu.plugin.flutter.base.utils.ClassUtils;
 import com.xtu.plugin.flutter.base.utils.LogUtils;
 import com.xtu.plugin.flutter.base.utils.VersionUtils;
 import okhttp3.Call;
@@ -87,9 +88,12 @@ public class UpgradeManager {
         return new NotificationAction("Upgrade") {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e, @NotNull Notification notification) {
+                //243版本以后，PluginManagerConfigurable 无法直接使用，改成反射
+                Class<Configurable> pluginConfiguration = ClassUtils.findClass("com.intellij.ide.plugins.PluginManagerConfigurable");
+                if (pluginConfiguration == null) return;
                 PropertiesComponent propertiesComponent = PropertiesComponent.getInstance();
-                propertiesComponent.setValue(PluginManagerConfigurable.SELECTION_TAB_KEY, 1, 0);
-                ShowSettingsUtil.getInstance().showSettingsDialog(project, PluginManagerConfigurable.class);
+                propertiesComponent.setValue("PluginConfigurable.selectionTab", 1, 0);
+                ShowSettingsUtil.getInstance().showSettingsDialog(project, pluginConfiguration);
             }
         };
     }

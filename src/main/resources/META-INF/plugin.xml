@@ -5,6 +5,7 @@
     <depends>org.intellij.groovy</depends>
     <depends>com.intellij.modules.platform</depends>
     <depends>io.flutter</depends>
+    <depends>org.jetbrains.plugins.yaml</depends>
     <depends config-file="yaml.xml">org.jetbrains.plugins.yaml</depends>
     <depends config-file="intl.xml" optional="true">com.localizely.flutter-intl</depends>
     <applicationListeners>

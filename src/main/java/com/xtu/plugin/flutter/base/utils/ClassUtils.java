@@ -45,5 +45,14 @@ public class ClassUtils {
     public static String getFieldName(@NotNull String name) {
         return name.toUpperCase().replace("-", "_").replace(" ", "_");
     }
+
+    public static <T> Class<T> findClass(@NotNull String className) {
+        try {
+            //noinspection unchecked
+            return (Class<T>) Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            return null;
+        }
+    }
 }
 

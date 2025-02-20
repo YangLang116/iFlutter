@@ -1,12 +1,10 @@
 package com.xtu.plugin.flutter.action.intl;
 
-import com.intellij.ide.plugins.IdeaPluginDescriptor;
-import com.intellij.ide.plugins.PluginManager;
-import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
 import com.xtu.plugin.flutter.action.intl.utils.IntlUtils;
 import com.xtu.plugin.flutter.base.utils.CommandUtils;
+import com.xtu.plugin.flutter.base.utils.PluginUtils;
 import com.xtu.plugin.flutter.base.utils.ToastUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -54,15 +52,8 @@ public class IntlResManager {
         }
     }
 
-    private static boolean hasFlutterIntlPlugin() {
-        PluginManager pluginManager = PluginManager.getInstance();
-        PluginId id = PluginId.getId("com.localizely.flutter-intl");
-        IdeaPluginDescriptor plugin = pluginManager.findEnabledPlugin(id);
-        return plugin != null;
-    }
-
     public static void generateIfNeed(@NotNull Project project) {
-        if (hasFlutterIntlPlugin()) return;
+        if (PluginUtils.isPluginAvailable("com.localizely.flutter-intl")) return;
         CommandUtils.CommandResult commandResult = CommandUtils.executeSync(
                 project, "--no-color pub global run intl_utils:generate", -1);
         if (commandResult.code == CommandUtils.CommandResult.SUCCESS) {

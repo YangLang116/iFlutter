@@ -73,7 +73,7 @@ public class AssetRegisterStorageService implements PersistentStateComponent<Ass
         CollectionUtils.standardList(assetList);
     }
 
-    ///获取储存资源列表
+    /// 获取储存资源列表
     public static List<String> getAssetList(@NotNull Project project) {
         AssetRegisterStorageService service = getService(project);
         return service.storageEntity.assetList;

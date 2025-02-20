@@ -4,7 +4,7 @@ factory ${className}.fromJson(Map<String, dynamic> json) {
       <#if field.className == 'List'>
         <#if field.subType??>
           <#if field.subType.buildIn>
-    ${field.name}: ${field.nullable?string("json['${field.name}']?.cast<${field.subType.className}>()" , "json['${field.name}'] == null ? <${field.subType.className}>[] : json['${field.name}'].cast<${field.subType.className}>()")},
+    ${field.name}: ${field.nullable?string("json['${field.name}']?.cast<${field.subType.className}>()" , "json['${field.name}']?.cast<${field.subType.className}>() ?? <${field.subType.className}>[]")},
           <#else>
     ${field.name}: json['${field.name}'] == null ? ${field.nullable?string("null", "<${field.subType.className}>[]")} : List<${field.subType.className}>.from(json['${field.name}'].map((x) => ${field.subType.className}.fromJson(x))),
           </#if>

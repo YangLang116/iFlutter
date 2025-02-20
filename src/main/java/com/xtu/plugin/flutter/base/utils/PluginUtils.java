@@ -1,6 +1,9 @@
 package com.xtu.plugin.flutter.base.utils;
 
 import com.intellij.ide.actions.RevealFileAction;
+import com.intellij.ide.plugins.IdeaPluginDescriptor;
+import com.intellij.ide.plugins.PluginManager;
+import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.ide.CopyPasteManager;
 import com.intellij.openapi.project.Project;
@@ -58,5 +61,12 @@ public class PluginUtils {
         StringSelection selection = new StringSelection(content);
         CopyPasteManager.getInstance().setContents(selection);
         ToastUtils.make(project, MessageType.INFO, tip);
+    }
+
+    public static boolean isPluginAvailable(@NotNull String pluginId) {
+        PluginManager pluginManager = PluginManager.getInstance();
+        PluginId id = PluginId.getId(pluginId);
+        IdeaPluginDescriptor plugin = pluginManager.findEnabledPlugin(id);
+        return plugin != null;
     }
 }

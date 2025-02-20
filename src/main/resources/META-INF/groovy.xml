@@ -1,0 +1,12 @@
+<idea-plugin>
+    <actions>
+        <action id="com.xtu.plugin.flutter.PubSpeedAction"
+                text="Mirror Repo Inject"
+                description="Mirror Repo Inject"
+                class="com.xtu.plugin.flutter.action.pub.speed.PubSpeedAction">
+            <add-to-group group-id="com.xtu.plugin.flutter.group.comm"
+                          anchor="after"
+                          relative-to-action="com.xtu.plugin.flutter.PubSearchAction"/>
+        </action>
+    </actions>
+</idea-plugin>

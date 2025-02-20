@@ -10,6 +10,7 @@ import com.intellij.openapi.ui.Messages;
 import com.xtu.plugin.flutter.action.pub.speed.ui.MirrorRepoDialog;
 import com.xtu.plugin.flutter.advice.AdviceDialog;
 import com.xtu.plugin.flutter.base.utils.CollectionUtils;
+import com.xtu.plugin.flutter.base.utils.PluginUtils;
 import com.xtu.plugin.flutter.base.utils.StringUtils;
 import com.xtu.plugin.flutter.store.ide.IdeStorageService;
 import com.xtu.plugin.flutter.store.ide.entity.IdeStorageEntity;
@@ -108,6 +109,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
             if (!isOk) return;
             mirrorRepoStr = mirrorRepoDialog.getRepoStr();
         });
+        mirrorRepoBtn.setVisible(PluginUtils.isPluginAvailable("org.intellij.groovy"));
         enableSizeMonitor.addActionListener(e -> {
             boolean isSelected = enableSizeMonitor.isSelected();
             JTextField[] fieldList = new JTextField[]{maxPicSizeField, maxPicWidthField, maxPicHeightField};

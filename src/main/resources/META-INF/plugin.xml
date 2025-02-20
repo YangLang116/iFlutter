@@ -2,11 +2,11 @@
     <id>com.xtu.plugins.flutter</id>
     <name>iFlutter</name>
     <vendor email="yanglang116@gmail.com">yanglang116@gmail.com</vendor>
-    <depends>org.intellij.groovy</depends>
     <depends>com.intellij.modules.platform</depends>
     <depends>io.flutter</depends>
     <depends>org.jetbrains.plugins.yaml</depends>
     <depends config-file="yaml.xml">org.jetbrains.plugins.yaml</depends>
+    <depends config-file="groovy.xml" optional="true">org.intellij.groovy</depends>
     <depends config-file="intl.xml" optional="true">com.localizely.flutter-intl</depends>
     <applicationListeners>
         <listener topic="com.intellij.ide.AppLifecycleListener"
@@ -93,10 +93,6 @@
                     class="com.xtu.plugin.flutter.action.pub.search.PubSearchAction">
                 <keyboard-shortcut first-keystroke="alt f" keymap="$default"/>
             </action>
-            <action id="com.xtu.plugin.flutter.PubSpeedAction"
-                    text="Mirror Repo Inject"
-                    description="Mirror Repo Inject"
-                    class="com.xtu.plugin.flutter.action.pub.speed.PubSpeedAction"/>
             <separator/>
             <action id="com.xtu.plugin.flutter.UsageAction"
                     icon="PluginIcons.NOTE"

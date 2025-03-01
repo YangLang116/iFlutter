@@ -134,7 +134,7 @@ public class DartRFileGenerator {
         String extension = AssetUtils.getAssetExtension(assetFileName);
         if (StringUtils.isEmpty(extension)) return false;
         List<String> ignoreResExtension = ProjectStorageService.getStorage(project).ignoreResExtension;
-        return ignoreResExtension.contains(extension);
+        return CollectionUtils.containsIgnoreCase(ignoreResExtension, extension);
     }
 
     @NotNull

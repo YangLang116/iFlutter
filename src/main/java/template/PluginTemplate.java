@@ -32,7 +32,8 @@ public class PluginTemplate {
         Template template = configuration.getTemplate(path);
         CharArrayWriter writer = new CharArrayWriter();
         template.process(data, writer);
-        return writer.toString();
+        //fix: Wrong line separators: '...\r\n...'
+        return writer.toString().replace("\r", "");
     }
 
     private static boolean isSupportNullSafety(@NotNull Project project) {

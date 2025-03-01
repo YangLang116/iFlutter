@@ -165,6 +165,6 @@ public class AssetUtils {
     public static String getAssetExtension(String assetFileName) {
         int lastDotIndex = assetFileName.lastIndexOf(".");
         if (lastDotIndex < 0) return null;
-        return assetFileName.substring(lastDotIndex);
+        return assetFileName.substring(lastDotIndex + 1);
     }
 }

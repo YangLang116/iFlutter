@@ -45,4 +45,8 @@ public class CollectionUtils {
         }
         return false;
     }
+
+    public static boolean containsIgnoreCase(@NotNull List<String> list, @NotNull String test) {
+        return list.stream().anyMatch(it -> it.equalsIgnoreCase(test));
+    }
 }

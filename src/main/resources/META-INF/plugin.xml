@@ -4,7 +4,6 @@
     <vendor email="yanglang116@gmail.com">yanglang116@gmail.com</vendor>
     <depends>com.intellij.modules.platform</depends>
     <depends>io.flutter</depends>
-    <depends>org.jetbrains.plugins.yaml</depends>
     <depends config-file="yaml.xml">org.jetbrains.plugins.yaml</depends>
     <depends config-file="groovy.xml" optional="true">org.intellij.groovy</depends>
     <depends config-file="intl.xml" optional="true">com.localizely.flutter-intl</depends>
@@ -20,7 +19,7 @@
         <projectService serviceImplementation="com.xtu.plugin.flutter.action.mock.manager.HttpMockManager"/>
         <projectService serviceImplementation="com.xtu.plugin.flutter.store.project.AssetRegisterStorageService"/>
         <projectService serviceImplementation="com.xtu.plugin.flutter.component.assets.AssetsManager"/>
-        <projectService serviceImplementation="com.xtu.plugin.flutter.component.packages.update.FlutterPackageUpdater"/>
+        <projectService serviceImplementation="com.xtu.plugin.flutter.annotator.packages.update.FlutterPackageUpdater"/>
         <projectConfigurable parentId="tools" instance="com.xtu.plugin.flutter.configuration.SettingsConfiguration"/>
         <notificationGroup id="com.xtu.plugin.flutter.upgrade" displayType="BALLOON" key="iFlutter Upgrade"/>
         <toolWindow id="Flutter Resource"

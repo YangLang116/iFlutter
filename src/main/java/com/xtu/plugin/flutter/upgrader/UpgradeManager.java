@@ -29,7 +29,7 @@ public class UpgradeManager {
 
     private static final String sGroupId = "com.xtu.plugin.flutter.upgrade";
     @SuppressWarnings("HttpUrlsUsage")
-    private static final String sUrl = "http://iflutter.toolu.cn/iflutter-version.json";
+    private static final String sUrl = "https://raw.githubusercontent.com/YangLang116/iFlutter/refs/heads/main/config/iflutter-version.json";
 
     private UpgradeManager() {
     }

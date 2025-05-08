@@ -1,4 +1,4 @@
-package com.xtu.plugin.flutter.component.packages.update;
+package com.xtu.plugin.flutter.annotator.packages.update;
 
 import java.util.Objects;
 

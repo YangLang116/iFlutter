@@ -2,7 +2,7 @@ package com.xtu.plugin.flutter.store.project.entity;
 
 import com.intellij.util.xmlb.annotations.OptionTag;
 import com.intellij.util.xmlb.annotations.Transient;
-import com.xtu.plugin.flutter.component.packages.update.PackageInfo;
+import com.xtu.plugin.flutter.annotator.packages.update.PackageInfo;
 import com.xtu.plugin.flutter.store.project.converter.HttpEntityConverter;
 
 import java.util.*;

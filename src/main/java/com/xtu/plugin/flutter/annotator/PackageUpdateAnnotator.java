@@ -22,7 +22,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
 import com.xtu.plugin.flutter.base.utils.PubSpecUtils;
 import com.xtu.plugin.flutter.base.utils.StringUtils;
-import com.xtu.plugin.flutter.component.packages.update.PackageInfo;
+import com.xtu.plugin.flutter.annotator.packages.update.PackageInfo;
 import com.xtu.plugin.flutter.store.project.ProjectStorageService;
 import icons.PluginIcons;
 import io.flutter.pub.PubRoot;

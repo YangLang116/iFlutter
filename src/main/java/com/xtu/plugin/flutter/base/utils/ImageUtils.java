@@ -1,18 +1,18 @@
 package com.xtu.plugin.flutter.base.utils;
 
+import com.xtu.plugin.flutter.base.entity.ImageInfo;
+import com.xtu.plugin.flutter.base.entity.ImageSize;
 import net.coobird.thumbnailator.Thumbnails;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.imageio.ImageIO;
-import javax.imageio.ImageReadParam;
 import javax.imageio.ImageReader;
 import javax.imageio.spi.ImageReaderSpi;
 import javax.imageio.stream.ImageInputStream;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -43,90 +43,80 @@ public class ImageUtils {
     }
 
     @Nullable
-    private static BufferedImage loadDefaultIcon(@NotNull String defaultUrl, int scaleSize) {
-        URL defaultIcon = ImageUtils.class.getResource(defaultUrl);
+    private static <T> Image loadThumbnail(@NotNull Thumbnails.Builder<T> builder, @NotNull ImageSize size) {
         try {
-            return Thumbnails.of(defaultIcon)
-                    .size(scaleSize, scaleSize)
-                    .imageType(BufferedImage.TYPE_INT_ARGB)
-                    .asBufferedImage();
+            return builder.size(size.width, size.height).imageType(BufferedImage.TYPE_INT_ARGB).outputQuality(1.0).asBufferedImage();
         } catch (Exception e) {
+            LogUtils.error("ImageUtils loadThumbnail", e);
             return null;
         }
     }
 
-    @NotNull
-    public static ImageInfo loadThumbnail(@NotNull File imageFile, @NotNull String defaultUrl, int scaleSize) {
-        ImageReader imageReader = getImageReader(imageFile);
-        if (imageReader == null) {
-            BufferedImage defaultIcon = loadDefaultIcon(defaultUrl, scaleSize);
-            return new ImageInfo(defaultIcon, 0, 0);
-        }
-        int originWidth = 0;
-        int originHeight = 0;
-        ImageInputStream imageStream = null;
-        try {
-            imageStream = ImageIO.createImageInputStream(imageFile);
-            imageReader.setInput(imageStream);
-            originWidth = imageReader.getWidth(0);
-            originHeight = imageReader.getHeight(0);
-            Dimension renderSize = getImageRenderSize(originWidth, originHeight, scaleSize);
-            ImageReadParam readParam = imageReader.getDefaultReadParam();
-            if (readParam.canSetSourceRenderSize()) {
-                readParam.setSourceRenderSize(renderSize);
-                BufferedImage image = imageReader.read(0, readParam);
-                return new ImageInfo(image, originWidth, originHeight);
-            } else {
-                BufferedImage originImage = imageReader.read(0);
-                Image scaleImage = getScaleImage(originImage, renderSize.width, renderSize.height);
-                return new ImageInfo(scaleImage, originWidth, originHeight);
-            }
-        } catch (Exception e) {
-            BufferedImage defaultIcon = loadDefaultIcon(defaultUrl, scaleSize);
-            return new ImageInfo(defaultIcon, originWidth, originHeight);
-        } finally {
-            CloseUtils.close(imageStream);
-            imageReader.dispose();
-        }
-    }
-
-    @NotNull
-    private static Dimension getImageRenderSize(int originWidth, int originHeight, int size) {
-        int renderWidth;
-        int renderHeight;
-        if (originWidth > size || originHeight > size) {
-            float widthRadio = originWidth * 1.0f / size;
-            float heightRadio = originHeight * 1.0f / size;
-            float radio = Math.max(widthRadio, heightRadio);
-            renderWidth = Math.round(originWidth / radio);
-            renderHeight = Math.round(originHeight / radio);
-        } else if (originWidth > originHeight) {
-            renderWidth = size;
-            renderHeight = Math.round(size / (originWidth * 1.0f / originHeight));
-        } else {
-            renderWidth = Math.round(size * (originWidth * 1.0f / originHeight));
-            renderHeight = size;
-        }
-        return new Dimension(renderWidth, renderHeight);
+    @Nullable
+    private static Image loadThumbnail(@NotNull String defaultUrl, @NotNull ImageSize size) {
+        return loadThumbnail(Thumbnails.of(ImageUtils.class.getResource(defaultUrl)), size);
     }
 
     @Nullable
-    private static Image getScaleImage(@Nullable BufferedImage originImage, int width, int height) {
-        if (originImage == null) return null;
-        return originImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+    private static Image loadThumbnail(@NotNull File file, @NotNull ImageSize size) {
+        return loadThumbnail(Thumbnails.of(file), size);
     }
 
-    public static class ImageInfo {
+    @NotNull
+    public static ImageInfo loadImageInfo(@NotNull File file, @NotNull String defaultUrl, @NotNull ImageSize size) {
+        ImageSize imageSize = getImageDimension(file);
+        if (imageSize == null) {
+            return new ImageInfo(loadThumbnail(defaultUrl, size), new ImageSize(0, 0));
+        } else {
+            ImageSize fitSize = calcFitDimension(imageSize, size);
+            return new ImageInfo(loadThumbnail(file, fitSize), imageSize);
+        }
+    }
 
-        @Nullable
-        public final Image image;
-        public final int width;
-        public final int height;
+    @NotNull
+    private static ImageSize calcFitDimension(@NotNull ImageSize size, @NotNull ImageSize maxSize) {
+        int renderWidth;
+        int renderHeight;
+        if (size.width > maxSize.width || size.height > maxSize.height) {
+            float widthRadio = size.width * 1.0f / maxSize.width;
+            float heightRadio = size.height * 1.0f / maxSize.height;
+            float radio = Math.max(widthRadio, heightRadio);
+            renderWidth = Math.round(size.width / radio);
+            renderHeight = Math.round(size.height / radio);
+        } else if (size.width > size.height) {
+            renderWidth = maxSize.width;
+            renderHeight = Math.round(maxSize.width / (size.width * 1.0f / size.height));
+        } else {
+            renderWidth = Math.round(maxSize.height * (size.width * 1.0f / size.height));
+            renderHeight = maxSize.height;
+        }
+        return new ImageSize(renderWidth, renderHeight);
+    }
 
-        public ImageInfo(@Nullable Image image, int width, int height) {
-            this.image = image;
-            this.width = width;
-            this.height = height;
+    //单位:K
+    public static int getImageSize(@NotNull File file) {
+        return (int) (file.length() / 1024);
+    }
+
+    @Nullable
+    public static ImageSize getImageDimension(@NotNull File file) {
+        ImageReader imageReader = null;
+        ImageInputStream imageInputStream = null;
+        try {
+            imageReader = getImageReader(file);
+            if (imageReader == null) return null;
+            imageInputStream = ImageIO.createImageInputStream(file);
+            if (imageInputStream == null) return null;
+            imageReader.setInput(imageInputStream);
+            int width = imageReader.getWidth(0);
+            int height = imageReader.getHeight(0);
+            return new ImageSize(width, height);
+        } catch (Exception e) {
+            LogUtils.error("ImageUtils getImageDimension", e);
+            return null;
+        } finally {
+            CloseUtils.close(imageInputStream);
+            CloseUtils.close(imageReader);
         }
     }
 }

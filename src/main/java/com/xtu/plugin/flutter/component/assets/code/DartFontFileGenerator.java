@@ -7,7 +7,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.xtu.plugin.flutter.base.entity.AssetInfoMetaEntity;
+import com.xtu.plugin.flutter.base.entity.AssetInfoMeta;
 import com.xtu.plugin.flutter.base.utils.*;
 import org.jetbrains.annotations.NotNull;
 import template.PluginTemplate;
@@ -33,7 +33,7 @@ public class DartFontFileGenerator {
         return sInstance;
     }
 
-    public void generate(@NotNull Project project, @NotNull AssetInfoMetaEntity meta, @NotNull List<String> assetList) {
+    public void generate(@NotNull Project project, @NotNull AssetInfoMeta meta, @NotNull List<String> assetList) {
         Application application = ApplicationManager.getApplication();
         application.invokeLater(() -> WriteAction.run(() -> {
             try {
@@ -59,7 +59,7 @@ public class DartFontFileGenerator {
     }
 
     private void generateFile(@NotNull Project project,
-                              @NotNull AssetInfoMetaEntity meta,
+                              @NotNull AssetInfoMeta meta,
                               @NotNull VirtualFile rDirectory,
                               @NotNull List<String> fontAssetList) {
         LogUtils.info("DartFontFileGenerator Class: " + FONT_CLASS_NAME);
@@ -69,7 +69,7 @@ public class DartFontFileGenerator {
 
     @NotNull
     private static String buildFileContent(@NotNull Project project,
-                                           @NotNull AssetInfoMetaEntity meta,
+                                           @NotNull AssetInfoMeta meta,
                                            @NotNull List<String> fontAssetList) {
         List<String> familyList = new ArrayList<>();
         for (String fontAsset : fontAssetList) {

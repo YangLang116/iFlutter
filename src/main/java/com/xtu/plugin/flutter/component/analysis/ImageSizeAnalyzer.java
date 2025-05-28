@@ -4,14 +4,16 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.xtu.plugin.flutter.base.entity.ImageSize;
 import com.xtu.plugin.flutter.base.utils.AssetUtils;
-import com.xtu.plugin.flutter.component.analysis.utils.ImageAnalysisUtils;
+import com.xtu.plugin.flutter.base.utils.ImageUtils;
 import com.xtu.plugin.flutter.store.project.ProjectStorageService;
 import com.xtu.plugin.flutter.store.project.entity.ProjectStorageEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.util.Locale;
 
 public class ImageSizeAnalyzer {
 
@@ -23,8 +25,13 @@ public class ImageSizeAnalyzer {
 
     public void analysis(@NotNull VirtualFile virtualFile) {
         if (!AssetUtils.isAssetFile(project, virtualFile)) return;
-        if (!ImageAnalysisUtils.canAnalysis(virtualFile)) return;
+        if (!canAnalysis(virtualFile)) return;
         doAnalysis(virtualFile);
+    }
+
+    private boolean canAnalysis(@NotNull VirtualFile file) {
+        String fileName = file.getName().toLowerCase(Locale.ROOT);
+        return fileName.endsWith(".png") || fileName.endsWith(".jpg") || fileName.endsWith(".jpeg");
     }
 
     private void doAnalysis(@NotNull VirtualFile file) {
@@ -40,16 +47,16 @@ public class ImageSizeAnalyzer {
     }
 
     private String getIllegalSizeTip(@NotNull File imageFile, int maxPicSize) {
-        int imageSize = ImageAnalysisUtils.getImageSize(imageFile);
+        int imageSize = ImageUtils.getImageSize(imageFile);
         if (imageSize < maxPicSize) return null;
         return String.format("Size limit: %dk, current: %dk", maxPicSize, imageSize);
     }
 
     private String getIllegalDimensionTip(@NotNull File imageFile, int maxPicWidth, int maxPicHeight) {
-        ImageAnalysisUtils.PicDimension dimension = ImageAnalysisUtils.getImageDimension(imageFile);
-        if (dimension == null) return null;
-        int cWidth = dimension.width;
-        int cHeight = dimension.height;
+        ImageSize size = ImageUtils.getImageDimension(imageFile);
+        if (size == null) return null;
+        int cWidth = size.width;
+        int cHeight = size.height;
         if (cWidth < maxPicWidth && cHeight < maxPicHeight) return null;
         return String.format("Dimension limit: %dx%d, current: %dx%d", maxPicWidth, maxPicHeight, cWidth, cHeight);
     }
@@ -65,6 +72,6 @@ public class ImageSizeAnalyzer {
         }
         final String tip = tipBuilder.toString();
         ApplicationManager.getApplication().invokeLater(() ->
-                Messages.showWarningDialog(project, tip, "Add non-standard images"));
+                Messages.showWarningDialog(project, tip, "Add Non-Standard Images"));
     }
 }

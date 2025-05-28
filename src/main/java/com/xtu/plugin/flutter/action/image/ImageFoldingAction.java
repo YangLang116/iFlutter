@@ -8,7 +8,7 @@ import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.xtu.plugin.flutter.base.action.AssetDirAction;
-import com.xtu.plugin.flutter.base.entity.AssetInfoEntity;
+import com.xtu.plugin.flutter.base.entity.AssetInfo;
 import com.xtu.plugin.flutter.base.utils.*;
 import com.xtu.plugin.flutter.store.project.ProjectStorageService;
 import com.xtu.plugin.flutter.store.project.entity.ProjectStorageEntity;
@@ -134,7 +134,7 @@ public class ImageFoldingAction extends AssetDirAction {
         }
         //更新pubspec.yaml中资源引用
         WriteCommandAction.runWriteCommandAction(project, () -> {
-            AssetInfoEntity assetResult = PubSpecUtils.readAssetList(project);
+            AssetInfo assetResult = PubSpecUtils.readAssetList(project);
             List<String> newAssetList = new ArrayList<>();
             List<String> newFontList = new ArrayList<>();
             for (String asset : assetResult.assetList) {

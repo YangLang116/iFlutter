@@ -1,5 +1,8 @@
 package com.xtu.plugin.flutter.base.utils;
 
+import com.twelvemonkeys.imageio.plugins.svg.SVGImageReader;
+import com.twelvemonkeys.imageio.plugins.svg.SVGImageReaderSpi;
+import com.twelvemonkeys.imageio.plugins.svg.SVGReadParam;
 import com.xtu.plugin.flutter.base.entity.ImageInfo;
 import com.xtu.plugin.flutter.base.entity.ImageSize;
 import net.coobird.thumbnailator.Thumbnails;
@@ -13,6 +16,7 @@ import javax.imageio.stream.ImageInputStream;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -53,23 +57,38 @@ public class ImageUtils {
     }
 
     @Nullable
-    private static Image loadThumbnail(@NotNull String defaultUrl, @NotNull ImageSize size) {
-        return loadThumbnail(Thumbnails.of(ImageUtils.class.getResource(defaultUrl)), size);
-    }
-
-    @Nullable
-    private static Image loadThumbnail(@NotNull File file, @NotNull ImageSize size) {
-        return loadThumbnail(Thumbnails.of(file), size);
+    private static Image loadSVGImage(@NotNull File file, @NotNull ImageSize size) {
+        SVGImageReader reader = null;
+        ImageInputStream stream = null;
+        try {
+            reader = new SVGImageReader(new SVGImageReaderSpi());
+            stream = ImageIO.createImageInputStream(file);
+            reader.setInput(stream);
+            SVGReadParam param = reader.getDefaultReadParam();
+            param.setSourceRenderSize(size.toDimension());
+            return reader.read(0, param);
+        } catch (Exception e) {
+            LogUtils.error("ImageUtils loadSVGImage", e);
+            return null;
+        } finally {
+            CloseUtils.close(stream);
+            CloseUtils.close(reader);
+        }
     }
 
     @NotNull
     public static ImageInfo loadImageInfo(@NotNull File file, @NotNull String defaultUrl, @NotNull ImageSize size) {
         ImageSize imageSize = getImageDimension(file);
         if (imageSize == null) {
-            return new ImageInfo(loadThumbnail(defaultUrl, size), new ImageSize(0, 0));
+            URL url = ImageUtils.class.getResource(defaultUrl);
+            Image defaultImg = loadThumbnail(Thumbnails.of(url), size);
+            return new ImageInfo(defaultImg, new ImageSize(0, 0));
         } else {
             ImageSize fitSize = calcFitDimension(imageSize, size);
-            return new ImageInfo(loadThumbnail(file, fitSize), imageSize);
+            String extension = FileUtils.getExtension(file);
+            Image img = StringUtils.equalsIgnoreCase(extension, "svg") ?
+                    loadSVGImage(file, fitSize) : loadThumbnail(Thumbnails.of(file), fitSize);
+            return new ImageInfo(img, imageSize);
         }
     }
 

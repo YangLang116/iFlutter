@@ -18,14 +18,14 @@ repositories {
 dependencies {
     implementation("org.json:json:20240303")
     implementation("com.google.code.gson:gson:2.11.0")
-    implementation("org.apache.xmlgraphics:batik-all:1.17") {
+    implementation("org.apache.xmlgraphics:batik-all:1.19") {
         exclude("xml-apis", "xml-apis")
     }
-    implementation("com.twelvemonkeys.imageio:imageio-webp:3.10.1")
-    implementation("com.twelvemonkeys.imageio:imageio-batik:3.10.1")
+    implementation("com.twelvemonkeys.imageio:imageio-webp:3.12.0")
+    implementation("com.twelvemonkeys.imageio:imageio-batik:3.12.0")
     implementation("net.coobird:thumbnailator:0.4.20")
     implementation("com.squareup.okhttp3:mockwebserver:4.12.0")
-    implementation("com.tinify:tinify:1.8.3")
+    implementation("com.tinify:tinify:1.8.8")
     implementation("org.freemarker:freemarker:2.3.33")
 
     intellijPlatform {

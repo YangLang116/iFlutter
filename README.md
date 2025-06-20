@@ -1,10 +1,11 @@
 ## iFlutter 是一款面向 Flutter 开发者的 IDEA 插件
 
-![platforms](https://img.shields.io/badge/platforms-macos%20%7C%20windows%20%7C%20linux-blue)
-![tools](https://img.shields.io/badge/idea-intellij_IDEA%20%7C%20AndroidStudio-blue)
-![licence](https://img.shields.io/badge/licence-MIT-blue)
-![downloads](https://img.shields.io/jetbrains/plugin/d/18457)
-![version](https://img.shields.io/jetbrains/plugin/v/18457)
+[![Platform](https://img.shields.io/badge/Platform-intellij-2196F3)](https://www.jetbrains.com)
+[![Downloads](https://img.shields.io/jetbrains/plugin/d/18457?label=Download&color=F44336)](https://plugins.jetbrains.com/plugin/18457-iflutter)
+[![Version](https://img.shields.io/jetbrains/plugin/v/18457?label=Version&color=9C27B0)](https://plugins.jetbrains.com/plugin/18457-iflutter)
+[![Document](https://img.shields.io/badge/Document-link-7E57C2)](https://yanglang116.github.io/iFlutter)
+[![Size](https://img.shields.io/github/repo-size/YangLang116/iFlutter?label=Size&color=4CAF50)](https://github.com/YangLang116/iFlutter)
+[![Licence](https://img.shields.io/badge/Licence-MIT-CDDC39)](https://github.com/YangLang116/iFlutter)
 
 ### 一、资源文件控制
 

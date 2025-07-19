@@ -81,14 +81,18 @@
             <separator/>
             <action id="com.xtu.plugin.flutter.DepAnalysisAction"
                     icon="PluginIcons.DEPENDENCY"
-                    text="Dependence Tree"
+                    text="Dump Dependencies"
                     description="Analysis project dependency tree"
                     class="com.xtu.plugin.flutter.action.analysis.DepAnalysisAction"/>
+            <action id="com.xtu.plugin.flutter.TransferDepAction"
+                    text="Transfer Dependence"
+                    description="Transfer dependence to project"
+                    class="com.xtu.plugin.flutter.action.convert.TransferDepAction"/>
             <separator/>
             <action id="com.xtu.plugin.flutter.PubSearchAction"
                     icon="PluginIcons.SEARCH"
                     text="Search From Pub"
-                    description="Search From Pub"
+                    description="Search from Pub"
                     class="com.xtu.plugin.flutter.action.pub.search.PubSearchAction">
                 <keyboard-shortcut first-keystroke="alt f" keymap="$default"/>
             </action>

@@ -7,11 +7,11 @@
                id="com.xtu.plugin.flutter.group.yaml"
                class="com.xtu.plugin.flutter.action.IFlutterActionGroup">
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
-            <action id="com.xtu.plugin.flutter.ConvertDependencyToLocalAction"
+            <action id="com.xtu.plugin.flutter.ConvertDepToLocalAction"
                     icon="PluginIcons.FETCH"
                     text="Convert To Local Dependency"
                     description="Convert To Local Dependency"
-                    class="com.xtu.plugin.flutter.action.convert.ConvertDependencyToLocalAction">
+                    class="com.xtu.plugin.flutter.action.convert.ConvertDepToLocalAction">
             </action>
             <action id="com.xtu.plugin.flutter.YamlPackageAnchorAction"
                     icon="PluginIcons.LOCATE"

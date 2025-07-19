@@ -1,60 +1,50 @@
-package com.xtu.plugin.flutter.action.convert;
+package com.xtu.plugin.flutter.action.convert.utils;
 
-import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectUtil;
 import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.xtu.plugin.flutter.action.convert.task.ConvertDependencyToLocalTask;
-import com.xtu.plugin.flutter.base.action.YamlDependencyAction;
 import com.xtu.plugin.flutter.base.utils.AssetUtils;
 import com.xtu.plugin.flutter.base.utils.PluginUtils;
 import com.xtu.plugin.flutter.base.utils.StringUtils;
 import com.xtu.plugin.flutter.base.utils.ToastUtils;
-import kotlin.Pair;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.yaml.psi.YAMLKeyValue;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.List;
 
-public class ConvertDependencyToLocalAction extends YamlDependencyAction {
+public class DepUtils {
 
-    @Override
-    public void actionPerformed(@NotNull AnActionEvent e) {
-        Project project = e.getProject();
+    @Nullable
+    public static File selectSaveDir(@NotNull Project project) {
         String projectPath = PluginUtils.getProjectPath(project);
-        if (StringUtils.isEmpty(projectPath)) return;
-        Pair<String, YAMLKeyValue> packageInfo = getPackageInfo(e);
-        if (packageInfo == null) return;
-        FileChooserDescriptor chooserDescriptor = new FileChooserDescriptor(false, true,
+        if (StringUtils.isEmpty(projectPath)) return null;
+        FileChooserDescriptor chooserDescriptor = new FileChooserDescriptor(
+                false, true,
                 false, false, false, false);
-        chooserDescriptor.setTitle("Select dependent storage location");
+        chooserDescriptor.setTitle("Select Dependent Storage Location");
         VirtualFile chooseDirectory = FileChooser.chooseFile(chooserDescriptor, project, ProjectUtil.guessProjectDir(project));
-        if (chooseDirectory == null) return;
-        String filePath = chooseDirectory.getPath();
-        if (!filePath.startsWith(projectPath)) {
+        if (chooseDirectory == null) return null;
+        String selectPath = chooseDirectory.getPath();
+        if (!selectPath.startsWith(projectPath)) {
             ToastUtils.make(project, MessageType.ERROR, "select a project directory to store dependency");
-            return;
+            return null;
         }
         //disallow res dir or lib
-        if (filePath.startsWith(projectPath + "/lib")) {
+        if (selectPath.startsWith(projectPath + "/lib")) {
             ToastUtils.make(project, MessageType.ERROR, "dependency are not allowed to be stored in the lib directory");
-            return;
+            return null;
         }
         List<String> assetFoldNameList = AssetUtils.supportAssetFoldName(project);
         for (String foldName : assetFoldNameList) {
-            if (filePath.startsWith(projectPath + "/" + foldName)) {
+            if (selectPath.startsWith(projectPath + "/" + foldName)) {
                 ToastUtils.make(project, MessageType.ERROR, "dependency are not allowed to be stored in the res directory");
-                return;
+                return null;
             }
         }
-
-        File outputDirectory = new File(filePath);
-        new ConvertDependencyToLocalTask(project, packageInfo.getFirst(),
-                packageInfo.getSecond(), outputDirectory)
-                .queue();
+        return new File(selectPath);
     }
 }

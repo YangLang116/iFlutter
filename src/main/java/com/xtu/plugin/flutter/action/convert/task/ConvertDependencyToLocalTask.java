@@ -15,8 +15,8 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.xtu.plugin.flutter.base.utils.*;
 import com.xtu.plugin.flutter.annotator.packages.update.PackageInfo;
+import com.xtu.plugin.flutter.base.utils.*;
 import com.xtu.plugin.flutter.store.project.ProjectStorageService;
 import io.flutter.pub.PubRoot;
 import io.flutter.sdk.FlutterSdk;
@@ -39,7 +39,7 @@ public class ConvertDependencyToLocalTask extends Task.Backgroundable {
                                         @NotNull String packageName,
                                         @NotNull YAMLKeyValue dependencyElement,
                                         @NotNull File outputDirectory) {
-        super(project, "convert to local dependency");
+        super(project, "Convert to local dependency");
         this.packageName = packageName;
         this.dependencyElement = dependencyElement;
         this.outputDirectory = outputDirectory;
@@ -77,10 +77,9 @@ public class ConvertDependencyToLocalTask extends Task.Backgroundable {
             File localDependencyFile = new File(outputDirectory, packageCacheRootDirectory.getName());
             //修改pubspec.yaml psiTree
             ApplicationManager.getApplication().invokeLater(() ->
-                    WriteCommandAction.runWriteCommandAction(project, () -> modifyDependency(
-                            project, projectPath,
-                            packageName,
-                            dependencyElement, localDependencyFile)));
+                    WriteCommandAction.runWriteCommandAction(project,
+                            () -> modifyDependency(project, projectPath, packageName, dependencyElement, localDependencyFile))
+            );
         } catch (Exception e) {
             LogUtils.error("ConvertDependencyToLocalTask execute", e);
             ToastUtils.make(project, MessageType.ERROR, e.getMessage());
@@ -96,18 +95,15 @@ public class ConvertDependencyToLocalTask extends Task.Backgroundable {
      * @param oldDependencyElement psi关键节点位置
      * @param localDependencyFile  本地依赖位置
      */
-    private static void modifyDependency(Project project, String projectPath,
-                                         String packageName,
-                                         YAMLKeyValue oldDependencyElement, File localDependencyFile) {
+    private static void modifyDependency(Project project, String projectPath, String packageName, YAMLKeyValue oldDependencyElement, File localDependencyFile) {
         try {
             //移除提示更新
             removeAnnotator(project, packageName);
-            LocalFileSystem.getInstance()
-                    .refreshAndFindFileByIoFile(localDependencyFile);
+            LocalFileSystem.getInstance().refreshAndFindFileByIoFile(localDependencyFile);
             String relativePath = com.xtu.plugin.flutter.base.utils.FileUtils.getRelativePath(projectPath, localDependencyFile);
-//          创建新的psi，并替换老的依赖方式
-//          flutter_custom_calendar:
-//              path: dependencies/flutter_custom_calendar
+            //创建新的psi，并替换老的依赖方式
+            //flutter_custom_calendar:
+            //    path: dependencies/flutter_custom_calendar
             YAMLElementGenerator elementGenerator = YAMLElementGenerator.getInstance(project);
             YAMLKeyValue newDependencyElement = elementGenerator.createYamlKeyValue(packageName, "path: " + relativePath);
             PsiElement replaceElement = oldDependencyElement.replace(newDependencyElement);
@@ -117,8 +113,7 @@ public class ConvertDependencyToLocalTask extends Task.Backgroundable {
             //保存psi修改
             PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(project);
             Document document = psiDocumentManager.getDocument(psiFile);
-            if (document != null)
-                psiDocumentManager.doPostponedOperationsAndUnblockDocument(document);
+            if (document != null) psiDocumentManager.doPostponedOperationsAndUnblockDocument(document);
             //格式化
             CodeStyleManager.getInstance(project).reformat(psiFile);
             //保存文档
@@ -135,17 +130,14 @@ public class ConvertDependencyToLocalTask extends Task.Backgroundable {
 
     //执行pub get
     private static void runPubGet(String packageName, Project project) {
-        ApplicationManager.getApplication()
-                .invokeLater(() -> {
-                    FlutterSdk sdk = FlutterSdk.getFlutterSdk(project);
-                    if (sdk != null) {
-                        PubRoot root = PubRoot.forDirectory(ProjectUtil.guessProjectDir(project));
-                        if (root != null) {
-                            sdk.startPubGet(root, project);
-                        }
-                    }
-                    ToastUtils.make(project, MessageType.INFO, packageName + " convert success");
-                });
+        ApplicationManager.getApplication().invokeLater(() -> {
+            FlutterSdk sdk = FlutterSdk.getFlutterSdk(project);
+            PubRoot root = PubRoot.forDirectory(ProjectUtil.guessProjectDir(project));
+            if (sdk != null && root != null) {
+                sdk.startPubGet(root, project);
+            }
+            ToastUtils.make(project, MessageType.INFO, packageName + " convert success");
+        });
     }
 
     private static void removeAnnotator(Project project, String packageName) {

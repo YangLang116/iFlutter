@@ -90,11 +90,11 @@ public class ImageFoldingAction extends AssetDirAction {
         for (File assetFile : imageFileList) {
             String fileName = assetFile.getName();
             if (!fileName.contains("_")) continue;
-            String destFoldName = fileName.split("_")[0];
+            String dFoldName = fileName.split("_")[0];
             String parentFoldName = getValidParentName(assetFile);
-            if (parentFoldName.equals(destFoldName)) continue;
+            if (parentFoldName.equals(dFoldName)) continue;
             String oldAssetPath = AssetUtils.getAssetPath(projectPath, assetFile);
-            File newImageDirectory = getDestDirectory(imageDirectory, destFoldName, assetFile);
+            File newImageDirectory = getDestDirectory(imageDirectory, dFoldName, assetFile);
             org.apache.commons.io.FileUtils.moveFileToDirectory(assetFile, newImageDirectory, true);
             String newAssetPath = AssetUtils.getAssetPath(projectPath, new File(newImageDirectory, fileName));
             pathMap.put(oldAssetPath, newAssetPath);

@@ -59,3 +59,10 @@ project_root/
         ├── pubspec.yaml
         └── ...
 ```
+
+## 其他
+针对传递依赖，无法在 `pubspec.yaml` 中通过选中节点，将远程依赖转化成本地依赖，`iFlutter` 提供从 `Library` 层级中抽取，入口如下：
+
+![从Library层级提取依赖](../../configs/transfer_dependency.png)
+
+> ⚠️ **注意**：此方式仅用于提取远程依赖到本地，不会修改 `pubspec.yaml` 相关依赖配置。

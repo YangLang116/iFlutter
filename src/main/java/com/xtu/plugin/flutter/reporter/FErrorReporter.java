@@ -1,15 +1,15 @@
 package com.xtu.plugin.flutter.reporter;
 
-import com.intellij.ide.DataManager;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.actionSystem.DataContext;
+import com.intellij.ide.BrowserUtil;
+import com.intellij.openapi.application.ex.ApplicationInfoEx;
 import com.intellij.openapi.diagnostic.ErrorReportSubmitter;
 import com.intellij.openapi.diagnostic.IdeaLoggingEvent;
 import com.intellij.openapi.diagnostic.SubmittedReportInfo;
-import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ide.CopyPasteManager;
 import com.intellij.openapi.util.NlsActions;
+import com.intellij.openapi.util.SystemInfo;
 import com.intellij.util.Consumer;
-import com.xtu.plugin.flutter.advice.AdviceManager;
+import com.xtu.plugin.flutter.base.utils.VersionUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,7 +17,8 @@ import java.awt.*;
 
 public class FErrorReporter extends ErrorReportSubmitter {
 
-    private static final String sActionText = "Report to Author";
+    private static final String sActionText = "Copy & Report";
+    private static final String sReportUrl = "https://github.com/YangLang116/iFlutter/issues";
 
     @Override
     @NotNull
@@ -27,16 +28,9 @@ public class FErrorReporter extends ErrorReportSubmitter {
     }
 
     @Override
-    public boolean submit(@NotNull IdeaLoggingEvent[] events,
-                          @Nullable String additionalInfo,
-                          @NotNull Component parentComponent,
-                          @NotNull Consumer<? super SubmittedReportInfo> consumer) {
-        final DataManager mgr = DataManager.getInstance();
-        final DataContext context = mgr.getDataContext(parentComponent);
-        final Project project = CommonDataKeys.PROJECT.getData(context);
-        assert project != null;
+    public boolean submit(IdeaLoggingEvent @NotNull [] events, @Nullable String additionalInfo, @NotNull Component parentComponent, @NotNull Consumer<? super SubmittedReportInfo> consumer) {
         final String errorStack = collectErrorStack(events);
-        SubmittedReportInfo.SubmissionStatus status = postErrorMsg(project, additionalInfo, errorStack);
+        SubmittedReportInfo.SubmissionStatus status = postErrorMsg(additionalInfo, errorStack);
         consumer.consume(new SubmittedReportInfo(status));
         return true;
     }
@@ -49,16 +43,19 @@ public class FErrorReporter extends ErrorReportSubmitter {
         return errorStackInfoBuilder.toString();
     }
 
-    private SubmittedReportInfo.SubmissionStatus postErrorMsg(
-            @NotNull Project project,
-            @Nullable String additionalInfo,
-            @NotNull String errorInfo) {
-        StringBuilder contentSb = new StringBuilder();
+    private SubmittedReportInfo.SubmissionStatus postErrorMsg(@Nullable String additionalInfo, @NotNull String errorInfo) {
+        ApplicationInfoEx appInfo = ApplicationInfoEx.getInstanceEx();
+        StringBuilder contentSb = new StringBuilder()
+                .append("version: ").append(VersionUtils.getPluginVersion()).append("\n")
+                .append("os: ").append(SystemInfo.getOsNameAndVersion()).append("\n")
+                .append("ide: ").append(appInfo.getFullApplicationName()).append("\n")
+                .append("build: ").append(appInfo.getBuild().asString()).append("\n");
         if (additionalInfo != null) {
-            contentSb.append("additionalInfo:\n").append(additionalInfo).append("\n\n");
+            contentSb.append("additionalInfo: ").append(additionalInfo).append("\n");
         }
         contentSb.append("errorStack:\n").append(errorInfo);
-        AdviceManager.getInstance().submitAdvice(project, "report issue", contentSb.toString());
+        CopyPasteManager.copyTextToClipboard(contentSb.toString());
+        BrowserUtil.open(sReportUrl);
         return SubmittedReportInfo.SubmissionStatus.NEW_ISSUE;
     }
 }

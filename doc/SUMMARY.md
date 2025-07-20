@@ -41,10 +41,6 @@
 
 * [🧹 清除注释](content/chapter-11/part-1.md)
 
-## 📋 其他功能
-
-* [💬 意见与反馈](content/chapter-10/part-1.md)
-
 ## 🔌 扩展插件
 
 * [🎬 MediaFilePreviewer 插件](content/chapter-7/part-1.md)

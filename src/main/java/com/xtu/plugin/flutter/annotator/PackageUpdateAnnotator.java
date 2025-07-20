@@ -86,7 +86,7 @@ public class PackageUpdateAnnotator implements Annotator {
     public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
         if (element instanceof YAMLKeyValue
                 && PubSpecUtils.isRootPubSpecFile(((YAMLKeyValue) element))
-                && PubSpecUtils.isDependencyElement(((YAMLKeyValue) element))) {
+                && PubSpecUtils.isRemoteDependencyPSI(((YAMLKeyValue) element))) {
             //element is package dependency psi
             String packageName = ((YAMLKeyValue) element).getKeyText();
             if (StringUtils.isEmpty(packageName)) return;

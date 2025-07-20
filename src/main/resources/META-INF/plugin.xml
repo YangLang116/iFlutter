@@ -79,15 +79,15 @@
                     description="HTTP Mock Tool"
                     class="com.xtu.plugin.flutter.action.mock.HttpMockAction"/>
             <separator/>
-            <action id="com.xtu.plugin.flutter.DepAnalysisAction"
-                    icon="PluginIcons.DEPENDENCY"
-                    text="Dump Dependencies"
-                    description="Analysis project dependency tree"
-                    class="com.xtu.plugin.flutter.action.analysis.DepAnalysisAction"/>
             <action id="com.xtu.plugin.flutter.TransferDepAction"
+                    icon="PluginIcons.DEPENDENCY"
                     text="Transfer Dependence"
                     description="Transfer dependence to project"
                     class="com.xtu.plugin.flutter.action.convert.TransferDepAction"/>
+            <action id="com.xtu.plugin.flutter.DepAnalysisAction"
+                    text="Dump Dependencies"
+                    description="Analysis project dependency tree"
+                    class="com.xtu.plugin.flutter.action.analysis.DepAnalysisAction"/>
             <separator/>
             <action id="com.xtu.plugin.flutter.PubSearchAction"
                     icon="PluginIcons.SEARCH"

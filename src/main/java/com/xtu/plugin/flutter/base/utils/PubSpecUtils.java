@@ -18,6 +18,7 @@ import org.jetbrains.yaml.YAMLElementGenerator;
 import org.jetbrains.yaml.psi.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -30,29 +31,36 @@ public class PubSpecUtils {
     private static final String NODE_FONT = "fonts";
     private static final String NODE_FONT_ASSET = "asset";
 
-    private static final List<String> dependencyList = List.of(
-            "dependencies",
-            "dev_dependencies",
-            "dependency_overrides");
+    private static final List<String> dependencyList = Arrays.asList("dependencies", "dev_dependencies", "dependency_overrides");
 
-    private static boolean isDependencyParentPsi(YAMLKeyValue psiElement) {
+    public static String getFileName() {
+        return "pubspec.yaml";
+    }
+
+    private static boolean isDependencyTreePSI(YAMLKeyValue psiElement) {
         PsiElement key = psiElement.getKey();
         if (key == null) return false;
         return dependencyList.contains(key.getText());
     }
 
     //判断当前Element是否是包依赖
-    public static boolean isDependencyElement(YAMLKeyValue element) {
+    private static boolean isDependencyPSI(YAMLKeyValue element) {
         if (element == null) return false;
         YAMLMapping parentMappingPsi = (YAMLMapping) element.getParent();
         if (parentMappingPsi == null || !(parentMappingPsi.getParent() instanceof YAMLKeyValue dependencePsi)) {
             return false;
         }
-        return isDependencyParentPsi(dependencePsi);
+        return isDependencyTreePSI(dependencePsi);
     }
 
-    public static String getFileName() {
-        return "pubspec.yaml";
+    //判断当前Element是否是远程包依赖
+    public static boolean isRemoteDependencyPSI(YAMLKeyValue element) {
+        if (!isDependencyPSI(element)) return false;
+        if (element.getValue() instanceof YAMLMapping yamlMapping) {
+            return yamlMapping.getKeyValueByKey("path") == null;
+        } else {
+            return true;
+        }
     }
 
     //判断当前YAML文件是否根pubspec.yaml文件
@@ -195,9 +203,7 @@ public class PubSpecUtils {
     }
 
     //更新资源列表
-    public static void writeAssetList(@NotNull Project project,
-                                      @NotNull List<String> assetList,
-                                      @NotNull List<String> fontList) {
+    public static void writeAssetList(@NotNull Project project, @NotNull List<String> assetList, @NotNull List<String> fontList) {
         ApplicationManager.getApplication().assertIsDispatchThread();
         CollectionUtils.standardList(assetList);
         CollectionUtils.standardList(fontList);
@@ -216,10 +222,7 @@ public class PubSpecUtils {
         notifyPubSpecUpdate(project);
     }
 
-    private static boolean modifyAsset(@NotNull Project project,
-                                       @NotNull List<String> assetList,
-                                       @Nullable YAMLSequence oldAssetSequence,
-                                       @NotNull YAMLElementGenerator elementGenerator) {
+    private static boolean modifyAsset(@NotNull Project project, @NotNull List<String> assetList, @Nullable YAMLSequence oldAssetSequence, @NotNull YAMLElementGenerator elementGenerator) {
         if (AssetUtils.isFoldRegister(project)) {
             String projectName = getProjectName(project);
             String projectVersion = getProjectVersion(project);
@@ -244,8 +247,7 @@ public class PubSpecUtils {
             YAMLKeyValue flutterKeyValue = topLevelMapping.getKeyValueByKey(NODE_FLUTTER);
             if (flutterKeyValue == null || !(flutterKeyValue.getValue() instanceof YAMLMapping flutterValue)) {
                 //add flutter psi
-                StringBuilder flutterPsiBuilder = new StringBuilder()
-                        .append("flutter:\n  assets:\n");
+                StringBuilder flutterPsiBuilder = new StringBuilder().append("flutter:\n  assets:\n");
                 for (String asset : assetList) {
                     flutterPsiBuilder.append("    - ").append(asset).append("\n");
                 }
@@ -269,10 +271,7 @@ public class PubSpecUtils {
     }
 
     //修复font#font节点
-    private static boolean modifyFont(@NotNull Project project,
-                                      @NotNull List<String> fontList,
-                                      @Nullable YAMLSequence oldFontSequence,
-                                      @NotNull YAMLElementGenerator elementGenerator) {
+    private static boolean modifyFont(@NotNull Project project, @NotNull List<String> fontList, @Nullable YAMLSequence oldFontSequence, @NotNull YAMLElementGenerator elementGenerator) {
         if (oldFontSequence != null) {
             if (CollectionUtils.isEmpty(fontList)) {
                 oldFontSequence.getParent().delete();
@@ -306,9 +305,7 @@ public class PubSpecUtils {
             if (topLevelMapping == null) return true;
             YAMLKeyValue flutterKeyValue = topLevelMapping.getKeyValueByKey(NODE_FLUTTER);
             if (flutterKeyValue == null || !(flutterKeyValue.getValue() instanceof YAMLMapping flutterValue)) {
-                StringBuilder flutterFontBuilder = new StringBuilder()
-                        .append("flutter:").append("\n")
-                        .append("  fonts:").append("\n");
+                StringBuilder flutterFontBuilder = new StringBuilder().append("flutter:").append("\n").append("  fonts:").append("\n");
                 List<FontUtils.FontFamily> fontFamilyList = FontUtils.getFontFamilyList(fontList);
                 for (FontUtils.FontFamily family : fontFamilyList) {
                     flutterFontBuilder.append("    - family: ").append(family.family).append("\n");

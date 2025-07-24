@@ -16,7 +16,7 @@ An IDEA Plugin for Media File to Preview, likes svg、svga、lottie、webp...
 
 ## 插件说明
 
-> 如果`IDEA`在预览文件时，出现卡死现象，需切换jbr版本，具体请参考：[JBR](https://yanglang116.github.io/iFlutter/content/chapter-9/part-1.html)
+> 自 `IDEA-2025.1.1` 以后，官方不再支持 `JavaFX`，如需继续使用此插件，请确保 `JBR` 版本类型; [JBR](https://yanglang116.github.io/iFlutter/content/chapter-9/part-1.html)
 
 ## 功能清单
 

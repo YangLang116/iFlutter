@@ -2,11 +2,13 @@ package com.xtu.plugin.flutter.action.intl;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.xtu.plugin.flutter.action.intl.utils.IntlUtils;
 import com.xtu.plugin.flutter.base.utils.CommandUtils;
 import com.xtu.plugin.flutter.base.utils.PluginUtils;
 import com.xtu.plugin.flutter.base.utils.ToastUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
@@ -14,45 +16,36 @@ import java.util.Map;
 public class IntlResManager {
 
     public static void addLocaleAssetList(@NotNull Project project,
+                                          @NotNull VirtualFile intlDir,
                                           @NotNull String key,
                                           @NotNull Map<String, String> localeMap,
                                           boolean canReplaceKey) {
-        boolean isSuccess = true;
-        for (Map.Entry<String, String> entry : localeMap.entrySet()) {
-            String locale = entry.getKey();
-            String content = entry.getValue();
-            try {
-                IntlUtils.addLocaleValue(project, locale, key, content, canReplaceKey);
-            } catch (Throwable e) {
-                isSuccess = false;
-                String fileName = IntlUtils.getFileName(locale);
-                ToastUtils.make(project, MessageType.ERROR, fileName + ": " + e.getMessage());
+        try {
+            for (Map.Entry<String, String> entry : localeMap.entrySet()) {
+                IntlUtils.addLocaleValue(project, intlDir, entry.getKey(), key, entry.getValue(), canReplaceKey);
             }
-        }
-        if (isSuccess) {
-            generateIfNeed(project);
+            generateIntlRes(project);
+        } catch (Throwable e) {
+            ToastUtils.make(project, MessageType.ERROR, e.getMessage());
         }
     }
 
     public static void removeLocaleAssetList(@NotNull Project project,
-                                             @NotNull String key,
-                                             @NotNull List<String> localeList) {
-        boolean isSuccess = true;
-        for (String locale : localeList) {
-            try {
-                IntlUtils.removeLocaleValue(project, locale, key);
-            } catch (Throwable e) {
-                isSuccess = false;
-                String fileName = IntlUtils.getFileName(locale);
-                ToastUtils.make(project, MessageType.ERROR, fileName + ": " + e.getMessage());
+                                             @NotNull VirtualFile intlDir,
+                                             @Nullable List<String> localeList,
+                                             @NotNull String key) {
+        if (localeList == null || localeList.isEmpty()) return;
+        try {
+            for (String locale : localeList) {
+                IntlUtils.removeLocaleValue(project, intlDir, locale, key);
             }
-        }
-        if (isSuccess) {
-            generateIfNeed(project);
+            generateIntlRes(project);
+        } catch (Throwable e) {
+            ToastUtils.make(project, MessageType.ERROR, e.getMessage());
         }
     }
 
-    public static void generateIfNeed(@NotNull Project project) {
+    private static void generateIntlRes(@NotNull Project project) {
         if (PluginUtils.isPluginAvailable("com.localizely.flutter-intl")) return;
         CommandUtils.CommandResult commandResult = CommandUtils.executeSync(
                 project, "--no-color pub global run intl_utils:generate", -1);

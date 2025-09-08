@@ -12,10 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class IntlUtils {
 
@@ -31,7 +28,7 @@ public class IntlUtils {
     }
 
     @Nullable
-    public static String getLocale(@NotNull String fileName) {
+    public static String getLocaleByFileName(@NotNull String fileName) {
         //intl_en.arb
         int firstIndex = fileName.indexOf("_");
         if (firstIndex < 0) return null;
@@ -41,13 +38,17 @@ public class IntlUtils {
     }
 
     @NotNull
-    public static String getFileName(String locale) {
+    public static String getLocaleFileName(@NotNull String locale) {
         return String.format("intl_%s.arb", locale);
     }
 
+    public static boolean isIntlDir(@NotNull VirtualFile virtualFile) {
+        if (!virtualFile.isDirectory()) return false;
+        return Arrays.stream(virtualFile.getChildren()).anyMatch((file) -> file.getName().endsWith(".arb"));
+    }
+
     @Nullable
-    public static VirtualFile getIntlDir(@Nullable Project project) {
-        if (project == null) return null;
+    public static VirtualFile getRootIntlDir(@NotNull Project project) {
         VirtualFile projectDir = ProjectUtil.guessProjectDir(project);
         if (projectDir == null) return null;
         VirtualFile libDir = projectDir.findChild("lib");
@@ -56,41 +57,37 @@ public class IntlUtils {
     }
 
     @Nullable
-    private static VirtualFile getLocalFile(@Nullable Project project, @NotNull String locale) {
-        VirtualFile intlDir = getIntlDir(project);
-        if (intlDir == null) return null;
-        String fileName = getFileName(locale);
+    public static VirtualFile getLocalFile(@NotNull VirtualFile intlDir, @NotNull String locale) {
+        String fileName = getLocaleFileName(locale);
         return intlDir.findChild(fileName);
     }
 
     @Nullable
-    public static List<String> getLocaleList(@Nullable Project project) {
-        VirtualFile intlDir = getIntlDir(project);
-        if (intlDir == null) return null;
-        VirtualFile[] children = intlDir.getChildren();
+    public static List<String> getLocaleList(@NotNull VirtualFile virtualDir) {
+        VirtualFile[] children = virtualDir.getChildren();
         if (children == null || children.length == 0) return null;
         List<String> localeList = new ArrayList<>();
         for (VirtualFile child : children) {
-            String locale = getLocale(child.getName());
+            String locale = getLocaleByFileName(child.getName());
             if (StringUtils.isEmpty(locale)) continue;
             localeList.add(locale);
         }
         return localeList;
     }
 
-
-    public static void addLocaleValue(@Nullable Project project,
+    public static void addLocaleValue(@NotNull Project project,
+                                      @NotNull VirtualFile intlDir,
                                       @NotNull String locale,
                                       @NotNull String key,
                                       @NotNull String value,
                                       boolean canReplaceKey) throws Throwable {
         ReadAction.run(() -> {
-            VirtualFile localeFile = getLocalFile(project, locale);
+            VirtualFile localeFile = getLocalFile(intlDir, locale);
             if (localeFile == null) return;
             String content = new String(localeFile.contentsToByteArray(), StandardCharsets.UTF_8);
             JSONObject resultJson = new JSONObject(content);
             if (!canReplaceKey && resultJson.keySet().contains(key)) {
-                throw new IllegalStateException(key + " 已经存在");
+                throw new RuntimeException(String.format("%s: %s is existed", locale, key));
             }
             resultJson.put(key, value);
             byte[] resultBytes = resultJson.toString(2).getBytes();
@@ -101,11 +98,12 @@ public class IntlUtils {
         });
     }
 
-    public static void removeLocaleValue(@Nullable Project project,
+    public static void removeLocaleValue(@NotNull Project project,
+                                         @NotNull VirtualFile intlDir,
                                          @NotNull String locale,
                                          @NotNull String key) throws Throwable {
         ReadAction.run(() -> {
-            VirtualFile localeFile = getLocalFile(project, locale);
+            VirtualFile localeFile = getLocalFile(intlDir, locale);
             if (localeFile == null) return;
             String content = new String(localeFile.contentsToByteArray(), StandardCharsets.UTF_8);
             JSONObject resultJson = new JSONObject(content);
@@ -120,11 +118,8 @@ public class IntlUtils {
     }
 
     public static String transCodeFromLocale(@NotNull String locale) {
-        //兼容 en_GB 和 en
-        int underLineIndex = locale.indexOf("_");
-        if (underLineIndex >= 0) {
-            locale = locale.substring(0, underLineIndex);
-        }
+        int underLineIndex = locale.indexOf("_"); //兼容 en_GB 和 en
+        if (underLineIndex >= 0) locale = locale.substring(0, underLineIndex);
         return sIntl2TransCode.getOrDefault(locale, locale);
     }
 }

@@ -1,21 +1,25 @@
 package com.xtu.plugin.flutter.action.intl;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.PlatformDataKeys;
+import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.xtu.plugin.flutter.action.intl.utils.IntlUtils;
 import com.xtu.plugin.flutter.base.action.FlutterProjectAction;
-import com.xtu.plugin.flutter.base.utils.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 public abstract class BaseIntlAction extends FlutterProjectAction {
 
     @Override
     public void whenUpdate(@NotNull AnActionEvent e) {
-        Project project = e.getProject();
-        List<String> localeList = IntlUtils.getLocaleList(project);
-        boolean hasLocale = !CollectionUtils.isEmpty(localeList);
-        e.getPresentation().setVisible(hasLocale);
+        final VirtualFile virtualFile = e.getData(PlatformDataKeys.VIRTUAL_FILE);
+        final Presentation presentation = e.getPresentation();
+        if (virtualFile != null && IntlUtils.isIntlDir(virtualFile)) {
+            presentation.setVisible(true);
+        } else {
+            final Project project = e.getProject();
+            presentation.setVisible(project != null && IntlUtils.getRootIntlDir(project) != null);
+        }
     }
 }

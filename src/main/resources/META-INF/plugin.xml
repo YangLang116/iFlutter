@@ -79,16 +79,20 @@
                     description="HTTP Mock Tool"
                     class="com.xtu.plugin.flutter.action.mock.HttpMockAction"/>
             <separator/>
-            <action id="com.xtu.plugin.flutter.DepAnalysisAction"
+            <action id="com.xtu.plugin.flutter.TransferDepAction"
                     icon="PluginIcons.DEPENDENCY"
-                    text="Dependence Tree"
+                    text="Transfer Dependence"
+                    description="Transfer dependence to project"
+                    class="com.xtu.plugin.flutter.action.convert.TransferDepAction"/>
+            <action id="com.xtu.plugin.flutter.DepAnalysisAction"
+                    text="Dump Dependencies"
                     description="Analysis project dependency tree"
                     class="com.xtu.plugin.flutter.action.analysis.DepAnalysisAction"/>
             <separator/>
             <action id="com.xtu.plugin.flutter.PubSearchAction"
                     icon="PluginIcons.SEARCH"
                     text="Search From Pub"
-                    description="Search From Pub"
+                    description="Search from Pub"
                     class="com.xtu.plugin.flutter.action.pub.search.PubSearchAction">
                 <keyboard-shortcut first-keystroke="alt f" keymap="$default"/>
             </action>

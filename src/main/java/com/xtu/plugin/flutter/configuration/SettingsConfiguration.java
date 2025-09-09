@@ -8,7 +8,6 @@ import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.xtu.plugin.flutter.action.pub.speed.ui.MirrorRepoDialog;
-import com.xtu.plugin.flutter.advice.AdviceDialog;
 import com.xtu.plugin.flutter.base.utils.CollectionUtils;
 import com.xtu.plugin.flutter.base.utils.PluginUtils;
 import com.xtu.plugin.flutter.base.utils.StringUtils;
@@ -51,7 +50,6 @@ public final class SettingsConfiguration implements SearchableConfigurable {
     private JCheckBox withPackageNameBox;
     private JTextField tinyApiKeyField;
     private JLabel tinyQuestion;
-    private JLabel adviceLabel;
     private JCheckBox autoTinyImage;
     private JCheckBox enableSizeMonitor;
 
@@ -95,14 +93,7 @@ public final class SettingsConfiguration implements SearchableConfigurable {
                 BrowserUtil.open(sPluginUrl);
             }
         });
-        adviceLabel.setIcon(PluginIcons.NOTE);
-        adviceLabel.setText("<html><u>Suggestion & Feedback</u></html>");
-        adviceLabel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                AdviceDialog.show(project);
-            }
-        });
+
         mirrorRepoBtn.addActionListener(e -> {
             MirrorRepoDialog mirrorRepoDialog = new MirrorRepoDialog(project, rootPanel);
             boolean isOk = mirrorRepoDialog.showAndGet();
@@ -204,8 +195,8 @@ public final class SettingsConfiguration implements SearchableConfigurable {
     private void reStartIDE() {
         Application application = ApplicationManager.getApplication();
         application.invokeLater(() -> {
-            Messages.showMessageDialog(project, "Resource registration method has been modified, IDEA needs to be restarted", "iFlutter Tip", null);
+            Messages.showMessageDialog(project, "Resource registration method has been modified, IDEA needs to be restarted", "IFlutter Tip", null);
             application.restart();
-        }, ModalityState.NON_MODAL);
+        }, ModalityState.nonModal());
     }
 }

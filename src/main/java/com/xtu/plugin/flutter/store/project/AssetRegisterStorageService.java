@@ -5,8 +5,8 @@ import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
-import com.xtu.plugin.flutter.base.entity.AssetInfoEntity;
-import com.xtu.plugin.flutter.base.entity.AssetInfoMetaEntity;
+import com.xtu.plugin.flutter.base.entity.AssetInfo;
+import com.xtu.plugin.flutter.base.entity.AssetInfoMeta;
 import com.xtu.plugin.flutter.base.utils.*;
 import com.xtu.plugin.flutter.component.assets.code.DartRFileGenerator;
 import com.xtu.plugin.flutter.store.project.entity.AssetStorageEntity;
@@ -88,8 +88,8 @@ public class AssetRegisterStorageService implements PersistentStateComponent<Ass
         //pure asset list
         CollectionUtils.standardList(newAssetList);
         //generate R
-        AssetInfoMetaEntity metaEntity = new AssetInfoMetaEntity(projectName, projectVersion);
-        AssetInfoEntity resultEntity = new AssetInfoEntity(metaEntity, newAssetList, Collections.emptyList());
+        AssetInfoMeta metaEntity = new AssetInfoMeta(projectName, projectVersion);
+        AssetInfo resultEntity = new AssetInfo(metaEntity, newAssetList, Collections.emptyList());
         DartRFileGenerator.getInstance().generate(project, resultEntity.meta, resultEntity.assetList);
         //update asset
         AssetRegisterStorageService service = getService(project);

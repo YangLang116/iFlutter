@@ -6,7 +6,7 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.xtu.plugin.flutter.base.action.FlutterProjectAction;
-import com.xtu.plugin.flutter.base.entity.AssetInfoEntity;
+import com.xtu.plugin.flutter.base.entity.AssetInfo;
 import com.xtu.plugin.flutter.base.utils.AssetUtils;
 import com.xtu.plugin.flutter.base.utils.FontUtils;
 import com.xtu.plugin.flutter.base.utils.PubSpecUtils;
@@ -42,7 +42,7 @@ public class GenerateResAction extends FlutterProjectAction {
         });
         Application application = ApplicationManager.getApplication();
         application.invokeLater(() -> {
-            AssetInfoEntity assetResult = PubSpecUtils.readAssetList(project);
+            AssetInfo assetResult = PubSpecUtils.readAssetList(project);
             DartRFileGenerator.getInstance().generate(project, assetResult.meta, assetResult.assetList);
             DartFontFileGenerator.getInstance().generate(project, assetResult.meta, assetResult.fontList);
         });

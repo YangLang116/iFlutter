@@ -3,6 +3,7 @@ package com.xtu.plugin.flutter.window.res.ui;
 import com.intellij.openapi.util.text.Formats;
 import com.intellij.util.ui.JBUI;
 import com.xtu.plugin.flutter.base.component.ImageComponent;
+import com.xtu.plugin.flutter.base.entity.ImageSize;
 import com.xtu.plugin.flutter.base.utils.FileUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,10 +25,10 @@ public class ResItemComponent extends JPanel {
     }
 
     private void loadThumbnail(@NotNull File assetFile) {
-        add(this.imageComponent = new ImageComponent(60), BorderLayout.WEST);
-        this.imageComponent.loadImage(assetFile, 50, (width, height) -> {
+        add(this.imageComponent = new ImageComponent(new Dimension(60, 60)), BorderLayout.WEST);
+        this.imageComponent.loadImage(assetFile, new ImageSize(50, 50), (size) -> {
             String originText = this.sizeLabel.getText();
-            this.sizeLabel.setText(String.format("%s | %d x %d", originText, width, height));
+            this.sizeLabel.setText(String.format("%s | %d x %d", originText, size.width, size.height));
         });
     }
 

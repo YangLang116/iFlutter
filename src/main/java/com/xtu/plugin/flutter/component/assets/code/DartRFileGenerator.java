@@ -7,7 +7,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageType;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.xtu.plugin.flutter.base.entity.AssetInfoMetaEntity;
+import com.xtu.plugin.flutter.base.entity.AssetInfoMeta;
 import com.xtu.plugin.flutter.base.utils.*;
 import com.xtu.plugin.flutter.store.project.ProjectStorageService;
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +29,7 @@ public class DartRFileGenerator {
         return sInstance;
     }
 
-    public void generate(@NotNull Project project, @NotNull AssetInfoMetaEntity meta, @NotNull List<String> assetList) {
+    public void generate(@NotNull Project project, @NotNull AssetInfoMeta meta, @NotNull List<String> assetList) {
         Application application = ApplicationManager.getApplication();
         application.invokeLater(() -> WriteAction.run(() -> {
             try {
@@ -92,7 +92,7 @@ public class DartRFileGenerator {
 
     @NotNull
     private String generateFile(@NotNull Project project,
-                                @NotNull AssetInfoMetaEntity meta,
+                                @NotNull AssetInfoMeta meta,
                                 @NotNull VirtualFile rDirectory,
                                 @NotNull String assetDirName,
                                 @NotNull List<String> assetPathList) {
@@ -106,7 +106,7 @@ public class DartRFileGenerator {
 
     @NotNull
     private String buildFileContent(@NotNull Project project,
-                                    @NotNull AssetInfoMetaEntity meta,
+                                    @NotNull AssetInfoMeta meta,
                                     @NotNull String className,
                                     @NotNull List<String> assetPathList) {
         String resPrefix = AssetUtils.getResPrefix(project, meta.projectName);

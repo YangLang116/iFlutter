@@ -7,17 +7,23 @@
                id="com.xtu.plugin.flutter.group.yaml"
                class="com.xtu.plugin.flutter.action.IFlutterActionGroup">
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
-            <action id="com.xtu.plugin.flutter.ConvertDependencyToLocalAction"
-                    icon="PluginIcons.FETCH"
-                    text="Convert To Local Dependency"
-                    description="Convert To Local Dependency"
-                    class="com.xtu.plugin.flutter.action.convert.ConvertDependencyToLocalAction">
+            <action id="com.xtu.plugin.flutter.RepositoryAnchorAction"
+                    icon="PluginIcons.CODE"
+                    text="Open Repository"
+                    description="Open Repository"
+                    class="com.xtu.plugin.flutter.action.anchor.RepositoryAnchorAction">
             </action>
-            <action id="com.xtu.plugin.flutter.YamlPackageAnchorAction"
+            <action id="com.xtu.plugin.flutter.ConvertDepToLocalAction"
+                    icon="PluginIcons.FETCH"
+                    text="Convert Dependency"
+                    description="Convert Dependency"
+                    class="com.xtu.plugin.flutter.action.convert.ConvertDepToLocalAction">
+            </action>
+            <action id="com.xtu.plugin.flutter.PackageAnchorAction"
                     icon="PluginIcons.LOCATE"
-                    text="Anchor To Dependency"
-                    description="Anchor To Dependency"
-                    class="com.xtu.plugin.flutter.action.anchor.yaml.YamlPackageAnchorAction">
+                    text="Anchor Dependency"
+                    description="Anchor Dependency"
+                    class="com.xtu.plugin.flutter.action.anchor.PackageAnchorAction">
             </action>
         </group>
         <action id="com.xtu.plugin.flutter.remove.comment"

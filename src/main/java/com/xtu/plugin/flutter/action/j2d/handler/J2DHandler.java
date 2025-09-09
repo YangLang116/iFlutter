@@ -61,25 +61,33 @@ public class J2DHandler {
 
     @Nullable
     private J2DFieldDescriptor parseField(@NotNull String key, @NotNull Object value, boolean keepComment, @NotNull List<ClassEntity> classList, @NotNull ClassNameFactory classNameFactory) {
-        if (value instanceof String) {
-            return J2DFieldDescriptor.prime(key, "String");
-        } else if (value instanceof Boolean) {
-            return J2DFieldDescriptor.prime(key, "bool");
-        } else if (value instanceof Integer || value instanceof Double || value instanceof Float) {
-            return J2DFieldDescriptor.prime(key, "num");
-        } else if (value instanceof JSONObject) {
-            String className = getClassName(key, classNameFactory, classList);
-            createAndSaveClass(className, (JSONObject) value, keepComment, classList);
-            return J2DFieldDescriptor.object(key, className);
-        } else if (value instanceof JSONArray) {
-            J2DFieldDescriptor argumentFieldDescriptor = null;
-            if (!((JSONArray) value).isEmpty()) {
-                Object item = ((JSONArray) value).get(0);
-                argumentFieldDescriptor = parseField(key, item, keepComment, classList, name -> ClassUtils.getClassName(name) + "ItemEntity");
+        switch (value) {
+            case String ignored -> {
+                return J2DFieldDescriptor.prime(key, "String");
             }
-            return J2DFieldDescriptor.list(key, argumentFieldDescriptor);
+            case Boolean ignored -> {
+                return J2DFieldDescriptor.prime(key, "bool");
+            }
+            case Number ignored -> {
+                return J2DFieldDescriptor.prime(key, "num");
+            }
+            case JSONObject jsonObject -> {
+                String className = getClassName(key, classNameFactory, classList);
+                createAndSaveClass(className, jsonObject, keepComment, classList);
+                return J2DFieldDescriptor.object(key, className);
+            }
+            case JSONArray objects -> {
+                J2DFieldDescriptor argumentFieldDescriptor = null;
+                if (!objects.isEmpty()) {
+                    Object item = ((JSONArray) value).get(0);
+                    argumentFieldDescriptor = parseField(key, item, keepComment, classList, name -> ClassUtils.getClassName(name) + "ItemEntity");
+                }
+                return J2DFieldDescriptor.list(key, argumentFieldDescriptor);
+            }
+            default -> {
+                return null;
+            }
         }
-        return null;
     }
 
     private String getClassName(@NotNull String name, @NotNull ClassNameFactory factory, @NotNull List<ClassEntity> classList) {

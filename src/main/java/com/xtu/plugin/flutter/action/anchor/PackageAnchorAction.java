@@ -1,4 +1,4 @@
-package com.xtu.plugin.flutter.action.anchor.yaml;
+package com.xtu.plugin.flutter.action.anchor;
 
 import com.intellij.ide.SelectInManager;
 import com.intellij.ide.SelectInTarget;
@@ -29,7 +29,7 @@ import org.jetbrains.yaml.psi.YAMLKeyValue;
 
 import java.io.File;
 
-public class YamlPackageAnchorAction extends YamlDependencyAction {
+public class PackageAnchorAction extends YamlDependencyAction {
 
     private static final String LIBRARY_DART = "Dart Packages";
     private static final String LIBRARY_FLUTTER = "Flutter Plugins";

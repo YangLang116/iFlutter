@@ -20,9 +20,9 @@ import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.IncorrectOperationException;
+import com.xtu.plugin.flutter.annotator.packages.update.PackageInfo;
 import com.xtu.plugin.flutter.base.utils.PubSpecUtils;
 import com.xtu.plugin.flutter.base.utils.StringUtils;
-import com.xtu.plugin.flutter.annotator.packages.update.PackageInfo;
 import com.xtu.plugin.flutter.store.project.ProjectStorageService;
 import icons.PluginIcons;
 import io.flutter.pub.PubRoot;
@@ -86,7 +86,7 @@ public class PackageUpdateAnnotator implements Annotator {
     public void annotate(@NotNull PsiElement element, @NotNull AnnotationHolder holder) {
         if (element instanceof YAMLKeyValue
                 && PubSpecUtils.isRootPubSpecFile(((YAMLKeyValue) element))
-                && PubSpecUtils.isDependencyElement(((YAMLKeyValue) element))) {
+                && PubSpecUtils.isRemoteDependencyPSI(((YAMLKeyValue) element))) {
             //element is package dependency psi
             String packageName = ((YAMLKeyValue) element).getKeyText();
             if (StringUtils.isEmpty(packageName)) return;
@@ -234,16 +234,13 @@ public class PackageUpdateAnnotator implements Annotator {
 
         //执行pub get
         private void runPubGet(Project project) {
-            ApplicationManager.getApplication()
-                    .invokeLater(() -> {
-                        FlutterSdk sdk = FlutterSdk.getFlutterSdk(project);
-                        if (sdk != null) {
-                            PubRoot root = PubRoot.forDirectory(ProjectUtil.guessProjectDir(project));
-                            if (root != null) {
-                                sdk.startPubGet(root, project);
-                            }
-                        }
-                    });
+            ApplicationManager.getApplication().invokeLater(() -> {
+                FlutterSdk sdk = FlutterSdk.getFlutterSdk(project);
+                PubRoot root = PubRoot.forDirectory(ProjectUtil.guessProjectDir(project));
+                if (sdk != null && root != null) {
+                    sdk.startPubGet(root, project);
+                }
+            });
         }
     }
 }

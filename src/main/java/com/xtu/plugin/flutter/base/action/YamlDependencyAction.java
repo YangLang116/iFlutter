@@ -36,8 +36,8 @@ public abstract class YamlDependencyAction extends FlutterProjectAction {
     private boolean isDependencyElement(@Nullable PsiElement yamlPsiElement) {
         if (yamlPsiElement == null) return false;
         PsiElement parentNode = yamlPsiElement.getParent();
-        if (!(parentNode instanceof YAMLKeyValue)) return false;
-        return PubSpecUtils.isDependencyElement(((YAMLKeyValue) parentNode));
+        if (!(parentNode instanceof YAMLKeyValue pluginNode)) return false;
+        return PubSpecUtils.isRemoteDependencyPSI(pluginNode);
     }
 
     @Nullable

@@ -1,5 +1,24 @@
-功能使用：
+# Mock HTTP 接口
 
-![HTTP MOCK 动效](../../configs/http-mock.gif)
+## 概述
 
-- `iFlutter` 开启的 `HTTP Mock`与项目绑定，MOCK 数据以项目为维度进行隔离。
+在 Flutter 开发过程中，前端开发往往需要等待后端 API 接口完成后才能进行联调测试。为了提高开发效率，`iFlutter` 提供了 HTTP Mock 功能，让开发者能够在没有真实后端服务的情况下进行接口调试和功能开发。
+
+## 🚀 功能特性
+
+### 便捷 Mock
+
+- **快速配置**：简单配置即可创建 Mock 接口
+- **实时响应**：模拟真实的 HTTP 响应
+- **数据隔离**：不同项目的 Mock 数据相互隔离
+- **灵活配置**：支持各种 HTTP 方法和响应格式
+
+### 项目隔离
+
+`iFlutter` 开启的 HTTP Mock 与项目绑定，Mock 数据以项目为维度进行隔离，确保不同项目之间的 Mock 数据不会相互影响。
+
+## 🛠️ 使用方法
+
+### 操作演示
+
+![HTTP Mock 使用效果](../../configs/http-mock.gif)

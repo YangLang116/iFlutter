@@ -1,11 +1,15 @@
 package com.xtu.plugin.flutter.base.utils;
 
+import com.twelvemonkeys.imageio.plugins.svg.SVGImageReader;
+import com.twelvemonkeys.imageio.plugins.svg.SVGImageReaderSpi;
+import com.twelvemonkeys.imageio.plugins.svg.SVGReadParam;
+import com.xtu.plugin.flutter.base.entity.ImageInfo;
+import com.xtu.plugin.flutter.base.entity.ImageSize;
 import net.coobird.thumbnailator.Thumbnails;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.imageio.ImageIO;
-import javax.imageio.ImageReadParam;
 import javax.imageio.ImageReader;
 import javax.imageio.spi.ImageReaderSpi;
 import javax.imageio.stream.ImageInputStream;
@@ -43,90 +47,95 @@ public class ImageUtils {
     }
 
     @Nullable
-    private static BufferedImage loadDefaultIcon(@NotNull String defaultUrl, int scaleSize) {
-        URL defaultIcon = ImageUtils.class.getResource(defaultUrl);
+    private static <T> Image loadThumbnail(@NotNull Thumbnails.Builder<T> builder, @NotNull ImageSize size) {
         try {
-            return Thumbnails.of(defaultIcon)
-                    .size(scaleSize, scaleSize)
-                    .imageType(BufferedImage.TYPE_INT_ARGB)
-                    .asBufferedImage();
+            return builder.size(size.width, size.height).imageType(BufferedImage.TYPE_INT_ARGB).outputQuality(1.0).asBufferedImage();
         } catch (Exception e) {
+            LogUtils.error("ImageUtils loadThumbnail", e);
             return null;
         }
     }
 
-    @NotNull
-    public static ImageInfo loadThumbnail(@NotNull File imageFile, @NotNull String defaultUrl, int scaleSize) {
-        ImageReader imageReader = getImageReader(imageFile);
-        if (imageReader == null) {
-            BufferedImage defaultIcon = loadDefaultIcon(defaultUrl, scaleSize);
-            return new ImageInfo(defaultIcon, 0, 0);
-        }
-        int originWidth = 0;
-        int originHeight = 0;
-        ImageInputStream imageStream = null;
+    @Nullable
+    private static Image loadSVGImage(@NotNull File file, @NotNull ImageSize size) {
+        SVGImageReader reader = null;
+        ImageInputStream stream = null;
         try {
-            imageStream = ImageIO.createImageInputStream(imageFile);
-            imageReader.setInput(imageStream);
-            originWidth = imageReader.getWidth(0);
-            originHeight = imageReader.getHeight(0);
-            Dimension renderSize = getImageRenderSize(originWidth, originHeight, scaleSize);
-            ImageReadParam readParam = imageReader.getDefaultReadParam();
-            if (readParam.canSetSourceRenderSize()) {
-                readParam.setSourceRenderSize(renderSize);
-                BufferedImage image = imageReader.read(0, readParam);
-                return new ImageInfo(image, originWidth, originHeight);
-            } else {
-                BufferedImage originImage = imageReader.read(0);
-                Image scaleImage = getScaleImage(originImage, renderSize.width, renderSize.height);
-                return new ImageInfo(scaleImage, originWidth, originHeight);
-            }
+            reader = new SVGImageReader(new SVGImageReaderSpi());
+            stream = ImageIO.createImageInputStream(file);
+            reader.setInput(stream);
+            SVGReadParam param = reader.getDefaultReadParam();
+            param.setSourceRenderSize(size.toDimension());
+            return reader.read(0, param);
         } catch (Exception e) {
-            BufferedImage defaultIcon = loadDefaultIcon(defaultUrl, scaleSize);
-            return new ImageInfo(defaultIcon, originWidth, originHeight);
+            LogUtils.error("ImageUtils loadSVGImage", e);
+            return null;
         } finally {
-            CloseUtils.close(imageStream);
-            imageReader.dispose();
+            CloseUtils.close(stream);
+            CloseUtils.close(reader);
         }
     }
 
     @NotNull
-    private static Dimension getImageRenderSize(int originWidth, int originHeight, int size) {
+    public static ImageInfo loadImageInfo(@NotNull File file, @NotNull String defaultUrl, @NotNull ImageSize size) {
+        ImageSize imageSize = getImageDimension(file);
+        if (imageSize == null) {
+            URL url = ImageUtils.class.getResource(defaultUrl);
+            Image defaultImg = loadThumbnail(Thumbnails.of(url), size);
+            return new ImageInfo(defaultImg, new ImageSize(0, 0));
+        } else {
+            ImageSize fitSize = calcFitDimension(imageSize, size);
+            String extension = FileUtils.getExtension(file);
+            Image img = StringUtils.equalsIgnoreCase(extension, "svg") ?
+                    loadSVGImage(file, fitSize) : loadThumbnail(Thumbnails.of(file), fitSize);
+            return new ImageInfo(img, imageSize);
+        }
+    }
+
+    @NotNull
+    private static ImageSize calcFitDimension(@NotNull ImageSize size, @NotNull ImageSize maxSize) {
         int renderWidth;
         int renderHeight;
-        if (originWidth > size || originHeight > size) {
-            float widthRadio = originWidth * 1.0f / size;
-            float heightRadio = originHeight * 1.0f / size;
+        if (size.width > maxSize.width || size.height > maxSize.height) {
+            float widthRadio = size.width * 1.0f / maxSize.width;
+            float heightRadio = size.height * 1.0f / maxSize.height;
             float radio = Math.max(widthRadio, heightRadio);
-            renderWidth = Math.round(originWidth / radio);
-            renderHeight = Math.round(originHeight / radio);
-        } else if (originWidth > originHeight) {
-            renderWidth = size;
-            renderHeight = Math.round(size / (originWidth * 1.0f / originHeight));
+            renderWidth = Math.round(size.width / radio);
+            renderHeight = Math.round(size.height / radio);
+        } else if (size.width > size.height) {
+            renderWidth = maxSize.width;
+            renderHeight = Math.round(maxSize.width / (size.width * 1.0f / size.height));
         } else {
-            renderWidth = Math.round(size * (originWidth * 1.0f / originHeight));
-            renderHeight = size;
+            renderWidth = Math.round(maxSize.height * (size.width * 1.0f / size.height));
+            renderHeight = maxSize.height;
         }
-        return new Dimension(renderWidth, renderHeight);
+        return new ImageSize(renderWidth, renderHeight);
+    }
+
+    //单位:K
+    public static int getImageSize(@NotNull File file) {
+        return (int) (file.length() / 1024);
     }
 
     @Nullable
-    private static Image getScaleImage(@Nullable BufferedImage originImage, int width, int height) {
-        if (originImage == null) return null;
-        return originImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-    }
-
-    public static class ImageInfo {
-
-        @Nullable
-        public final Image image;
-        public final int width;
-        public final int height;
-
-        public ImageInfo(@Nullable Image image, int width, int height) {
-            this.image = image;
-            this.width = width;
-            this.height = height;
+    public static ImageSize getImageDimension(@NotNull File file) {
+        ImageReader imageReader = null;
+        ImageInputStream imageInputStream = null;
+        try {
+            imageReader = getImageReader(file);
+            if (imageReader == null) return null;
+            imageInputStream = ImageIO.createImageInputStream(file);
+            if (imageInputStream == null) return null;
+            imageReader.setInput(imageInputStream);
+            int width = imageReader.getWidth(0);
+            int height = imageReader.getHeight(0);
+            return new ImageSize(width, height);
+        } catch (Exception e) {
+            LogUtils.error("ImageUtils getImageDimension", e);
+            return null;
+        } finally {
+            CloseUtils.close(imageInputStream);
+            CloseUtils.close(imageReader);
         }
     }
 }

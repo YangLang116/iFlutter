@@ -118,10 +118,11 @@ public class FileUtils {
         }
     }
 
-    public static File fromUrl(String url) {
+    public static File fromUrl(String urlStr) {
         try {
-            URL fileUrl = new URL(url);
-            return new File(fileUrl.getFile());
+            URL url = new URL(urlStr);
+            String path = url.getAuthority() + url.getPath();
+            return new File(path);
         } catch (MalformedURLException e) {
             return null;
         }

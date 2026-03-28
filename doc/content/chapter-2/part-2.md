@@ -2,7 +2,8 @@
 
 ## 概述
 
-通过上一节的 JSON 转 Dart Entity 工具，我们可以快速创建新的实体类。但对于项目中已有的实体类，如何为它们添加 JSON 序列化和反序列化方法呢？`iFlutter` 提供了便捷的 `fromJson` 和 `toJson` 方法生成功能。
+通过上一节的 JSON 转 Dart Entity 工具，我们可以快速创建新的实体类。但对于项目中已有的实体类，如何为它们添加 JSON
+序列化和反序列化方法呢？`iFlutter` 提供了便捷的 `fromJson` 和 `toJson` 方法生成功能。
 
 ## 🚀 功能特性
 
@@ -15,7 +16,8 @@
 
 ### 与官方插件的关系
 
-Dart 官方插件已经提供了生成 `Constructor`、`Named Constructor` 和 `toString` 方法的功能，而 `iFlutter` 的 `fromJson` 和 `toJson` 方法生成功能正好补充了官方插件在 JSON 序列化方面的空白。
+Dart 官方插件已经提供了生成 `Constructor`、`Named Constructor` 和 `toString` 方法的功能，而 `iFlutter` 的 `fromJson` 和
+`toJson` 方法生成功能正好补充了官方插件在 JSON 序列化方面的空白。
 
 ## 🛠️ 使用方法
 
@@ -65,50 +67,48 @@ class Profile {
 ### 生成 fromJson 方法
 
 ```dart
-User.fromJson(Map<String, dynamic> json) {
-  id = json['id'];
-  name = json['name'];
-  email = json['email'];
-  isActive = json['is_active'];
-  skills = json['skills']?.cast<String>();
-  profile = json['profile'] != null 
-      ? Profile.fromJson(json['profile']) 
-      : null;
+factory User.fromJson(Map<String, dynamic> json) {
+  return User(
+    id: json['id'],
+    name: json['name'],
+    email: json['email'],
+    isActive: json['isActive'],
+    skills: json['skills']?.cast<String>(),
+    profile:json['profile'] == null ? null : Profile.fromJson(json['profile']),
+  );
 }
 ```
 
 ### 生成 toJson 方法
 
 ```dart
-Map<String, dynamic> toJson() {
-  final Map<String, dynamic> data = <String, dynamic>{};
-  data['id'] = id;
-  data['name'] = name;
-  data['email'] = email;
-  data['is_active'] = isActive;
-  data['skills'] = skills;
-  data['profile'] = profile?.toJson();
-  return data;
-}
+Map<String, dynamic> toJson() => {
+    'id': id,
+    'name': name,
+    'email': email,
+    'isActive': isActive,
+    'skills': skills,
+    'profile': profile?.toJson(),
+};
 ```
 
 ## 🎯 支持的数据类型
 
 ### 基础数据类型
 
-| Dart 类型 | JSON 类型 | 处理方式 |
-|-----------|-----------|---------|
-| `int` | `number` | 直接赋值 |
-| `double` | `number` | 直接赋值 |
-| `String` | `string` | 直接赋值 |
-| `bool` | `boolean` | 直接赋值 |
+| Dart 类型  | JSON 类型   | 处理方式 |
+|----------|-----------|------|
+| `int`    | `number`  | 直接赋值 |
+| `double` | `number`  | 直接赋值 |
+| `String` | `string`  | 直接赋值 |
+| `bool`   | `boolean` | 直接赋值 |
 
 ### 复杂数据类型
 
-| Dart 类型 | 处理方式 |
-|-----------|---------|
-| `List<T>` | 使用 `cast<T>()` 进行类型转换 |
-| `Map<String, dynamic>` | 直接赋值 |
-| `自定义对象` | 调用对象的 `fromJson`/`toJson` 方法 |
-| `可空类型` | 添加空值检查 |
+| Dart 类型                | 处理方式                         |
+|------------------------|------------------------------|
+| `List<T>`              | 使用 `cast<T>()` 进行类型转换        |
+| `Map<String, dynamic>` | 直接赋值                         |
+| `自定义对象`                | 调用对象的 `fromJson`/`toJson` 方法 |
+| `可空类型`                 | 添加空值检查                       |
 

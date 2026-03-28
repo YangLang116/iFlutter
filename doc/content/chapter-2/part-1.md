@@ -88,67 +88,68 @@
 
 ```dart
 class User {
-  int? id;
-  String? name;
-  String? email;
-  int? age;
-  bool? isActive;
-  Profile? profile;
-  List<String>? skills;
+  final num? age;
+  final String? email;
+  final num? id;
+  final bool? isActive;
+  final String? name;
+  final ProfileEntity? profile;
+  final List<String>? skills;
 
   User({
-    this.id,
-    this.name,
-    this.email,
     this.age,
+    this.email,
+    this.id,
     this.isActive,
+    this.name,
     this.profile,
     this.skills,
   });
 
-  User.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    email = json['email'];
-    age = json['age'];
-    isActive = json['is_active'];
-    profile = json['profile'] != null 
-        ? Profile.fromJson(json['profile']) 
-        : null;
-    skills = json['skills']?.cast<String>();
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      age: json['age'],
+      email: json['email'],
+      id: json['id'],
+      isActive: json['is_active'],
+      name: json['name'],
+      profile: json['profile'] == null
+          ? null
+          : ProfileEntity.fromJson(json['profile']),
+      skills: json['skills']?.cast<String>(),
+    );
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['name'] = name;
-    data['email'] = email;
-    data['age'] = age;
-    data['is_active'] = isActive;
-    if (profile != null) {
-      data['profile'] = profile!.toJson();
-    }
-    data['skills'] = skills;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+        'age': age,
+        'email': email,
+        'id': id,
+        'is_active': isActive,
+        'name': name,
+        'profile': profile?.toJson(),
+        'skills': skills,
+      };
 }
 
-class Profile {
-  String? avatar;
-  String? bio;
+class ProfileEntity {
+  final String? avatar;
+  final String? bio;
 
-  Profile({this.avatar, this.bio});
+  ProfileEntity({
+    this.avatar,
+    this.bio,
+  });
 
-  Profile.fromJson(Map<String, dynamic> json) {
-    avatar = json['avatar'];
-    bio = json['bio'];
+  factory ProfileEntity.fromJson(Map<String, dynamic> json) {
+    return ProfileEntity(
+      avatar: json['avatar'],
+      bio: json['bio'],
+    );
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['avatar'] = avatar;
-    data['bio'] = bio;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+        'avatar': avatar,
+        'bio': bio,
+      };
 }
 ```

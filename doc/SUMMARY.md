@@ -22,7 +22,7 @@
     * [📦 生成 fromJson、toJson 方法](content/chapter-2/part-2.md)
     * [⚡ 提供 Live Template](content/chapter-2/part-3.md)
 
-## 📦 插件包管理
+## 📦 依赖管理
 
 * [🔧 处理插件包](content/chapter-3/README.md)
     * [🔍 搜索 Pub](content/chapter-3/part-1.md)
@@ -31,20 +31,19 @@
     * [🔄 检查更新](content/chapter-3/part-4.md)
     * [🌳 生成依赖树](content/chapter-3/part-5.md)
 
-## 🌐 开发工具
+## 🛠️ 开发效率工具
 
 * [🎭 Mock HTTP 接口](content/chapter-4/part-1.md)
-
-* [🌍 支持国际化](content/chapter-5/part-1.md)
-
+* [🌍 国际化支持](content/chapter-5/part-1.md)
 * [🚀 注入镜像仓库](content/chapter-6/part-1.md)
+* [🧹 清除注释](content/chapter-10/part-1.md)
 
-* [🧹 清除注释](content/chapter-11/part-1.md)
+## 🔌 独立插件
 
-## 🔌 扩展插件
-
-* [🎬 MediaFilePreviewer 插件](content/chapter-7/part-1.md)
-
-* [🎮 Game Center 插件](content/chapter-8/part-1.md)
-
+* [🎬 MediaFilePreviewer](content/chapter-7/part-1.md)
+* [🎮 Game Center](content/chapter-8/part-1.md)
 * [☕ 切换 JBR](content/chapter-9/part-1.md)
+
+## 📚 附录
+
+* [⌨️ 快捷键汇总](content/appendix/shortcuts.md)

@@ -1,69 +1,46 @@
-## 项目说明
+# 注入镜像仓库
 
-因为国内网络环境原因，在编译flutter项目过程中，经常会出现类似如下问题：
-```
-FAILURE: Build failed with an exception.
-[        ] * What went wrong:
-[        ] A problem occurred configuring project ':audioplayers'.
-[        ] > Could not resolve all artifacts for configuration ':audioplayers:classpath'.
-[        ]    > Could not resolve org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32.
-[        ]      Required by:
-[        ]          project :audioplayers
-[        ]       > Could not resolve org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32.
-[        ]          > Could not get resource
-'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-gradle-plugin/1.4.32/kotlin-gradle-plugin-1.4.32.pom'.
-[        ]             > Could not HEAD
-'https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-gradle-plugin/1.4.32/kotlin-gradle-plugin-1.4.32.pom'.
-[        ]                > Connect to repo.maven.apache.org:443 [repo.maven.apache.org/151.101.24.215] failed: Read timed out
-```
+## 概述
 
-为了能下载到对应的编译产物，通常需要在项目中添加镜像仓库，如阿里云镜像.
+由于国内网络环境的限制，在编译 Flutter 项目时经常因为无法访问 Maven Central、Google 等境外仓库而导致编译失败。`iFlutter` 提供了一键注入镜像仓库的功能，自动为项目及所有 Flutter Plugin 的 `build.gradle` 添加阿里云等国内镜像，彻底解决编译依赖下载问题。
 
-```
-buildscript {
-    repositories {
-        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
-        maven { url 'https://maven.aliyun.com/repository/public' }
-        maven { url 'https://maven.aliyun.com/repository/google' }
-        maven { url 'https://maven.aliyun.com/repository/central' }
-        maven { url 'https://maven.aliyun.com/repository/jcenter' }
-        google()
-        mavenCentral()
-    }
+## 🚀 功能特性
 
-    dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.0'
-    }
-}
-```
+### 批量注入
 
-**但是**flutter项目会或多或少引入`Flutter Plugin`，那么就需要在每个`Plugin`的`build.gradle`中加入镜像仓库，工作量繁琐。好在`Gradle 7.0` 推出了新的依赖管理方式，能避免大量的CV操作，但是对于`Gradle7.0`之前的项目还是无能为力。而`iFlutter`提供了通用的处理方案，直接接管这一CV操作，自动给项目所有插件注入镜像仓库。
+Flutter 项目通常会引入多个 Android Flutter Plugin，每个 Plugin 都有独立的 `build.gradle`。`iFlutter` 可以自动识别并批量注入所有 Plugin，无需逐一手动配置。
 
-## 注入说明
-**v4.0.2版本以后，注入方式可选择，之前版本为`inject all`**
+### 注入方式（v4.0.2+）
 
-- `inject to project`: 为根项目的`build.gradle`注入
-- `inject to plugin`: 为所有`Android Flutter Plugin`的`build.gradle`注入
-- `inject to flutter script`: 为Flutter编译脚本注入 ($flutterRoot/packages/flutter_tools/gradle/`flutter.gradle`)
-- `inject all`: 以上位置都注入
+| 注入方式 | 说明 |
+|---------|------|
+| `inject to project` | 仅为根项目的 `build.gradle` 注入 |
+| `inject to plugin` | 为所有 Android Flutter Plugin 的 `build.gradle` 注入 |
+| `inject to flutter script` | 为 Flutter 编译脚本注入（`$flutterRoot/packages/flutter_tools/gradle/flutter.gradle`） |
+| `inject all` | 以上位置全部注入（v4.0.2 之前的默认行为） |
 
-## 使用入口
+## 🛠️ 使用方式
 
-![插件使用](../../configs/mirror_repo_3.png)
+### 操作入口
 
-**注意**: 引入新的`Android Flutter Plugin`，在执行`flutter pub get` 以后，需要重新注入，以保证新的插件会注入镜像仓库。
+![注入镜像仓库入口](../../configs/mirror_repo_3.png)
 
-## 配置说明
+> ⚠️ **注意**：引入新的 Android Flutter Plugin 后，在执行 `flutter pub get` 之后，需要重新执行一次注入操作，以确保新插件也应用了镜像配置。
 
-`iFlutter` 镜像仓库手动配置，支持新增镜像仓库以及右键删除，具体配置如下：
+## ⚙️ 配置说明
 
-![插件配置入口](../../configs/mirror_repo_1.png)
+`iFlutter` 支持自定义镜像仓库列表，可在设置中新增或右键删除：
 
-![插件配置](../../configs/mirror_repo_2.png)
+![配置入口](../../configs/mirror_repo_1.png)
 
-插件内置镜像仓库地址：
-- https://maven.aliyun.com/repository/gradle-plugin
-- https://maven.aliyun.com/repository/public
-- https://maven.aliyun.com/repository/google
-- https://maven.aliyun.com/repository/central
-- https://maven.aliyun.com/repository/jcenter
+![配置详情](../../configs/mirror_repo_2.png)
+
+### 内置镜像仓库
+
+| 镜像地址 | 对应仓库 |
+|---------|---------|
+| `https://maven.aliyun.com/repository/gradle-plugin` | Gradle Plugin |
+| `https://maven.aliyun.com/repository/public` | Maven Central |
+| `https://maven.aliyun.com/repository/google` | Google |
+| `https://maven.aliyun.com/repository/central` | Maven Central |
+| `https://maven.aliyun.com/repository/jcenter` | JCenter |

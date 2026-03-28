@@ -11,23 +11,22 @@ import com.xtu.plugin.flutter.store.project.ProjectStorageService;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import com.intellij.util.concurrency.AppExecutorUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class FlutterPackageUpdater implements Disposable {
 
     private final Project project;
-    private final ScheduledExecutorService latestVersionChecker;
+    private ScheduledFuture<?> scheduledTask;
     private volatile boolean isDetach = false;
 
     public FlutterPackageUpdater(@NotNull Project project) {
         this.project = project;
-        this.latestVersionChecker = Executors.newScheduledThreadPool(1);
     }
 
     public static FlutterPackageUpdater getService(@NotNull Project project) {
@@ -37,19 +36,19 @@ public class FlutterPackageUpdater implements Disposable {
     public void attach() {
         LogUtils.info("FlutterPackageUpdater attach");
         this.isDetach = false;
-        //定时拉取最新版本，间隔5分钟
+        //定时拉取最新版本，间隔2小时
         if (!PluginUtils.isFlutterProject(project)) return;
-        this.latestVersionChecker.scheduleWithFixedDelay(this::pullLatestVersion, 0, 5, TimeUnit.MINUTES);
+        if (scheduledTask != null && !scheduledTask.isDone()) return;
+        scheduledTask = AppExecutorUtil.getAppScheduledExecutorService()
+                .scheduleWithFixedDelay(this::pullLatestVersion, 0, 2, TimeUnit.HOURS);
     }
 
     private void detach() {
         LogUtils.info("FlutterPackageUpdater detach");
         this.isDetach = true;
-        if (!PluginUtils.isFlutterProject(project)) return;
-        try {
-            this.latestVersionChecker.shutdown();
-        } catch (Exception e) {
-            LogUtils.error("FlutterPackageUpdater detach", e);
+        if (scheduledTask != null) {
+            scheduledTask.cancel(false);
+            scheduledTask = null;
         }
     }
 
@@ -81,7 +80,7 @@ public class FlutterPackageUpdater implements Disposable {
             ApplicationManager.getApplication()
                     .invokeLater(() -> updatePackageInfo(packageVersionList));
         } catch (Exception e) {
-            //ignore
+            LogUtils.error("FlutterPackageUpdater pullLatestVersion", e);
         }
     }
 
@@ -93,11 +92,11 @@ public class FlutterPackageUpdater implements Disposable {
 
     private void updatePackageInfo(List<PackageInfo> packageInfoList) {
         if (this.isDetach) return;
-        Map<String, PackageInfo> infoMap = ProjectStorageService.getStorage(project).packageInfoMap;
-        infoMap.clear();
+        ConcurrentHashMap<String, PackageInfo> newMap = new ConcurrentHashMap<>();
         for (PackageInfo packageInfo : packageInfoList) {
-            infoMap.put(packageInfo.name, packageInfo);
+            newMap.put(packageInfo.name, packageInfo);
         }
+        ProjectStorageService.getStorage(project).packageInfoMap = newMap;
     }
 
 

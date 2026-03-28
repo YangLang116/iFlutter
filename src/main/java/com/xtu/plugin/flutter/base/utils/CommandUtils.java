@@ -6,6 +6,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class CommandUtils {
@@ -22,24 +25,44 @@ public class CommandUtils {
         }
         String executorName = SystemInfo.isWindows ? "flutter.bat" : "flutter";
         File executorFile = new File(flutterPath, "bin" + File.separator + executorName);
-        String command = String.format("%s %s", executorFile.getAbsolutePath(), commandArgs);
-        return CommandUtils.executeSync(command, new File(projectPath), maxTimeOut);
+        // Build command as array to correctly handle paths with spaces
+        List<String> command = new ArrayList<>();
+        command.add(executorFile.getAbsolutePath());
+        command.addAll(Arrays.asList(commandArgs.split("\\s+")));
+        return CommandUtils.executeSyncInternal(command.toArray(new String[0]), new File(projectPath), maxTimeOut);
     }
 
     public static CommandResult executeSync(String command, File workDir, int maxTimeOut) {
-        InputStream resultStream = null;
-        InputStream errorStream = null;
+        // Split on whitespace for simple commands without quoted paths
+        String[] parts = command.split("\\s+");
+        return executeSyncInternal(parts, workDir, maxTimeOut);
+    }
+
+    private static CommandResult executeSyncInternal(String[] command, File workDir, int maxTimeOut) {
         StringBuffer resultBuffer = new StringBuffer();
         StringBuffer errorBuffer = new StringBuffer();
         try {
-            Process process = Runtime.getRuntime().exec(command, null, workDir);
-            fillBuffer(resultBuffer, resultStream = process.getInputStream());
-            fillBuffer(errorBuffer, errorStream = process.getErrorStream());
+            ProcessBuilder processBuilder = new ProcessBuilder(command);
+            processBuilder.directory(workDir);
+            Process process = processBuilder.start();
+            // Read stdout and stderr in parallel to prevent deadlock
+            Thread stdoutThread = new Thread(() -> {
+                try { fillBuffer(resultBuffer, process.getInputStream()); }
+                catch (IOException ignored) {}
+            });
+            Thread stderrThread = new Thread(() -> {
+                try { fillBuffer(errorBuffer, process.getErrorStream()); }
+                catch (IOException ignored) {}
+            });
+            stdoutThread.start();
+            stderrThread.start();
             if (maxTimeOut > 0) {
                 process.waitFor(maxTimeOut, TimeUnit.MINUTES);
             } else {
                 process.waitFor();
             }
+            stdoutThread.join();
+            stderrThread.join();
             if (!resultBuffer.isEmpty()) {
                 return new CommandResult(CommandResult.SUCCESS, resultBuffer.toString());
             } else {
@@ -47,9 +70,6 @@ public class CommandUtils {
             }
         } catch (Exception e) {
             return new CommandResult(CommandResult.FAIL, e.getMessage());
-        } finally {
-            CloseUtils.close(resultStream);
-            CloseUtils.close(errorStream);
         }
     }
 

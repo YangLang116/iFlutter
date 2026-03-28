@@ -13,6 +13,8 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Locale;
 
 public class FileUtils {
@@ -98,7 +100,7 @@ public class FileUtils {
             while ((len = fileInputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, len);
             }
-            return outputStream.toString();
+            return outputStream.toString(StandardCharsets.UTF_8);
         } finally {
             CloseUtils.close(fileInputStream);
             CloseUtils.close(outputStream);
@@ -107,13 +109,18 @@ public class FileUtils {
 
     public static void scanDirectory(File directory, OnScanFileListener scanFileListener) {
         if (directory == null || !directory.isDirectory()) return;
-        File[] listFiles = directory.listFiles();
-        if (ArrayUtils.isEmpty(listFiles)) return;
-        for (File file : listFiles) {
-            if (file.isDirectory()) {
-                scanDirectory(file, scanFileListener);
-            } else {
-                scanFileListener.onGetFile(file);
+        Deque<File> stack = new ArrayDeque<>();
+        stack.push(directory);
+        while (!stack.isEmpty()) {
+            File current = stack.pop();
+            File[] listFiles = current.listFiles();
+            if (ArrayUtils.isEmpty(listFiles)) continue;
+            for (File file : listFiles) {
+                if (file.isDirectory()) {
+                    stack.push(file);
+                } else {
+                    scanFileListener.onGetFile(file);
+                }
             }
         }
     }
@@ -133,7 +140,9 @@ public class FileUtils {
         if (!gradleFile.exists() || !gradleFile.isFile()) return null;
         VirtualFile gradleVirtualFile = VfsUtil.findFileByIoFile(gradleFile, true);
         if (gradleVirtualFile == null) return null;
-        return (GroovyFile) PsiManager.getInstance(project).findFile(gradleVirtualFile);
+        com.intellij.psi.PsiFile psiFile = PsiManager.getInstance(project).findFile(gradleVirtualFile);
+        if (!(psiFile instanceof GroovyFile)) return null;
+        return (GroovyFile) psiFile;
     }
 
     public interface OnScanFileListener {

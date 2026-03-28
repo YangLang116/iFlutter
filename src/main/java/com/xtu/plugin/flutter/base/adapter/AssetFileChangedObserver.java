@@ -19,15 +19,24 @@ public class AssetFileChangedObserver implements BulkFileListener, BranchChangeL
 
     public final Project project;
     private boolean isBranchChanging = false;
+    private MessageBusConnection connection;
 
     public AssetFileChangedObserver(@NotNull Project project) {
         this.project = project;
     }
 
     public void bindFileChangedEvent() {
-        MessageBusConnection connect = project.getMessageBus().connect();
-        connect.subscribe(VirtualFileManager.VFS_CHANGES, this);
-        connect.subscribe(BranchChangeListener.VCS_BRANCH_CHANGED, this);
+        if (connection != null) return;
+        connection = project.getMessageBus().connect();
+        connection.subscribe(VirtualFileManager.VFS_CHANGES, this);
+        connection.subscribe(BranchChangeListener.VCS_BRANCH_CHANGED, this);
+    }
+
+    public void disconnect() {
+        if (connection != null) {
+            connection.disconnect();
+            connection = null;
+        }
     }
 
     @Override

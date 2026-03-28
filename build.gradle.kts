@@ -16,17 +16,17 @@ repositories {
 }
 
 dependencies {
-    implementation("org.json:json:20240303")
-    implementation("com.google.code.gson:gson:2.11.0")
+    implementation("org.json:json:20250517")
+    implementation("com.google.code.gson:gson:2.13.1")
     implementation("org.apache.xmlgraphics:batik-all:1.19") {
         exclude("xml-apis", "xml-apis")
     }
-    implementation("com.twelvemonkeys.imageio:imageio-webp:3.12.0")
-    implementation("com.twelvemonkeys.imageio:imageio-batik:3.12.0")
+    implementation("com.twelvemonkeys.imageio:imageio-webp:3.13.1")
+    implementation("com.twelvemonkeys.imageio:imageio-batik:3.13.1")
     implementation("net.coobird:thumbnailator:0.4.20")
     implementation("com.squareup.okhttp3:mockwebserver:4.12.0")
     implementation("com.tinify:tinify:1.8.8")
-    implementation("org.freemarker:freemarker:2.3.33")
+    implementation("org.freemarker:freemarker:2.3.34")
 
     intellijPlatform {
         intellijIdea(providers.gradleProperty("platformVersion"))

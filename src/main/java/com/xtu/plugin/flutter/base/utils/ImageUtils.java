@@ -31,19 +31,37 @@ public class ImageUtils {
         return packageName.startsWith("com.twelvemonkeys.imageio");
     }
 
+    @NotNull
+    private static ImageReader selectBestReader(@NotNull List<ImageReader> readerList) {
+        for (ImageReader imageReader : readerList) {
+            if (isTwelveMonkeysRead(imageReader)) return imageReader;
+        }
+        return readerList.get(0);
+    }
+
     @Nullable
-    private static ImageReader getImageReader(@NotNull File imageFile) {
+    private static ImageReader getImageReaderByExt(@NotNull File imageFile) {
         if (!imageFile.canRead()) return null;
         String extension = FileUtils.getExtension(imageFile);
         if (StringUtils.isEmpty(extension)) return null;
         Iterator<ImageReader> iterator = ImageIO.getImageReadersByFormatName(extension.toLowerCase());
         if (!iterator.hasNext()) return null;
-        final List<ImageReader> readerList = new ArrayList<>();
+        List<ImageReader> readerList = new ArrayList<>();
         iterator.forEachRemaining(readerList::add);
-        for (ImageReader imageReader : readerList) {
-            if (isTwelveMonkeysRead(imageReader)) return imageReader;
+        return selectBestReader(readerList);
+    }
+
+    // Detect reader by file content (magic bytes), ignoring extension.
+    // Falls back to extension-based detection if content detection yields nothing.
+    @Nullable
+    private static ImageReader getImageReaderFromStream(@NotNull File file, @NotNull ImageInputStream stream) {
+        Iterator<ImageReader> iterator = ImageIO.getImageReaders(stream);
+        if (iterator.hasNext()) {
+            List<ImageReader> readerList = new ArrayList<>();
+            iterator.forEachRemaining(readerList::add);
+            return selectBestReader(readerList);
         }
-        return readerList.get(0);
+        return getImageReaderByExt(file);
     }
 
     @Nullable
@@ -122,10 +140,12 @@ public class ImageUtils {
         ImageReader imageReader = null;
         ImageInputStream imageInputStream = null;
         try {
-            imageReader = getImageReader(file);
-            if (imageReader == null) return null;
+            if (!file.canRead()) return null;
             imageInputStream = ImageIO.createImageInputStream(file);
             if (imageInputStream == null) return null;
+            imageReader = getImageReaderFromStream(file, imageInputStream);
+            if (imageReader == null) return null;
+            imageInputStream.seek(0);
             imageReader.setInput(imageInputStream);
             int width = imageReader.getWidth(0);
             int height = imageReader.getHeight(0);

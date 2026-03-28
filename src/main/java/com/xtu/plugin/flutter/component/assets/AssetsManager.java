@@ -6,6 +6,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DoNotAskOption;
 import com.intellij.openapi.ui.MessageDialogBuilder;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.util.Alarm;
 import com.xtu.plugin.flutter.base.adapter.AssetFileChangedObserver;
 import com.xtu.plugin.flutter.base.utils.LogUtils;
 import com.xtu.plugin.flutter.base.utils.PluginUtils;
@@ -32,12 +33,14 @@ public class AssetsManager extends AssetFileChangedObserver implements Disposabl
     private final AssetFileHandler assetFileHandler;
     private final PubSpecFileHandler specFileHandler;
     private final ImageSizeAnalyzer imageSizeAnalyzer;
+    private final Alarm pubSpecAlarm;
 
     private AssetsManager(@NotNull Project project) {
         super(project);
         this.specFileHandler = new PubSpecFileHandler();
         this.assetFileHandler = new AssetFileHandler(specFileHandler);
         this.imageSizeAnalyzer = new ImageSizeAnalyzer(project);
+        this.pubSpecAlarm = new Alarm(this);
     }
 
     public static AssetsManager getService(@NotNull Project project) {
@@ -53,6 +56,7 @@ public class AssetsManager extends AssetFileChangedObserver implements Disposabl
     @Override
     public void dispose() {
         LogUtils.info("AssetsManager detach");
+        disconnect();
     }
 
     @Override
@@ -96,9 +100,13 @@ public class AssetsManager extends AssetFileChangedObserver implements Disposabl
 
     @Override
     public void onPubSpecFileChanged(@NotNull Project project, @NotNull VirtualFile virtualFile) {
-        if (enableResCheck(project)) {
-            this.specFileHandler.onPsiFileChanged(project);
-        }
+        pubSpecAlarm.cancelAllRequests();
+        pubSpecAlarm.addRequest(() -> {
+            PluginUtils.invalidateProjectCache(project);
+            if (enableResCheck(project)) {
+                this.specFileHandler.onPsiFileChanged(project);
+            }
+        }, 300);
     }
 
     @Override

@@ -105,8 +105,12 @@ public class PubSpecUtils {
     private static YAMLMapping getTopLevelMapping(@NotNull Project project) {
         YAMLFile yamlFile = getRootPubSpecPsiFile(project);
         if (yamlFile == null) return null;
-        YAMLDocument document = yamlFile.getDocuments().get(0);
-        return (YAMLMapping) document.getTopLevelValue();
+        List<YAMLDocument> documents = yamlFile.getDocuments();
+        if (documents.isEmpty()) return null;
+        YAMLDocument document = documents.get(0);
+        YAMLValue topLevel = document.getTopLevelValue();
+        if (!(topLevel instanceof YAMLMapping)) return null;
+        return (YAMLMapping) topLevel;
     }
 
     //读取pubspec.yaml文件中flutter节点
@@ -222,6 +226,31 @@ public class PubSpecUtils {
         notifyPubSpecUpdate(project);
     }
 
+    @NotNull
+    private static String buildAssetsYaml(@NotNull List<String> assetList, @NotNull String indent) {
+        StringBuilder builder = new StringBuilder();
+        for (String asset : assetList) {
+            builder.append(indent).append("- ").append(asset).append("\n");
+        }
+        return builder.toString();
+    }
+
+    @NotNull
+    private static String buildFontFamiliesYaml(@NotNull List<FontUtils.FontFamily> fontFamilyList, @NotNull String indent) {
+        StringBuilder builder = new StringBuilder();
+        for (FontUtils.FontFamily family : fontFamilyList) {
+            builder.append(indent).append("- family: ").append(family.family).append("\n");
+            builder.append(indent).append("  fonts:\n");
+            for (FontUtils.FontAsset font : family.fonts) {
+                builder.append(indent).append("    - asset: ").append(font.asset).append("\n");
+                for (Map.Entry<String, String> extras : font.extras.entrySet()) {
+                    builder.append(indent).append("      ").append(extras.getKey()).append(": ").append(extras.getValue()).append("\n");
+                }
+            }
+        }
+        return builder.toString();
+    }
+
     private static boolean modifyAsset(@NotNull Project project, @NotNull List<String> assetList, @Nullable YAMLSequence oldAssetSequence, @NotNull YAMLElementGenerator elementGenerator) {
         if (AssetUtils.isFoldRegister(project)) {
             String projectName = getProjectName(project);
@@ -233,11 +262,7 @@ public class PubSpecUtils {
                 oldAssetSequence.getParent().delete();
                 return false;
             }
-            StringBuilder newAssetBuilder = new StringBuilder();
-            for (String asset : assetList) {
-                newAssetBuilder.append("- ").append(asset).append("\n");
-            }
-            YAMLFile tempYamlFile = elementGenerator.createDummyYamlWithText(newAssetBuilder.toString());
+            YAMLFile tempYamlFile = elementGenerator.createDummyYamlWithText(buildAssetsYaml(assetList, ""));
             YAMLSequence newAssetSequence = PsiTreeUtil.findChildOfType(tempYamlFile, YAMLSequence.class);
             if (newAssetSequence == null) return true;
             oldAssetSequence.replace(newAssetSequence);
@@ -247,21 +272,15 @@ public class PubSpecUtils {
             YAMLKeyValue flutterKeyValue = topLevelMapping.getKeyValueByKey(NODE_FLUTTER);
             if (flutterKeyValue == null || !(flutterKeyValue.getValue() instanceof YAMLMapping flutterValue)) {
                 //add flutter psi
-                StringBuilder flutterPsiBuilder = new StringBuilder().append("flutter:\n  assets:\n");
-                for (String asset : assetList) {
-                    flutterPsiBuilder.append("    - ").append(asset).append("\n");
-                }
-                YAMLFile tempYamlFile = elementGenerator.createDummyYamlWithText(flutterPsiBuilder.toString());
+                YAMLFile tempYamlFile = elementGenerator.createDummyYamlWithText(
+                        "flutter:\n  assets:\n" + buildAssetsYaml(assetList, "    "));
                 YAMLKeyValue newFlutterKeyValue = PsiTreeUtil.findChildOfType(tempYamlFile, YAMLKeyValue.class);
                 if (newFlutterKeyValue == null) return true;
                 topLevelMapping.putKeyValue(newFlutterKeyValue);
             } else {
                 //add flutter#asset psi
-                StringBuilder assetPsiBuilder = new StringBuilder("assets:\n");
-                for (String asset : assetList) {
-                    assetPsiBuilder.append("  - ").append(asset).append("\n");
-                }
-                YAMLFile tempYamlFile = elementGenerator.createDummyYamlWithText(assetPsiBuilder.toString());
+                YAMLFile tempYamlFile = elementGenerator.createDummyYamlWithText(
+                        "assets:\n" + buildAssetsYaml(assetList, "  "));
                 YAMLKeyValue newAssetKeyValue = PsiTreeUtil.findChildOfType(tempYamlFile, YAMLKeyValue.class);
                 if (newAssetKeyValue == null) return true;
                 flutterValue.putKeyValue(newAssetKeyValue);
@@ -277,26 +296,8 @@ public class PubSpecUtils {
                 oldFontSequence.getParent().delete();
                 return false;
             }
-            //fonts:
-            //    - family: test
-            //      fonts:
-            //        - asset: fonts/test.ttf
-            //        - asset: fonts/test@style_italic.ttf
-            //          style: italic
             List<FontUtils.FontFamily> fontFamilyList = FontUtils.getFontFamilyList(fontList);
-            StringBuilder newFontBuilder = new StringBuilder();
-            for (FontUtils.FontFamily family : fontFamilyList) {
-                newFontBuilder.append("- family: ").append(family.family).append("\n");
-                newFontBuilder.append("  fonts:").append("\n");
-                for (FontUtils.FontAsset font : family.fonts) {
-                    newFontBuilder.append("    - asset: ").append(font.asset).append("\n");
-                    for (Map.Entry<String, String> extras : font.extras.entrySet()) {
-                        String extraLine = String.format("      %s: %s", extras.getKey(), extras.getValue());
-                        newFontBuilder.append(extraLine).append("\n");
-                    }
-                }
-            }
-            YAMLFile tempYamlFile = elementGenerator.createDummyYamlWithText(newFontBuilder.toString());
+            YAMLFile tempYamlFile = elementGenerator.createDummyYamlWithText(buildFontFamiliesYaml(fontFamilyList, ""));
             YAMLSequence newFontSequence = PsiTreeUtil.findChildOfType(tempYamlFile, YAMLSequence.class);
             if (newFontSequence == null) return true;
             oldFontSequence.replace(newFontSequence);
@@ -304,44 +305,16 @@ public class PubSpecUtils {
             YAMLMapping topLevelMapping = getTopLevelMapping(project);
             if (topLevelMapping == null) return true;
             YAMLKeyValue flutterKeyValue = topLevelMapping.getKeyValueByKey(NODE_FLUTTER);
+            List<FontUtils.FontFamily> fontFamilyList = FontUtils.getFontFamilyList(fontList);
             if (flutterKeyValue == null || !(flutterKeyValue.getValue() instanceof YAMLMapping flutterValue)) {
-                StringBuilder flutterFontBuilder = new StringBuilder().append("flutter:").append("\n").append("  fonts:").append("\n");
-                List<FontUtils.FontFamily> fontFamilyList = FontUtils.getFontFamilyList(fontList);
-                for (FontUtils.FontFamily family : fontFamilyList) {
-                    flutterFontBuilder.append("    - family: ").append(family.family).append("\n");
-                    flutterFontBuilder.append("      fonts:").append("\n");
-                    for (FontUtils.FontAsset font : family.fonts) {
-                        flutterFontBuilder.append("        - asset: ").append(font.asset).append("\n");
-                        for (Map.Entry<String, String> extras : font.extras.entrySet()) {
-                            String extraLine = String.format("          %s: %s", extras.getKey(), extras.getValue());
-                            flutterFontBuilder.append(extraLine).append("\n");
-                        }
-                    }
-                }
-                YAMLFile tempYamlFile = elementGenerator.createDummyYamlWithText(flutterFontBuilder.toString());
+                YAMLFile tempYamlFile = elementGenerator.createDummyYamlWithText(
+                        "flutter:\n  fonts:\n" + buildFontFamiliesYaml(fontFamilyList, "    "));
                 YAMLKeyValue newFlutterKeyValue = PsiTreeUtil.findChildOfType(tempYamlFile, YAMLKeyValue.class);
                 if (newFlutterKeyValue == null) return true;
                 topLevelMapping.putKeyValue(newFlutterKeyValue);
             } else {
-                //            fonts:
-//              - family: DINPro_CondBold
-//                fonts:
-//                  - asset: assets/fonts/DINPro_CondBold.otf
-                StringBuilder newFontBuilder = new StringBuilder();
-                newFontBuilder.append("fonts:").append("\n");
-                List<FontUtils.FontFamily> fontFamilyList = FontUtils.getFontFamilyList(fontList);
-                for (FontUtils.FontFamily family : fontFamilyList) {
-                    newFontBuilder.append("  - family: ").append(family.family).append("\n");
-                    newFontBuilder.append("    fonts:").append("\n");
-                    for (FontUtils.FontAsset font : family.fonts) {
-                        newFontBuilder.append("      - asset: ").append(font.asset).append("\n");
-                        for (Map.Entry<String, String> extras : font.extras.entrySet()) {
-                            String extraLine = String.format("        %s: %s", extras.getKey(), extras.getValue());
-                            newFontBuilder.append(extraLine).append("\n");
-                        }
-                    }
-                }
-                YAMLFile tempYamlFile = elementGenerator.createDummyYamlWithText(newFontBuilder.toString());
+                YAMLFile tempYamlFile = elementGenerator.createDummyYamlWithText(
+                        "fonts:\n" + buildFontFamiliesYaml(fontFamilyList, "  "));
                 YAMLKeyValue fontKeyValue = PsiTreeUtil.findChildOfType(tempYamlFile, YAMLKeyValue.class);
                 if (fontKeyValue == null) return true;
                 flutterValue.putKeyValue(fontKeyValue);

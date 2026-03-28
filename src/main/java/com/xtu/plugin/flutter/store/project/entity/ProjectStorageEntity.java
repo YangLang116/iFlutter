@@ -6,6 +6,7 @@ import com.xtu.plugin.flutter.annotator.packages.update.PackageInfo;
 import com.xtu.plugin.flutter.store.project.converter.HttpEntityConverter;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ProjectStorageEntity {
 
@@ -22,9 +23,9 @@ public class ProjectStorageEntity {
     public List<HttpEntity> httpEntityList = new ArrayList<>();
     //资源是否以目录形式注册
     public boolean foldRegisterEnable = false;
-    //最新版本信息
+    //最新版本信息（运行时状态，不持久化，需线程安全）
     @Transient
-    public Map<String, PackageInfo> packageInfoMap = new HashMap<>();
+    public volatile Map<String, PackageInfo> packageInfoMap = new ConcurrentHashMap<>();
     //是否开启图片尺寸监听
     public boolean enableSizeMonitor = true;
     //最大图片

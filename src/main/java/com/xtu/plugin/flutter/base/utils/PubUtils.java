@@ -54,12 +54,9 @@ public class PubUtils {
 
     @Nullable
     private static Map<String, String> getPluginPathMapFromPackageFile(File packageConfigFile) {
-        BufferedReader bufferedReader = null;
-        try {
+        try (BufferedReader bufferedReader = new BufferedReader(
+                new InputStreamReader(new FileInputStream(packageConfigFile), StandardCharsets.UTF_8))) {
             final Map<String, String> pluginPathMap = new HashMap<>();
-            FileInputStream fileInputStream = new FileInputStream(packageConfigFile);
-            InputStreamReader streamReader = new InputStreamReader(fileInputStream, StandardCharsets.UTF_8);
-            bufferedReader = new BufferedReader(streamReader);
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 line = line.trim();
@@ -76,19 +73,14 @@ public class PubUtils {
         } catch (Exception e) {
             LogUtils.error("PubUtils getPluginPathMapFromPackageFile", e);
             return null;
-        } finally {
-            CloseUtils.close(bufferedReader);
         }
     }
 
     @Nullable
     private static Map<String, String> getPluginPathMapFromPluginFile(File flutterPluginsFile) {
-        BufferedReader bufferedReader = null;
-        try {
+        try (BufferedReader bufferedReader = new BufferedReader(
+                new InputStreamReader(new FileInputStream(flutterPluginsFile), StandardCharsets.UTF_8))) {
             final Map<String, String> pluginPathMap = new HashMap<>();
-            FileInputStream fileInputStream = new FileInputStream(flutterPluginsFile);
-            InputStreamReader streamReader = new InputStreamReader(fileInputStream, StandardCharsets.UTF_8);
-            bufferedReader = new BufferedReader(streamReader);
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 line = line.trim();
@@ -101,8 +93,6 @@ public class PubUtils {
         } catch (Exception e) {
             LogUtils.error("PubUtils getPluginPathMapFromPluginFile", e);
             return null;
-        } finally {
-            CloseUtils.close(bufferedReader);
         }
     }
 }

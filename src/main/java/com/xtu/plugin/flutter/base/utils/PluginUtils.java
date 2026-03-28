@@ -17,12 +17,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.awt.datatransfer.StringSelection;
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class PluginUtils {
 
-    private static final Map<String, Boolean> sIsFlutterProject = new HashMap<>();
+    private static final Map<String, Boolean> sIsFlutterProject = new ConcurrentHashMap<>();
 
     @Nullable
     public static String getProjectPath(@Nullable Project project) {
@@ -35,14 +35,21 @@ public class PluginUtils {
     public static boolean isFlutterProject(@Nullable Project project) {
         if (project == null) return false;
         String projectPath = project.getBasePath();
-        if (sIsFlutterProject.containsKey(projectPath)) {
-            return sIsFlutterProject.get(projectPath);
-        }
+        Boolean cached = sIsFlutterProject.get(projectPath);
+        if (cached != null) return cached;
         VirtualFile rootPubSpecFile = PubSpecUtils.getRootPubSpecFile(project);
         if (rootPubSpecFile == null) return false;
         boolean isFlutterProject = FlutterUtil.isPubspecDeclaringFlutter(rootPubSpecFile);
         sIsFlutterProject.put(projectPath, isFlutterProject);
         return isFlutterProject;
+    }
+
+    public static void invalidateProjectCache(@Nullable Project project) {
+        if (project == null) return;
+        String projectPath = project.getBasePath();
+        if (projectPath != null) {
+            sIsFlutterProject.remove(projectPath);
+        }
     }
 
     public static void openFileInEditor(@NotNull Project project, @NotNull File file) {

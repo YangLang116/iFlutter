@@ -4,8 +4,8 @@ import org.jetbrains.changelog.markdownToHTML
 
 plugins {
     id("java")
-    id("org.jetbrains.changelog") version "2.2.1"
-    id("org.jetbrains.intellij.platform") version "2.5.0"
+    id("org.jetbrains.changelog") version "2.5.0"
+    id("org.jetbrains.intellij.platform") version "2.13.1"
 }
 
 repositories {
@@ -29,7 +29,7 @@ dependencies {
     implementation("org.freemarker:freemarker:2.3.33")
 
     intellijPlatform {
-        create(providers.gradleProperty("platformType"), providers.gradleProperty("platformVersion"))
+        intellijIdea(providers.gradleProperty("platformVersion"))
         bundledPlugins(providers.gradleProperty("platformBundledPlugins").map { it.split(',') })
         plugins(providers.gradleProperty("platformPlugins").map { it.split(',') })
         pluginVerifier()

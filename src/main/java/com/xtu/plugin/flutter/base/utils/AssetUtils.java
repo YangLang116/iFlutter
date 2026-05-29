@@ -95,42 +95,63 @@ public class AssetUtils {
     }
 
     /**
-     * 判断是否还存在其他尺寸素材
-     * <p>
-     * case 1：
-     * -2.0x
-     * - a.png
-     * -3.0x
-     * - a.png
-     * <p>
-     * case 2:
-     * -2.0x
-     * - a.png
-     * -a.png
+     * 判断是否还存在其他尺寸素材。
+     *
+     * <p>支持的目录结构：
+     * <pre>
+     * case 1：同一资产有多个尺寸版本
+     *   assets/
+     *     a.png
+     *     2.0x/a.png
+     *     3.0x/a.png
+     *
+     * case 2：资产仅在尺寸子目录中
+     *   assets/
+     *     2.0x/a.png
+     *     3.0x/a.png
+     * </pre>
+     *
+     * <p>性能优化：原先调用 {@link FileUtils#scanDirectory} 遍历整棵 asset 树（O(n)）；
+     * 现改为只检查与当前文件同名的"兄弟尺寸目录"和"父目录"中对应文件是否存在（O(1)），
+     * 大幅减少文件系统 IO。</p>
      */
     public static boolean hasOtherDimensionAsset(@Nullable String projectPath, @Nullable File assetFile) {
         if (StringUtils.isEmpty(projectPath) || assetFile == null) return false;
         File parentFile = assetFile.getParentFile();
         String parentName = parentFile.getName();
+        String fileName = assetFile.getName();
+
         if (isDimensionDir(parentName)) {
-            return hasOtherDimensionAsset(projectPath, parentFile.getParentFile(), assetFile);
+            // assetFile 在尺寸子目录（如 2.0x/a.png），检查：
+            // 1. 父目录的父目录（根目录）中是否有同名文件（a.png）
+            // 2. 兄弟尺寸目录（3.0x, 4.0x 等）中是否有同名文件
+            File assetRoot = parentFile.getParentFile();
+            if (assetRoot == null) return false;
+            // 检查根目录下的同名文件
+            if (new File(assetRoot, fileName).exists()) return true;
+            // 检查兄弟尺寸目录
+            return hasSiblingDimensionFile(assetRoot, parentName, fileName);
         } else {
-            return hasOtherDimensionAsset(projectPath, parentFile, assetFile);
+            // assetFile 在非尺寸目录（如 assets/a.png），检查尺寸子目录中是否有同名文件
+            return hasSiblingDimensionFile(parentFile, null, fileName);
         }
     }
 
-    private static boolean hasOtherDimensionAsset(@NotNull String projectPath, @NotNull File rootFile, @NotNull File compareFile) {
-        String compareRelativePath = FileUtils.getRelativePath(projectPath, compareFile);
-        String compareAssetPath = getAssetPath(projectPath, compareFile);
-        List<File> fileList = new ArrayList<>();
-        FileUtils.scanDirectory(rootFile, fileList::add);
-        for (File assetFile : fileList) {
-            //资源路径一样，但是相对路径不一样
-            String currentAssetPath = getAssetPath(projectPath, assetFile);
-            String currentRelativePath = FileUtils.getRelativePath(projectPath, assetFile);
-            if (StringUtils.equals(currentAssetPath, compareAssetPath) && !StringUtils.equals(currentRelativePath, compareRelativePath)) {
-                return true;
-            }
+    /**
+     * 在 {@code rootDir} 的直接子目录中，查找是否有（除 {@code excludeDirName} 外的）
+     * 尺寸目录包含 {@code fileName}。只检查直接子目录，不递归遍历整棵树。
+     */
+    private static boolean hasSiblingDimensionFile(@NotNull File rootDir,
+                                                    @Nullable String excludeDirName,
+                                                    @NotNull String fileName) {
+        File[] children = rootDir.listFiles();
+        if (children == null) return false;
+        for (File child : children) {
+            if (!child.isDirectory()) continue;
+            String childName = child.getName();
+            if (!isDimensionDir(childName)) continue;
+            if (StringUtils.equals(childName, excludeDirName)) continue;
+            if (new File(child, fileName).exists()) return true;
         }
         return false;
     }

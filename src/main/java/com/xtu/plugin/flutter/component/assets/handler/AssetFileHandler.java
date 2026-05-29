@@ -5,10 +5,14 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.xtu.plugin.flutter.base.utils.AssetUtils;
 import com.xtu.plugin.flutter.base.utils.PluginUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.util.List;
 
+/**
+ * 将 VFS 文件事件转换为对 pubspec.yaml 资源列表的 AssetMutation。
+ * 不直接写 pubspec.yaml，只返回待执行的 mutation，由调用方批量刷新。
+ */
 public class AssetFileHandler {
 
     private final PubSpecFileHandler specFileHandler;
@@ -17,68 +21,98 @@ public class AssetFileHandler {
         this.specFileHandler = specFileHandler;
     }
 
-    public void onFileAdded(@NotNull Project project, @NotNull VirtualFile virtualFile) {
+    public PubSpecFileHandler getSpecFileHandler() {
+        return specFileHandler;
+    }
+
+    /**
+     * 文件新增 → 返回"将该 asset 加入列表"的 mutation。
+     */
+    @Nullable
+    public AssetMutation computeAddMutation(@NotNull Project project, @NotNull VirtualFile virtualFile) {
         String assetPath = AssetUtils.getAssetFilePath(project, virtualFile);
-        if (assetPath == null) return;
-        specFileHandler.addAsset(project, List.of(assetPath));
+        if (assetPath == null) return null;
+        return (al, fl) -> PubSpecFileHandler.addAssetToList(al, fl, assetPath);
     }
 
-    public void onFileDeleted(@NotNull Project project, @NotNull VirtualFile virtualFile) {
+    /**
+     * 文件删除 → 若还有其他尺寸资源则保留（add），否则移除。
+     */
+    @Nullable
+    public AssetMutation computeDeleteMutation(@NotNull Project project, @NotNull VirtualFile virtualFile) {
         File deleteFile = new File(virtualFile.getPath());
-        onFileDeleted(project, deleteFile);
+        return computeDeleteMutation(project, deleteFile);
     }
 
-    private void onFileDeleted(@NotNull Project project, @NotNull File file) {
+    @Nullable
+    private AssetMutation computeDeleteMutation(@NotNull Project project, @NotNull File file) {
         String assetPath = AssetUtils.getAssetFilePath(project, file);
-        if (assetPath == null) return;
+        if (assetPath == null) return null;
         String projectPath = PluginUtils.getProjectPath(project);
-        //判断是否还存在其他dimension资源,兼容IDEA自动引用处理，需要强制保留assetPath
         if (AssetUtils.hasOtherDimensionAsset(projectPath, file)) {
-            specFileHandler.addAsset(project, List.of(assetPath));
+            // 还有其他尺寸版本，保留 assetPath 注册（兼容 IDEA 自动引用处理）
+            return (al, fl) -> PubSpecFileHandler.addAssetToList(al, fl, assetPath);
         } else {
-            specFileHandler.removeAsset(project, assetPath);
+            return (al, fl) -> PubSpecFileHandler.removeAssetFromList(al, fl, assetPath);
         }
     }
 
-
-    public void onFileChanged(@NotNull Project project,
-                              @NotNull VirtualFile virtualFile,
-                              @NotNull String oldValue,
-                              @NotNull String newValue) {
+    /**
+     * 文件重命名 → 若旧名还有其他尺寸资源则同时保留旧路径，否则做 change。
+     */
+    @Nullable
+    public AssetMutation computeRenameMutation(@NotNull Project project,
+                                               @NotNull VirtualFile virtualFile,
+                                               @NotNull String oldName,
+                                               @NotNull String newName) {
         String newAssetPath = AssetUtils.getAssetFilePath(project, virtualFile);
-        if (newAssetPath == null) return;
+        if (newAssetPath == null) return null;
         String projectPath = PluginUtils.getProjectPath(project);
         File newAssetFile = new File(virtualFile.getPath());
-        File oldAssetFile = new File(newAssetFile.getParentFile(), oldValue);
-        String oldAssetPath = newAssetPath.replace(newValue, oldValue);
-        //判断是否还存在其他dimension资源,兼容IDEA自动引用处理，需要强制保留oldAssetPath
+        File oldAssetFile = new File(newAssetFile.getParentFile(), oldName);
+        String oldAssetPath = newAssetPath.replace(newName, oldName);
         if (AssetUtils.hasOtherDimensionAsset(projectPath, oldAssetFile)) {
-            specFileHandler.addAsset(project, List.of(newAssetPath, oldAssetPath));
+            return (al, fl) -> {
+                PubSpecFileHandler.addAssetToList(al, fl, newAssetPath);
+                PubSpecFileHandler.addAssetToList(al, fl, oldAssetPath);
+            };
         } else {
-            specFileHandler.changeAsset(project, oldAssetPath, newAssetPath);
+            return (al, fl) -> {
+                PubSpecFileHandler.removeAssetFromList(al, fl, oldAssetPath);
+                PubSpecFileHandler.addAssetToList(al, fl, newAssetPath);
+            };
         }
     }
 
-    public void onFileMoved(@NotNull Project project,
-                            @NotNull File oldFile,
-                            @NotNull VirtualFile newFile) {
+    /**
+     * 文件移动 → 根据新旧路径是否在 asset 目录，决定 add / remove / change。
+     */
+    @Nullable
+    public AssetMutation computeMoveMutation(@NotNull Project project,
+                                             @NotNull File oldFile,
+                                             @NotNull VirtualFile newFile) {
         String oldAssetPath = AssetUtils.getAssetFilePath(project, oldFile);
         String newAssetPath = AssetUtils.getAssetFilePath(project, newFile);
         if (oldAssetPath != null && newAssetPath == null) {
-            onFileDeleted(project, oldFile);
-            return;
+            // 从 asset 目录移到外面 → 删除
+            return computeDeleteMutation(project, oldFile);
         }
-        if (newAssetPath == null) return;
+        if (newAssetPath == null) return null;
         if (oldAssetPath == null) {
-            specFileHandler.addAsset(project, List.of(newAssetPath));
-            return;
+            // 从外面移进 asset 目录 → 新增
+            return (al, fl) -> PubSpecFileHandler.addAssetToList(al, fl, newAssetPath);
         }
         String projectPath = PluginUtils.getProjectPath(project);
-        //判断是否还存在其他dimension资源,兼容IDEA自动引用处理，需要强制保留assetPath
         if (AssetUtils.hasOtherDimensionAsset(projectPath, oldFile)) {
-            specFileHandler.addAsset(project, List.of(newAssetPath, oldAssetPath));
+            return (al, fl) -> {
+                PubSpecFileHandler.addAssetToList(al, fl, newAssetPath);
+                PubSpecFileHandler.addAssetToList(al, fl, oldAssetPath);
+            };
         } else {
-            specFileHandler.changeAsset(project, oldAssetPath, newAssetPath);
+            return (al, fl) -> {
+                PubSpecFileHandler.removeAssetFromList(al, fl, oldAssetPath);
+                PubSpecFileHandler.addAssetToList(al, fl, newAssetPath);
+            };
         }
     }
 }

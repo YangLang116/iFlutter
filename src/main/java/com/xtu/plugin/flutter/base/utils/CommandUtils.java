@@ -4,11 +4,14 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SystemInfo;
 import org.jetbrains.annotations.NotNull;
 
+import com.intellij.util.concurrency.AppExecutorUtil;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 public class CommandUtils {
@@ -45,24 +48,22 @@ public class CommandUtils {
             ProcessBuilder processBuilder = new ProcessBuilder(command);
             processBuilder.directory(workDir);
             Process process = processBuilder.start();
-            // Read stdout and stderr in parallel to prevent deadlock
-            Thread stdoutThread = new Thread(() -> {
+            // 使用线程池读取 stdout/stderr，避免每次命令创建裸线程
+            Future<?> stdoutFuture = AppExecutorUtil.getAppExecutorService().submit(() -> {
                 try { fillBuffer(resultBuffer, process.getInputStream()); }
                 catch (IOException ignored) {}
             });
-            Thread stderrThread = new Thread(() -> {
+            Future<?> stderrFuture = AppExecutorUtil.getAppExecutorService().submit(() -> {
                 try { fillBuffer(errorBuffer, process.getErrorStream()); }
                 catch (IOException ignored) {}
             });
-            stdoutThread.start();
-            stderrThread.start();
             if (maxTimeOut > 0) {
                 process.waitFor(maxTimeOut, TimeUnit.MINUTES);
             } else {
                 process.waitFor();
             }
-            stdoutThread.join();
-            stderrThread.join();
+            stdoutFuture.get();
+            stderrFuture.get();
             if (!resultBuffer.isEmpty()) {
                 return new CommandResult(CommandResult.SUCCESS, resultBuffer.toString());
             } else {

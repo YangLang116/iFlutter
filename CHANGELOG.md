@@ -2,6 +2,14 @@
 
 ## [未完待续]
 
+## 4.3.6 - 2026-05-29
+
+- `Base`: 性能优化，修复批量文件操作时 pubspec.yaml 被反复读写问题
+- `Base`: 优化资源面板刷新防抖，避免频繁触发全量扫描
+- `Base`: 优化 VFS 事件处理，减少 EDT 中的重复 storage 查询
+- `Base`: 延迟 pub outdated 首次执行，降低项目启动负担
+- `Base`: 优化 hasOtherDimensionAsset 扫描逻辑，从 O(n) 降为 O(1)
+
 ## 4.3.5 - 2025-03-28
 
 - `Base`: 性能优化

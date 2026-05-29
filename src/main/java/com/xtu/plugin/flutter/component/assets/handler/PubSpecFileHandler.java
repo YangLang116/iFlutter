@@ -15,7 +15,8 @@ import java.util.List;
 
 public class PubSpecFileHandler {
 
-    private void addAssetToList(List<String> assetList, List<String> fontList, String asset) {
+    // package-private static，供 AssetFileHandler 构造 AssetMutation 时复用
+    static void addAssetToList(List<String> assetList, List<String> fontList, String asset) {
         if (FontUtils.isFontAsset(asset)) {
             fontList.add(asset);
         } else {
@@ -23,7 +24,7 @@ public class PubSpecFileHandler {
         }
     }
 
-    private void removeAssetFromList(List<String> assetList, List<String> fontList, String asset) {
+    static void removeAssetFromList(List<String> assetList, List<String> fontList, String asset) {
         if (FontUtils.isFontAsset(asset)) {
             fontList.remove(asset);
         } else {
@@ -31,38 +32,20 @@ public class PubSpecFileHandler {
         }
     }
 
-    void addAsset(@NotNull Project project, @NotNull List<String> addAssetList) {
-        LogUtils.info("PubSpecFileHandler addAsset: " + addAssetList);
+    /**
+     * 批量应用多个 AssetMutation：仅做一次 readAssetList + writeAssetList，
+     * 避免批量文件事件（如复制多张图片、git checkout）时 pubspec.yaml 被反复读写。
+     */
+    public void flushMutations(@NotNull Project project, @NotNull List<AssetMutation> mutations) {
+        if (mutations.isEmpty()) return;
+        LogUtils.info("PubSpecFileHandler flushMutations: " + mutations.size() + " ops");
         WriteCommandAction.runWriteCommandAction(project, () -> {
             AssetInfo assetResult = PubSpecUtils.readAssetList(project);
             List<String> newAssetList = new ArrayList<>(assetResult.assetList);
             List<String> newFontList = new ArrayList<>(assetResult.fontList);
-            for (String asset : addAssetList) {
-                addAssetToList(newAssetList, newFontList, asset);
+            for (AssetMutation mutation : mutations) {
+                mutation.apply(newAssetList, newFontList);
             }
-            PubSpecUtils.writeAssetList(project, newAssetList, newFontList);
-        });
-    }
-
-    void removeAsset(@NotNull Project project, String removeAsset) {
-        LogUtils.info("PubSpecFileHandler removeAsset: " + removeAsset);
-        WriteCommandAction.runWriteCommandAction(project, () -> {
-            AssetInfo resultEntity = PubSpecUtils.readAssetList(project);
-            List<String> newAssetList = new ArrayList<>(resultEntity.assetList);
-            List<String> newFontList = new ArrayList<>(resultEntity.fontList);
-            removeAssetFromList(newAssetList, newFontList, removeAsset);
-            PubSpecUtils.writeAssetList(project, newAssetList, newFontList);
-        });
-    }
-
-    void changeAsset(Project project, String oldAssetName, String newAssetName) {
-        LogUtils.info(String.format("PubSpecFileHandler changeAsset(%s -> %s)", oldAssetName, newAssetName));
-        WriteCommandAction.runWriteCommandAction(project, () -> {
-            AssetInfo assetResult = PubSpecUtils.readAssetList(project);
-            List<String> newAssetList = new ArrayList<>(assetResult.assetList);
-            List<String> newFontList = new ArrayList<>(assetResult.fontList);
-            removeAssetFromList(newAssetList, newFontList, oldAssetName);
-            addAssetToList(newAssetList, newFontList, newAssetName);
             PubSpecUtils.writeAssetList(project, newAssetList, newFontList);
         });
     }

@@ -33,14 +33,17 @@ public class FlutterPackageUpdater implements Disposable {
         return project.getService(FlutterPackageUpdater.class);
     }
 
+    // 首次延迟：项目打开后 5 分钟再执行第一次，避免加重启动负担
+    private static final long INITIAL_DELAY_MINUTES = 5;
+
     public void attach() {
         LogUtils.info("FlutterPackageUpdater attach");
         this.isDetach = false;
-        //定时拉取最新版本，间隔2小时
+        //定时拉取最新版本，间隔2小时；首次延迟5分钟，等待项目完全加载后再运行
         if (!PluginUtils.isFlutterProject(project)) return;
         if (scheduledTask != null && !scheduledTask.isDone()) return;
         scheduledTask = AppExecutorUtil.getAppScheduledExecutorService()
-                .scheduleWithFixedDelay(this::pullLatestVersion, 0, 2, TimeUnit.HOURS);
+                .scheduleWithFixedDelay(this::pullLatestVersion, INITIAL_DELAY_MINUTES, 120, TimeUnit.MINUTES);
     }
 
     private void detach() {
